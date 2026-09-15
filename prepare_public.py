@@ -12,7 +12,7 @@ KEYS = {'id', 'speaker', 'name', 'group', 'group_source', 'language', 'native',
         'native_source', 'dataset', 'style', 'text', 'audio', 'duration', 'features',
         'level_dbfs', 'peak', 'voiced_seconds', 'formant_seconds', 'tracking_sensitivity',
         'plotted', 'reason', 'source', 'sha256', 'license', 'synthetic', 'voice_label', 'credit',
-        'selection_basis', 'accent'}
+        'selection_basis', 'accent', 'display_label'}
 
 
 def read(name):
@@ -45,6 +45,12 @@ def main():
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(ROOT / 'dist', OUT / 'assets')
+    models = ROOT / '.models/perception'
+    if not all((models / (name + '.int8.onnx')).exists() for name in ['wavlm', 'age']):
+        raise RuntimeError('Run prepare_voice_models.py before building the public demo.')
+    (OUT / 'models').mkdir()
+    for filename in ['wavlm.int8.onnx', 'age.int8.onnx', 'manifest.json', 'wavlm-README.md', 'wavlm-LICENSE', 'age-README.md', 'age-LICENSE', 'wavlm-preprocessor_config.json', 'age-preprocessor_config.json']:
+        shutil.copy2(models / filename, OUT / 'models' / filename)
     write(OUT / 'assets' / 'public-api' / 'jvs-index.json', read('jvs-import-index.json'))
     write(OUT / 'data' / 'jvs-import-index.json', read('jvs-import-index.json'))
     libraries = {}
@@ -54,6 +60,8 @@ def main():
     assert all(c['dataset'] == 'Common Voice' and c['license'] == 'CC0-1.0'
                and c.get('selection_basis') in {'reviewed_speaker', 'declared_japanese_accent', 'common_voice_validated'}
                and c['speaker'] not in excluded for c in common_voice)
+    excluded_clips = set(json.loads((ROOT / 'curation/common-voice-ja.json').read_text()).get('excluded_clips', []))
+    assert not any(c['id'] in excluded_clips for c in common_voice)
     native = jvs_excerpt(native) + common_voice
     assert len(native) == len({c['id'] for c in native})
     for lang in LANGUAGES:
@@ -77,7 +85,7 @@ def main():
                 folder.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source, folder / name)
             manifest.append({'file': name, 'sha256': digest, 'dataset': clip.get('dataset', 'VOICEVOX' if clip.get('synthetic') else 'Common Voice')})
-    catalog = {'capabilities': {'words': False, 'maxSeconds': 60}, 'languages': [
+    catalog = {'capabilities': {'words': False, 'maxSeconds': 60, 'perception': True}, 'languages': [
         {'id': lang, 'label': label,
          'clips': sum(not c.get('synthetic') for c in libraries[lang]['clips']),
          'speakers': len({c['speaker'] for c in libraries[lang]['clips'] if not c.get('synthetic')}),

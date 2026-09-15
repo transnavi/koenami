@@ -4,7 +4,6 @@ import io
 import json
 import logging
 import os
-import subprocess
 import sys
 from time import perf_counter
 from collections import OrderedDict
@@ -14,6 +13,7 @@ import soundfile as sf
 from aiohttp import web, ClientSession, ClientTimeout
 from acoustics import measure, mono16, RATE
 from signals import visualise
+import perception
 
 ROOT = Path(__file__).parent
 PUBLIC = os.environ.get('KOENAMI_PUBLIC') == '1'
@@ -41,9 +41,11 @@ def create_app():
                 if clip['language'] in libraries: libraries[clip['language']]['clips'].append(clip)
     clips = {s['id']: s for lib in libraries.values() for s in lib['clips']}
     sample_files = {Path(s['audio']).name for s in clips.values() if s['audio'].startswith('/samples/')}
-    gate, asr_gate = asyncio.Semaphore(1), asyncio.Semaphore(1)
+    gate, asr_gate, neural_gate = asyncio.Semaphore(1), asyncio.Semaphore(1), asyncio.Semaphore(1)
+    neural_tasks = set()
     cache = OrderedDict()
     pcm_cache = OrderedDict()
+    perception_cache = OrderedDict()
 
     @web.middleware
     async def local_only(request, handler):
@@ -159,8 +161,59 @@ def create_app():
                 print(f'Word timing failed: {type(error).__name__}', flush=True)
                 raise web.HTTPServiceUnavailable(text='Word timing is unavailable. Select a range on the waveform.')
 
+    async def voice_impression(request):
+        if not perception.available():
+            raise web.HTTPServiceUnavailable(text='声の推定モデルを準備してください。')
+        name = request.match_info.get('name')
+        if name and name in perception_cache:
+            perception_cache.move_to_end(name)
+            return respond(perception_cache[name])
+        if neural_gate.locked():
+            raise web.HTTPServiceUnavailable(text='声の推定中です。少し待ってからお試しください。', headers={'Retry-After': '2'})
+        await neural_gate.acquire()
+        try:
+            x = await asyncio.wait_for(known_audio(name) if name else read_audio(request), timeout=10)
+        except asyncio.TimeoutError:
+            neural_gate.release()
+            raise web.HTTPRequestTimeout(text='音声の読み込みが時間内に終わりませんでした。')
+        except BaseException:
+            neural_gate.release()
+            raise
+
+        def infer():
+            # Validate the exact sampled regions, including clips with quiet edges.
+            parts = perception.windows(x)
+            checked = measure(np.concatenate([part[0] for part in parts]))
+            if checked.get('voiced_seconds', 0) < 1:
+                raise ValueError('声が十分に検出できません。2秒以上、話した音声を選んでください。')
+            return perception.describe(x)
+
+        async def run():
+            try: return await asyncio.to_thread(infer)
+            finally: neural_gate.release()
+
+        task = asyncio.create_task(run())
+        neural_tasks.add(task)
+        def finished(t):
+            neural_tasks.discard(t)
+            if not t.cancelled(): t.exception()
+        task.add_done_callback(finished)
+        try:
+            # On timeout/disconnect the gate remains held until inference exits.
+            result = await asyncio.wait_for(asyncio.shield(task), timeout=30)
+        except asyncio.TimeoutError:
+            raise web.HTTPGatewayTimeout(text='声の推定が時間内に終わりませんでした。')
+        except ValueError as error:
+            raise web.HTTPUnprocessableEntity(text=str(error))
+        except Exception:
+            raise web.HTTPInternalServerError(text='この音声の推定に失敗しました。')
+        if name:
+            perception_cache[name] = result
+            while len(perception_cache) > 32: perception_cache.popitem(last=False)
+        return respond(result)
+
     async def catalog(request):
-        return respond({'capabilities': {'words': not PUBLIC, 'maxSeconds': LIMIT}, 'languages': [dict(id=k, label=v,
+        return respond({'capabilities': {'words': not PUBLIC, 'maxSeconds': LIMIT, 'perception': perception.available()}, 'languages': [dict(id=k, label=v,
             clips=sum(not s.get('synthetic') for s in libraries[k]['clips']),
             speakers=len({s['speaker'] for s in libraries[k]['clips'] if not s.get('synthetic')}),
             synthetic=sum(bool(s.get('synthetic')) for s in libraries[k]['clips']))
@@ -179,14 +232,6 @@ def create_app():
         if name.lower().endswith('.flac'): response.content_type = 'audio/flac'
         return response
 
-    async def static(request):
-        if request.match_info.get('lang') not in [None, *LANGUAGES, 'lab']: raise web.HTTPNotFound()
-        name = request.match_info.get('file', 'index.html')
-        if name in [*LANGUAGES, 'lab']:
-            raise web.HTTPFound('/'+name+'/')
-        if name not in {'index.html', 'app.js', 'map.js', 'signals.js', 'style.css', 'capture.js', 'theme.js', 'method.html', 'space.js', 'storage.js', 'locale.js', 'math.js'}: raise web.HTTPNotFound()
-        return web.FileResponse(ROOT / 'web' / name)
-
     async def data_file(request):
         if PUBLIC: raise web.HTTPNotFound()
         name = request.match_info['file']
@@ -202,6 +247,8 @@ def create_app():
 
     app.router.add_get('/api/health', health)
     app.router.add_post('/api/analyze', measurement)
+    app.router.add_post('/api/perception', voice_impression)
+    app.router.add_get('/api/perception/{name}', voice_impression)
     app.router.add_get('/api/catalog', catalog)
     app.router.add_get('/api/library', metadata)
     app.router.add_get('/api/detail/{name}', detail)
@@ -209,21 +256,15 @@ def create_app():
     app.router.add_post('/api/words', words)
     app.router.add_get('/samples/{file}', sample)
     app.router.add_get('/data/{file}', data_file)
-    app.router.add_get('/', static)
-    app.router.add_get('/{lang}/', static)
-    app.router.add_get('/{file}', static)
     return app
 
 
-async def run(port, open_browser):
+async def run(port):
     runner = web.AppRunner(create_app(), access_log=None)
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0' if PUBLIC else '127.0.0.1', port)
     await site.start()
-    url = f'http://localhost:{port}/ja/'
-    print(f'Koenami: {url}', flush=True)
-    if open_browser:
-        subprocess.run(['cmd.exe', '/c', 'start', '', url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    print(f'Koenami API: http://localhost:{port}', flush=True)
     try: await asyncio.Event().wait()
     finally: await runner.cleanup()
 
@@ -234,9 +275,8 @@ if __name__ == '__main__':
         env = {**os.environ, 'VOICE_CUDA_READY': '1', 'LD_LIBRARY_PATH': ':'.join(map(str, libs)) + ':' + os.environ.get('LD_LIBRARY_PATH', '')}
         os.execve(sys.executable, [sys.executable, *sys.argv], env)
     parser = argparse.ArgumentParser()
-    parser.add_argument('--port', type=int, default=8766)
-    parser.add_argument('--open', action='store_true')
+    parser.add_argument('--port', type=int, default=35511)
     options = parser.parse_args()
     logging.basicConfig(level=logging.CRITICAL)
-    try: asyncio.run(run(options.port, options.open))
+    try: asyncio.run(run(options.port))
     except KeyboardInterrupt: pass

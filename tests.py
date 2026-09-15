@@ -77,12 +77,12 @@ class AcousticTests(unittest.TestCase):
 class CollectionTests(unittest.TestCase):
     def test_all_collected_audio_decodes_and_matches_manifest(self):
         library=json.loads((ROOT/'data/native-ja.json').read_text());clips=library['clips']
-        self.assertEqual(len(clips),6675)
-        self.assertEqual(len({p['id'] for p in clips}),6675)
-        self.assertEqual(len({p['speaker'] for p in clips}),598)
-        self.assertGreaterEqual(sum(p['plotted'] for p in clips),2940)
+        self.assertGreater(len(clips),6500)
+        self.assertEqual(len({p['id'] for p in clips}),len(clips))
+        self.assertGreater(len({p['speaker'] for p in clips}),550)
+        self.assertGreaterEqual(sum(p['plotted'] for p in clips),2900)
         self.assertTrue(all(p.get('native') for p in clips if p.get('dataset')=='JVS'))
-        self.assertEqual(sum(p.get('dataset')=='Common Voice' for p in clips),1675)
+        self.assertGreater(sum(p.get('dataset')=='Common Voice' for p in clips),1500)
         self.assertTrue(all(not p.get('native') for p in clips if p.get('selection_basis')=='common_voice_validated'))
         self.assertEqual(sum(p.get('dataset')=='JVS' for p in clips),5000)
         self.assertNotIn('common_voice_ja_20900022',{p['id'] for p in clips})

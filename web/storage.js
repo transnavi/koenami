@@ -5,17 +5,35 @@ export const TakeStore={
  async read(key='takes'){const db=await this.open();return new Promise((resolve,reject)=>{const r=db.transaction('session').objectStore('session').get(key);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});},
  write(pair,key='takes'){return this.writeEntries([[pair,key]]);},
  writeEntries(entries){this.queue=this.queue.catch(()=>{}).then(async()=>{const db=await this.open();await new Promise((resolve,reject)=>{const tx=db.transaction('session','readwrite');for(const [value,key] of entries)tx.objectStore('session').put(value,key);tx.oncomplete=resolve;tx.onabort=tx.onerror=()=>reject(tx.error||new Error('Storage failed'));});});return this.queue;},
+ // Read and modify one rating inside a transaction, including across browser tabs.
+ updateRating(key,change){
+  const operation=this.queue.catch(()=>{}).then(async()=>{
+   const db=await this.open();return new Promise((resolve,reject)=>{
+    const tx=db.transaction('session','readwrite'),store=tx.objectStore('session');let rows,index,result,remaining=2;
+    const update=()=>{if(--remaining)return;
+     if(rows!==undefined&&!Array.isArray(rows)){tx.abort();return;}rows=rows||[];result=rows;
+     if(key.startsWith('own:')&&!(index||[]).some(r=>r.id===key.slice(4)))return;
+     try{const next=change(rows.find(r=>r.key===key));result=rows.filter(r=>r.key!==key);if(next)result.push(next);store.put(result,'listener-ratings');}catch{tx.abort();}
+    };
+    const ratings=store.get('listener-ratings');ratings.onsuccess=()=>{rows=ratings.result;update();};
+    const recordings=store.get('recording-index');recordings.onsuccess=()=>{index=recordings.result;update();};
+    tx.oncomplete=()=>resolve(result);tx.onabort=tx.onerror=()=>reject(tx.error||new Error('Storage failed'));
+   });
+  });this.queue=operation;return operation;
+ },
  saveRecording(snapshot,metadata){return this.recordingTransaction(metadata.id,()=>({snapshot,metadata}));},
  deleteRecording(id){
   const operation=this.queue.catch(()=>{}).then(async()=>{
    const db=await this.open();return new Promise((resolve,reject)=>{
-    const tx=db.transaction('session','readwrite'),store=tx.objectStore('session');let index=[],pair,remaining=2;
+    const tx=db.transaction('session','readwrite'),store=tx.objectStore('session');let index=[],pair,ratings,remaining=3;
     const remove=()=>{if(--remaining)return;index=index.filter(t=>t.id!==id);store.delete('recording:'+id);store.put(index,'recording-index');
      if(pair)store.put({current:pair.current?.takeId===id?null:pair.current,previous:pair.previous?.takeId===id?null:pair.previous},'takes');
+     if(Array.isArray(ratings))store.put(ratings.filter(r=>r.key!=='own:'+id),'listener-ratings');
     };
     const list=store.get('recording-index');list.onsuccess=()=>{index=list.result||[];remove();};
     const saved=store.get('takes');saved.onsuccess=()=>{pair=saved.result;remove();};
-    tx.oncomplete=()=>resolve(index);tx.onabort=tx.onerror=()=>reject(tx.error||new Error('Storage failed'));
+    const impressions=store.get('listener-ratings');impressions.onsuccess=()=>{ratings=impressions.result;remove();};
+    tx.oncomplete=()=>{globalThis.dispatchEvent?.(new CustomEvent('koenami-recording-deleted',{detail:id}));resolve(index);};tx.onabort=tx.onerror=()=>reject(tx.error||new Error('Storage failed'));
    });
   });this.queue=operation;return operation;
  },

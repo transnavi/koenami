@@ -27,6 +27,11 @@ def choose(page, name, value):
     page.locator(f'#{name} button.item[data-value="{value}"]').click()
 
 
+def take_action(page, action, value='0'):
+    page.locator('#take-select button.trigger').click()
+    page.locator(f'#take-select button.row-action[data-value="{value}"][data-action="{action}"]').click()
+
+
 def main(url):
     index = json.loads((ROOT / 'data/jvs-import-index.json').read_text())['clips']
     # Public test audio only; never upload the user's private recordings.
@@ -63,6 +68,17 @@ def main(url):
                 page.locator('#upload').set_input_files(str(fixture))
                 wait(page, 'voiceApp.state.ownPCM!==null&&!voiceApp.state.busy')
             assert page.evaluate('voiceApp.state.takes.length') == 2
+            hidden_difference=page.evaluate('''()=>{
+              const space=voiceApp.map.space,keys=space.constructor.keys,a=voiceApp.state.ownFull.features;
+              const raw=space.constructor.raw(a).map((v,k)=>v+space.axes[4][k]*space.scale[k]);
+              const b=Object.fromEntries(keys.map((k,i)=>[k,k==='f0'?2**(raw[i]/12):raw[i]]));
+              return space.comparison(a,b,3);
+            }''')
+            assert abs(hidden_difference['distance']-1)<1e-8 and hidden_difference['displayedShare']<1e-8
+            page.locator('#report-button').click()
+            assert '図に表示' in page.locator('#report-content').inner_text()
+            assert '/ 100' not in page.locator('#report-content .report-score').inner_text()
+            page.locator('#report-dialog [data-close]').click()
             assert page.locator('#wave, #own-seek').count()==0
             assert page.locator('#state').is_hidden()
             box=page.locator('#signal-canvas').bounding_box()
@@ -101,9 +117,26 @@ def main(url):
             choose(page, 'take-select', '1')
             wait(page, f'voiceApp.state.ownTakeId!=="{current}"')
             with page.expect_download() as download:
-                choose(page, 'take-select', 'download')
+                take_action(page,'download')
             assert download.value.suggested_filename.endswith('.wav')
             results.append('All saved take averages plotted; title menu restores; refresh preserves current; WAV download')
+            active_id=page.evaluate('voiceApp.state.ownTakeId')
+            old_id=page.evaluate('voiceApp.state.takes.find(t=>t.id!==voiceApp.state.ownTakeId).id')
+            with page.expect_download() as older_download:
+                take_action(page,'download','1')
+            assert older_download.value.suggested_filename.endswith('.wav')
+            assert page.evaluate('voiceApp.state.ownTakeId')==active_id
+            page.locator('#play-mine').click()
+            wait(page,'!document.querySelector("#player").paused')
+            take_action(page,'delete','1')
+            wait(page,'!voiceApp.state.busy')
+            assert page.evaluate('voiceApp.state.ownTakeId')==active_id
+            assert not page.evaluate('document.querySelector("#player").paused')
+            assert page.evaluate('(id)=>voiceApp.TakeStore.read("recording:"+id)',old_id) is None
+            assert page.evaluate('document.activeElement===document.querySelector("#take-select")')
+            page.locator('#play-mine').click()
+            results.append('Each history row downloads or deletes its own take without switching or pausing the current recording')
+
             page.evaluate('document.querySelector("#settings-dialog").showModal()')
             page.locator('#live-shape-window').fill('2')
             assert page.locator('#live-shape-duration').inner_text()=='2 秒'
@@ -222,11 +255,11 @@ def main(url):
             wait(page,'!voiceApp.state.recording&&!voiceApp.state.busy&&voiceApp.state.analyzing.has(voiceApp.state.ownTakeId)')
             deleted_id=page.evaluate('voiceApp.state.ownTakeId')
             page.evaluate('''()=>{const remove=voiceApp.TakeStore.deleteRecording;voiceApp.TakeStore.deleteRecording=function(){this.deleteRecording=remove;throw new Error('Temporary storage failure');};}''')
-            choose(page,'take-select','delete')
+            take_action(page,'delete')
             wait(page,'!voiceApp.state.busy')
             assert page.evaluate('voiceApp.state.ownTakeId')==deleted_id
             assert page.evaluate('(id)=>!!voiceApp.state.takes.find(t=>t.id===id)',deleted_id)
-            choose(page,'take-select','delete')
+            take_action(page,'delete')
             wait(page,f'!voiceApp.state.busy&&voiceApp.state.ownTakeId!=="{deleted_id}"')
             assert page.evaluate('(id)=>voiceApp.TakeStore.read("recording:"+id)',deleted_id) is None
             assert len(held)==1
@@ -237,7 +270,7 @@ def main(url):
             page.unroute('**/api/analyze')
             # Every remaining stored take can be deleted from the same title menu.
             while page.evaluate('!!voiceApp.state.ownTakeId'):
-                choose(page,'take-select','delete')
+                take_action(page,'delete')
                 wait(page,'!voiceApp.state.busy')
             assert page.evaluate('voiceApp.state.takes.length')==0
             assert page.evaluate('voiceApp.TakeStore.read("recording-index")')==[]

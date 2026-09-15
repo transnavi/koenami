@@ -49,6 +49,16 @@
   },
   "listening_reviews": [
     {
+      "speaker": "ce8c56a9dbfb",
+      "display": "F 006",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "927b34792e63",
+      "display": "F 032",
+      "judgement": "not_native_like"
+    },
+    {
       "speaker": "6a1366e1fb72",
       "clip": "common_voice_ja_19676248",
       "display": "F 2551",

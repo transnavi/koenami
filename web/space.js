@@ -28,6 +28,11 @@ export class AcousticSpace {
  projectRaw(raw){const z=raw.map((x,k)=>(x-this.center[k])/this.scale[k]-this.mean[k]);return this.axes.map(a=>a.reduce((s,v,k)=>s+v*z[k],0));}
  vector(f){const raw=AcousticSpace.raw(f);if(!raw.every(finite))return null;return this.projectRaw(raw).slice(0,3).map((x,k)=>(x-this.bounds[k][0])/(this.bounds[k][1]-this.bounds[k][0]));}
  distance(a,b){const x=this.standardized(a),y=this.standardized(b);return x&&y?Math.sqrt(x.reduce((s,v,k)=>s+(v-y[k])**2,0)):Infinity;}
+ comparison(a,b,dimensions=3){
+  const x=AcousticSpace.raw(a),y=AcousticSpace.raw(b);if(!x.every(finite)||!y.every(finite))return null;
+  const left=this.projectRaw(x),right=this.projectRaw(y),squares=left.map((v,k)=>(v-right[k])**2),total=squares.reduce((sum,v)=>sum+v,0);
+  return {distance:Math.sqrt(total),displayedShare:total>1e-12?squares.slice(0,dimensions).reduce((sum,v)=>sum+v,0)/total:1};
+ }
  explained(n=2){return this.values.slice(0,n).reduce((a,b)=>a+b,0)/(this.values.reduce((a,b)=>a+b,0)||1);}
 }
 window.AcousticSpace=AcousticSpace;

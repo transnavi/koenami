@@ -4,6 +4,7 @@ import {VoiceMap} from './map.js';
 import {AcousticSpace} from './space.js';
 import {SignalView} from './signals.js';
 import {TakeStore} from './storage.js';
+import {setupPerception} from './perception.js';
 import {localize} from './locale.js';
 import {loadImported,importedAudio,importJVS} from './corpus-import.js';
 'use strict';
@@ -34,7 +35,7 @@ for(const b of document.querySelectorAll('[data-close]'))b.onclick=()=>b.closest
 for(const d of document.querySelectorAll('dialog'))d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});
 function representatives(clips){const by=new Map();for(const c of clips.filter(c=>c.plotted&&!c.synthetic&&['female','male'].includes(c.group))){const key=c.speaker;if(!by.has(key))by.set(key,[]);by.get(key).push(c);}return [...by.values()].map(group=>{const f=quantile(group.map(c=>c.features.f0),.5),d=quantile(group.map(c=>c.features.delta_f),.5);return [...group].sort((a,b)=>distance2(a.features,{f0:f,delta_f:d})-distance2(b.features,{f0:f,delta_f:d}))[0];});}
 function distance2(a,b){return finite(a?.f0)&&finite(a?.delta_f)&&finite(b?.f0)&&finite(b?.delta_f)?(12*Math.log2(a.f0/b.f0)/4)**2+((a.delta_f-b.delta_f)/90)**2:Infinity;}
-function nameOf(c){if(c.native)return c.name.replace('JVS','JVS ');if(c.synthetic)return `${c.name||c.speaker} · AI`;if(c.group==='custom')return c.name;if(c.group==='research')return `${c.dataset} · ${c.speaker}`;return `${c.group==='female'?'F':'M'} ${String(c.index||0).padStart(3,'0')}`;}
+function nameOf(c){if(c.display_label)return c.display_label;if(c.native)return c.name.replace('JVS','JVS ');if(c.synthetic)return `${c.name||c.speaker} · AI`;if(c.group==='custom')return c.name;if(c.group==='research')return `${c.dataset} · ${c.speaker}`;return `${c.group==='female'?'F':'M'} ${String(c.index||0).padStart(3,'0')}`;}
 function referenceGroup(){return state.selected?.group==='male'?'male':'female';}
 function referenceGroupLabel(){return referenceGroup()==='male'?'男性的な声':'女性的な声';}
 function referenceStats(){return state.representatives.filter(c=>c.group===referenceGroup());}
@@ -43,11 +44,11 @@ function buildFit(){const refs=referenceStats().filter(c=>AcousticSpace.raw(c.fe
 function fitValue(features){if(!fitModel)return null;const v=fitModel.model.standardized(features);if(!v)return null;const d=fitModel.density(v);return 100*fitModel.loo.filter(x=>x<=d).length/fitModel.loo.length;}
 function activeFeatures(side){return (side==='own'?state.own:state.ref)?.features||{};}
 function updateIndicators(){const focused=document.activeElement?.dataset?.metric;const f=activeFeatures('own'),target=activeFeatures('ref'),refs=referenceStats();$('indicators').replaceChildren();for(const m of METRICS){const values=refs.map(s=>s.features[m.key]).filter(finite);let lo=quantile(values,.01),hi=quantile(values,.99);if(!finite(lo)||hi<=lo){lo=AXES[m.key].min;hi=AXES[m.key].max;}lo=Math.min(lo,f[m.key]??lo,target[m.key]??lo);hi=Math.max(hi,f[m.key]??hi,target[m.key]??hi);const pos=v=>clamp((v-lo)/(hi-lo||1)*100,0,100),q1=quantile(values,.1),q9=quantile(values,.9);const b=document.createElement('button');b.className='indicator';b.dataset.metric=m.key;b.title=`${m.label}: 自分 ${fmt(f[m.key],m.n)} ${m.unit}・見本 ${fmt(target[m.key],m.n)} ${m.unit}`;b.setAttribute('aria-label',b.title);b.innerHTML=`<span class="indicator-heading">${m.label}<svg aria-hidden="true"><use href="#i-info"></use></svg></span><span class="indicator-values"><strong>${fmt(f[m.key],m.n)}</strong><small>${m.unit}</small><em>${fmt(target[m.key],m.n)}</em></span><span class="indicator-track">${finite(q1)?`<span class="indicator-band" style="left:${pos(q1)}%;width:${pos(q9)-pos(q1)}%"></span>`:''}${finite(f[m.key])?`<span class="indicator-marker" style="left:${pos(f[m.key])}%"></span>`:''}${finite(target[m.key])?`<span class="indicator-target" style="left:${pos(target[m.key])}%"></span>`:''}</span>`;b.onclick=()=>{$('metric-title').textContent=m.label;$('metric-description').textContent=m.description;$('metric-details').innerHTML=[['自分',`${fmt(f[m.key],m.n)} ${m.unit}`],['選んだ見本',`${fmt(target[m.key],m.n)} ${m.unit}`],[referenceGroupLabel()+'の見本 · 中央80%',`${fmt(q1,m.n)}–${fmt(q9,m.n)} ${m.unit}`],['参照話者数',values.length]].map(([a,b])=>`<div class="metric-detail-row"><span>${a}</span><strong>${b}</strong></div>`).join('');$('metric-dialog').showModal();};$('indicators').append(b);}if(focused)$('indicators').querySelector(`[data-metric="${focused}"]`)?.focus({preventScroll:true});
- drawProfile(f,target);const fit=fitValue(f);$('fit-value').textContent=fit===null?'—':`${Math.round(fit)} / 100`;$('report-button').title=fit===null?'比較レポートを開く':`${referenceGroupLabel()}の参照分布との近さ：${Math.round(fit)} / 100。音響特徴の密度に基づく目安。詳細を開く。`;
+ drawProfile(f,target);const comparison=map.space?.comparison(f,target,map.dimension);$('fit-value').textContent=comparison?fmt(comparison.distance,2):'—';$('report-button').title=comparison?'見本との5指標の標準化距離。0が一致。比較レポートを開く。':'比較レポートを開く';
 }
 function updateMap(){let points=state.clips.filter(c=>c.plotted&&['female','male'].includes(c.group)&&$(c.group==='female'?'show-female':'show-male').checked);if(state.lang==='lab')points=state.clips.filter(c=>c.plotted&&teacherMatch(c));if(state.selected?.plotted&&!points.some(c=>c.id===state.selected.id)&&!['female','male'].includes(state.selected.group))points.push(state.selected);points=points.concat(state.takes.filter(t=>t.stored&&t.id!==state.ownTakeId).map(t=>({id:'recording-'+t.id,recordingId:t.id,speaker:'self',name:t.name,group:'own-history',features:t.features,duration:t.duration,language:t.language})));map.setSamples(points);map.selected=state.selected?{...state.selected,features:activeFeatures('ref')}:null;map.own=state.ownFull;map.ownFeatures=activeFeatures('own');map.ownRange=state.ranges.own;map.target=state.refFull;map.targetRange=state.ranges.ref;map.showRange=true;map.live=state.captureMode==='live'&&state.recording;const pitchRefs=referenceStats().map(c=>c.features.f0);signal.pitchBand=[quantile(pitchRefs,.1),quantile(pitchRefs,.9)];}
 function teacherMatch(c){return ['pitch','resonance','weight'].every(k=>$('teacher-'+k).value==='all'||c.configuration?.[k]===$('teacher-'+k).value)&&($('teacher').value==='all'||c.speaker===$('teacher').value);}
-function filtered(){const group=$('library-group').value,q=$('search').value.trim().toLowerCase();let clips=state.clips.concat(state.custom.filter(c=>c.language===state.lang));if(state.lang==='lab')clips=clips.filter(teacherMatch);else clips=clips.filter(c=>group==='favorites'?favorites.has(c.id):group==='all'||c.group===group||(group==='custom'&&c.localLibrary));if(q)clips=clips.filter(c=>`${c.text} ${nameOf(c)} ${c.speaker} ${c.synthetic?'AI':''} ${c.engine||''}`.toLowerCase().includes(q));const sort=$('sort').value,f=activeFeatures('own');const key=c=>sort==='near'?map.space.distance(c.features,f):sort==='low'?(c.features.f0??Infinity):sort==='high'?-(c.features.f0??-Infinity):0;return clips.sort((a,b)=>sort==='name'?speakerName(a).localeCompare(speakerName(b),state.lang==='lab'?'en':state.lang,{numeric:true})||a.id.localeCompare(b.id):key(a)-key(b)||a.id.localeCompare(b.id));}
+function filtered(){const group=$('library-group').value,q=$('search').value.trim().toLowerCase();let clips=state.clips.concat(state.custom.filter(c=>c.language===state.lang));if(state.lang==='lab')clips=clips.filter(teacherMatch);else clips=clips.filter(c=>group==='favorites'?favorites.has(c.id):group==='all'||c.group===group||(group==='custom'&&c.localLibrary));if(q){const compact=v=>String(v||'').normalize('NFKC').toLowerCase().replace(/[\s_-]+/g,'').replace(/^(jvs|cvf|cvm|f|m)0+(?=\d)/,'$1'),query=compact(q),isId=/^(?:jvs|(?:cv)?[fm])\d+$/.test(query),matched=new Set();for(const c of clips){if([nameOf(c),c.name,c.speaker,c.id,c.engine,c.synthetic?'AI':''].some(v=>isId?compact(v).replace(/^cv/,'')===query.replace(/^cv/,''):compact(v).includes(query)))matched.add(speakerKey(c));}clips=clips.filter(c=>matched.has(speakerKey(c))||compact(c.text).includes(query));}const sort=$('sort').value,f=activeFeatures('own');const key=c=>sort==='near'?map.space.distance(c.features,f):sort==='low'?(c.features.f0??Infinity):sort==='high'?-(c.features.f0??-Infinity):0;return clips.sort((a,b)=>sort==='name'?speakerName(a).localeCompare(speakerName(b),state.lang==='lab'?'en':state.lang,{numeric:true})||a.id.localeCompare(b.id):key(a)-key(b)||a.id.localeCompare(b.id));}
 
 const openSpeakers=new Set(),speakerLimits=new Map();
 function speakerKey(c){return `${state.lang}:${c.dataset||c.group}:${c.speaker}`;}
@@ -181,12 +182,12 @@ async function retryAnalysis(){
 }
 
 
-function reportHTML(){const f=activeFeatures('own'),r=activeFeatures('ref'),fit=fitValue(f),refs=referenceStats();const rows=METRICS.map(m=>{const vals=refs.map(c=>c.features[m.key]).filter(finite);return `<tr><td>${m.label} · ${m.unit}</td><td>${fmt(f[m.key],m.n)}</td><td>${fmt(r[m.key],m.n)}</td><td>${fmt(quantile(vals,.1),m.n)}〜${fmt(quantile(vals,.9),m.n)}</td></tr>`;});
+function reportHTML(){const f=activeFeatures('own'),r=activeFeatures('ref'),comparison=map.space?.comparison(f,r,map.dimension),fit=fitValue(f),refs=referenceStats();const rows=METRICS.map(m=>{const vals=refs.map(c=>c.features[m.key]).filter(finite);return `<tr><td>${m.label} · ${m.unit}</td><td>${fmt(f[m.key],m.n)}</td><td>${fmt(r[m.key],m.n)}</td><td>${fmt(quantile(vals,.1),m.n)}〜${fmt(quantile(vals,.9),m.n)}</td></tr>`;});
  for(const [key,label] of [['pitch_sd_hz','高さの標準偏差 · Hz'],['pitch_sd_st','高さの標準偏差 · 半音'],['quiet_pct','無音の割合 · %'],['quiet_mean','無音区間の平均 · 秒'],['f1','F1 · Hz'],['f2','F2 · Hz'],['f3','F3 · Hz'],['f4','F4 · Hz']])rows.push(`<tr><td>${label}</td><td>${fmt(f[key],1)}</td><td>${fmt(r[key],1)}</td><td>—</td></tr>`);
  if(state.words.own?.pace)rows.push(`<tr><td>話す速さ · ${esc(state.words.own.pace_unit)}</td><td>${fmt(state.words.own.pace,1)}</td><td>${state.words.ref?.pace_unit===state.words.own.pace_unit?fmt(state.words.ref.pace,1):'—'}</td><td>—</td></tr>`);
  const notes=[];if(finite(f.f0)&&finite(r.f0)){const diff=12*Math.log2(r.f0/f.f0);notes.push(`見本の高さは自分より${fmt(Math.abs(diff),1)}半音${diff>=0?'高め':'低め'}です。速度を落として聴き、無理のない高さで同じ文を試してください。`);}if(finite(f.delta_f)&&finite(r.delta_f))notes.push(`響きの推定値は自分 ${fmt(f.delta_f)}、見本 ${fmt(r.delta_f)} Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。`);
  notes.push('抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べてください。');
- return `<div class="report-score">${fit===null?'—':Math.round(fit)+' / 100'}</div><p>${referenceGroupLabel()}の参照分布との近さ · ${refs.length}人</p><p class="small">5つの指標から計算した、参照音声の分布内での密度の目安です。聞き手による声の印象を採点したものではありません。見本の話者・文章・録音環境や、測定できた区間に左右されます。</p><table class="report-table"><thead><tr><th>指標</th><th>自分</th><th>見本</th><th>参照音声の中央80%</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(state.ownName)} · ${clock(state.ownFull?.duration)} · 見本 ${esc(nameOf(state.selected||{}))}<br>録音言語 ${esc(state.ownLanguage)} · 見本の言語 ${esc(state.lang)}<br>分布図は5次元を${map.dimension}次元に投影しています。表示する分散は${Math.round((map.space?.explained(map.dimension)||0)*100)}%。省略された方向の違いは左の指標で確認できます。</p>`;}
+ return `<div class="report-score">${comparison?fmt(comparison.distance,2):'—'}</div><p>見本との音響的な差 · 0で一致</p><p class="small">高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。</p>${comparison?`<p>この2音声の差：図に表示 ${Math.round(comparison.displayedShare*100)}% · 省略 ${Math.round((1-comparison.displayedShare)*100)}%</p><p class="small">5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。</p>`:''}<table class="report-table"><thead><tr><th>指標</th><th>自分</th><th>見本</th><th>参照音声の中央80%</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(state.ownName)} · ${clock(state.ownFull?.duration)} · 見本 ${esc(nameOf(state.selected||{}))}<br>録音言語 ${esc(state.ownLanguage)} · 見本の言語 ${esc(state.lang)}${fit===null?'':`<br>${referenceGroupLabel()}の参照分布内の密度順位：${Math.round(fit)}パーセンタイル（聞き手による評価ではありません）。`}<br>分布図は5次元を${map.dimension}次元に投影しています。表示する分散は${Math.round((map.space?.explained(map.dimension)||0)*100)}%。省略された方向の違いは左の指標で確認できます。</p>`;}
 $('report-button').onclick=()=>{$('report-content').innerHTML=reportHTML();$('report-dialog').showModal();};$('report-save').onclick=()=>{const html=`<!doctype html><meta charset="utf-8"><title>声の比較</title><style>body{font:15px system-ui;max-width:850px;margin:40px auto;padding:0 20px;color:#30364c}.report-score{font-size:40px;color:#b44e80}table{width:100%;border-collapse:collapse}td,th{padding:10px;text-align:right;border-bottom:1px solid #ddd}td:first-child,th:first-child{text-align:left}.small{font-size:12px;color:#555;line-height:1.7}li{margin:14px 0;line-height:1.7}</style>${reportHTML()}<p><a href="https://www.isca-archive.org/interspeech_2025/netzorg25_interspeech.html">測定方法の研究</a> · ${new Date().toLocaleDateString()}</p>`;download(new Blob([html],{type:'text/html'}),'voice-comparison.html');};$('export').onclick=()=>download(new Blob([JSON.stringify({version:3,language:state.lang,name:state.ownName,selection:state.ranges.own,measurement:state.own,reference:state.selected?{id:state.selected.id,features:activeFeatures('ref')}:null},null,2)],{type:'application/json'}),'voice-measurements.json');
 let lastFrame=0;
 function animate(now){const delta=Math.min(.05,(now-lastFrame)/1000||0);lastFrame=now;if(map.dimension===3&&map.autoRotate&&!map.drag){map.yaw+=delta*.065;map.invalidate();}if(profileTheme!==document.documentElement.dataset.theme){profileTheme=document.documentElement.dataset.theme;drawProfile(activeFeatures('own'),activeFeatures('ref'));}for(const [side,el] of [['own',player],['ref',reference]]){const range=state.ranges[side];if(range&&!el.paused&&el.currentTime>=range[1]){el.pause();el.currentTime=range[1];}}const active=state.recording||!player.paused||!reference.paused;let ownTime=player.currentTime;if(state.recording&&state.liveClock){const live=state.liveClock;ownTime=Math.min(live.end,live.start+(now-live.at)/1000);}map.draw({own:state.recording||!player.paused?ownTime:undefined,target:!reference.paused?reference.currentTime:undefined,animate:active});signal.draw({own:state.recording?Math.max(0,ownTime-((state.ownFull?.duration||0)-(state.own?.duration||0))):player.currentTime,ref:reference.currentTime,animate:active});if(state.recording&&analyser){const values=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(values);const elapsed=clock(samples/(recordContext?.sampleRate||48000));$('timer').textContent=elapsed;$('live-time').textContent=elapsed;const rms=Math.sqrt(values.reduce((n,v)=>n+v*v,0)/values.length);$('live-mode').style.setProperty('--mic-level',Math.min(1,.15+rms*12));}requestAnimationFrame(animate);}
@@ -234,30 +235,39 @@ function renderTakeMenu(){const select=$('take-select');if(!select)return;const 
  for(const take of [current,state.previousTake,...state.takes.filter(t=>t.stored).map(t=>({...t,storedId:t.id}))]){
   if(!take?.pcm&&!take?.storedId)continue;const key=take.takeId||take.storedId||take.name+':'+take.pcm.length+':'+take.detail.features.f0;if(seen.has(key))continue;seen.add(key);takeChoices.push(take);
  }
- select.replaceChildren();takeChoices.forEach((t,i)=>{const option=new Option(t.name,String(i));option.dataset.detail=clock(t.detail?.duration||t.duration);select.add(option);});
+ select.replaceChildren();takeChoices.forEach((t,i)=>{const option=new Option(t.name,String(i));option.dataset.detail=clock(t.detail?.duration||t.duration);option.dataset.actions='download,delete';if(state.recording||!(t.takeId||t.storedId))option.dataset.disabledActions='delete';select.add(option);});
  if(current?.detail?.analysisPending&&!state.analyzing.has(current.takeId))select.add(new Option('再解析','retry'));
- if(current?.pcm){const option=new Option('↓ 音声を保存','download');option.dataset.divider='';select.add(option);}
- if(current?.takeId){const option=new Option('この録音を削除','delete');option.disabled=state.recording;select.add(option);}
  select.disabled=state.busy||!takeChoices.length;select.value=current?.pcm?'0':'';select.setAttribute('data-display-label',current?.name||'録音履歴');
 }
 async function restoreTake(chosen){if(state.busy)return;if(chosen.storedId)chosen=await TakeStore.read('recording:'+chosen.storedId);if(!chosen?.pcm)throw new Error('この録音は読み込めませんでした。');const current=state.recording?recordSnapshot:snapshotOwn();if(state.recording)await cancelCapture();cancelAB();player.pause();reference.pause();applySnapshot(chosen);state.previousTake=current||null;await persistTakes();saveView();controls();}
-async function deleteCurrentTake(){
- if(state.busy||state.recording||!state.ownTakeId)return;
- const id=state.ownTakeId;state.busy=true;controls();
+async function deleteTake(take){
+ const id=take?.takeId||take?.storedId;if(state.busy||state.recording||!id)return;
+ const current=id===state.ownTakeId;state.busy=true;controls();
  try{
   state.takes=await TakeStore.deleteRecording(id);
   if(state.previousTake?.takeId===id)state.previousTake=null;
   if(recordSnapshot?.takeId===id)recordSnapshot=null;
-  cancelAB();player.pause();clearOwn();
-  const next=state.previousTake||(state.takes.length?await TakeStore.read('recording:'+state.takes[0].id):null);
-  if(next?.pcm)applySnapshot(next);
-  state.previousTake=null;
-  await TakeStore.write({current:snapshotOwn(),previous:null});
+  if(current){
+   cancelAB();player.pause();clearOwn();
+   const next=state.previousTake||(state.takes.length?await TakeStore.read('recording:'+state.takes[0].id):null);
+   if(next?.pcm)applySnapshot(next);
+   state.previousTake=null;
+  }
+  await TakeStore.write({current:snapshotOwn(),previous:state.previousTake||null});
   updateMap();saveView();notify('録音を削除しました。');
  }catch{notify('録音を削除できませんでした。もう一度お試しください。',true);}
- finally{state.busy=false;controls();}
+ finally{state.busy=false;controls();queueMicrotask(()=>{const menu=$('take-select');if(document.activeElement===document.body||document.activeElement===menu)(menu.disabled?$('record'):menu.shadowRoot.querySelector('.trigger')).focus();});}
 }
-$('take-select').onchange=async e=>{const value=e.target.value;if(value==='')return;if(value==='retry'){await retryAnalysis();return;}if(value==='delete'){await deleteCurrentTake();return;}const chosen=value==='download'?(state.recording?recordSnapshot:snapshotOwn()):takeChoices[Number(value)];if(!chosen)return;if(value==='download'){download(wav(chosen.pcm),chosen.name.replace(/\.[^.]+$/,'')+'.wav');renderTakeMenu();return;}try{await restoreTake(chosen);}catch(error){notify(error.message,true);}};
+$('take-select').onchange=async e=>{const value=e.target.value;if(value==='')return;if(value==='retry'){await retryAnalysis();return;}const chosen=takeChoices[Number(value)];if(!chosen)return;try{await restoreTake(chosen);}catch(error){notify(error.message,true);}};
+$('take-select').addEventListener('optionaction',async e=>{
+ let chosen=takeChoices[Number(e.detail.value)];if(!chosen)return;
+ if(e.detail.action==='delete'){await deleteTake(chosen);return;}
+ if(e.detail.action==='download')try{
+  if(chosen.storedId)chosen=await TakeStore.read('recording:'+chosen.storedId);
+  if(!chosen?.pcm)throw new Error('この録音は読み込めませんでした。');
+  download(wav(chosen.pcm),chosen.name.replace(/\.[^.]+$/,'')+'.wav');
+ }catch(error){notify(error.message,true);}
+});
 
 
 function updateJvsBanner(){const count=new Set(state.clips.filter(c=>c.dataset==='JVS').map(c=>c.id)).size;$('jvs-banner').hidden=state.lang!=='ja'||count>=5000;}
@@ -279,3 +289,10 @@ setInterval(saveView,1000);window.addEventListener('beforeunload',saveView);docu
 
 function restoreCamera(){if(!recordCamera)return;if(map.navigationVersion===recordCamera.navigationVersion){map.autoFit=recordCamera.autoFit;map.autoRotate=recordCamera.autoRotate;}recordCamera=null;map.fitDirty=true;map.invalidate();$('auto-rotate').setAttribute('aria-pressed',String(map.autoRotate));}
 init().catch(e=>notify('読み込めませんでした: '+e.message,true));
+
+const perceptionPanel=setupPerception({
+ context(side){if(side==='own')return state.ownTakeId&&state.ownPCM?{key:'own:'+state.ownTakeId,speaker:'self',name:state.ownName,language:state.ownLanguage,side,pcm:state.ownPCM}:null;const c=state.selected;return c?{key:'ref:'+c.id,speaker:c.speaker||c.id,name:nameOf(c),language:state.lang,side,id:c.id,pcm:state.refPCM,local:c.localLibrary||c.group==='custom'}:null;},
+ request(c,cancel){if(c.local&&!c.pcm?.length)throw new Error('音声を読み込み中です。少し待ってからもう一度お試しください。');const signal=AbortSignal.any([cancel,AbortSignal.timeout(45000)]);return c.side==='ref'&&!c.local?api('/api/perception/'+encodeURIComponent(c.id),{signal}):api('/api/perception',{method:'POST',body:c.pcm,signal});},
+ play(side){toggle(side).catch(e=>notify(e.message,true));},
+ async next(rated){const candidates=state.clips.filter(c=>c.plotted&&!c.synthetic),at=candidates.findIndex(c=>c.id===state.selected?.id),ordered=candidates.slice(at+1).concat(candidates.slice(0,Math.max(0,at)));const c=ordered.find(c=>!rated.includes(c.speaker))||ordered[0];if(c)await selectSample(c,false);},notify,download
+});
