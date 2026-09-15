@@ -4,6 +4,7 @@ import io
 import json
 import re
 import traceback
+import time
 import zipfile
 from pathlib import Path
 
@@ -14,7 +15,11 @@ ROOT = Path(__file__).parent
 
 
 def wait(page, js):
-    page.wait_for_function(js, timeout=90000)
+    deadline=time.monotonic()+90
+    while time.monotonic()<deadline:
+        if page.evaluate(js):return
+        page.wait_for_timeout(100)
+    raise AssertionError('Timed out waiting for: '+js+'; notice: '+page.locator('#notice').inner_text())
 
 
 def choose(page, name, value):
