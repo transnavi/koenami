@@ -1,0 +1,9 @@
+*
+!Dockerfile
+!requirements.txt
+!server.py
+!acoustics.py
+!signals.py
+!.deploy/
+!.deploy/data/
+!.deploy/data/**
