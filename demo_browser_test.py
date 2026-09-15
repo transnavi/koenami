@@ -51,6 +51,13 @@ def main(url):
             page.goto(url + '/ja/')
             wait(page, '!!window.voiceApp?.state.refFull')
             assert page.evaluate('!voiceApp.state.selected.synthetic && !voiceApp.state.ownFull')
+            complete_jvs=page.evaluate('voiceApp.state.clips.filter(c=>c.dataset==="JVS").length>=5000')
+            assert page.locator('#jvs-banner').is_visible() != complete_jvs
+            if not complete_jvs:
+                assert 'drive.google.com/file/d/' in page.locator('#jvs-download').get_attribute('href')
+                page.locator('#jvs-banner-import').click()
+                assert page.locator('#import-dialog').is_visible()
+                page.locator('#import-dialog [data-close]').click()
             results.append('Fresh session selects human reference; no private baseline')
             for _ in range(2):
                 page.locator('#upload').set_input_files(str(fixture))
@@ -90,12 +97,40 @@ def main(url):
             assert page.locator('#loopback').is_disabled()
             assert page.locator('#live-mode-label').inner_text() == 'ライブ'
             results.append('Live label and timer persist; monitoring toggles and disconnects; live camera stays fixed')
+            held=[]
+            page.route('**/api/analyze', lambda route: held.append(route))
+            page.evaluate('voiceApp.state.capabilities.maxSeconds=2')
+            page.locator('#record').click()
+            wait(page,'voiceApp.state.recording')
+            wait(page,'!voiceApp.state.recording&&!voiceApp.state.busy&&voiceApp.state.ownFull.analysisPending')
+            wait(page,'voiceApp.state.analyzing.has(voiceApp.state.ownTakeId)')
+            pending_id=page.evaluate('voiceApp.state.ownTakeId')
+            assert not page.locator('#play-mine').is_disabled()
+            assert page.evaluate('async ()=>!!(await voiceApp.TakeStore.read("recording:"+voiceApp.state.ownTakeId))?.pcm')
+            page.locator('#play-mine').click()
+            wait(page,'!document.querySelector("#player").paused')
+            page.evaluate('voiceApp.state.capabilities.maxSeconds=60')
+            page.locator('#record').click()
+            wait(page,'voiceApp.state.recording')
+            assert len(held)==1
+            response=held[0].fetch()
+            held[0].fulfill(response=response)
+            wait(page,f'!voiceApp.state.analyzing.has("{pending_id}")')
+            assert page.evaluate('voiceApp.state.recording')
+            page.keyboard.press('Escape')
+            wait(page,'!voiceApp.state.recording&&!voiceApp.state.busy')
+            assert page.evaluate('voiceApp.state.ownTakeId')==pending_id
+            assert not page.evaluate('voiceApp.state.ownFull.analysisPending||false')
+            assert page.evaluate('voiceApp.state.ownFull.duration')==2
+            page.unroute('**/api/analyze')
+            results.append('Recording is saved and playable before analysis; a new capture survives the previous result; cancel restores its completed analysis')
             page.evaluate('voiceApp.state.capabilities.maxSeconds=2')
             page.route('**/api/analyze', lambda route: route.fulfill(status=503,body='Temporarily busy'))
             before_count=page.evaluate('voiceApp.state.takes.length')
             page.locator('#record').click()
             wait(page,'voiceApp.state.recording')
             wait(page,'!voiceApp.state.recording&&!voiceApp.state.busy')
+            wait(page,'!voiceApp.state.analyzing.has(voiceApp.state.ownTakeId)')
             assert page.evaluate('voiceApp.state.ownPCM.length')==32000
             assert page.evaluate('voiceApp.state.ownFull.analysisPending')
             assert page.evaluate('voiceApp.state.takes.length')==before_count+1
@@ -107,6 +142,26 @@ def main(url):
             assert page.evaluate('voiceApp.state.takes.length')==before_count+1
             page.evaluate('voiceApp.state.capabilities.maxSeconds=60')
             results.append('Automatic recording cap trims exactly; failed analysis preserves PCM; retry updates the same take')
+            page.evaluate('''()=>{
+              voiceApp.state.capabilities.maxSeconds=2;
+              const save=voiceApp.TakeStore.saveRecording;
+              voiceApp.TakeStore.saveRecording=function(...args){this.saveRecording=save;throw new DOMException('Temporary storage failure','QuotaExceededError');};
+            }''')
+            before_count=page.evaluate('voiceApp.state.takes.length')
+            page.locator('#record').click()
+            wait(page,'voiceApp.state.recording')
+            wait(page,'!voiceApp.state.recording&&!voiceApp.state.busy')
+            assert page.evaluate('voiceApp.state.ownFull.analysisPending')
+            assert not page.locator('#play-mine').is_disabled()
+            assert page.evaluate('voiceApp.state.takes.length')==before_count
+            pending_id=page.evaluate('voiceApp.state.ownTakeId')
+            choose(page,'take-select','retry')
+            wait(page,'!voiceApp.state.busy&&!voiceApp.state.ownFull.analysisPending&&!voiceApp.state.analyzing.size')
+            assert page.evaluate('voiceApp.state.ownTakeId')==pending_id
+            assert page.evaluate('voiceApp.state.takes.length')==before_count+1
+            assert page.evaluate('async()=>!!(await voiceApp.TakeStore.read("recording:"+voiceApp.state.ownTakeId))?.detail.features.f0')
+            page.evaluate('voiceApp.state.capabilities.maxSeconds=60')
+            results.append('Transient storage failure preserves playback; retry saves and analyses the same recording')
             page.locator('#add-reference').click()
             page.locator('#jvs-zip').set_input_files(str(archive))
             wait(page, 'voiceApp.state.imported.length===2&&!voiceApp.state.busy&&!voiceApp.state.loadingLanguage')

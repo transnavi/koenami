@@ -19,7 +19,7 @@ const METRICS=[
  {key:'pitch_span',label:'抑揚',unit:'半音',n:1,description:'声の高さの10〜90パーセンタイルの幅です。女性的な印象に関連する場面もありますが、大きければよいとは限りません。日本語のアクセント、中国語の声調、文の種類、感情で変わります。標準偏差や間の取り方はレポートで確認できます。'}
 ];
 let favorites=new Set();try{favorites=new Set(JSON.parse(localStorage.getItem('voice-favorites')||'[]'));}catch{}
-const state={lang:'ja',ownLanguage:'ja',languageToken:0,loadingLanguage:false,clips:[],representatives:[],selected:null,own:null,ownFull:null,ownPCM:null,ownName:'',ownId:null,ref:null,refFull:null,refPCM:null,ranges:{own:null,ref:null},words:{own:null,ref:null},custom:[],imported:[],takes:[],recording:false,busy:false,limit:60,detailToken:0,ownToken:0,rangeToken:{own:0,ref:0},wordToken:{own:0,ref:0},liveTrack:[],liveClock:null};
+const state={lang:'ja',ownLanguage:'ja',languageToken:0,loadingLanguage:false,clips:[],representatives:[],selected:null,own:null,ownFull:null,ownPCM:null,ownName:'',ownId:null,ref:null,refFull:null,refPCM:null,ranges:{own:null,ref:null},words:{own:null,ref:null},custom:[],imported:[],takes:[],recording:false,busy:false,limit:60,detailToken:0,ownToken:0,rangeToken:{own:0,ref:0},wordToken:{own:0,ref:0},liveTrack:[],liveClock:null,analyzing:new Set()};
 const player=$('player'),reference=$('reference-player');
 const map=new VoiceMap($('voice-map'),p=>p.recordingId?restoreTake({storedId:p.recordingId}).catch(e=>notify(e.message,true)):selectSample(p,true));
 const signal=new SignalView($('signal-canvas'),(s,r)=>selectRange(s,r),(s,t)=>seek(s,t));
@@ -79,7 +79,7 @@ for(const id of ['sort','teacher','teacher-pitch','teacher-resonance','teacher-w
 async function changeLanguage(lang,push=true){
  if(state.recording||state.busy)return;const token=++state.languageToken;state.loadingLanguage=true;state.detailToken++;state.rangeToken.ref++;state.wordToken.ref++;cancelAB();reference.pause();controls();
  try{const lib=await api('/api/library?lang='+encodeURIComponent(lang));if(token!==state.languageToken)return;
- state.lang=lang;openSpeakers.clear();speakerLimits.clear();state.ref=state.refFull=state.selected=null;state.ranges.ref=null;state.words.ref=null;signal.set('ref',null);$('play-reference').disabled=true;$('language').value=lang;if(push)history.pushState({},'',`/${lang}/`);$('research-controls').hidden=lang!=='lab';$('group-legend').hidden=lang==='lab';$('library-group').disabled=lang==='lab';state.clips=[...new Map([...lib.clips,...state.imported.filter(c=>c.language===lang)].map(c=>[c.id,c])).values()].map(c=>c.synthetic?{...c,group:['female','male','androgynous'].includes(c.voice_label)?c.voice_label:c.group}:c);let index={};state.clips.forEach(c=>{index[c.group]=(index[c.group]||0)+1;c.index=index[c.group];});state.representatives=representatives(state.clips);map.space=new AcousticSpace(state.representatives.length?state.representatives:state.clips.filter(c=>c.plotted));map.trackCache=new WeakMap();map.reset();buildFit();$('corpus-count').textContent=`${state.clips.filter(c=>!c.synthetic).length.toLocaleString()}音声 · ${new Set(state.clips.filter(c=>!c.synthetic).map(c=>c.speaker)).size.toLocaleString()}人`;$('library-group').value=lang==='lab'?'all':'female';$('sort').value=lang==='lab'?'name':'high';state.loadingLanguage=false;renderLibrary(true);updateIndicators();const chosen=null;await selectSample(chosen||filtered().find(c=>c.plotted&&!c.synthetic)||filtered().find(c=>!c.synthetic)||filtered()[0],false);
+ state.lang=lang;openSpeakers.clear();speakerLimits.clear();state.ref=state.refFull=state.selected=null;state.ranges.ref=null;state.words.ref=null;signal.set('ref',null);$('play-reference').disabled=true;$('language').value=lang;if(push)history.pushState({},'',`/${lang}/`);$('research-controls').hidden=lang!=='lab';$('group-legend').hidden=lang==='lab';$('library-group').disabled=lang==='lab';state.clips=[...new Map([...lib.clips,...state.imported.filter(c=>c.language===lang)].map(c=>[c.id,c])).values()].map(c=>c.synthetic?{...c,group:['female','male','androgynous'].includes(c.voice_label)?c.voice_label:c.group}:c);let index={};state.clips.forEach(c=>{index[c.group]=(index[c.group]||0)+1;c.index=index[c.group];});updateJvsBanner();state.representatives=representatives(state.clips);map.space=new AcousticSpace(state.representatives.length?state.representatives:state.clips.filter(c=>c.plotted));map.trackCache=new WeakMap();map.reset();buildFit();$('corpus-count').textContent=`${state.clips.filter(c=>!c.synthetic).length.toLocaleString()}音声 · ${new Set(state.clips.filter(c=>!c.synthetic).map(c=>c.speaker)).size.toLocaleString()}人`;$('library-group').value=lang==='lab'?'all':'female';$('sort').value=lang==='lab'?'name':'high';state.loadingLanguage=false;renderLibrary(true);updateIndicators();const chosen=null;await selectSample(chosen||filtered().find(c=>c.plotted&&!c.synthetic)||filtered().find(c=>!c.synthetic)||filtered()[0],false);
  }finally{if(token===state.languageToken){state.loadingLanguage=false;$('language').value=state.lang;controls();}}
 }
 $('language').onchange=e=>changeLanguage(e.target.value).catch(e=>notify(e.message,true));window.addEventListener('popstate',()=>changeLanguage(location.pathname.split('/')[1]||'ja',false).catch(e=>notify(e.message,true)));
@@ -87,7 +87,7 @@ async function selectSample(clip,play=false){if(!clip||state.recording||state.lo
 function controls(){const near=$('sort').querySelector('option[value=near]');near.disabled=!AcousticSpace.raw(activeFeatures('own')).every(finite);if(near.disabled&&$('sort').value==='near')$('sort').value='name';const busy=state.busy||state.recording||state.loadingLanguage;for(const id of ['upload','reference-upload','add-reference','language','play-mine','compare-ab','own-seek','reference-seek','words-button','range-reset'])$(id).disabled=busy;$('play-mine').disabled=busy||!state.ownFull;$('play-reference').disabled=busy||!state.selected;
  $('record').disabled=state.busy||state.loadingLanguage||(state.recording&&state.captureMode==='live');$('record').setAttribute('aria-pressed',String(state.recording&&state.captureMode==='record'));$('record').setAttribute('aria-label',state.recording?'録音を停止':'新しく録音');icon($('record'),state.recording&&state.captureMode==='record'?'stop':'mic');$('record').querySelector('span').textContent=state.recording&&state.captureMode==='record'?'停止':'録音';
  $('live-mode').disabled=state.busy||state.loadingLanguage||(state.recording&&state.captureMode!=='live');$('live-mode').setAttribute('aria-checked',String(state.recording&&state.captureMode==='live'));const isLive=state.recording&&state.captureMode==='live';$('live-mode').setAttribute('aria-label',isLive?'ライブ音声を停止':'ライブ音声を開始');$('live-mode').title=isLive?'ライブ音声を停止（Esc）':'マイクの声をリアルタイムに表示';$('live-mode-label').textContent=isLive?'ライブ中':'ライブ';$('live-time').hidden=!isLive;$('loopback').disabled=!state.recording||state.busy;
- renderTakeMenu();$('state').textContent=state.recording?(state.captureMode==='live'?'ライブ':'録音中'):state.busy?'解析中':state.ownFull?'再生できます':'録音・読み込み';}
+ renderTakeMenu();$('state').textContent=state.recording?(state.captureMode==='live'?'ライブ':'録音中'):state.busy?'準備中':state.analyzing.has(state.ownTakeId)?'解析中 · 再生できます':state.ownFull?'再生できます':'録音・読み込み';}
 async function audioReady(){if(!audioContext){audioContext=new AudioContext();playbackNodes={};for(const [side,el] of [['own',player],['ref',reference]]){const source=audioContext.createMediaElementSource(el),gain=audioContext.createGain();source.connect(gain);gain.connect(audioContext.destination);playbackNodes[side]=gain;}}await audioContext.resume();for(const side of ['own','ref']){const m=side==='own'?state.ownFull:state.refFull||state.selected;const level=m?.level_dbfs,peak=m?.peak;playbackNodes[side].gain.value=$('normalize').checked&&finite(level)&&finite(peak)?Math.min(4,Math.pow(10,(-24-level)/20),.85/(peak||1)):1;}}
 function cancelAB(){if(abTimer){clearInterval(abTimer);abTimer=null;}$('compare-ab').setAttribute('aria-pressed','false');}
 async function playSide(side,fromStart=false){if(state.recording||state.busy||state.loadingLanguage)return;await audioReady();const el=side==='own'?player:reference,other=side==='own'?reference:player,r=state.ranges[side];other.pause();if(fromStart||(r&&(el.currentTime<r[0]||el.currentTime>=r[1]-.02))||el.ended)el.currentTime=r?.[0]||0;await el.play();}
@@ -130,28 +130,55 @@ function applySnapshot(t){if(!t?.detail)return;setOwn(t.detail,t.name,t.id,t.pcm
 function persistTakes(){const current=state.recording?recordSnapshot:snapshotOwn();if(!current)return Promise.resolve();return TakeStore.write({current,previous:state.previousTake||null}).catch(()=>notify('録音を保存できませんでした。必要な音声をダウンロードしてください。',true));}
 function restoreRecording(){if(recordSnapshot)applySnapshot(recordSnapshot);else clearOwn();}
 async function cancelCapture(){if(state.busy)return;state.busy=true;state.recording=false;liveGeneration++;controls();await releaseMic();restoreRecording();recordSnapshot=null;state.busy=false;state.captureMode=null;chunks=[];restoreCamera();controls();}
-function pendingAnalysis(pcm){const waveform=[];for(let i=0;i<pcm.length;i+=Math.ceil(pcm.length/1400)){const chunk=pcm.subarray(i,i+Math.ceil(pcm.length/1400));let low=0,high=0;for(const n of chunk){low=Math.min(low,n);high=Math.max(high,n);}waveform.push([low,high]);}return {duration:pcm.length/16000,features:{},track:[],visuals:{waveform},analysisPending:true,reason:'解析を完了できませんでした。録音のメニューから再解析できます。'};}
+function pendingAnalysis(pcm){const waveform=[];for(let i=0;i<pcm.length;i+=Math.ceil(pcm.length/1400)){const chunk=pcm.subarray(i,i+Math.ceil(pcm.length/1400));let low=0,high=0;for(const n of chunk){low=Math.min(low,n);high=Math.max(high,n);}waveform.push([low,high]);}return {duration:pcm.length/16000,features:{},track:[],visuals:{waveform},analysisPending:true,reason:null};}
 async function stopRecording(){
  if(!state.recording||state.busy)return;if(state.captureMode==='live'){await cancelCapture();return;}
- state.recording=false;state.busy=true;liveGeneration++;clearInterval(liveTimer);controls();let accepted=false;
+ state.recording=false;state.busy=true;liveGeneration++;clearInterval(liveTimer);controls();let accepted=false,queued=null;
  try{
   await new Promise(resolve=>{flushResolve=resolve;worklet.port.postMessage('flush');setTimeout(resolve,500);});
   const rate=recordContext.sampleRate,maxSeconds=state.capabilities?.maxSeconds||900,raw=mergeChunks().subarray(0,Math.floor(rate*maxSeconds));await releaseMic();
   const pcm=(await resample(raw,rate)).slice(0,16000*maxSeconds);if(pcm.length<4000)throw new Error('0.25秒以上録音してください。');
-  let m;try{m=await api('/api/analyze',{method:'POST',body:pcm});}catch{m=pendingAnalysis(pcm);notify('録音を残しました。録音のメニューから再解析できます。',true);}
-  setOwn(m,`録音 ${state.takes.length+1}`,null,pcm);accepted=true;await saveTake();recordSnapshot=null;await persistTakes();
+  setOwn(pendingAnalysis(pcm),`録音 ${state.takes.length+1}`,null,pcm);accepted=true;
+  await saveTake();recordSnapshot=null;await persistTakes();queued=snapshotOwn();
  }catch(e){if(!accepted)restoreRecording();notify(e.message,true);}
  finally{recordSnapshot=null;await releaseMic();chunks=[];state.recording=false;state.busy=false;state.captureMode=null;state.liveClock=null;map.live=false;restoreCamera();controls();}
+ if(queued)void analyzeTake(queued);
 }
 $('record').onclick=()=>state.recording?stopRecording():startRecording('record');
 $('loopback').onclick=()=>{if(!monitorGain||!recordContext||!state.recording)return;const enabled=$('loopback').getAttribute('aria-pressed')!=='true';monitorGain.gain.setTargetAtTime(enabled?.7:0,recordContext.currentTime,.015);$('loopback').setAttribute('aria-pressed',String(enabled));$('loopback').setAttribute('aria-label',enabled?'自分の声の再生を止める':'自分の声を聴く');};
 $('live-mode').onclick=()=>state.recording?stopRecording():startRecording('live');
 window.addEventListener('keydown',e=>{if(e.repeat||document.querySelector('dialog[open]')||['INPUT','TEXTAREA','SELECT','KOE-SELECT'].includes(e.target.tagName)||e.target.isContentEditable)return;if(e.code==='Space'){e.preventDefault();if(!state.recording)$('play-mine').click();}else if(e.code==='KeyR'&&!e.ctrlKey&&!e.metaKey){e.preventDefault();state.recording?stopRecording():startRecording('record');}else if(e.code==='Escape'&&state.recording)cancelCapture();});
 window.addEventListener('beforeunload',()=>{for(const t of stream?.getTracks()||[])t.stop();});
-async function saveTake(id=crypto.randomUUID()){state.ownTakeId=id;const snapshot=snapshotOwn(),old=state.takes.find(t=>t.id===id),t={id,name:state.ownName,date:old?.date||new Date().toISOString(),features:state.ownFull.features,duration:state.ownFull.duration,language:state.ownLanguage,stored:true};const takes=[t,...state.takes.filter(t=>t.id!==id&&t.stored)];await TakeStore.writeEntries([[snapshot,'recording:'+id],[takes,'recording-index']]);state.takes=takes;await persistTakes();renderTakeMenu();updateMap();}
-async function retryAnalysis(){if(state.busy||state.recording||!state.ownPCM)return;state.busy=true;controls();const current=snapshotOwn();try{const detail=await api('/api/analyze',{method:'POST',body:current.pcm});setOwn(detail,current.name,current.id,current.pcm,null,false);await saveTake(current.takeId);}catch(e){notify(e.message,true);}finally{state.busy=false;controls();}}
+async function saveTake(id=crypto.randomUUID()){state.ownTakeId=id;const snapshot=snapshotOwn(),old=state.takes.find(t=>t.id===id),t={id,name:state.ownName,date:old?.date||new Date().toISOString(),features:state.ownFull.features,duration:state.ownFull.duration,language:state.ownLanguage,stored:true};const saved=await TakeStore.saveRecording(snapshot,t);state.takes=saved.index;await persistTakes();renderTakeMenu();updateMap();}
+async function analyzeTake(take){
+ const id=take.takeId;if(!id||state.analyzing.has(id))return;state.analyzing.add(id);controls();
+ try{
+  const detail=await api('/api/analyze',{method:'POST',body:take.pcm});
+  const updated=await TakeStore.finishRecording(id,detail);if(updated)state.takes=updated.index;
+  const complete=snapshot=>snapshot?.takeId===id?{...snapshot,detail,measurement:snapshot.range?snapshot.measurement:detail}:snapshot;
+  state.previousTake=complete(state.previousTake);recordSnapshot=complete(recordSnapshot);
+  if(!state.recording&&state.ownTakeId===id){
+   state.ownFull=detail;if(!state.ranges.own)state.own=detail;
+   signal.set('own',detail);signal.setRange('own',state.ranges.own,state.ranges.own?state.own:null);
+   updateIndicators();updateRangeLabel();
+   const warning=qualityMessage(detail.reason)||'';$('quality-state').textContent=warning;$('quality-state').hidden=!warning;
+  }
+  updateMap();await persistTakes();
+ }catch(e){notify('録音を残しました。録音のメニューから再解析できます。',true);}
+ finally{state.analyzing.delete(id);controls();}
+}
+async function retryAnalysis(){
+ if(state.busy||state.recording||!state.ownPCM)return;
+ if(!state.takes.some(t=>t.id===state.ownTakeId&&t.stored)){
+  state.busy=true;controls();
+  try{await saveTake(state.ownTakeId||crypto.randomUUID());}
+  catch{notify('録音を保存できませんでした。音声をダウンロードしてから、保存容量を確認してください。',true);return;}
+  finally{state.busy=false;controls();}
+ }
+ await analyzeTake(snapshotOwn());
+}
 
-try{state.takes=JSON.parse(localStorage.getItem('voice-takes-v3')||'[]');}catch{}
+
 function reportHTML(){const f=activeFeatures('own'),r=activeFeatures('ref'),fit=fitValue(f),refs=referenceStats();const rows=METRICS.map(m=>{const vals=refs.map(c=>c.features[m.key]).filter(finite);return `<tr><td>${m.label} · ${m.unit}</td><td>${fmt(f[m.key],m.n)}</td><td>${fmt(r[m.key],m.n)}</td><td>${fmt(quantile(vals,.1),m.n)}〜${fmt(quantile(vals,.9),m.n)}</td></tr>`;});
  for(const [key,label] of [['pitch_sd_hz','高さの標準偏差 · Hz'],['pitch_sd_st','高さの標準偏差 · 半音'],['quiet_pct','無音の割合 · %'],['quiet_mean','無音区間の平均 · 秒'],['f1','F1 · Hz'],['f2','F2 · Hz'],['f3','F3 · Hz'],['f4','F4 · Hz']])rows.push(`<tr><td>${label}</td><td>${fmt(f[key],1)}</td><td>${fmt(r[key],1)}</td><td>—</td></tr>`);
  if(state.words.own?.pace)rows.push(`<tr><td>話す速さ · ${esc(state.words.own.pace_unit)}</td><td>${fmt(state.words.own.pace,1)}</td><td>${state.words.ref?.pace_unit===state.words.own.pace_unit?fmt(state.words.ref.pace,1):'—'}</td><td>—</td></tr>`);
@@ -206,7 +233,7 @@ function renderTakeMenu(){const select=$('take-select');if(!select)return;const 
   if(!take?.pcm&&!take?.storedId)continue;const key=take.takeId||take.storedId||take.name+':'+take.pcm.length+':'+take.detail.features.f0;if(seen.has(key))continue;seen.add(key);takeChoices.push(take);
  }
  select.replaceChildren();takeChoices.forEach((t,i)=>{const option=new Option(t.name,String(i));option.dataset.detail=clock(t.detail?.duration||t.duration);select.add(option);});
- if(current?.detail?.analysisPending)select.add(new Option('再解析','retry'));
+ if(current?.detail?.analysisPending&&!state.analyzing.has(current.takeId))select.add(new Option('再解析','retry'));
  if(current?.pcm){const option=new Option('↓ 音声を保存','download');option.dataset.divider='';select.add(option);}
  select.disabled=state.busy||!takeChoices.length;select.value=current?.pcm?'0':'';select.setAttribute('data-display-label',current?.name||'録音履歴');
 }
@@ -214,8 +241,10 @@ async function restoreTake(chosen){if(state.busy)return;if(chosen.storedId)chose
 $('take-select').onchange=async e=>{const value=e.target.value;if(value==='')return;if(value==='retry'){await retryAnalysis();return;}const chosen=value==='download'?(state.recording?recordSnapshot:snapshotOwn()):takeChoices[Number(value)];if(!chosen)return;if(value==='download'){download(wav(chosen.pcm),chosen.name.replace(/\.[^.]+$/,'')+'.wav');renderTakeMenu();return;}try{await restoreTake(chosen);}catch(error){notify(error.message,true);}};
 
 
+function updateJvsBanner(){const count=new Set(state.clips.filter(c=>c.dataset==='JVS').map(c=>c.id)).size;$('jvs-banner').hidden=state.lang!=='ja'||count>=5000;}
 let importController=null;
 $('add-reference').onclick=()=>{$('jvs-status').textContent=state.imported.length?`${state.imported.length.toLocaleString()}音声を追加済み`:'';$('import-dialog').showModal();};
+$('jvs-banner-import').onclick=()=>{$('add-reference').click();$('choose-jvs-zip').focus();};
 $('import-audio').onclick=()=>{$('import-dialog').close();$('reference-upload').click();};
 $('choose-jvs-zip').onclick=()=>$('jvs-zip').click();
 $('choose-jvs-folder').onclick=()=>$('jvs-folder').click();

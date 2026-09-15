@@ -11,7 +11,8 @@ LANGUAGES = {'ja': '日本語', 'zh-CN': '普通话', 'en': 'English', 'ko': '�
 KEYS = {'id', 'speaker', 'name', 'group', 'group_source', 'language', 'native',
         'native_source', 'dataset', 'style', 'text', 'audio', 'duration', 'features',
         'level_dbfs', 'peak', 'voiced_seconds', 'formant_seconds', 'tracking_sensitivity',
-        'plotted', 'reason', 'source', 'sha256', 'license', 'synthetic', 'voice_label', 'credit'}
+        'plotted', 'reason', 'source', 'sha256', 'license', 'synthetic', 'voice_label', 'credit',
+        'selection_basis', 'accent'}
 
 
 def read(name):
@@ -48,9 +49,13 @@ def main():
     write(OUT / 'data' / 'jvs-import-index.json', read('jvs-import-index.json'))
     libraries = {}
     native = read('native-ja.json')['clips']
-    native = jvs_excerpt(native) + [c for c in native if c['id'] in {
-        'common_voice_ja_44899268', 'common_voice_ja_39064122', 'common_voice_ja_27988875'}]
-    assert len(native) == 13
+    common_voice = read('common-voice-ja.json')['clips']
+    excluded = set(json.loads((ROOT / 'curation/common-voice-ja.json').read_text())['excluded_speakers'])
+    assert all(c['dataset'] == 'Common Voice' and c['license'] == 'CC0-1.0'
+               and c.get('selection_basis') in {'reviewed_speaker', 'declared_japanese_accent', 'common_voice_validated'}
+               and c['speaker'] not in excluded for c in common_voice)
+    native = jvs_excerpt(native) + common_voice
+    assert len(native) == len({c['id'] for c in native})
     for lang in LANGUAGES:
         source = native if lang == 'ja' else read(f'libraries/{lang}.json')['clips']
         clips = [{k: v for k, v in c.items() if k in KEYS} for c in source]

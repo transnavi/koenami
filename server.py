@@ -6,6 +6,7 @@ import logging
 import os
 import subprocess
 import sys
+from time import perf_counter
 from collections import OrderedDict
 from pathlib import Path
 import numpy as np
@@ -105,7 +106,9 @@ def create_app():
     async def measurement(request):
         if PUBLIC and request.query.get('live') == '1' and gate.locked(): raise web.HTTPServiceUnavailable(text='解析が混み合っています。少し待ってからお試しください。', headers={'Retry-After': '1'})
         x = await read_audio(request)
+        queued = perf_counter()
         async with gate:
+            started = perf_counter()
             try:
                 if request.query.get('live') == '1':
                     if len(x) > RATE*12: raise web.HTTPBadRequest(text='Live window is too long.')
@@ -114,7 +117,8 @@ def create_app():
                     result['active'] = sum(p['f0'] is not None for p in recent) >= 2
                     result['visuals'] = await asyncio.to_thread(visualise, x)
                 else: result = await asyncio.to_thread(analyze, x)
-                return respond(result, dumps=lambda v: json.dumps(v, allow_nan=False))
+                return respond(result, headers={'Server-Timing':
+                    f'queue;dur={(started-queued)*1000:.1f}, analysis;dur={(perf_counter()-started)*1000:.1f}'})
             except (ValueError, RuntimeError):
                 raise web.HTTPUnprocessableEntity(text='Could not measure this audio.')
 

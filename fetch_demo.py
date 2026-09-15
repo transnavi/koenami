@@ -32,6 +32,9 @@ def main():
                 path.write_bytes(data)
         voices.extend(c for c in library['clips'] if c.get('synthetic'))
         library['clips'] = [c for c in library['clips'] if not c.get('synthetic')]
+        if lang == 'ja':
+            save(ROOT / 'data/common-voice-ja.json', {'language': 'ja', 'clips': [
+                c for c in library['clips'] if c.get('dataset') == 'Common Voice']})
         save(ROOT / 'data' / ('native-ja.json' if lang == 'ja' else f'libraries/{lang}.json'), library)
         print(lang, len(library['clips']), 'human references', flush=True)
     save(ROOT / 'data/voicevox.json', {'clips': voices})

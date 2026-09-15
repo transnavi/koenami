@@ -6,10 +6,10 @@ Voice practice with audible references, a live acoustic map, and side-by-side me
 
 - Record with **R**, play with **Space**, cancel with **Esc**.
 - **Live** continuously plots microphone input. The headphones button enables microphone monitoring; headphones avoid acoustic feedback.
-- Saved recordings remain available after refresh. Their averages appear on the map; the recording title opens the history and download menu.
+- Recordings are saved and playable as soon as capture stops. Measurements finish in the background, so another take can start immediately. Saved recordings remain available after refresh. Their averages appear on the map; the recording title opens the history and download menu.
 - Compare pitch, resonance, harmonicity, spectral balance, and pitch variation. Orbit, pan, and scroll to zoom the 3D map. Use the dock for pitch, waveform, spectrum, and spectrogram comparisons.
 - Browse references by speaker, favorite individual clips, and adjust playback speed without changing pitch.
-- Import an official **JVS ZIP or extracted folder** through the sample library’s **＋** menu. Imports are verified against original-file checksums, saved in IndexedDB, and restored on refresh. A single speaker folder also works.
+- Import an official **JVS ZIP or extracted folder** through the **JVS banner** in the sample library. Imports are verified against original-file checksums, saved in IndexedDB, and restored on refresh. A single speaker folder also works.
 
 The current map uses speaker-balanced PCA of five acoustic measurements. It is not calibrated to listener judgments of gender, naturalness, or vocal quality. The underlying measurements can vary with phonetic content and recording conditions. See the app’s method page for definitions and limitations.
 
@@ -27,7 +27,7 @@ npm run dev
 
 Open `http://localhost:8766/ja/`. Vite provides HMR and proxies the Python analyzer on port 35511. Where `devrun` is available, launch with `devrun npm run dev` to cap resources and stop both services together.
 
-`fetch_demo.py` downloads about 159 MB of reference audio from the public demo. The datasets are not included in this repository. To rebuild the larger local JVS collection, download the official archive into `research/jvs_ver1.zip`, then run `build_native.py` and `build_import_index.py`. The public-demo fetch supplies an import index without requiring a local copy of the full archive.
+`fetch_demo.py` downloads the reference audio from the public demo. The datasets are not included in this repository. To rebuild the larger local JVS collection, download the official archive into `research/jvs_ver1.zip`, then run `build_native.py` and `build_import_index.py`. Development loads all 5,000 prepared JVS recordings by default. The public-demo fetch supplies an import index without requiring a local copy of the full archive. To rebuild the Japanese Common Voice collection from its pinned source, run `.venv/bin/python build_common_voice_ja.py`; selection rules are in `curation/common-voice-ja.json`.
 
 Optional word timing uses Whisper large-v3-turbo with CUDA and Sudachi. Install `requirements-asr.txt` and run `download_asr.py`. Optional VOICEVOX preparation uses `build_voicevox.py` with the separately installed VOICEVOX core, models, and dictionaries. These services are not required for the public demo.
 
@@ -49,7 +49,7 @@ Configure your own Cloudflare account and hostname in `wrangler.jsonc` before de
 
 **The MIT license applies to the application code. Audio, transcripts, metadata, model weights, and dependencies retain their original licenses.**
 
-The public demo includes 10 JVS clips under the author’s small-website-excerpt allowance, 3 reviewed Japanese Common Voice clips, 54 credited VOICEVOX clips, and Common Voice collections in Mandarin, English, and Korean. The Japanese JVS corpus documents native professional speakers. Native-speaker screening has not been completed for the other languages.
+The public demo includes 10 JVS clips under the author’s small-website-excerpt allowance, 1,675 Japanese Common Voice clips from 498 speakers, 54 credited VOICEVOX clips, and Common Voice collections in Mandarin, English, and Korean. The Japanese JVS corpus documents native professional speakers. Japanese Common Voice includes adult-labelled recordings with at least two positive votes and no negative votes. Known pronunciation mismatches and explicitly declared non-native accents are excluded. Most speakers have not undergone listening review; Japanese dialect metadata alone does not establish native pronunciation. Native-speaker screening is also incomplete for the other languages.
 
 - [JVS terms](https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_corpus): personal and noncommercial research use; full audio redistribution is restricted. JVS tags are CC BY-SA 4.0. The import index includes adapted metadata and computed acoustic measurements; it contains no audio.
 - [Common Voice](https://commonvoice.mozilla.org/): CC0 audio collections. Clip-level manifests preserve the source and checksums.
@@ -72,3 +72,5 @@ The browser suite checks live monitoring, persistence, plotted recording history
 ## Acknowledgments
 
 The comparison workflow draws on [Acoustic Gender Space](https://acousticgender.space/), [Phonia](https://phonia.app/), and [InFormant](https://in-formant.app/). Colors draw on [とらんすナビ](https://transnavi.jp/). The app is independently developed.
+
+For Chinese-language practice material, see [あおぎ葵’s MTF声音女性化练习手册](https://www.bilibili.com/opus/546442165017071774), a community guide covering source–filter concepts and Praat examples. Measurement definitions are documented on the app’s method page.

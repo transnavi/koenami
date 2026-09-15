@@ -1,0 +1,26 @@
+{
+  "reviewed_speakers": {
+    "e494bf75cbbb": "CV F757",
+    "641429ff339d": "CV F263",
+    "b2a35bfe1379": "CV F058"
+  },
+  "excluded_speakers": ["ce8c56a9dbfb", "927b34792e63"],
+  "excluded_accents": ["外国人のアクセント", "外国人", "United States English|Non-native"],
+  "accepted_accents": {
+    "標準語": "標準語",
+    "標準語|東京": "東京・標準語",
+    "東京": "東京",
+    "標準語|日本人|日本語": "標準語",
+    "TOTTORI&TOKYO": "鳥取・東京",
+    "関東弁、標準語": "関東・標準語",
+    "標準": "標準語",
+    "関東地方": "関東",
+    "-18 Osaka 18- Tokyo": "大阪・東京",
+    "日本人|関東|神奈川県": "関東・神奈川",
+    "kansai": "関西",
+    "Hakata-ben": "博多弁",
+    "北海道": "北海道",
+    "関西": "関西",
+    "ニュートラルアクセント (東京)": "東京"
+  }
+}

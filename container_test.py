@@ -11,7 +11,10 @@ async def main():
   response=await client.get('/api/catalog'); assert response.status==200
   catalog=await response.json(); assert catalog['capabilities']=={'words':False,'maxSeconds':60}
   response=await client.get('/api/library?lang=ja'); library=await response.json()
-  assert len(library['clips'])==67
+  assert len(library['clips'])==1739
+  assert sum(c.get('dataset')=='JVS' for c in library['clips'])==10
+  assert sum(c.get('dataset')=='Common Voice' for c in library['clips'])==1675
+  assert not any(c['speaker'] in {'ce8c56a9dbfb','927b34792e63'} for c in library['clips'])
   clip=next(c for c in library['clips'] if c.get('dataset')=='JVS')
   response=await client.get('/api/detail/'+clip['id']); assert response.status==200
   assert (await response.json())['features']['f0']>65
@@ -22,7 +25,7 @@ async def main():
    response=await client.get(path); assert response.status in (404,405)
   response=await client.post('/api/analyze',data=np.zeros(RATE*60+1,dtype='<f4').tobytes())
   assert response.status==400
-  print('PASS: public catalog, 67 Japanese references, native reference analysis, upload, live, recording limit, private routes')
+  print('PASS: public catalog, 1739 Japanese references, exclusions, reference analysis, upload, live, recording limit, private routes')
 asyncio.run(main())
 '''
 
