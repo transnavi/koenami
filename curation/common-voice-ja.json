@@ -4,8 +4,32 @@
     "641429ff339d": "CV F263",
     "b2a35bfe1379": "CV F058"
   },
-  "excluded_speakers": ["ce8c56a9dbfb", "927b34792e63"],
-  "excluded_accents": ["外国人のアクセント", "外国人", "United States English|Non-native"],
+  "excluded_speakers": [
+    "ce8c56a9dbfb",
+    "927b34792e63",
+    "6a1366e1fb72",
+    "4ee1257050af",
+    "5521b664b6d7",
+    "402c3ab817bb",
+    "af94d6b6fc3c",
+    "db675985f5bb",
+    "a09b0c3d7695",
+    "761585226c9c",
+    "fea05a42940b",
+    "d702a0bddf2e",
+    "e5087588ea2c",
+    "79218035e7af",
+    "13e09918d66c",
+    "6d87ebe150f0",
+    "3df590fdf971",
+    "05086d9b480b",
+    "24f35acc3540"
+  ],
+  "excluded_accents": [
+    "外国人のアクセント",
+    "外国人",
+    "United States English|Non-native"
+  ],
   "accepted_accents": {
     "標準語": "標準語",
     "標準語|東京": "東京・標準語",
@@ -22,5 +46,177 @@
     "北海道": "北海道",
     "関西": "関西",
     "ニュートラルアクセント (東京)": "東京"
-  }
+  },
+  "listening_reviews": [
+    {
+      "speaker": "6a1366e1fb72",
+      "clip": "common_voice_ja_19676248",
+      "display": "F 2551",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "4ee1257050af",
+      "clip": "common_voice_ja_22074374",
+      "display": "F 2552",
+      "judgement": "tentative"
+    },
+    {
+      "speaker": "5521b664b6d7",
+      "clip": "common_voice_ja_22155958",
+      "display": "F 2554",
+      "judgement": "tentative"
+    },
+    {
+      "speaker": "402c3ab817bb",
+      "clip": "common_voice_ja_22950295",
+      "display": "F 2559",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "af94d6b6fc3c",
+      "clip": "common_voice_ja_22967337",
+      "display": "F 2569",
+      "judgement": "tentative"
+    },
+    {
+      "speaker": "db675985f5bb",
+      "clip": "common_voice_ja_23616096",
+      "display": "F 2571",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "a09b0c3d7695",
+      "clip": "common_voice_ja_24705698",
+      "display": "F 2573",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "761585226c9c",
+      "clip": "common_voice_ja_25261491",
+      "display": "F 2576",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "fea05a42940b",
+      "clip": "common_voice_ja_25722613",
+      "display": "F 2581",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "d702a0bddf2e",
+      "clip": "common_voice_ja_33805623",
+      "display": "F 2607",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "e5087588ea2c",
+      "clip": "common_voice_ja_34009847",
+      "display": "F 2611",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "79218035e7af",
+      "clip": "common_voice_ja_34171630",
+      "display": "F 2613",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "13e09918d66c",
+      "clip": "common_voice_ja_38830092",
+      "display": "F 2629",
+      "judgement": "tentative"
+    },
+    {
+      "speaker": "6d87ebe150f0",
+      "clip": "common_voice_ja_38844649",
+      "display": "F 2647",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "6d87ebe150f0",
+      "clip": "common_voice_ja_38845065",
+      "display": "F 2648",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "3df590fdf971",
+      "clip": "common_voice_ja_40620884",
+      "display": "F 2874",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "05086d9b480b",
+      "clip": "common_voice_ja_41749030",
+      "display": "F 2981",
+      "judgement": "not_native_like"
+    },
+    {
+      "speaker": "24f35acc3540",
+      "clip": "common_voice_ja_41766619",
+      "display": "F 3116",
+      "judgement": "not_native_like"
+    }
+  ],
+  "clip_reviews": [
+    {
+      "speaker": "3b21029d64a3",
+      "clip": "common_voice_ja_36342920",
+      "display": "F 2620",
+      "judgement": "no_speech"
+    },
+    {
+      "speaker": "ee1e679f54a1",
+      "clip": "common_voice_ja_38930227",
+      "display": "F 2680",
+      "judgement": "murmur"
+    },
+    {
+      "speaker": "178d2398f58d",
+      "clip": "common_voice_ja_39018424",
+      "display": "F 2763",
+      "judgement": "other_speaker"
+    },
+    {
+      "speaker": "e809e55fbbbb",
+      "clip": "common_voice_ja_39059833",
+      "display": "F 2800",
+      "judgement": "no_speech"
+    },
+    {
+      "speaker": "3cd43c7770d5",
+      "clip": "common_voice_ja_39091090",
+      "display": "F 2829",
+      "judgement": "no_speech"
+    },
+    {
+      "speaker": "01d152d65e0a",
+      "clip": "common_voice_ja_41748688",
+      "display": "F 2977",
+      "judgement": "noise"
+    },
+    {
+      "speaker": "9b592c733db1",
+      "clip": "common_voice_ja_45127616",
+      "display": "F 801",
+      "display_context": "public demo before stable labels",
+      "judgement": "no_speech"
+    },
+    {
+      "speaker": "86eab0edb372",
+      "clip": "common_voice_ja_41788622",
+      "display": "F 665",
+      "display_context": "public demo before stable labels",
+      "judgement": "no_speech"
+    }
+  ],
+  "excluded_clips": [
+    "common_voice_ja_36342920",
+    "common_voice_ja_38930227",
+    "common_voice_ja_39018424",
+    "common_voice_ja_39059833",
+    "common_voice_ja_39091090",
+    "common_voice_ja_41748688",
+    "common_voice_ja_45127616",
+    "common_voice_ja_41788622"
+  ]
 }

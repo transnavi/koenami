@@ -18,6 +18,8 @@ def speaker_id(row):
 
 def selection(row, policy=POLICY):
     speaker = speaker_id(row)
+    if Path(row.get('file_name', '')).stem in policy.get('excluded_clips', []):
+        return None
     if speaker in policy['excluded_speakers'] or row.get('accent') in policy['excluded_accents']:
         return None
     if row.get('age') not in ADULT or row.get('gender') not in {'female_feminine', 'male_masculine'}:
@@ -50,6 +52,12 @@ def main():
     import soundfile as sf
     from acoustics import measure
 
+    local_path = ROOT / 'data/native-ja.json'
+    old_clips = json.loads(local_path.read_text())['clips'] if local_path.exists() else []
+    labels = {c['id']: c['display_label'] for c in old_clips if c.get('display_label')}
+    label_path = ROOT / 'curation/reference-labels.json'
+    if label_path.exists(): labels.update(json.loads(label_path.read_text()))
+
     rows = sorted((r for r in metadata() if selection(r)), key=lambda r: r['file_name'])
     failures = asyncio.run(collect(rows))
     if failures:
@@ -57,6 +65,9 @@ def main():
     clips = []
     cache_path = ROOT / 'data/library-measurements.json'
     cache = json.loads(cache_path.read_text()) if cache_path.exists() else {}
+    quality_path = ROOT / 'data/speech-quality.json'
+    quality = json.loads(quality_path.read_text()) if quality_path.exists() else {}
+    empty = []
     for row in rows:
         path = ROOT / 'data/samples' / row['file_name']
         measured = cache.get(path.name)
@@ -65,6 +76,14 @@ def main():
             measured = measure(audio, rate)
             cache[path.name] = {k: v for k, v in measured.items() if k != 'track'}
         features = measured['features']
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        speech = quality.get(path.stem, {})
+        if (speech.get('sha256') == digest and speech.get('empty')
+                and measured.get('voiced_seconds', 0) < .1
+                and measured.get('level_dbfs', 0) < -45):
+            empty.append({'id': path.stem, 'sha256': digest, 'speech': speech,
+                          'voiced_seconds': measured.get('voiced_seconds'), 'level_dbfs': measured.get('level_dbfs')})
+            continue
         reason = measured.get('reason')
         if measured.get('voiced_seconds', 0) < 1 or measured.get('formant_seconds', 0) < .35:
             reason = 'Too little stable voiced speech.'
@@ -89,13 +108,14 @@ def main():
             'tracking_sensitivity': measured.get('resonance_sensitivity_pct'),
             'plotted': reason is None, 'reason': reason,
             'source': f"{BASE}/{row['split']}/clips/{path.name}",
-            'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'license': 'CC0-1.0',
+            'sha256': digest, 'license': 'CC0-1.0',
         }
         if basis == 'reviewed_speaker':
             clip['native'] = True
             clip['native_source'] = 'Listening review of this speaker'
         elif basis == 'declared_japanese_accent':
             clip['accent'] = POLICY['accepted_accents'][row['accent']]
+        if clip['id'] in labels: clip['display_label'] = labels[clip['id']]
         clips.append(clip)
     manifest = {
         'language': 'ja', 'source': 'Common Voice 25.0 Japanese', 'revision': REVISION,
@@ -105,6 +125,7 @@ def main():
                      'self-reported non-native accents. Native pronunciation is unverified for other speakers.',
     }
     cache_path.write_text(json.dumps(cache, ensure_ascii=False, allow_nan=False))
+    (ROOT / 'data/empty-reference-review.json').write_text(json.dumps(empty, indent=2))
     (ROOT / 'data/common-voice-ja.json').write_text(json.dumps(manifest, ensure_ascii=False, allow_nan=False))
     # The local Japanese collection contains JVS plus these Common Voice references.
     path = ROOT / 'data/native-ja.json'
@@ -113,7 +134,7 @@ def main():
     path.write_text(json.dumps(library, ensure_ascii=False, allow_nan=False))
     print(json.dumps({'clips': len(clips), 'speakers': len({c['speaker'] for c in clips}),
                       'selection': dict(Counter(c['selection_basis'] for c in clips)),
-                      'plotted': sum(c['plotted'] for c in clips)}, ensure_ascii=False))
+                      'plotted': sum(c['plotted'] for c in clips), 'empty_removed': len(empty)}, ensure_ascii=False))
 
 
 if __name__ == '__main__':

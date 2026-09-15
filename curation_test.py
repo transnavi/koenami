@@ -28,6 +28,11 @@ class SelectionTests(unittest.TestCase):
         for change in [{'down_votes': 1}, {'up_votes': 1}, {'age': 'teens'}, {'age': ''}]:
             self.assertIsNone(selection({**self.row, **change}))
 
+    def test_bad_clip_exclusion_does_not_remove_the_speaker(self):
+        policy = {**POLICY, 'excluded_clips': ['empty']}
+        self.assertIsNone(selection({**self.row, 'file_name': 'empty.mp3'}, policy))
+        self.assertEqual(selection({**self.row, 'file_name': 'other.mp3'}, policy), 'common_voice_validated')
+
 
 if __name__ == '__main__':
     unittest.main()
