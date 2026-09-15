@@ -63,6 +63,34 @@ def main(url):
                 page.locator('#upload').set_input_files(str(fixture))
                 wait(page, 'voiceApp.state.ownPCM!==null&&!voiceApp.state.busy')
             assert page.evaluate('voiceApp.state.takes.length') == 2
+            assert page.locator('#wave, #own-seek').count()==0
+            assert page.locator('#state').is_hidden()
+            box=page.locator('#signal-canvas').bounding_box()
+            duration=page.evaluate('voiceApp.state.ownFull.duration')
+            middle=box['x']+38+(box['width']-48)*.5
+            page.mouse.click(middle,box['y']+18)
+            wait(page,f'Math.abs(document.querySelector("#player").currentTime-{duration*.5})<.04')
+            page.locator('#signal-canvas').focus()
+            page.keyboard.press('ArrowRight')
+            wait(page,f'Math.abs(document.querySelector("#player").currentTime-{duration*.5+.1})<.04')
+            page.mouse.move(box['x']+38+(box['width']-48)*.2,box['y']+18)
+            page.mouse.down()
+            page.mouse.move(box['x']+38+(box['width']-48)*.7,box['y']+18,steps=8)
+            page.mouse.up()
+            wait(page,'!!voiceApp.state.ranges.own')
+            selection=page.evaluate('voiceApp.state.ranges.own')
+            assert abs(selection[0]-duration*.2)<.03 and abs(selection[1]-duration*.7)<.03
+            assert page.locator('#range-reset').is_visible()
+            page.keyboard.press('Escape')
+            wait(page,'!voiceApp.state.ranges.own')
+            assert page.locator('#range-reset').is_hidden()
+            page.evaluate('voiceApp.selectRange("own",[0,1])')
+            wait(page,'!!voiceApp.state.ranges.own')
+            page.locator('#range-reset').click()
+            wait(page,'!voiceApp.state.ranges.own')
+            assert page.evaluate('voiceApp.state.own===voiceApp.state.ownFull')
+            assert page.evaluate('async()=>!(await voiceApp.TakeStore.read()).current.range')
+            results.append('One waveform timeline supports seeking, keyboard navigation, and range selection; duplicate footer controls removed')
             wait(page, 'voiceApp.map.samples.some(c=>c.group==="own-history")')
             current = page.evaluate('voiceApp.state.ownTakeId')
             page.reload()
@@ -76,6 +104,11 @@ def main(url):
                 choose(page, 'take-select', 'download')
             assert download.value.suggested_filename.endswith('.wav')
             results.append('All saved take averages plotted; title menu restores; refresh preserves current; WAV download')
+            page.evaluate('document.querySelector("#settings-dialog").showModal()')
+            page.locator('#live-shape-window').fill('2')
+            assert page.locator('#live-shape-duration').inner_text()=='2 秒'
+            page.locator('#settings-dialog [data-close]').click()
+            page.evaluate('''()=>{const shape=voiceApp.map.shape;voiceApp.map.shape=function(track,color,own){if(own)window.liveShapeTimes=track.map(p=>p.t);return shape.call(this,track,color,own);};}''')
             page.locator('#live-mode').click()
             wait(page, 'voiceApp.state.recording')
             wait(page, 'voiceApp.state.liveTrack.length>20')
@@ -90,6 +123,8 @@ def main(url):
             camera = page.evaluate('({zoom:voiceApp.map.zoom,camera:voiceApp.map.camera,yaw:voiceApp.map.yaw})')
             page.wait_for_timeout(1500)
             assert page.evaluate('({zoom:voiceApp.map.zoom,camera:voiceApp.map.camera,yaw:voiceApp.map.yaw})') == camera
+            wait(page,'voiceApp.state.ownFull.duration>6&&window.liveShapeTimes?.length>6&&window.liveShapeTimes[0]>3')
+            assert page.evaluate('liveShapeTimes.at(-1)-liveShapeTimes[0]')<=2
             page.keyboard.press('Escape')
             wait(page, '!voiceApp.state.recording&&!voiceApp.state.busy')
             assert page.locator('#loopback').get_attribute('aria-pressed') == 'false'
@@ -177,7 +212,40 @@ def main(url):
             page.reload()
             wait(page, '!!window.voiceApp?.state.refFull&&voiceApp.state.imported.length===2')
             assert page.evaluate('voiceApp.state.selected.localLibrary')
+            assert page.evaluate('voiceApp.map.liveShapeSeconds')==2
             results.append('Official JVS ZIP import, checksum verification, local playback, selected-range analysis, refresh persistence')
+            held=[]
+            page.route('**/api/analyze',lambda route:held.append(route))
+            page.evaluate('voiceApp.state.capabilities.maxSeconds=2')
+            page.locator('#record').click()
+            wait(page,'voiceApp.state.recording')
+            wait(page,'!voiceApp.state.recording&&!voiceApp.state.busy&&voiceApp.state.analyzing.has(voiceApp.state.ownTakeId)')
+            deleted_id=page.evaluate('voiceApp.state.ownTakeId')
+            page.evaluate('''()=>{const remove=voiceApp.TakeStore.deleteRecording;voiceApp.TakeStore.deleteRecording=function(){this.deleteRecording=remove;throw new Error('Temporary storage failure');};}''')
+            choose(page,'take-select','delete')
+            wait(page,'!voiceApp.state.busy')
+            assert page.evaluate('voiceApp.state.ownTakeId')==deleted_id
+            assert page.evaluate('(id)=>!!voiceApp.state.takes.find(t=>t.id===id)',deleted_id)
+            choose(page,'take-select','delete')
+            wait(page,f'!voiceApp.state.busy&&voiceApp.state.ownTakeId!=="{deleted_id}"')
+            assert page.evaluate('(id)=>voiceApp.TakeStore.read("recording:"+id)',deleted_id) is None
+            assert len(held)==1
+            response=held[0].fetch()
+            held[0].fulfill(response=response)
+            wait(page,f'!voiceApp.state.analyzing.has("{deleted_id}")')
+            assert not page.evaluate('(id)=>voiceApp.state.takes.some(t=>t.id===id)||voiceApp.map.samples.some(t=>t.recordingId===id)',deleted_id)
+            page.unroute('**/api/analyze')
+            # Every remaining stored take can be deleted from the same title menu.
+            while page.evaluate('!!voiceApp.state.ownTakeId'):
+                choose(page,'take-select','delete')
+                wait(page,'!voiceApp.state.busy')
+            assert page.evaluate('voiceApp.state.takes.length')==0
+            assert page.evaluate('voiceApp.TakeStore.read("recording-index")')==[]
+            assert page.evaluate('voiceApp.TakeStore.read()')=={'current':None,'previous':None}
+            page.reload()
+            wait(page,'!!window.voiceApp?.state.refFull')
+            assert page.evaluate('!voiceApp.state.ownFull&&!voiceApp.state.ownTakeId&&!voiceApp.map.samples.some(t=>t.group==="own-history")')
+            results.append('History deletion removes audio and plotted averages; pending analysis cannot restore a deleted take; deleting the last take survives refresh')
             for width, height in [(1440,960),(1280,800),(390,844)]:
                 page.set_viewport_size({'width':width,'height':height})
                 page.wait_for_timeout(200)

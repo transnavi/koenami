@@ -6,6 +6,19 @@ export const TakeStore={
  write(pair,key='takes'){return this.writeEntries([[pair,key]]);},
  writeEntries(entries){this.queue=this.queue.catch(()=>{}).then(async()=>{const db=await this.open();await new Promise((resolve,reject)=>{const tx=db.transaction('session','readwrite');for(const [value,key] of entries)tx.objectStore('session').put(value,key);tx.oncomplete=resolve;tx.onabort=tx.onerror=()=>reject(tx.error||new Error('Storage failed'));});});return this.queue;},
  saveRecording(snapshot,metadata){return this.recordingTransaction(metadata.id,()=>({snapshot,metadata}));},
+ deleteRecording(id){
+  const operation=this.queue.catch(()=>{}).then(async()=>{
+   const db=await this.open();return new Promise((resolve,reject)=>{
+    const tx=db.transaction('session','readwrite'),store=tx.objectStore('session');let index=[],pair,remaining=2;
+    const remove=()=>{if(--remaining)return;index=index.filter(t=>t.id!==id);store.delete('recording:'+id);store.put(index,'recording-index');
+     if(pair)store.put({current:pair.current?.takeId===id?null:pair.current,previous:pair.previous?.takeId===id?null:pair.previous},'takes');
+    };
+    const list=store.get('recording-index');list.onsuccess=()=>{index=list.result||[];remove();};
+    const saved=store.get('takes');saved.onsuccess=()=>{pair=saved.result;remove();};
+    tx.oncomplete=()=>resolve(index);tx.onabort=tx.onerror=()=>reject(tx.error||new Error('Storage failed'));
+   });
+  });this.queue=operation;return operation;
+ },
  finishRecording(id,detail){return this.recordingTransaction(id,(snapshot,metadata)=>{
   if(!snapshot||!metadata)return null;
   return {snapshot:{...snapshot,detail,measurement:snapshot.range?snapshot.measurement:detail},metadata:{...metadata,features:detail.features,duration:detail.duration}};

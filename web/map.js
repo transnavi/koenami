@@ -9,7 +9,7 @@ function hull(points){
 }
 export class VoiceMap{
  constructor(canvas,onSelect){
-  this.canvas=canvas;this.ctx=canvas.getContext('2d');this.onSelect=onSelect;this.samples=[];this.dimension=3;this.autoRotate=!matchMedia('(prefers-reduced-motion: reduce)').matches;this.live=false;this.zoom=1.1;this.autoFit=true;this.camera=[.5,.5,.5];this.center=[.5,.5];this.yaw=-.45;this.tilt=.3;this.hit=[];this.showRange=true;this.dirty=true;
+  this.canvas=canvas;this.ctx=canvas.getContext('2d');this.onSelect=onSelect;this.samples=[];this.dimension=3;this.autoRotate=!matchMedia('(prefers-reduced-motion: reduce)').matches;this.live=false;this.liveShapeSeconds=5;this.zoom=1.1;this.autoFit=true;this.camera=[.5,.5,.5];this.center=[.5,.5];this.yaw=-.45;this.tilt=.3;this.hit=[];this.showRange=true;this.dirty=true;
   this.pan=[0,0];this.cloud=new DensityCloud();this.pointers=new Map();
   new ResizeObserver(()=>{if(this.autoFit)this.fitDirty=true;this.invalidate();}).observe(canvas);
   new MutationObserver(()=>this.invalidate()).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
@@ -84,7 +84,7 @@ export class VoiceMap{
    rows.sort((a,b)=>a.z.reduce((s,v,k)=>s+(v-center[k])**2,0)-b.z.reduce((s,v,k)=>s+(v-center[k])**2,0));
    const inside=rows.slice(0,Math.max(6,Math.ceil(rows.length*.8))).map(r=>r.point),points=[];
    for(let i=0;i<inside.length;i+=Math.max(1,Math.floor(inside.length/180)))points.push(inside[i]);
-   const anchor=this.vector(own?this.ownFeatures:this.selected?.features);if(anchor)points.push(anchor);
+   const anchor=this.live&&own?null:this.vector(own?this.ownFeatures:this.selected?.features);if(anchor)points.push(anchor);
    for(let k=0;k<3;k++)for(const sign of [-1,1]){let best=inside[0];for(const p of inside)if(sign*p[k]>sign*best[k])best=p;if(best)points.push(best);}
    mesh={source,stamp,space:this.space,points,faces:convex3(points)};this.shapeCache[side]=mesh;this.fitDirty=true;
   }
@@ -104,13 +104,14 @@ export class VoiceMap{
  label(p,text,color){const g=this.ctx;g.font='11px system-ui';g.textAlign='left';const width=g.measureText(text).width;let x=clamp(p[0]+14,46,this.width-width-30),y=clamp(p[1]-14,22,this.height-62);g.fillStyle=this.colors.bg;g.globalAlpha=.94;g.fillRect(x-4,y-13,width+8,19);g.globalAlpha=1;g.fillStyle=color;g.fillText(text,x,y);}
  trajectory(detail,range,color,time,own){
   const track=this.smoothTrack(detail,range);if(!track.length){if(this.shapeCache){delete this.shapeCache[own?'own':'ref'];this.fitDirty=true;}return;}
-  const visible=this.live&&own?track.filter(p=>p.t>(time||detail.duration)-60):track;
+  const seconds=this.liveShapeSeconds,end=Math.floor((finite(time)?time:detail.duration)*10)/10;
+  const visible=this.live&&own?track.filter(p=>p.t> end-seconds&&p.t<=end):track;
   const points=visible.map(p=>this.project(this.vector(p))).filter(Boolean),g=this.ctx;
-  if(this.showRange&&points.length>3)this.shape(visible,color,own);
-  if(this.live&&own&&finite(time)){for(let i=0;i<visible.length;i+=6){const row=visible[i];if(row.t>time||row.t<time-60)continue;const p=this.project(this.vector(row));if(p){g.globalAlpha=.12+.32*Math.max(0,1-(time-row.t)/60);g.fillStyle=color;g.beginPath();g.arc(p[0],p[1],2.5,0,Math.PI*2);g.fill();}}g.globalAlpha=1;}
+  if(this.showRange&&points.length>3)this.shape(visible,color,own);else if(this.shapeCache)delete this.shapeCache[own?'own':'ref'];
+  if(this.live&&own&&finite(time)){for(let i=0;i<visible.length;i+=6){const row=visible[i];if(row.t>time||row.t<time-seconds)continue;const p=this.project(this.vector(row));if(p){g.globalAlpha=.12+.32*Math.max(0,1-(time-row.t)/seconds);g.fillStyle=color;g.beginPath();g.arc(p[0],p[1],2.5,0,Math.PI*2);g.fill();}}g.globalAlpha=1;}
   if(!finite(time))return;
   let last=null;
-  for(const row of track){if(row.t<time-1.4)continue;if(row.t>time)break;const p=this.project(this.vector(row));if(!p){last=null;continue;}const age=clamp(1-(time-row.t)/1.4,0,1);g.globalAlpha=age**1.5;g.strokeStyle=color;g.fillStyle=color;g.lineWidth=1+age*3;
+  for(const row of visible){if(row.t<time-1.4)continue;if(row.t>time)break;const p=this.project(this.vector(row));if(!p){last=null;continue;}const age=clamp(1-(time-row.t)/1.4,0,1);g.globalAlpha=age**1.5;g.strokeStyle=color;g.fillStyle=color;g.lineWidth=1+age*3;
    if(last&&row.t-last.t<.2){g.beginPath();g.moveTo(last.p[0],last.p[1]);g.lineTo(p[0],p[1]);g.stroke();}g.beginPath();g.arc(p[0],p[1],1+age*2.2,0,Math.PI*2);g.fill();last={p,t:row.t};
   }
   g.globalAlpha=1;const cursor=this.project(this.cursor(track,time));if(cursor){g.fillStyle=color;g.globalAlpha=.15;g.beginPath();g.arc(cursor[0],cursor[1],17,0,Math.PI*2);g.fill();g.globalAlpha=1;this.marker(cursor,color,9,own);this.label(cursor,own?'自分':'見本',color);if(own)this.lastCursor=cursor;}else if(own)this.lastCursor=null;
