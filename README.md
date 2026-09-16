@@ -1,6 +1,10 @@
 # Koenami
 
-Voice practice with audible references, a live acoustic map, and side-by-side measurements. Japanese comes first, followed by Mandarin, English, and Korean. Feminine, masculine, and androgynous voice goals are welcome.
+A voice training tool for anyone working toward a feminine or masculine voice: people aiming to become 両声類 (able to speak in both a feminine and a masculine voice), transgender people, and anyone who simply wants to try a voice they do not have yet. Japanese comes first, followed by Mandarin, English, and Korean. Free and open source.
+
+Pick a voice you want to get closer to, from the bundled references or your own audio, then record while imitating it. Your voice is projected into the same acoustic space, so you can see how close you are and in which direction the gap lies. Real-time measurement plots the microphone as you speak, so you can adjust while watching the distance shrink.
+
+Planned next: voice-training tutorials, analysis from the angles of phonetics, vocal pedagogy, acoustics and anatomy, and evaluation that tracks how listeners actually hear a voice more closely.
 
 [Public demo](https://koe.transnavi.jp/) · [Source](https://github.com/transnavi/koenami) · [MIT license](LICENSE)
 
