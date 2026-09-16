@@ -1,30 +1,41 @@
 // First-visit guide: a spotlight and a card walk through the studio one area at a
-// time. Progress lives in localStorage so "あとで" resumes where it stopped on
+// time. The lit area stays clickable; four blockers around it hold the rest. Progress lives in localStorage so "あとで" resumes where it stopped on
 // the next visit; "スキップ" and finishing both mark it done. The card is a
 // non-modal <dialog>, which also makes the app skip its keyboard shortcuts while
 // the guide is open. The ⓘ dialog can start it again.
 const KEY='voice-tour';
+const ART={
+ wave:'<use href="#i-wave"/>',
+ pick:'<path d="M7 5l9 7-9 7Z" fill="currentColor" stroke="none"/><path d="M17 3l1.2 2.4 2.6.4-1.9 1.8.5 2.6L17 9l-2.4 1.2.5-2.6-1.9-1.8 2.6-.4Z"/>',
+ list:'<path d="M4 6h16M4 12h16M4 18h10"/>',
+ mic:'<use href="#i-mic"/>',
+ radar:'<path d="M12 3l8.6 6.2-3.3 10.1H6.7L3.4 9.2Z"/><path d="M12 8l4.3 3.1-1.6 5H9.3l-1.6-5Z" opacity=".5"/>',
+ map:'<circle cx="7" cy="9" r="1.2" fill="currentColor" stroke="none"/><circle cx="10" cy="14" r="1.2" fill="currentColor" stroke="none"/><circle cx="8" cy="17" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="7" r="1.2" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r="2.4"/><path d="M12 11l5 1" stroke-dasharray="1.5 1.5"/>',
+ signal:'<path d="M3 12c2-6 3-6 4 0s2 6 3 0 2-6 3 0 2 6 3 0 2-6 3 0 2 6 3 0"/>',
+ live:'<use href="#i-mic"/><path d="M18 5c2 0 3 1 3 3s-1 3-3 3" opacity=".6"/>',
+ info:'<use href="#i-info"/>',
+};
 const STEPS=[
- {title:'Koenamiへようこそ',text:'見本の声を聴き、自分の声を録音して、5つの指標と地図で見比べる練習ツールです。主な画面を順に案内します。2分ほどで終わり、「あとで」で中断すると次回は続きから始まります。'},
- {target:['.target'],title:'選んだ見本',text:'いま選んでいる見本の声です。再生ボタンで聴き、★でお気に入りに入れられます。近づきたい声を見本にしてください。'},
- {target:['.samples-panel .sample-filters','#samples-toggle'],title:'見本の一覧',text:'女性的な声・中性的な声・男性的な声で絞り込み、話者名順や自分の声に近い順で並べ替えられます。手元の音声やJVSの音声も見本に追加できます。'},
- {target:['#record'],title:'録音する',text:'マイクのボタンか R キーで録音を始め、もう一度押すと止まります。見本と同じ言葉を言うと比べやすくなります。録音はこのブラウザーの中だけに保存されます。'},
- {target:['#indicators'],title:'声の特徴',text:'高さ・響き・質感・明るさ・抑揚の5指標を、自分と見本で並べて表示します。帯は参照グループの話者の中央80%です。左下の「見本との差」は5指標をまとめた距離です。'},
- {target:['.graph-area'],title:'声の分布',text:'見本の声を点として並べた地図です。自分の声は紫、選んだ見本はその見本の色で囲まれます。2Dと3D、主成分と男女差の表示を切り替えられます。'},
- {target:['.signal-panel'],title:'波形と高さの推移',text:'高さの推移、スペクトログラム、波形を自分と見本で見比べます。波形をドラッグすると、その範囲だけを測り直せます。'},
- {target:['#live-mode'],title:'リアルタイム測定',text:'話している声をそのまま地図に描きます。見本の点に近づく方向を確かめながら、声を変えてみてください。'},
- {target:['#info-button'],title:'詳しい説明',text:'使い方、声のしくみと練習の手引き、測定方法と出典は、このボタンから開けます。このガイドは、左隣の ? ボタンでいつでも見直せます。'},
+ {art:'wave',title:'Koenamiへようこそ',text:'見本を真似して録音し、声の違いを目で確かめるツールです。主な画面を紹介します。右上の ? からいつでも見直せます。'},
+ {art:'pick',target:['.target'],title:'選んだ見本',text:'いま選んでいる見本です。▶で聴き、★でお気に入りに入れます。'},
+ {art:'list',target:['.samples-panel .sample-filters','#samples-toggle'],title:'見本の一覧',text:'声の種類で絞り込み、並べ替えて、近づきたい声を探します。'},
+ {art:'mic',target:['#record'],title:'録音',text:'マイクか R キーで録音を始め、もう一度押して止めます。'},
+ {art:'radar',target:['#indicators'],title:'声の特徴',text:'高さ・響き・質感・明るさ・抑揚を、自分と見本で見比べます。'},
+ {art:'map',target:['.graph-area'],title:'声の分布',text:'見本の声の地図です。自分の声が見本にどれだけ近いかが分かります。'},
+ {art:'signal',target:['.signal-panel'],title:'波形',text:'高さの推移やスペクトログラムを見比べます。ドラッグで範囲を選べます。'},
+ {art:'live',target:['#live-mode'],title:'リアルタイム',text:'話しながら、声の位置が動くのを見て調整します。'},
+ {art:'info',target:['#info-button'],title:'詳しい説明',text:'使い方や声のしくみの解説は ⓘ から開けます。'},
 ];
 const phone=matchMedia('(max-width:800px),(max-height:520px)');
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{};}catch{return {};}};
 const save=v=>{try{localStorage.setItem(KEY,JSON.stringify(v));}catch{}};
 
-let shade,spot,card,step=0,raf=0;
+let shade,spot,blockers,card,step=0,raf=0;
 function build(){
  shade=document.createElement('div');shade.className='tour-shade';shade.hidden=true;
- spot=document.createElement('div');spot.className='tour-spot';shade.append(spot);
+ spot=document.createElement('div');spot.className='tour-spot';blockers=['top','right','bottom','left'].map(()=>{const d=document.createElement('div');d.className='tour-block';return d;});shade.append(spot,...blockers);
  card=document.createElement('dialog');card.className='tour-card';card.setAttribute('aria-labelledby','tour-title');
- card.innerHTML='<p class="tour-count" id="tour-count"></p><h2 id="tour-title"></h2><p id="tour-text"></p><div class="tour-actions"><button type="button" class="text-button" data-act="later">あとで</button><button type="button" class="text-button" data-act="skip">スキップ</button><span class="tour-spacer"></span><button type="button" class="text-button" data-act="back">戻る</button><button type="button" class="tour-next" data-act="next">次へ</button></div>';
+ card.innerHTML='<div class="tour-head"><svg class="tour-art" viewBox="0 0 24 24" aria-hidden="true"></svg><div><p class="tour-count" id="tour-count"></p><h2 id="tour-title"></h2></div></div><p id="tour-text"></p><div class="tour-actions"><button type="button" class="text-button" data-act="later" title="中断して、次回に続きから">あとで</button><button type="button" class="text-button" data-act="skip" title="ガイドを終了">スキップ</button><span class="tour-spacer"></span><button type="button" class="text-button" data-act="back">戻る</button><button type="button" class="tour-next" data-act="next">次へ</button></div>';
  card.addEventListener('click',e=>{const act=e.target.closest('[data-act]')?.dataset.act;if(act==='next')next();else if(act==='back')show(step-1);else if(act==='later')pause();else if(act==='skip')finish();});
  card.addEventListener('cancel',e=>{e.preventDefault();pause();});
  card.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();else if(e.key==='ArrowLeft')show(step-1);else if(e.key==='Escape')pause();});
@@ -35,8 +46,9 @@ const visible=el=>{if(!el||!el.checkVisibility())return false;const r=el.getBoun
 const target=()=>(STEPS[step].target||[]).map(s=>document.querySelector(s)).find(visible)||null;
 function place(){
  const el=target(),pad=8;
- if(el){const r=el.getBoundingClientRect();Object.assign(spot.style,{left:`${r.left-pad}px`,top:`${r.top-pad}px`,width:`${r.width+2*pad}px`,height:`${r.height+2*pad}px`,opacity:1});}
- else Object.assign(spot.style,{left:'50%',top:'50%',width:'0px',height:'0px',opacity:0});
+ const box=el?(r=>({l:r.left-pad,t:r.top-pad,w:r.width+2*pad,h:r.height+2*pad}))(el.getBoundingClientRect()):{l:innerWidth/2,t:innerHeight/2,w:0,h:0};
+ Object.assign(spot.style,{left:`${box.l}px`,top:`${box.t}px`,width:`${box.w}px`,height:`${box.h}px`,opacity:el?1:0});
+ const [bt,br,bb,bl]=blockers;Object.assign(bt.style,{left:0,top:0,width:'100%',height:`${Math.max(0,box.t)}px`});Object.assign(bb.style,{left:0,top:`${box.t+box.h}px`,width:'100%',bottom:0,height:'auto'});Object.assign(bl.style,{left:0,top:`${box.t}px`,width:`${Math.max(0,box.l)}px`,height:`${box.h}px`});Object.assign(br.style,{left:`${box.l+box.w}px`,top:`${box.t}px`,right:0,width:'auto',height:`${box.h}px`});
  if(phone.matches||!el){card.style.left=card.style.top='';card.classList.toggle('tour-card-center',!el&&!phone.matches);return;}
  card.classList.remove('tour-card-center');
  const r=el.getBoundingClientRect(),w=card.offsetWidth,h=card.offsetHeight,gap=14,vw=innerWidth,vh=innerHeight;
@@ -50,7 +62,7 @@ function show(n){
  step=Math.max(0,Math.min(STEPS.length-1,n));save({...load(),step});
  const s=STEPS[step];
  card.querySelector('#tour-count').textContent=`${step+1} / ${STEPS.length}`;
- card.querySelector('#tour-title').textContent=s.title;card.querySelector('#tour-text').textContent=s.text;
+ card.querySelector('#tour-title').textContent=s.title;card.querySelector('#tour-text').textContent=s.text;card.querySelector('.tour-art').innerHTML=ART[s.art];
  card.querySelector('[data-act=back]').hidden=step===0;
  card.querySelector('[data-act=next]').textContent=step===STEPS.length-1?'はじめる':'次へ';
  shade.hidden=false;if(!card.open)card.show();
