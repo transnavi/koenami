@@ -9,7 +9,7 @@ function hull(points){
 }
 export class VoiceMap{
  constructor(canvas,onSelect){
-  this.canvas=canvas;this.ctx=canvas.getContext('2d');this.onSelect=onSelect;this.samples=[];this.dimension=3;this.autoRotate=!matchMedia('(prefers-reduced-motion: reduce)').matches;this.live=false;this.liveShapeSeconds=5;this.zoom=1.1;this.autoFit=true;this.camera=[.5,.5,.5];this.center=[.5,.5];this.yaw=-.45;this.tilt=.3;this.hit=[];this.showRange=true;this.dirty=true;
+  this.canvas=canvas;this.ctx=canvas.getContext('2d');this.onSelect=onSelect;this.samples=[];this.dimension=3;this.projection='variance';this.autoRotate=!matchMedia('(prefers-reduced-motion: reduce)').matches;this.live=false;this.liveShapeSeconds=5;this.zoom=1.1;this.autoFit=true;this.camera=[.5,.5,.5];this.center=[.5,.5];this.yaw=-.45;this.tilt=.3;this.hit=[];this.showRange=true;this.dirty=true;
   this.pan=[0,0];this.cloud=new DensityCloud();this.pointers=new Map();
   new ResizeObserver(()=>{if(this.autoFit)this.fitDirty=true;this.invalidate();}).observe(canvas);
   new MutationObserver(()=>this.invalidate()).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
@@ -37,7 +37,7 @@ export class VoiceMap{
  manual(){this.navigationVersion=(this.navigationVersion||0)+1;this.autoFit=false;this.autoRotate=false;document.getElementById('auto-rotate')?.setAttribute('aria-pressed','false');}
  reset(){this.fitScope='all';this.fitDirty=true;this.autoFit=true;this.pan=[0,0];this.camera=[.5,.5,.5];this.center=[.5,.5];this.yaw=-.45;this.tilt=.3;this.invalidate();}
  zoomBy(f,anchor=[this.width/2,this.height/2]){this.navigationVersion=(this.navigationVersion||0)+1;this.autoFit=false;const previous=this.zoom;this.zoom=clamp(previous*f,.15,12);const ratio=this.zoom/previous;this.pan=this.pan.map((p,k)=>(anchor[k]-[this.width/2,this.height/2][k])*(1-ratio)+p*ratio);this.invalidate();}
- vector(f){if(!f||!this.space)return null;if(this.vectorSpace!==this.space){this.vectorCache=new WeakMap();this.vectorSpace=this.space;}if(this.vectorCache.has(f))return this.vectorCache.get(f);const v=this.space.vector(f);this.vectorCache.set(f,v);return v;}
+ vector(f){if(!f||!this.space)return null;if(this.vectorSpace!==this.space||this.vectorProjection!==this.projection){this.vectorCache=new WeakMap();this.vectorSpace=this.space;this.vectorProjection=this.projection;}if(this.vectorCache.has(f))return this.vectorCache.get(f);const v=this.space.vector(f,this.projection);this.vectorCache.set(f,v);return v;}
  project(v){if(!v)return null;const w=this.width-48,h=this.height-48,cx=this.width/2+this.pan[0],cy=this.height/2+this.pan[1];if(this.dimension===2)return [cx+(v[0]-this.center[0])*w*this.zoom,cy-(v[1]-this.center[1])*h*this.zoom,0];const x=v[0]-(this.camera?.[0]??.5),y=v[1]-(this.camera?.[1]??.5),z=v[2]-(this.camera?.[2]??.5),u=x*Math.cos(this.yaw)+z*Math.sin(this.yaw),d=-x*Math.sin(this.yaw)+z*Math.cos(this.yaw),yy=y*Math.cos(this.tilt)-d*Math.sin(this.tilt),dd=y*Math.sin(this.tilt)+d*Math.cos(this.tilt),s=Math.min(w,h)*.86*this.zoom;return [cx+u*s,cy-yy*s,dd];}
  pick(x,y){let best=null,dist=12;for(const p of this.hit){const d=Math.hypot(p.xy[0]-x,p.xy[1]-y);if(d<dist){best=p.sample;dist=d;}}return best;}
  rangeTrack(detail,range){return (detail?.track||[]).filter(p=>!range||(p.t>=range[0]&&p.t<=range[1]));}
@@ -67,7 +67,7 @@ export class VoiceMap{
   this.axes();g.save();this.hit=[];
   const samples=this.samples.map(s=>({sample:s,xy:this.project(this.vector(s.features))})).filter(p=>p.xy).sort((a,b)=>a.xy[2]-b.xy[2]);
   this.cloud.draw(g,samples,{width:this.width,height:this.height,scale:Math.min(this.width-48,this.height-48)*.86*this.zoom,colors:this.colors,dark:document.documentElement.dataset.theme==='dark'});
-  for(const p of samples){if(p.xy[0]<0||p.xy[0]>this.width||p.xy[1]<0||p.xy[1]>this.height)continue;this.hit.push(p);g.globalAlpha=p.sample.recordingId?.65:p.sample.synthetic?.4:.16;g.fillStyle=this.colors[p.sample.group]||this.colors.research;g.beginPath();if(p.sample.synthetic)g.rect(p.xy[0]-2.4,p.xy[1]-2.4,4.8,4.8);else g.arc(p.xy[0],p.xy[1],p.sample.recordingId?4:1.7,0,Math.PI*2);g.fill();if(p.sample.recordingId){g.strokeStyle=this.colors.bg;g.lineWidth=1.5;g.stroke();}}g.globalAlpha=1;
+  for(const p of samples){if(p.xy[0]<0||p.xy[0]>this.width||p.xy[1]<0||p.xy[1]>this.height)continue;this.hit.push(p);g.globalAlpha=p.sample.recordingId?.65:.3;g.fillStyle=this.colors[p.sample.group]||this.colors.research;g.beginPath();g.arc(p.xy[0],p.xy[1],p.sample.recordingId?4:2.2,0,Math.PI*2);g.fill();if(p.sample.recordingId){g.strokeStyle=this.colors.bg;g.lineWidth=1.5;g.stroke();}}g.globalAlpha=1;
   this.trajectory(this.target,this.targetRange,this.colors.target,time.target,false);
   this.trajectory(this.own,this.ownRange,this.colors.own,time.own,true);
   for(const [m,color,own] of [[this.selected?.features,this.colors.target,false],[this.ownFeatures||this.own?.features,this.colors.own,true]]){const p=this.project(this.vector(m));if(p){const active=finite(own?time.own:time.target);this.ctx.globalAlpha=active?.25:1;this.marker(p,color,own?8:7,own);this.ctx.globalAlpha=1;if(!active)this.label(p,own?'自分':'見本',color);}}
@@ -77,7 +77,7 @@ export class VoiceMap{
  marker(p,color,r,diamond=false){const g=this.ctx;g.beginPath();if(diamond){g.moveTo(p[0],p[1]-r);g.lineTo(p[0]+r,p[1]);g.lineTo(p[0],p[1]+r);g.lineTo(p[0]-r,p[1]);g.closePath();}else g.arc(p[0],p[1],r,0,Math.PI*2);g.fillStyle=color;g.fill();g.strokeStyle=this.colors.bg;g.lineWidth=2;g.stroke();}
  shape(track,color,own){
   this.shapeCache ||= {};const side=own?'own':'ref',source=(own?this.own:this.target)?.track,stamp=track[0]?.t+':'+track.at(-1)?.t;let mesh=this.shapeCache[side];
-  if(!mesh||mesh.source!==source||mesh.stamp!==stamp||mesh.space!==this.space){
+  if(!mesh||mesh.source!==source||mesh.stamp!==stamp||mesh.space!==this.space||mesh.projection!==this.projection){
    const rows=track.map(p=>({point:this.vector(p),z:this.space?.standardized(p)})).filter(r=>r.point&&r.z);if(rows.length<6){delete this.shapeCache[side];return;}
    // Main 80% of voiced windows in the full feature space; no display-size cap.
    const center=AcousticSpace.keys.map((_,k)=>quantile(rows.map(r=>r.z[k]),.5));
@@ -86,7 +86,7 @@ export class VoiceMap{
    for(let i=0;i<inside.length;i+=Math.max(1,Math.floor(inside.length/180)))points.push(inside[i]);
    const anchor=this.live&&own?null:this.vector(own?this.ownFeatures:this.selected?.features);if(anchor)points.push(anchor);
    for(let k=0;k<3;k++)for(const sign of [-1,1]){let best=inside[0];for(const p of inside)if(sign*p[k]>sign*best[k])best=p;if(best)points.push(best);}
-   mesh={source,stamp,space:this.space,points,faces:convex3(points)};this.shapeCache[side]=mesh;this.fitDirty=true;
+   mesh={source,stamp,space:this.space,projection:this.projection,points,faces:convex3(points)};this.shapeCache[side]=mesh;this.fitDirty=true;
   }
   const pts=mesh.points.map(p=>this.project(p)),edge=hull(pts),g=this.ctx;if(edge.length<3)return;
   g.save();g.fillStyle=color;g.strokeStyle=color;g.beginPath();edge.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.globalAlpha=.075;g.fill();g.lineWidth=own?2.2:1.8;g.globalAlpha=.9;g.setLineDash(own?[6,4]:[]);g.stroke();
