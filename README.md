@@ -19,7 +19,6 @@ The recording track in these screenshots uses a public Common Voice clip.
 - **Live** continuously plots microphone input. Its shape shows the most recent five seconds; settings let you choose 1–30 seconds. The headphones button enables microphone monitoring; headphones avoid acoustic feedback.
 - Recordings are saved and playable as soon as capture stops. Measurements finish in the background, so another take can start immediately. Saved recordings remain available after refresh. Their averages appear on the map; the recording title opens the history menu. Each row has download and delete buttons.
 - Compare pitch, resonance, harmonicity, spectral balance, and pitch variation. Orbit, pan, and scroll to zoom the 3D map. The dock combines a waveform playback timeline with pitch, spectrum, and spectrogram comparisons. Click the waveform to seek or drag to select a section.
-- Share a verdict: the toolbar's share button scores the current recording on the female–male contrast axis of the selected language (signed: 0 halfway between the group medians, −25 the male median, +25 the female median, so feminine, masculine and androgynous goals read off the same scale), draws a card with the five measurements and the reference cloud, and offers X / Bluesky / Misskey posts, a link, and a PNG. The link carries only the five numbers; `/r` recomputes the result and the Worker renders the card as the link's preview image (`/og.png`, resvg-wasm with a subset Noto Sans JP built by `build_share_font.py`).
 - Browse references by speaker, search speaker IDs with or without spaces, favorite individual clips, and adjust playback speed without changing pitch.
 - Import an official **JVS ZIP or extracted folder** through the **JVS banner** in the sample library. Imports are verified against original-file checksums, saved in IndexedDB, and restored on refresh. A single speaker folder also works.
 
@@ -60,7 +59,7 @@ The frontend and approved sample files run on Cloudflare Workers Static Assets. 
 ```sh
 bun run build:public
 bun run check:worker
-bunx wrangler deploy
+npx wrangler deploy
 ```
 
 Configure your own Cloudflare account and hostname in `wrangler.jsonc` before deploying a fork. Docker must be running for the container build. Production deployments use `main`.
@@ -86,15 +85,20 @@ Microphone audio and selected imported samples are sent to the analysis service 
 ```sh
 bun run build:public
 bun run check:worker
-node score_test.mjs
-bun run checkout:old && bun run test:unit:coverage && bun run coverage:check:unit
-.venv/bin/python demo_browser_test.py
-.venv/bin/python review_browser_test.py
+bun run check:tests
+bun run check:all
+.venv/bin/python tests.py
 ```
 
-`tests/unit` holds characterization tests for the pure browser modules (`math`, `space`, `cloud`, `storage`, `corpus-import`, `capture`) and the service worker (`web/public/sw.js`, run with stand-ins for its global scope). Each test compares its output with a recorded golden under `tests/golden/unit`. The goldens were written with `RECORD=1` against the commit named in `tests/golden/META.json`, which the test setup extracts to `tests/old-tree` (`git archive` needs that commit locally, so a shallow clone must fetch it). `KOENAMI_TREE=new` runs the same tests against `src/lib`; recording is refused there. Comparison is byte-exact: floating-point results, error message text and the order of stored records are all part of the contract, so a port must keep the arithmetic and the messages as they are. `coverage:check` requires every statement, branch, function and line of the tested modules to run, except the locations listed with a reason in `tests/coverage/exclusions.json`. `tests/fixtures/library-ja.json` is every fourth clip of the local Japanese library (`data/library.json`, features only) at the pinned commit.
+`check:all` runs the characterization suite that pins the behaviour of the browser app: unit tests with coverage (`tests/unit`), the browser scenarios (`e2e/scenarios`), the merged coverage report and the 100 % gate. Every test compares what it observes with a golden recorded against the commit named in `tests/golden/META.json`; the goldens describe that commit, and a rewrite has to reproduce them.
 
-The browser suite checks live monitoring, persistence, plotted recording history, recording limits, analysis failure recovery, JVS import and playback, selected-range analysis, and desktop/mobile layouts. It requires the official JVS archive for its small import fixture and a locally installed Playwright Chromium. `tests.py` contains additional acoustic regression checks against local controlled audio fixtures; those fixtures are not published.
+- **Unit layer** (vitest): `math`, `space`, `cloud`, `storage`, `corpus-import` and the `capture` worklet are driven with fixed inputs and their outputs compared byte for byte with `tests/golden/unit`. The pinned `web/*.js` is extracted to `tests/old-tree` by the test setup (`git archive` needs that commit locally, so a shallow clone must fetch it). `KOENAMI_TREE=new` runs the same tests against `src/lib`; recording is refused there. Floating-point results, error message text and the order of stored records are all part of the contract.
+- **Browser layer** (Playwright, Chromium): `tests/mock-api/server.mjs` serves the committed `web/` files, the recorded analyzer responses under `tests/fixtures/api` and the CC0 audio under `tests/fixtures/data`, so every machine sees the same API. The page clock is paused and advanced only by the tests; the microphone is Chromium's fake device playing `tests/fixtures/audio/microphone.wav`. After each step a test records the state of every element with an id, `localStorage`, IndexedDB (large payloads as hashes), the API requests made so far and, where the drawing does not depend on real audio time, pixel-exact screenshots of the canvases (`tests/golden/e2e`, `tests/golden/canvas`). Values that follow real media time or microphone content (clocks, seek positions, sample hashes, live readouts) are masked and marked as such in the goldens.
+- **Coverage gate**: both layers collect native V8 coverage (the browser with `--js-flags=--no-opt`, since the optimiser drops block counters), `coverage:report` converts it to istanbul reports over the same source files, and `coverage:check` requires every statement, branch, function and line of `web/*.js`. The locations the suite cannot reach are listed in `tests/coverage/exclusions.json` with the line, the source text and the reason (dead code, guards behind disabled controls, token races, fallbacks for fields the data never omits, the private baseline take, browser constants); an entry that no longer matches an uncovered location fails the gate, so the list cannot go stale.
+
+`bun run test:e2e:record` re-records the browser goldens and API fixtures against the real analyzer (it needs the Python environment and the models; `KOENAMI_PYTHON` points at another interpreter). `tests/fixtures/data` is built from a prepared public data set by `tests/scripts/build-fixture-data.mjs`; `tests/fixtures/audio/SOURCES.md` lists where the audio comes from.
+
+`tests.py` contains additional acoustic regression checks against local controlled audio fixtures; those fixtures are not published.
 
 ## Acknowledgments
 

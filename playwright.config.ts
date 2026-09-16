@@ -40,7 +40,10 @@ export default defineConfig({
 				'--font-render-hinting=none',
 				'--disable-lcd-text',
 				'--force-device-scale-factor=1',
-				'--disable-gpu'
+				'--disable-gpu',
+				// Block coverage counters are dropped when V8 optimises a hot function; without
+				// the optimiser every early return stays visible in the report.
+				'--js-flags=--no-opt'
 			]
 		}
 	},

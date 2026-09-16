@@ -38,8 +38,9 @@ for (const path of reports(reportRoot)) {
 	}
 }
 
-// An exclusion names a file, a kind and the source text at the location, so it follows
-// the code through reformatting and still fails once that code is gone or reachable.
+// An exclusion names a file, a kind, the line, the column and the source text at the
+// location; the text guards against an edit that moves other code onto that position,
+// and an entry that matches nothing fails the gate.
 const sources = new Map();
 const textAt = (rel, loc) => {
 	if (!sources.has(rel)) sources.set(rel, readFileSync(join(root, rel), 'utf8').split('\n'));
@@ -59,7 +60,7 @@ for (const file of map.files()) {
 	summary.merge(fc.toSummary());
 	const excluded = (kind, loc) => {
 		const text = textAt(rel, loc);
-		const i = exclusions.findIndex((e) => e.file === rel && e.kind === kind && text.startsWith(e.code));
+		const i = exclusions.findIndex((e) => e.file === rel && e.kind === kind && e.line === loc.start.line && (e.column === undefined || e.column === loc.start.column) && text.startsWith(e.code));
 		if (i >= 0) used.add(i);
 		return i >= 0;
 	};
@@ -69,7 +70,8 @@ for (const file of map.files()) {
 	for (const [id, hits] of Object.entries(fc.f)) { const at = { start: fc.fnMap[id].decl.start }; if (!hits && !excluded('function', at)) misses.push(`${where(at)} function ${fc.fnMap[id].name}`); }
 	for (const [id, hits] of Object.entries(fc.b)) if (hits.some((h) => !h) && !excluded('branch', fc.branchMap[id].loc)) misses.push(`${where(fc.branchMap[id].loc)} branch ${fc.branchMap[id].type} ${JSON.stringify(hits)}`);
 }
-const stale = exclusions.filter((_, i) => !used.has(i));
+// With --only, entries for other modules are simply out of scope.
+const stale = exclusions.filter((e, i) => !used.has(i) && wanted(e.file));
 if (stale.length) misses.push(...stale.map((e) => `stale exclusion ${e.file} ${e.kind} ${JSON.stringify(e.code)}`));
 const files = map.files().filter((f) => wanted(relative(root, f)));
 if (!files.length) misses.push(`no coverage data for ${prefix}`);
