@@ -18,6 +18,7 @@
     "wrangler": "4.131.2"
   },
   "dependencies": {
+    "@resvg/resvg-wasm": "^2.6.2",
     "@zip.js/zip.js": "2.15.0"
   },
   "license": "MIT",
