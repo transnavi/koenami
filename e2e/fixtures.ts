@@ -53,9 +53,10 @@ async function install(page: Page) {
 		Object.defineProperty(window, 'devicePixelRatio', { get: () => 1 });
 	});
 	// Installed and paused: page time moves only through tick(), so Date.now(), timers
-	// and animation frames are identical on every run.
+	// and animation frames are identical on every run. The pause target sits a few
+	// seconds after the install time, which real time cannot have passed yet.
 	await page.clock.install({ time: START });
-	await page.clock.pauseAt(START);
+	await page.clock.pauseAt(START + 5000);
 }
 
 const sha = (buffer: Buffer) => createHash('sha256').update(buffer).digest('hex');

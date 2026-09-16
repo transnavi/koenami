@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "signal-view",
+ "focus": "body",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -377,7 +377,7 @@
    "attrs": {
     "aria-label": "音声の表示"
    },
-   "value": "spectrum",
+   "value": "pitch",
    "options": [
     {
      "value": "pitch",
@@ -404,7 +404,7 @@
      "data": {}
     }
    ],
-   "trigger": "スペクトル",
+   "trigger": "高さ",
    "expanded": "false",
    "text": "高さスペクトログラムスペクトル波形",
    "style": "display: inline-flex;"
@@ -1108,11 +1108,11 @@
   },
   "notice": {
    "tag": "div",
-   "class": "toast",
+   "class": "error toast",
    "attrs": {
     "role": "status"
    },
-   "text": "音声を読み込みました。"
+   "text": "0.25秒以上録音してください。"
   },
   "live-status": {
    "tag": "div",
@@ -1129,7 +1129,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": ""
+   "text": "0.25秒以上録音してください。"
   },
   "import-dialog": {
    "tag": "dialog",
@@ -1331,13 +1331,13 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "比較×5.44見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。この2音声の差：図に表示 82% · 省略 18%5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。指標自分見本参照音声の中央80%高さ · Hz226423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—見本の高さは自分より10.9半音高めです。速度を落として聴き、無理のない高さで同じ文を試してください。響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を"
+   "text": "比較×レポートを保存"
   },
   "report-content": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "5.44見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。この2音声の差：図に表示 82% · 省略 18%5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。指標自分見本参照音声の中央80%高さ · Hz226423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—見本の高さは自分より10.9半音高めです。速度を落として聴き、無理のない高さで同じ文を試してください。響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べて"
+   "text": ""
   },
   "report-save": {
    "tag": "button",
@@ -1350,70 +1350,36 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "抑揚声の高さの10〜90パーセンタイルの幅です。女性的な印象に関連する場面もありますが、大きければよいとは限りません。日本語のアクセント、中国語の声調、文の種類、感情で変わります。標準偏差や間の取り方はレポートで確認できます。自分7.5 半音選んだ見本17.3 半音女性的な声の見本 · 中央80%3.5–14.0 半音参照話者数25"
+   "text": ""
   },
   "metric-title": {
    "tag": "h2",
    "class": "",
    "attrs": {},
-   "text": "抑揚"
+   "text": ""
   },
   "metric-description": {
    "tag": "p",
    "class": "",
    "attrs": {},
-   "text": "声の高さの10〜90パーセンタイルの幅です。女性的な印象に関連する場面もありますが、大きければよいとは限りません。日本語のアクセント、中国語の声調、文の種類、感情で変わります。標準偏差や間の取り方はレポートで確認できます。"
+   "text": ""
   },
   "metric-details": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "自分7.5 半音選んだ見本17.3 半音女性的な声の見本 · 中央80%3.5–14.0 半音参照話者数25"
+   "text": ""
   }
  },
  "storage": {
   "local": {
-   "voice-speed": 1,
-   "koenami-session": {
-    "lang": "ja",
-    "group": "female",
-    "sort": "high",
-    "search": "",
-    "reference": "common_voice_ja_36363162",
-    "referenceRange": null,
-    "openSpeakers": [
-     "ja:Common Voice:50a288fb7fb3"
-    ],
-    "dimension": 3,
-    "projection": "variance",
-    "yaw": -0.45,
-    "tilt": 0.3,
-    "zoom": 0.914281430867266,
-    "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
-     0.7587527919899949
-    ],
-    "center": [
-     0.5,
-     0.5
-    ],
-    "pan": [
-     0,
-     0
-    ],
-    "autoRotate": false,
-    "signal": "spectrogram",
-    "signalSource": "own",
-    "overlay": true,
-    "liveShapeSeconds": 5
-   }
+   "voice-speed": 1
   },
   "idb": {
    "recording-index": [
     {
-     "date": "2026-01-01T03:00:00.000Z",
-     "duration": 6.696,
+     "date": "2026-01-01T03:00:05.000Z",
+     "duration": "<audio>",
      "features": {
       "balance": -15.115525244433902,
       "delta_f": 1096.9253741143095,
@@ -1441,7 +1407,7 @@
    "recording:00000000-0000-4000-8000-000000000001": {
     "detail": {
      "clipping_fraction": 0,
-     "duration": 6.696,
+     "duration": "<audio>",
      "features": {
       "balance": -15.115525244433902,
       "delta_f": 1096.9253741143095,
@@ -3474,12 +3440,12 @@
      ],
      "version": "3.0.0",
      "visuals": {
-      "duration": 6.696,
+      "duration": "<audio>",
       "spectrogram": {
        "bins": 321,
        "data": {
         "$string": 284192,
-        "sha256": "5a4e2396fdd117ee195106d7a0c79d5e5f5f66582f23896c574a2f63a7a28a63"
+        "sha256": "<audio>"
        },
        "frames": 664,
        "hop_seconds": 0.01,
@@ -3490,14 +3456,11 @@
       "spectrum": {
        "db": {
         "$numbers": 321,
-        "sha256": "eb6d073a78bbee73cbaec64321c501ea13e3974fe645b191fc1091f968c9b268"
+        "sha256": "<audio>"
        },
        "hz_step": 15.625
       },
-      "waveform": {
-       "$numbers": 1600,
-       "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
-      }
+      "waveform": "<audio>"
      },
      "voiced_seconds": 3.22
     },
@@ -3505,7 +3468,7 @@
     "language": "ja",
     "measurement": {
      "clipping_fraction": 0,
-     "duration": 6.696,
+     "duration": "<audio>",
      "features": {
       "balance": -15.115525244433902,
       "delta_f": 1096.9253741143095,
@@ -5538,12 +5501,12 @@
      ],
      "version": "3.0.0",
      "visuals": {
-      "duration": 6.696,
+      "duration": "<audio>",
       "spectrogram": {
        "bins": 321,
        "data": {
         "$string": 284192,
-        "sha256": "5a4e2396fdd117ee195106d7a0c79d5e5f5f66582f23896c574a2f63a7a28a63"
+        "sha256": "<audio>"
        },
        "frames": 664,
        "hop_seconds": 0.01,
@@ -5554,22 +5517,19 @@
       "spectrum": {
        "db": {
         "$numbers": 321,
-        "sha256": "eb6d073a78bbee73cbaec64321c501ea13e3974fe645b191fc1091f968c9b268"
+        "sha256": "<audio>"
        },
        "hz_step": 15.625
       },
-      "waveform": {
-       "$numbers": 1600,
-       "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
-      }
+      "waveform": "<audio>"
      },
      "voiced_seconds": 3.22
     },
     "name": "own-a.wav",
     "pcm": {
      "$typed": "Float32Array",
-     "length": 107136,
-     "sha256": "68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4"
+     "length": "<audio>",
+     "sha256": "<audio>"
     },
     "range": null,
     "takeId": "00000000-0000-4000-8000-000000000001",
@@ -5580,7 +5540,7 @@
     "current": {
      "detail": {
       "clipping_fraction": 0,
-      "duration": 6.696,
+      "duration": "<audio>",
       "features": {
        "balance": -15.115525244433902,
        "delta_f": 1096.9253741143095,
@@ -7613,12 +7573,12 @@
       ],
       "version": "3.0.0",
       "visuals": {
-       "duration": 6.696,
+       "duration": "<audio>",
        "spectrogram": {
         "bins": 321,
         "data": {
          "$string": 284192,
-         "sha256": "5a4e2396fdd117ee195106d7a0c79d5e5f5f66582f23896c574a2f63a7a28a63"
+         "sha256": "<audio>"
         },
         "frames": 664,
         "hop_seconds": 0.01,
@@ -7629,14 +7589,11 @@
        "spectrum": {
         "db": {
          "$numbers": 321,
-         "sha256": "eb6d073a78bbee73cbaec64321c501ea13e3974fe645b191fc1091f968c9b268"
+         "sha256": "<audio>"
         },
         "hz_step": 15.625
        },
-       "waveform": {
-        "$numbers": 1600,
-        "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
-       }
+       "waveform": "<audio>"
       },
       "voiced_seconds": 3.22
      },
@@ -7644,7 +7601,7 @@
      "language": "ja",
      "measurement": {
       "clipping_fraction": 0,
-      "duration": 6.696,
+      "duration": "<audio>",
       "features": {
        "balance": -15.115525244433902,
        "delta_f": 1096.9253741143095,
@@ -9677,12 +9634,12 @@
       ],
       "version": "3.0.0",
       "visuals": {
-       "duration": 6.696,
+       "duration": "<audio>",
        "spectrogram": {
         "bins": 321,
         "data": {
          "$string": 284192,
-         "sha256": "5a4e2396fdd117ee195106d7a0c79d5e5f5f66582f23896c574a2f63a7a28a63"
+         "sha256": "<audio>"
         },
         "frames": 664,
         "hop_seconds": 0.01,
@@ -9693,22 +9650,19 @@
        "spectrum": {
         "db": {
          "$numbers": 321,
-         "sha256": "eb6d073a78bbee73cbaec64321c501ea13e3974fe645b191fc1091f968c9b268"
+         "sha256": "<audio>"
         },
         "hz_step": 15.625
        },
-       "waveform": {
-        "$numbers": 1600,
-        "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
-       }
+       "waveform": "<audio>"
       },
       "voiced_seconds": 3.22
      },
      "name": "own-a.wav",
      "pcm": {
       "$typed": "Float32Array",
-      "length": 107136,
-      "sha256": "68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4"
+      "length": "<audio>",
+      "sha256": "<audio>"
      },
      "range": null,
      "takeId": "00000000-0000-4000-8000-000000000001",
@@ -9725,6 +9679,7 @@
    "method": "GET",
    "path": "/api/catalog",
    "query": "",
+   "body": "<audio>",
    "status": 200
   },
   {
@@ -9732,6 +9687,7 @@
    "method": "GET",
    "path": "/api/library",
    "query": "lang=ja",
+   "body": "<audio>",
    "status": 200
   },
   {
@@ -9739,6 +9695,7 @@
    "method": "GET",
    "path": "/api/detail/common_voice_ja_36363162",
    "query": "",
+   "body": "<audio>",
    "status": 200
   },
   {
@@ -9746,7 +9703,7 @@
    "method": "POST",
    "path": "/api/analyze",
    "query": "",
-   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+   "body": "<audio>",
    "status": 200
   }
  ],

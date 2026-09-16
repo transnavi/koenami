@@ -1108,11 +1108,11 @@
   },
   "notice": {
    "tag": "div",
-   "class": "toast",
+   "class": "error toast",
    "attrs": {
     "role": "status"
    },
-   "text": "音声を読み込みました。"
+   "text": "解析サーバーを準備しています。"
   },
   "live-status": {
    "tag": "div",
@@ -1129,7 +1129,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": ""
+   "text": "解析サーバーを準備しています。"
   },
   "import-dialog": {
    "tag": "dialog",
@@ -1380,7 +1380,10 @@
     "sort": "high",
     "search": "",
     "reference": "common_voice_ja_36363162",
-    "referenceRange": null,
+    "referenceRange": [
+     0.36694736842105263,
+     1.349842105263158
+    ],
     "openSpeakers": [
      "ja:Common Voice:50a288fb7fb3"
     ],
@@ -1388,10 +1391,10 @@
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.914281430867266,
+    "zoom": 0.9933460636110357,
     "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
+     0.5310233337278962,
+     0.540307547713,
      0.7587527919899949
     ],
     "center": [
@@ -1404,7 +1407,7 @@
     ],
     "autoRotate": false,
     "signal": "pitch",
-    "signalSource": "own",
+    "signalSource": "ref",
     "overlay": true,
     "liveShapeSeconds": 5
    }
@@ -1412,7 +1415,7 @@
   "idb": {
    "recording-index": [
     {
-     "date": "2026-01-01T03:00:00.000Z",
+     "date": "2026-01-01T03:00:05.000Z",
      "duration": 6.696,
      "features": {
       "balance": -15.115525244433902,
@@ -9786,11 +9789,19 @@
    "method": "POST",
    "path": "/api/analyze",
    "query": "",
+   "body": "140968b 978931df5812375ac12d646aa24fec812dd4e0d96f04a8258602fe5dfa42fd37",
+   "status": 503
+  },
+  {
+   "seq": 10,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
    "body": "140968b 2d46cbddbc6e8fcdf88a9b23f869c9c34d998fc5ff479ecfc748c0e3346fb263",
    "status": 200
   },
   {
-   "seq": 10,
+   "seq": 11,
    "method": "GET",
    "path": "/api/detail/common_voice_ja_36363162",
    "query": "end=1.349842105263158&start=0.36694736842105263",

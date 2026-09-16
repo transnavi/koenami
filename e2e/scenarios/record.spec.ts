@@ -70,6 +70,26 @@ test.describe('recording', () => {
 		await studio.golden('restored-first-take', audio);
 	});
 
+	test('a recording stopped within a quarter second is refused', async ({ page, studio }) => {
+		await studio.open('/ja/');
+		await studio.until(ready);
+		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+		await studio.until('!!window.voiceApp.state.ownFull && ' + idle);
+		await page.keyboard.press('r');
+		await studio.until(recording);
+		await page.keyboard.press('r');
+		await studio.until('window.voiceApp.state.recording === false && ' + idle);
+		await studio.tick(300);
+		await studio.golden('too-short-restores-previous', audio);
+		// Leaving the page while recording releases the microphone.
+		await page.keyboard.press('r');
+		await studio.until(recording);
+		await studio.open('/ja/');
+		await studio.until(ready);
+		await studio.tick(300);
+		await studio.golden('left-while-recording', audio);
+	});
+
 	test('the recording cap stops capture on its own', async ({ page, studio }) => {
 		await studio.open('/ja/', shortCap);
 		await studio.until(ready);
@@ -108,7 +128,8 @@ test.describe('recording', () => {
 		await studio.until(ready);
 		await page.locator('#live-mode').click();
 		await studio.until(recording);
-		await studio.tick(200);
+		// The first measurement tick arrives before half a second of audio exists.
+		await studio.tick(500);
 		await studio.golden('live-started', live);
 		await page.locator('#loopback').click();
 		await studio.tick(100);
@@ -135,8 +156,25 @@ test.describe('recording', () => {
 		await page.unroute('**/api/analyze?live=1');
 		await page.locator('#live-mode').click();
 		await studio.until(recording);
+		await studio.until(buffered(3.3));
 		await studio.tick(600);
 		await studio.golden('live-restarted', live);
+		// A measurement still in flight when live mode stops is discarded, and the buffer
+		// is trimmed once more than twelve seconds have been captured.
+		let release: (() => void) | null = null;
+		await page.route('**/api/analyze?live=1', async (route) => { await new Promise<void>((resolve) => { release = resolve; }); await route.continue(); }, { times: 1 });
+		// The live buffer is trimmed to about twelve seconds, so it never reads more.
+		await studio.until(buffered(12), 40_000);
+		await page.waitForTimeout(1500);
+		await studio.tick(500);
+		await page.locator('#live-mode').click();
+		await studio.until('window.voiceApp.state.recording === false && ' + idle);
+		release!();
+		await studio.tick(300);
+		await studio.golden('live-stopped-with-request-in-flight', live);
+		await page.locator('#live-mode').click();
+		await studio.until(recording);
+		await studio.tick(200);
 		await page.locator('#live-mode').click();
 		await studio.until('window.voiceApp.state.recording === false && ' + idle);
 		await studio.tick(300);

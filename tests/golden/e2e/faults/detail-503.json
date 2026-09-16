@@ -1096,29 +1096,13 @@
    "text": ""
   },
   "notice": {
-   "tag": "div",
-   "class": "error toast",
-   "attrs": {
-    "role": "status"
-   },
-   "text": "見本の解析：解析サーバーを準備しています。"
+   "ignored": true
   },
   "live-status": {
-   "tag": "div",
-   "class": "sr-only",
-   "attrs": {
-    "role": "status",
-    "aria-live": "polite"
-   },
-   "text": ""
+   "ignored": true
   },
   "live-alert": {
-   "tag": "div",
-   "class": "sr-only",
-   "attrs": {
-    "role": "alert"
-   },
-   "text": "見本の解析：解析サーバーを準備しています。"
+   "ignored": true
   },
   "import-dialog": {
    "tag": "dialog",

@@ -888,7 +888,7 @@
    "attrs": {
     "title": "見本を選ぶ"
    },
-   "text": "JVS 001167 Hz · 988 ΔF"
+   "text": "JVS 001172 Hz · 1022 ΔF"
   },
   "selected-name": {
    "tag": "strong",
@@ -900,7 +900,7 @@
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "167 Hz · 988 ΔF"
+   "text": "172 Hz · 1022 ΔF"
   },
   "favorite-selected": {
    "tag": "button",
@@ -936,7 +936,7 @@
    "attrs": {
     "lang": "ja"
    },
-   "text": "コンピュータゲームのメーカーや、業界団体などに関連する人物のカテゴリ。"
+   "text": "サービスマネージャー導入駅のため、大井町駅から、遠隔管理している。"
   },
   "record": {
    "tag": "button",
@@ -1367,7 +1367,7 @@
     "group": "all",
     "sort": "name",
     "search": "",
-    "reference": "jvs001-parallel100-VOICEACTRESS100_003",
+    "reference": "jvs001-parallel100-VOICEACTRESS100_004",
     "referenceRange": null,
     "openSpeakers": [
      "ja:Common Voice:50a288fb7fb3",
@@ -1482,38 +1482,46 @@
   },
   {
    "seq": 9,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
+   "body": "96000b d341b5faded273f995c238435da64c43470a528701ed344d8511559dfe49f2fb",
+   "status": 200
+  },
+  {
+   "seq": 10,
    "method": "GET",
    "path": "/api/catalog",
    "query": "",
    "status": 200
   },
   {
-   "seq": 10,
+   "seq": 11,
    "method": "GET",
    "path": "/api/import-index/jvs",
    "query": "",
    "status": 200
   },
   {
-   "seq": 11,
+   "seq": 12,
    "method": "GET",
    "path": "/api/library",
    "query": "lang=ja",
    "status": 200
   },
   {
-   "seq": 12,
+   "seq": 13,
    "method": "GET",
    "path": "/api/detail/common_voice_ja_36363162",
    "query": "",
    "status": 200
   },
   {
-   "seq": 13,
+   "seq": 14,
    "method": "POST",
    "path": "/api/analyze",
    "query": "",
-   "body": "96000b d3165d711b702b7d78241c9637470d51061b368676ecf9b7039c983b77d7773b",
+   "body": "96000b d341b5faded273f995c238435da64c43470a528701ed344d8511559dfe49f2fb",
    "status": 200
   }
  ],

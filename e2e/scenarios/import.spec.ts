@@ -65,6 +65,13 @@ test.describe('JVS import', () => {
 		await studio.until('!!window.voiceApp.state.words.ref');
 		await studio.tick(200);
 		await studio.golden('imported-words');
+		const second = index.clips[1].id;
+		await page.locator(`.sample-row[data-id="${second}"]`).click();
+		await studio.until(`window.voiceApp.state.selected?.id === ${JSON.stringify(second)} && !!window.voiceApp.state.refFull`);
+		await page.locator('#play-reference').click();
+		await studio.until('document.getElementById("reference-player").paused');
+		await studio.tick(300);
+		await studio.golden('second-imported-selected');
 		await studio.open('/ja/');
 		await studio.until(ready);
 		await studio.tick(300);

@@ -260,9 +260,7 @@
   "projection-controls": {
    "tag": "div",
    "class": "segment",
-   "attrs": {
-    "hidden": ""
-   },
+   "attrs": {},
    "text": "主成分男女差"
   },
   "auto-rotate": {
@@ -270,7 +268,8 @@
    "class": "rotate-button",
    "attrs": {
     "aria-pressed": "false",
-    "title": "3Dの自動回転を切り替え"
+    "title": "3Dの自動回転を切り替え",
+    "hidden": ""
    },
    "text": "↻ 自動回転"
   },
@@ -1343,24 +1342,24 @@
   "local": {
    "voice-speed": 1,
    "koenami-session": {
-    "lang": "en",
+    "lang": "ko",
     "group": "female",
     "sort": "high",
     "search": "",
-    "reference": "common_voice_en_17839501",
+    "reference": "common_voice_ko_36880067",
     "referenceRange": null,
     "openSpeakers": [
-     "en:female:1c1f78f06fdf"
+     "ko:female:e721830ea33b"
     ],
-    "dimension": 3,
+    "dimension": 2,
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 1.6390814396069777,
+    "zoom": 1,
     "camera": [
-     0.3876456894882133,
-     0.41744911220235414,
-     0.6179073619498192
+     0.5,
+     0.5,
+     0.5
     ],
     "center": [
      0.5,

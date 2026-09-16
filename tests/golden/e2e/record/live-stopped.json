@@ -1345,11 +1345,11 @@
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 1.1,
+    "zoom": 0.914281430867266,
     "camera": [
-     0.5,
-     0.5,
-     0.5
+     0.48432510759557895,
+     0.6283765936675773,
+     0.7587527919899949
     ],
     "center": [
      0.5,
@@ -1361,7 +1361,7 @@
     ],
     "autoRotate": false,
     "signal": "pitch",
-    "signalSource": "own",
+    "signalSource": "ref",
     "overlay": true,
     "liveShapeSeconds": 2
    }
@@ -1475,6 +1475,14 @@
   },
   {
    "seq": 14,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 15,
    "method": "POST",
    "path": "/api/analyze",
    "query": "live=1",

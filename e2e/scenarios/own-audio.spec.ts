@@ -38,12 +38,18 @@ test.describe('own audio', () => {
 			await studio.golden(`metric-${metric}`);
 			await page.locator('#metric-dialog [data-close]').click();
 		}
+		// A focused indicator keeps focus when the panel is rebuilt.
+		await page.locator('#indicators [data-metric="hnr"]').focus();
+		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
+		await studio.until('window.voiceApp.state.ownName === "own-b.wav" && ' + analysed);
+		await studio.tick(300);
+		await studio.golden('indicator-focus-kept');
 
-		for (const view of ['spectrogram', 'spectrum', 'waveform', 'spectrogram', 'pitch']) {
+		for (const [i, view] of ['spectrogram', 'spectrum', 'waveform', 'spectrogram', 'pitch'].entries()) {
 			await studio.choose('signal-view', view);
 			await studio.tick(300);
-			await studio.golden(`view-${view}`);
-			await studio.canvas(`signal-${view}`, '#signal-canvas');
+			await studio.golden(`view-${i}-${view}`);
+			await studio.canvas(`signal-${i}-${view}`, '#signal-canvas');
 		}
 		await page.locator('#signal-ref').click();
 		await studio.tick(200);
@@ -109,6 +115,12 @@ test.describe('own audio', () => {
 		await studio.until('!window.voiceApp.state.ranges.own');
 		await studio.tick(300);
 		await studio.golden('own-range-reset');
+		// A selection whose analysis fails is reported.
+		await page.route('**/api/analyze', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: '解析サーバーを準備しています。' }), { times: 1 });
+		await dragSignal(page, 200, 500);
+		await studio.until(idle);
+		await studio.tick(300);
+		await studio.golden('own-range-analysis-failed');
 
 		// Timeline drags select on the full duration; a too-narrow drag is ignored.
 		await dragSignal(page, 100, 400, 6);
@@ -154,6 +166,14 @@ test.describe('own audio', () => {
 		await page.locator('#words-button').click();
 		await studio.tick(100);
 		await studio.golden('ref-words-again');
+		await page.route('**/api/words**', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: 'Word timing is unavailable.' }));
+		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
+		await studio.until('window.voiceApp.state.ownName === "own-b.wav" && ' + analysed);
+		await page.locator('#signal-own').click();
+		await page.locator('#words-button').click();
+		await studio.until('!document.getElementById("words-button").disabled');
+		await studio.tick(300);
+		await studio.golden('words-unavailable');
 	});
 
 	test('playback: own, A/B, speed and normalisation', async ({ page, studio }) => {

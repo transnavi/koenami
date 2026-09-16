@@ -1361,7 +1361,7 @@
     ],
     "autoRotate": false,
     "signal": "pitch",
-    "signalSource": "own",
+    "signalSource": "ref",
     "overlay": true,
     "liveShapeSeconds": 2
    }
@@ -1487,7 +1487,22 @@
    "path": "/api/analyze",
    "query": "live=1",
    "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 16,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
    "status": 200
+  },
+  {
+   "seq": 17,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>"
   }
  ],
  "media": [],

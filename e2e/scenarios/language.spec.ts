@@ -7,6 +7,11 @@ test.describe('reference language', () => {
 	test('switching languages pushes the route and restores it on back', async ({ page, studio }) => {
 		await studio.open('/ja/');
 		await studio.until(ready);
+		// In 2D the contrast axis needs sixteen speakers per group; smaller libraries fall
+		// back to the principal components.
+		await page.locator('[data-dimension="2"]').click();
+		await page.locator('[data-projection="contrast"]').click();
+		await studio.tick(200);
 		for (const id of ['zh-CN', 'en', 'ko']) {
 			await studio.choose('language', id);
 			await studio.until(lang(id));

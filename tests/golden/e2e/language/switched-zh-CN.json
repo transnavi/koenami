@@ -260,9 +260,7 @@
   "projection-controls": {
    "tag": "div",
    "class": "segment",
-   "attrs": {
-    "hidden": ""
-   },
+   "attrs": {},
    "text": "主成分男女差"
   },
   "auto-rotate": {
@@ -270,7 +268,8 @@
    "class": "rotate-button",
    "attrs": {
     "aria-pressed": "false",
-    "title": "3Dの自動回転を切り替え"
+    "title": "3Dの自動回転を切り替え",
+    "hidden": ""
    },
    "text": "↻ 自動回転"
   },

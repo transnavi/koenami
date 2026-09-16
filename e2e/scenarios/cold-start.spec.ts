@@ -3,6 +3,7 @@ import { test, expect } from '../fixtures';
 test.describe('cold start', () => {
 	test('Japanese studio with an empty session', async ({ page, studio }) => {
 		await studio.open('/ja/');
+		await studio.tick(1000);
 		await studio.until('!!window.voiceApp?.state.refFull');
 		await studio.tick(1500);
 		await studio.golden('loaded');

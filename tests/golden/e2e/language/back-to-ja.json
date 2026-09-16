@@ -260,9 +260,7 @@
   "projection-controls": {
    "tag": "div",
    "class": "segment",
-   "attrs": {
-    "hidden": ""
-   },
+   "attrs": {},
    "text": "主成分男女差"
   },
   "auto-rotate": {
@@ -270,7 +268,8 @@
    "class": "rotate-button",
    "attrs": {
     "aria-pressed": "false",
-    "title": "3Dの自動回転を切り替え"
+    "title": "3Dの自動回転を切り替え",
+    "hidden": ""
    },
    "text": "↻ 自動回転"
   },
@@ -1374,15 +1373,15 @@
     "openSpeakers": [
      "ja:Common Voice:50a288fb7fb3"
     ],
-    "dimension": 3,
+    "dimension": 2,
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.914281430867266,
+    "zoom": 1,
     "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
-     0.7587527919899949
+     0.5,
+     0.5,
+     0.5
     ],
     "center": [
      0.5,

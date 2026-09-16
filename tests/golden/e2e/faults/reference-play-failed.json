@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "signal-view",
+ "focus": "body",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -241,7 +241,7 @@
     "role": "group",
     "aria-label": "声の指標"
    },
-   "text": "高さ226Hz423響き1097Hz ΔF1239質感9.3dB16.3明るさ-15.1dB-7.5抑揚7.5半音17.3"
+   "text": "高さ226Hz219響き1097Hz ΔF1061質感9.3dB15.5明るさ-15.1dB-22.6抑揚7.5半音12.9"
   },
   "report-button": {
    "tag": "button",
@@ -249,13 +249,13 @@
    "attrs": {
     "title": "見本との5指標の標準化距離。0が一致。比較レポートを開く。"
    },
-   "text": "見本との差5.44"
+   "text": "見本との差3.43"
   },
   "fit-value": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "5.44"
+   "text": "3.43"
   },
   "projection-controls": {
    "tag": "div",
@@ -377,7 +377,7 @@
    "attrs": {
     "aria-label": "音声の表示"
    },
-   "value": "spectrogram",
+   "value": "pitch",
    "options": [
     {
      "value": "pitch",
@@ -404,7 +404,7 @@
      "data": {}
     }
    ],
-   "trigger": "スペクトログラム",
+   "trigger": "高さ",
    "expanded": "false",
    "text": "高さスペクトログラムスペクトル波形",
    "style": "display: inline-flex;"
@@ -819,9 +819,9 @@
     "head": [
      "details#ja:Common Voice:50a288fb7fb3|speaker-folder||true|F 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:1",
      "summary#||||F 26243",
-     "button#common_voice_ja_36363162|sample-row|true||今日もカレーよ423 Hz · 0:02",
+     "button#common_voice_ja_36363162|sample-row|false||今日もカレーよ423 Hz · 0:02",
      "button#|favorite|false||☆",
-     "button#common_voice_ja_36363165|sample-row|false||かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10",
+     "button#common_voice_ja_36363165|sample-row|true||かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10",
      "button#|favorite|false||☆",
      "button#common_voice_ja_36363168|sample-row|false||環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06",
      "button#|favorite|false||☆",
@@ -890,19 +890,19 @@
    "attrs": {
     "title": "見本を選ぶ"
    },
-   "text": "F 2624423 Hz · 1239 ΔF"
+   "text": "F 2625219 Hz · 1061 ΔF"
   },
   "selected-name": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "F 2624"
+   "text": "F 2625"
   },
   "selected-meta": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "423 Hz · 1239 ΔF"
+   "text": "219 Hz · 1061 ΔF"
   },
   "favorite-selected": {
    "tag": "button",
@@ -922,7 +922,7 @@
     "aria-label": "出典",
     "target": "_blank",
     "rel": "noreferrer",
-    "href": "https://huggingface.co/datasets/FluidInference/cv-corpus-25.0-ja/resolve/365b7654cd582e20e8000921ef7b0e32caa1906a/ja_01/clips/common_voice_ja_36363162.mp3"
+    "href": "https://huggingface.co/datasets/FluidInference/cv-corpus-25.0-ja/resolve/365b7654cd582e20e8000921ef7b0e32caa1906a/ja_01/clips/common_voice_ja_36363165.mp3"
    },
    "text": ""
   },
@@ -938,7 +938,7 @@
    "attrs": {
     "lang": "ja"
    },
-   "text": "今日もカレーよ"
+   "text": "かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、"
   },
   "record": {
    "tag": "button",
@@ -1094,10 +1094,10 @@
    "tag": "audio",
    "class": "",
    "attrs": {
-    "src": "/samples/common_voice_ja_36363162.mp3"
+    "src": "/samples/common_voice_ja_36363165.mp3"
    },
    "media": {
-    "src": "/samples/common_voice_ja_36363162.mp3",
+    "src": "/samples/common_voice_ja_36363165.mp3",
     "paused": true,
     "rate": 1,
     "volume": 1,
@@ -1108,11 +1108,11 @@
   },
   "notice": {
    "tag": "div",
-   "class": "toast",
+   "class": "error toast",
    "attrs": {
     "role": "status"
    },
-   "text": "音声を読み込みました。"
+   "text": "blocked"
   },
   "live-status": {
    "tag": "div",
@@ -1129,7 +1129,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": ""
+   "text": "blocked"
   },
   "import-dialog": {
    "tag": "dialog",
@@ -1331,13 +1331,13 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "比較×5.44見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。この2音声の差：図に表示 82% · 省略 18%5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。指標自分見本参照音声の中央80%高さ · Hz226423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—見本の高さは自分より10.9半音高めです。速度を落として聴き、無理のない高さで同じ文を試してください。響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を"
+   "text": "比較×レポートを保存"
   },
   "report-content": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "5.44見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。この2音声の差：図に表示 82% · 省略 18%5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。指標自分見本参照音声の中央80%高さ · Hz226423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—見本の高さは自分より10.9半音高めです。速度を落として聴き、無理のない高さで同じ文を試してください。響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べて"
+   "text": ""
   },
   "report-save": {
    "tag": "button",
@@ -1350,69 +1350,35 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "抑揚声の高さの10〜90パーセンタイルの幅です。女性的な印象に関連する場面もありますが、大きければよいとは限りません。日本語のアクセント、中国語の声調、文の種類、感情で変わります。標準偏差や間の取り方はレポートで確認できます。自分7.5 半音選んだ見本17.3 半音女性的な声の見本 · 中央80%3.5–14.0 半音参照話者数25"
+   "text": ""
   },
   "metric-title": {
    "tag": "h2",
    "class": "",
    "attrs": {},
-   "text": "抑揚"
+   "text": ""
   },
   "metric-description": {
    "tag": "p",
    "class": "",
    "attrs": {},
-   "text": "声の高さの10〜90パーセンタイルの幅です。女性的な印象に関連する場面もありますが、大きければよいとは限りません。日本語のアクセント、中国語の声調、文の種類、感情で変わります。標準偏差や間の取り方はレポートで確認できます。"
+   "text": ""
   },
   "metric-details": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "自分7.5 半音選んだ見本17.3 半音女性的な声の見本 · 中央80%3.5–14.0 半音参照話者数25"
+   "text": ""
   }
  },
  "storage": {
   "local": {
-   "voice-speed": 1,
-   "koenami-session": {
-    "lang": "ja",
-    "group": "female",
-    "sort": "high",
-    "search": "",
-    "reference": "common_voice_ja_36363162",
-    "referenceRange": null,
-    "openSpeakers": [
-     "ja:Common Voice:50a288fb7fb3"
-    ],
-    "dimension": 3,
-    "projection": "variance",
-    "yaw": -0.45,
-    "tilt": 0.3,
-    "zoom": 0.914281430867266,
-    "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
-     0.7587527919899949
-    ],
-    "center": [
-     0.5,
-     0.5
-    ],
-    "pan": [
-     0,
-     0
-    ],
-    "autoRotate": false,
-    "signal": "spectrogram",
-    "signalSource": "own",
-    "overlay": true,
-    "liveShapeSeconds": 5
-   }
+   "voice-speed": 1
   },
   "idb": {
    "recording-index": [
     {
-     "date": "2026-01-01T03:00:00.000Z",
+     "date": "2026-01-01T03:00:05.000Z",
      "duration": 6.696,
      "features": {
       "balance": -15.115525244433902,
@@ -9747,6 +9713,13 @@
    "path": "/api/analyze",
    "query": "",
    "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+   "status": 200
+  },
+  {
+   "seq": 5,
+   "method": "GET",
+   "path": "/api/detail/common_voice_ja_36363165",
+   "query": "",
    "status": 200
   }
  ],

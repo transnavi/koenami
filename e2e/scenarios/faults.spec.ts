@@ -40,18 +40,21 @@ test.describe('server and storage faults', () => {
 		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
 		await studio.until('window.voiceApp.state.selected?.id === "common_voice_ja_36363165"');
 		await studio.until(idle);
+		await studio.until('!document.getElementById("reference-player").paused');
 		await studio.tick(600);
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');
 		await studio.tick(100);
-		await studio.golden('detail-503');
+		// The failed analysis and the interrupted playback both post a notice; their order
+		// depends on which promise settles first.
+		await studio.golden('detail-503', { ignore: ['notice', 'live-status', 'live-alert'] });
 	});
 
 	test('analysis responses without visuals or tracks still render', async ({ page, studio }) => {
 		await page.route('**/api/analyze', async (route) => {
 			const response = await route.fetch();
 			const detail = await response.json();
-			delete detail.visuals; delete detail.track;
+			delete detail.visuals; delete detail.track; delete detail.features.f0;
 			await route.fulfill({ response, json: detail });
 		});
 		await page.route('**/api/detail/**', async (route) => {
@@ -77,6 +80,35 @@ test.describe('server and storage faults', () => {
 		await studio.until('document.getElementById("player").paused');
 		await studio.tick(200);
 		await studio.golden('bare-playback');
+	});
+
+	test('playback that fails and a delete that fails', async ({ page, studio }) => {
+		await studio.open('/ja/', async (p) => p.addInitScript(() => {
+			const play = HTMLMediaElement.prototype.play;
+			HTMLMediaElement.prototype.play = function () { return (window as unknown as { __failPlay?: boolean }).__failPlay ? Promise.reject(new DOMException('blocked', 'NotAllowedError')) : play.call(this); };
+			const del = IDBObjectStore.prototype.delete;
+			IDBObjectStore.prototype.delete = function (key: IDBValidKey | IDBKeyRange) { if ((window as unknown as { __failDelete?: boolean }).__failDelete) throw new DOMException('gone', 'InvalidStateError'); return del.call(this, key); };
+		}));
+		await studio.until(ready);
+		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+		await studio.until(idle);
+		await page.evaluate('window.__failPlay = true');
+		await page.locator('#play-mine').click();
+		await studio.tick(300);
+		await studio.golden('own-play-failed');
+		await page.locator('#compare-ab').click();
+		await studio.tick(300);
+		await studio.golden('ab-play-failed');
+		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
+		await studio.until('window.voiceApp.state.selected?.id === "common_voice_ja_36363165" && !!window.voiceApp.state.refFull');
+		await studio.tick(300);
+		await studio.golden('reference-play-failed');
+		await page.evaluate('window.__failPlay = false; window.__failDelete = true');
+		await page.locator('#take-select button.trigger').click();
+		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
+		await studio.until(idle);
+		await studio.tick(300);
+		await studio.golden('delete-failed');
 	});
 
 	test('storage that cannot open', async ({ page, studio }) => {

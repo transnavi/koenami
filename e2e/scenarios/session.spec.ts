@@ -47,7 +47,7 @@ test.describe('session and settings', () => {
 		await studio.golden('system-dark-default');
 	});
 
-	test('a storage that throws', async ({ studio }) => {
+	test('a storage that throws', async ({ page, studio }) => {
 		await studio.open('/ja/', async (p) => p.addInitScript(() => {
 			const broken = () => { throw new Error('storage disabled'); };
 			Object.defineProperty(window, 'localStorage', { get: () => ({ getItem: broken, setItem: broken, removeItem: broken, key: broken, length: 0 }) });
@@ -55,6 +55,9 @@ test.describe('session and settings', () => {
 		await studio.until(ready);
 		await studio.tick(1200);
 		await studio.golden('storage-throws');
+		await page.locator('#favorite-selected').click();
+		await studio.tick(300);
+		await studio.golden('favourite-with-storage-throwing');
 	});
 
 	test('the saved session restores library, reference, range, map and signal state', async ({ page, studio }) => {

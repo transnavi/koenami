@@ -35,6 +35,7 @@ test.describe('voice map', () => {
 		await studio.golden('2d-contrast');
 		await studio.canvas('2d-contrast', '#voice-map');
 		await page.locator('[data-projection="variance"]').click();
+		await page.locator('[data-projection="variance"]').click();
 		await studio.tick(300);
 		await studio.golden('2d-variance');
 		await studio.canvas('2d-variance', '#voice-map');
@@ -118,6 +119,7 @@ test.describe('voice map', () => {
 		await studio.golden('tooltip-hidden');
 		await page.mouse.click(target.x, target.y);
 		await studio.until('window.voiceApp.state.selected?.id === "common_voice_ja_36363165" && !!window.voiceApp.state.refFull');
+		await studio.until('!document.getElementById("reference-player").paused');
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');
 		await studio.tick(300);

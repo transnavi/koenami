@@ -1108,11 +1108,11 @@
   },
   "notice": {
    "tag": "div",
-   "class": "toast",
+   "class": "error toast",
    "attrs": {
     "role": "status"
    },
-   "text": "音声を読み込みました。"
+   "text": "解析サーバーを準備しています。"
   },
   "live-status": {
    "tag": "div",
@@ -1129,7 +1129,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": ""
+   "text": "解析サーバーを準備しています。"
   },
   "import-dialog": {
    "tag": "dialog",
@@ -1412,7 +1412,7 @@
   "idb": {
    "recording-index": [
     {
-     "date": "2026-01-01T03:00:00.000Z",
+     "date": "2026-01-01T03:00:05.000Z",
      "duration": 6.696,
      "features": {
       "balance": -15.115525244433902,
@@ -9783,6 +9783,14 @@
   },
   {
    "seq": 9,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
+   "body": "140968b 978931df5812375ac12d646aa24fec812dd4e0d96f04a8258602fe5dfa42fd37",
+   "status": 503
+  },
+  {
+   "seq": 10,
    "method": "POST",
    "path": "/api/analyze",
    "query": "",

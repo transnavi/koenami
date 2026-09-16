@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '../fixtures';
+import { readFileSync } from 'node:fs';
 
 const ready = '!!window.voiceApp?.state.refFull && !window.voiceApp.state.loadingLanguage';
 const idle = '!window.voiceApp.state.busy && window.voiceApp.state.analyzing.size === 0';
@@ -120,18 +121,52 @@ test.describe('busy and recording guards', () => {
 		await studio.until(analysed);
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
 		await studio.until('window.voiceApp.state.ownName === "own-b.wav" && ' + analysed);
-		// Remove the first take's recording behind the app's back.
+		await page.locator('#upload').setInputFiles({ name: 'a<b>&"\'.wav', mimeType: 'audio/wav', buffer: readFileSync(studio.audio('own-a.wav')) });
+		await studio.until('window.voiceApp.state.ownName.startsWith("a<b>") && ' + analysed);
+		await studio.tick(300);
+		await studio.golden('three-takes-escaped-name');
+		// The oldest take is neither current nor previous, so it is read from storage; its
+		// recording is removed behind the app's back first.
 		await page.evaluate(() => new Promise<void>((resolve) => {
 			const open = indexedDB.open('koe-takes');
 			open.onsuccess = () => { const tx = open.result.transaction('session', 'readwrite'); tx.objectStore('session').delete('recording:00000000-0000-4000-8000-000000000001'); tx.oncomplete = () => resolve(); };
 		}));
-		await studio.choose('take-select', '1');
+		await studio.choose('take-select', '2');
 		await studio.until(idle);
 		await studio.tick(300);
 		await studio.golden('take-unreadable');
 		await page.locator('#take-select button.trigger').click();
-		await page.locator('#take-select button.row-action[data-value="1"][data-action="download"]').click();
+		await page.locator('#take-select button.row-action[data-value="2"][data-action="download"]').click();
 		await studio.tick(300);
 		await studio.golden('download-unreadable');
+		await page.keyboard.press('Escape');
+		// A stored take that is intact restores and downloads through storage.
+		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
+		await studio.until(analysed);
+		await studio.choose('take-select', '2');
+		await studio.until('window.voiceApp.state.ownName === "own-b.wav" && ' + idle);
+		await studio.tick(300);
+		await studio.golden('stored-take-restored');
+		const wav = await studio.download(async () => {
+			await page.locator('#take-select button.trigger').click();
+			await page.locator('#take-select button.row-action[data-value="2"][data-action="download"]').click();
+		});
+		await studio.golden('stored-take-downloaded', { extra: { wav } });
+		await page.keyboard.press('Escape');
+		// A history point on the map restores its take.
+		await page.locator('[data-dimension="2"]').click();
+		await studio.tick(300);
+		const xy = (await page.evaluate('(() => { const p = window.voiceApp.map.hit.find(h => h.sample.recordingId); return p ? [p.xy[0], p.xy[1]] : null; })()')) as [number, number] | null;
+		const box = (await page.locator('#voice-map').boundingBox())!;
+		await page.mouse.click(box.x + xy![0], box.y + xy![1]);
+		await studio.until(idle);
+		await studio.tick(300);
+		await studio.golden('history-point-restored');
+		// Deleting the current take falls back to the previous one.
+		await page.locator('#take-select button.trigger').click();
+		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
+		await studio.until(idle);
+		await studio.tick(300);
+		await studio.golden('current-deleted-previous-applied');
 	});
 });
