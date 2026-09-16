@@ -8,6 +8,8 @@ export class VoiceAnalyzer extends Container<Env> {
 }
 
 const languages = new Set(['ja', 'zh-CN', 'en', 'ko']);
+// Crawler and browser-chrome files at the site root (see web/public and prepare_public.py).
+const siteFiles = /^\/(robots\.txt|sitemap\.xml|site\.webmanifest|og-image\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
 const maxBytes = 16000 * 4 * 60;
 function text(message: string, status: number, headers: Record<string, string> = {}) {
   return new Response(message, { status, headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store', ...headers } });
@@ -26,7 +28,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     if (!languages.has(lang)) return text('Not found', 404);
     asset = `/public-api/${lang}.json`;
   } else if (get && (url.pathname === '/' || /^\/(ja|zh-CN|en|ko)\/?$/.test(url.pathname))) asset = '/index.html';
-  else if (get && (/^\/(assets|samples)\/[^/]+$/.test(url.pathname) || url.pathname === '/method.html')) asset = url.pathname;
+  else if (get && (/^\/(assets|samples)\/[^/]+$/.test(url.pathname) || url.pathname === '/method.html' || siteFiles.test(url.pathname))) asset = url.pathname;
   if (asset) {
     url.pathname = asset; url.search = '';
     return env.ASSETS.fetch(new Request(url, request));

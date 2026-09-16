@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 export default defineConfig({
- root:'web',publicDir:false,
+ root:'web',publicDir:'public',
  server:{host:'127.0.0.1',port:8766,strictPort:true,forwardConsole:false,proxy:{
   '/api':{target:'http://127.0.0.1:35511',changeOrigin:false},
   '/samples':{target:'http://127.0.0.1:35511',changeOrigin:false},
