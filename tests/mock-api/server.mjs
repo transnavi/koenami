@@ -81,13 +81,21 @@ createServer(async (req, res) => {
 	}
 	const body = await readBody(req);
 	const candidates = keys(req.method, url, body);
-	if (upstream) {
-		const answer = await record(req, url, body);
-		for (const key of candidates) writeFileSync(file(key), JSON.stringify({ key, ...answer }, null, 1) + '\n');
-		return send(res, answer);
-	}
+	// Microphone captures never repeat byte for byte, so once a fixture exists for a
+	// sample-count bucket every later capture of that length gets the same answer, in
+	// recording runs as well as replays. Exact-body fixtures (uploads) are looked up first.
 	for (const key of candidates) {
 		if (existsSync(file(key))) return send(res, JSON.parse(readFileSync(file(key), 'utf8')));
+	}
+	if (upstream) {
+		let answer;
+		try { answer = await record(req, url, body); } catch (error) {
+			console.error(`mock-api: upstream failed for ${candidates[0]}: ${error.message}`);
+			res.writeHead(502, { 'content-type': 'text/plain; charset=utf-8' });
+			return res.end('upstream failed');
+		}
+		for (const key of candidates) writeFileSync(file(key), JSON.stringify({ key, ...answer }, null, 1) + '\n');
+		return send(res, answer);
 	}
 	console.error(`mock-api: no fixture for ${candidates[0]}`);
 	res.writeHead(599, { 'content-type': 'text/plain; charset=utf-8' });

@@ -18,7 +18,7 @@ type Studio = {
 	log: NetEntry[];
 	/** Golden a named observation of the page. `ignore` drops element ids whose state
 	 *  follows real-time media playback and cannot be pinned. */
-	golden: (name: string, options?: { ignore?: string[]; extra?: Record<string, unknown> }) => Promise<void>;
+	golden: (name: string, options?: { ignore?: string[]; maskAudio?: boolean; extra?: Record<string, unknown> }) => Promise<void>;
 	/** Advance the fake clock, letting timers, intervals and animation frames run. */
 	tick: (ms?: number) => Promise<void>;
 	/** Wait (real time) until a page expression is truthy. The fake clock does not move,
@@ -92,16 +92,19 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				await page.waitForTimeout(25);
 			}
 		};
-		const golden = async (name: string, { ignore = [], extra = {} }: { ignore?: string[]; extra?: Record<string, unknown> } = {}) => {
+		const golden = async (name: string, { ignore = [], maskAudio = false, extra = {} }: { ignore?: string[]; maskAudio?: boolean; extra?: Record<string, unknown> } = {}) => {
 			const dom = await page.evaluate(domProjection);
 			for (const id of ignore) dom.elements[id] = { ignored: true };
-			const observation: Observation & { network: NetEntry[]; errors: string[] } = {
+			let observation: Observation & { network: NetEntry[]; errors: string[] } = {
 				...dom,
 				storage: await page.evaluate(storageDump),
 				network: log.slice(),
 				errors: errors.slice(),
 				...extra
 			};
+			// Microphone audio differs between runs (the fake device loops its file from
+			// launch); hashes of captured samples and their analysis bodies are masked.
+			if (maskAudio) observation = JSON.parse(JSON.stringify(observation, (key, value) => ['sha256', 'body', 'waveform', 'duration', 'length'].includes(key) && value !== null ? '<audio>' : value));
 			const path = join(dir, `${name}.json`);
 			const text = JSON.stringify(observation, null, 1) + '\n';
 			if (record) { writeFileSync(path, text); return; }

@@ -8,8 +8,7 @@
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
-  "--accent": "#1a78c2",
-  "--mic-level": ""
+  "--accent": "#1a78c2"
  },
  "elements": {
   "i-book": {

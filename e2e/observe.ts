@@ -35,7 +35,8 @@ export function domProjection(): Observation {
 			entry.rows = { count: lines.length, head: lines.slice(0, 40), tail: lines.slice(-5) };
 		} else if (rows.length > 40) entry.children = rows.length;
 		else entry.text = collapse(el.textContent).slice(0, 600);
-		if (el instanceof HTMLElement && el.style.cssText) entry.style = el.style.cssText;
+		// --mic-level follows the live microphone signal and cannot be pinned.
+		if (el instanceof HTMLElement && el.style.cssText) entry.style = el.style.cssText.replace(/--mic-level: [^;]*;/, '--mic-level: <live>;');
 		elements[id] = entry;
 	}
 	// The seek slider and the clocks show media time, which depends on how long audio
@@ -44,7 +45,7 @@ export function domProjection(): Observation {
 	for (const id of ['reference-seek', 'reference-time', 'timer']) if (elements[id]) elements[id] = { followsPlayback: true };
 	const cs = getComputedStyle(document.documentElement);
 	const vars: Record<string, string> = {};
-	for (const name of ['--reference', '--self', '--accent', '--mic-level']) vars[name] = cs.getPropertyValue(name).trim();
+	for (const name of ['--reference', '--self', '--accent']) vars[name] = cs.getPropertyValue(name).trim();
 	const root = document.documentElement;
 	return {
 		url: location.pathname + location.search + location.hash,

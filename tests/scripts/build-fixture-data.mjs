@@ -39,8 +39,8 @@ writeFileSync(join(out, 'native-ja.json'), JSON.stringify({ ...ja, clips: jaClip
 
 for (const lang of ['zh-CN', 'en', 'ko']) {
 	const lib = read(`libraries/${lang}.json`);
-	const clips = subset(lib.clips, 8, 2);
-	clips.slice(0, 2).forEach((c) => audio.add(basename(c.audio)));
+	const clips = subset(lib.clips, 10, 1);
+	clips.forEach((c) => audio.add(basename(c.audio)));
 	writeFileSync(join(out, `libraries/${lang}.json`), JSON.stringify({ ...lib, clips }));
 }
 
