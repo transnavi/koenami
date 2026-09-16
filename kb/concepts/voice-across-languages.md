@@ -11,8 +11,8 @@ Most of the research on gendered voice is in English, Dutch, Swedish and German.
 
 ## What is known
 - Japanese women's pitch is higher than Dutch women's for cultural rather than anatomical reasons, with masculinity pulling Japanese men's pitch lower [[vanbezooijen1995]]; young Japanese women use creak far less than Californian women do [[yuasa2010]].
-- The Transsexual Voice Questionnaire has been validated in Brazilian Portuguese [[schwarz2017]], German [[salm2020]], Italian [[robotti2022]] and simplified Chinese [[wang2022]] after the Australian original [[dacakis2013]].
-- Feminization training has randomised evidence in Dutch [[leyns2023]] [[leyns2024]] and a large Swedish cohort [[sodersten2026]]; Mandarin-speaking trans women show vowel-specific formant shifts before any training [[huang2024]]; Japanese surgical series describe type IV thyroplasty and vocal-fold shortening [[nakamura2007]] [[hiroshiba2024]]; Chinese series describe glottoplasty variants [[zhang2023cn]] [[sun2025]].
+- The Transsexual Voice Questionnaire has been validated in German [[salm2020]], Italian [[robotti2022]] and simplified Chinese [[wang2022]] after the Australian original [[dacakis2013]], and used in a Brazilian Portuguese survey [[schwarz2017]].
+- Feminization training has a randomised trial in Dutch [[leyns2023]] with a one-year follow-up [[leyns2024]], and the largest cohort so far comes from a Karolinska Institutet group whose speakers' language the abstract does not state [[sodersten2026]]; Mandarin-speaking trans women show vowel-specific formant shifts before any training [[huang2024]]; Japanese surgical series describe type IV thyroplasty and vocal-fold shortening [[nakamura2007]] [[hiroshiba2024]]; Chinese series describe glottoplasty variants [[zhang2023cn]] [[sun2025]].
 - Israeli trans women's acoustic measures and femininity ratings [[diamant2021]] add Hebrew to the languages with listener data.
 
 ## Contested or unclear

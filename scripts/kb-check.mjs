@@ -17,9 +17,10 @@ const required = { sources: ['type', 'key', 'title', 'year', 'evidence', 'verifi
 const aliases = new Map();
 const problems = [], wanted = new Map();
 for (const [name, { text }] of notes) {
-  const m = text.match(/^aliases: \[(.*)\]$/m);
+  const fm = text.match(/^---\n([\s\S]*?)\n---/);
+  const m = fm && fm[1].match(/^aliases: \[(.*)\]$/m);
   if (!m) continue;
-  for (const raw of m[1].split(',')) {
+  for (const raw of m[1].match(/"[^"]*"|[^,]+/g) || []) {
     const a = raw.trim().replace(/^"|"$/g, '');
     if (!a) continue;
     if (notes.has(a) && a !== name) problems.push(`${name}: alias "${a}" shadows the note of that name`);
