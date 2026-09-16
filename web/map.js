@@ -41,17 +41,19 @@ export class VoiceMap{
  project(v){if(!v)return null;const w=this.width-48,h=this.height-48,cx=this.width/2+this.pan[0],cy=this.height/2+this.pan[1];if(this.dimension===2)return [cx+(v[0]-this.center[0])*w*this.zoom,cy-(v[1]-this.center[1])*h*this.zoom,0];const x=v[0]-(this.camera?.[0]??.5),y=v[1]-(this.camera?.[1]??.5),z=v[2]-(this.camera?.[2]??.5),u=x*Math.cos(this.yaw)+z*Math.sin(this.yaw),d=-x*Math.sin(this.yaw)+z*Math.cos(this.yaw),yy=y*Math.cos(this.tilt)-d*Math.sin(this.tilt),dd=y*Math.sin(this.tilt)+d*Math.cos(this.tilt),s=Math.min(w,h)*.86*this.zoom;return [cx+u*s,cy-yy*s,dd];}
  pick(x,y){let best=null,dist=12;for(const p of this.hit){const d=Math.hypot(p.xy[0]-x,p.xy[1]-y);if(d<dist){best=p.sample;dist=d;}}return best;}
  rangeTrack(detail,range){return (detail?.track||[]).filter(p=>!range||(p.t>=range[0]&&p.t<=range[1]));}
- smoothTrack(detail,range){
+ smoothTrack(detail,range,hold=false){
   if(!detail?.track)return [];
-  this.trackCache ||= new WeakMap();let smooth=this.trackCache.get(detail.track);
+  this.trackCache ||= new WeakMap();const cached=this.trackCache.get(detail.track)||{};let smooth=cached[hold?'held':'plain'];
   if(!smooth){
+   const reach=hold?3:1.2;
    smooth=detail.track.map((row,i,all)=>{
     if(!finite(row.f0))return {t:row.t};
-    const near=[];for(let j=i;j>=0&&row.t-all[j].t<=1.2;j--)if(finite(all[j].f0))near.push(all[j]);
+    const near=[],held=[];for(let j=i;j>=0&&row.t-all[j].t<=reach;j--)if(finite(all[j].f0)){held.push(all[j]);if(row.t-all[j].t<=1.2)near.push(all[j]);}
     if(near.length<8)return {t:row.t};
-    const f={t:row.t};for(const k of AcousticSpace.keys){const values=near.map(p=>p[k]).filter(finite);f[k]=values.length>=4?quantile(values,.5):null;}
+    // Live view: resonance is measured far less often than pitch, so its last readings are held for up to 3 s to keep the point moving.
+    const f={t:row.t};for(const k of AcousticSpace.keys){let values=near.map(p=>p[k]).filter(finite);if(hold&&values.length<4)values=held.map(p=>p[k]).filter(finite).slice(0,4);f[k]=values.length>=(hold&&k==='delta_f'?2:4)?quantile(values,.5):null;}
     return f;
-   });this.trackCache.set(detail.track,smooth);
+   });this.trackCache.set(detail.track,{...cached,[hold?'held':'plain']:smooth});
   }
   return range?smooth.filter(p=>p.t>=range[0]&&p.t<=range[1]):smooth;
  }
@@ -75,7 +77,7 @@ export class VoiceMap{
  }
  polygon(p,color,alpha){if(p.length<3)return;const g=this.ctx;g.beginPath();p.forEach((v,i)=>i?g.lineTo(v[0],v[1]):g.moveTo(v[0],v[1]));g.closePath();g.fillStyle=color;g.globalAlpha=alpha;g.fill();g.globalAlpha=Math.min(.4,alpha*3);g.strokeStyle=color;g.lineWidth=1;g.stroke();g.globalAlpha=1;}
  marker(p,color,r,diamond=false){const g=this.ctx;g.beginPath();if(diamond){g.moveTo(p[0],p[1]-r);g.lineTo(p[0]+r,p[1]);g.lineTo(p[0],p[1]+r);g.lineTo(p[0]-r,p[1]);g.closePath();}else g.arc(p[0],p[1],r,0,Math.PI*2);g.fillStyle=color;g.fill();g.strokeStyle=this.colors.bg;g.lineWidth=2;g.stroke();}
- shape(track,color,own){
+ shape(track,color,own,quiet=false){
   this.shapeCache ||= {};const side=own?'own':'ref',source=(own?this.own:this.target)?.track,stamp=track[0]?.t+':'+track.at(-1)?.t;let mesh=this.shapeCache[side];
   if(!mesh||mesh.source!==source||mesh.stamp!==stamp||mesh.space!==this.space||mesh.projection!==this.projection){
    const rows=track.map(p=>({point:this.vector(p),z:this.space?.standardized(p)})).filter(r=>r.point&&r.z);if(rows.length<6){delete this.shapeCache[side];return;}
@@ -89,7 +91,7 @@ export class VoiceMap{
    mesh={source,stamp,space:this.space,projection:this.projection,points,faces:convex3(points)};this.shapeCache[side]=mesh;this.fitDirty=true;
   }
   const pts=mesh.points.map(p=>this.project(p)),edge=hull(pts),g=this.ctx;if(edge.length<3)return;
-  g.save();g.fillStyle=color;g.strokeStyle=color;g.beginPath();edge.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.globalAlpha=.075;g.fill();g.lineWidth=own?2.2:1.8;g.globalAlpha=.9;g.setLineDash(own?[6,4]:[]);g.stroke();
+  g.save();g.fillStyle=color;g.strokeStyle=color;g.beginPath();edge.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();g.globalAlpha=quiet?.04:.075;g.fill();g.lineWidth=quiet?1:own?2.2:1.8;g.globalAlpha=quiet?.25:.9;g.setLineDash(own?[6,4]:[]);g.stroke();if(quiet){g.restore();return;}
   g.lineWidth=.6;g.globalAlpha=.14;g.setLineDash([]);const seen=new Set();for(const face of mesh.faces)for(let i=0;i<3;i++){const a=face[i],b=face[(i+1)%3],key=[a,b].sort((x,y)=>x-y).join(':');if(seen.has(key))continue;seen.add(key);g.beginPath();g.moveTo(pts[a][0],pts[a][1]);g.lineTo(pts[b][0],pts[b][1]);g.stroke();}g.restore();
  }
  fitShapes(){if(!this.autoFit||!this.fitDirty||this.drag)return;
@@ -103,18 +105,41 @@ export class VoiceMap{
  }
  label(p,text,color){const g=this.ctx;g.font='11px system-ui';g.textAlign='left';const width=g.measureText(text).width;let x=clamp(p[0]+14,46,this.width-width-30),y=clamp(p[1]-14,22,this.height-62);g.fillStyle=this.colors.bg;g.globalAlpha=.94;g.fillRect(x-4,y-13,width+8,19);g.globalAlpha=1;g.fillStyle=color;g.fillText(text,x,y);}
  trajectory(detail,range,color,time,own){
-  const track=this.smoothTrack(detail,range);if(!track.length){if(this.shapeCache){delete this.shapeCache[own?'own':'ref'];this.fitDirty=true;}return;}
+  const live=this.live&&own;if(own&&!live){this.headPos=this.headTarget=null;this.headSeen=undefined;}
+  const track=this.smoothTrack(detail,range,live);if(!track.length){if(this.shapeCache){delete this.shapeCache[own?'own':'ref'];this.fitDirty=true;}return;}
   const seconds=this.liveShapeSeconds,end=Math.floor((finite(time)?time:detail.duration)*10)/10;
-  const visible=this.live&&own?track.filter(p=>p.t> end-seconds&&p.t<=end):track;
+  const visible=live?track.filter(p=>p.t> end-seconds&&p.t<=end):track;
   const points=visible.map(p=>this.project(this.vector(p))).filter(Boolean),g=this.ctx;
-  if(this.showRange&&points.length>3)this.shape(visible,color,own);else if(this.shapeCache)delete this.shapeCache[own?'own':'ref'];
-  if(this.live&&own&&finite(time)){for(let i=0;i<visible.length;i+=6){const row=visible[i];if(row.t>time||row.t<time-seconds)continue;const p=this.project(this.vector(row));if(p){g.globalAlpha=.12+.32*Math.max(0,1-(time-row.t)/seconds);g.fillStyle=color;g.beginPath();g.arc(p[0],p[1],2.5,0,Math.PI*2);g.fill();}}g.globalAlpha=1;}
+  if(this.showRange&&points.length>3)this.shape(visible,color,own,live);else if(this.shapeCache)delete this.shapeCache[own?'own':'ref'];
   if(!finite(time))return;
+  if(live){this.comet(visible,color,time,seconds);this.head(track,time,color,seconds);return;}
   let last=null;
   for(const row of visible){if(row.t<time-1.4)continue;if(row.t>time)break;const p=this.project(this.vector(row));if(!p){last=null;continue;}const age=clamp(1-(time-row.t)/1.4,0,1);g.globalAlpha=age**1.5;g.strokeStyle=color;g.fillStyle=color;g.lineWidth=1+age*3;
    if(last&&row.t-last.t<.2){g.beginPath();g.moveTo(last.p[0],last.p[1]);g.lineTo(p[0],p[1]);g.stroke();}g.beginPath();g.arc(p[0],p[1],1+age*2.2,0,Math.PI*2);g.fill();last={p,t:row.t};
   }
   g.globalAlpha=1;const cursor=this.project(this.cursor(track,time));if(cursor){g.fillStyle=color;g.globalAlpha=.15;g.beginPath();g.arc(cursor[0],cursor[1],17,0,Math.PI*2);g.fill();g.globalAlpha=1;this.marker(cursor,color,9,own);this.label(cursor,own?'自分':'見本',color);if(own)this.lastCursor=cursor;}else if(own)this.lastCursor=null;
+ }
+ /* Live view: one trail over the whole window. Older speech fades and thins; a soft glow accumulates where the voice has been. */
+ comet(rows,color,time,seconds){
+  const g=this.ctx,path=[];
+  for(const row of rows){if(row.t>time)break;const p=this.project(this.vector(row));if(!p)continue;path.push({p,t:row.t,age:clamp(1-(time-row.t)/seconds,0,1)});}
+  if(!path.length)return;
+  g.save();g.globalCompositeOperation='lighter';
+  for(let i=0;i<path.length;i+=2){const {p,age}=path[i],r=10+8*age;const glow=g.createRadialGradient(p[0],p[1],0,p[0],p[1],r);glow.addColorStop(0,color);glow.addColorStop(1,'transparent');g.globalAlpha=.05*age;g.fillStyle=glow;g.beginPath();g.arc(p[0],p[1],r,0,Math.PI*2);g.fill();}
+  g.restore();g.strokeStyle=color;g.lineCap='round';g.lineJoin='round';
+  for(let i=1;i<path.length;i++){const a=path[i-1],b=path[i],pause=b.t-a.t>.3;g.setLineDash(pause?[2,5]:[]);g.globalAlpha=(pause?.3:1)*(.06+.94*b.age**2.2);g.lineWidth=pause?1:.5+3.5*b.age**1.5;g.beginPath();g.moveTo(a.p[0],a.p[1]);g.lineTo(b.p[0],b.p[1]);g.stroke();}
+  g.setLineDash([]);g.globalAlpha=1;
+ }
+ /* The head eases toward the newest measurement and stays put, fading, through pauses. */
+ head(track,time,color,seconds){
+  const g=this.ctx,now=performance.now(),dt=Math.min(.1,(now-(this.headAt||now))/1000);this.headAt=now;
+  if(finite(this.headSeen)&&time<this.headSeen-1){this.headPos=this.headTarget=null;this.headSeen=undefined;}
+  const target=this.project(this.cursor(track,time));
+  if(target){this.headSeen=time;this.headTarget=target;}
+  const silent=finite(this.headSeen)?time-this.headSeen:Infinity;if(!this.headTarget||silent>seconds){this.lastCursor=null;return;}
+  const k=1-Math.exp(-dt/.12);this.headPos=this.headPos?this.headPos.map((v,i)=>v+(this.headTarget[i]-v)*k):this.headTarget.slice(0,2);
+  const p=this.headPos,fade=clamp(1-silent/seconds,0,1),alpha=.35+.65*fade;
+  g.fillStyle=color;g.globalAlpha=.15*alpha;g.beginPath();g.arc(p[0],p[1],17,0,Math.PI*2);g.fill();g.globalAlpha=alpha;this.marker(p,color,9,true);g.globalAlpha=1;if(fade>.5)this.label(p,'自分',color);this.lastCursor=p;
  }
  axes(){const g=this.ctx,c=this.colors;g.strokeStyle=c.grid;g.fillStyle=c.text;g.lineWidth=1;
   if(this.dimension===2){for(let i=0;i<=4;i++){const t=i/4,a=this.project([t,0,.5]),b=this.project([t,1,.5]),d=this.project([0,t,.5]),e=this.project([1,t,.5]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.moveTo(d[0],d[1]);g.lineTo(e[0],e[1]);g.stroke();}}
