@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Koenami · 使い方</title>
+<meta name="description" content="Koenamiの使い方。画面の見方、見本を選んで録音し見比べる練習の流れ、リアルタイム測定、録音の保存、見本の追加、設定、うまく測れないときの対処、ショートカット。">
+<meta name="theme-color" content="#f9fbff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171826" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://koe.transnavi.jp/guide.html">
+<meta property="og:site_name" content="Koenami">
+<meta property="og:title" content="Koenami · 使い方">
+<meta property="og:description" content="Koenamiの使い方。画面の見方、見本を選んで録音し見比べる練習の流れ、リアルタイム測定、録音の保存、見本の追加、設定、うまく測れないときの対処、ショートカット。">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://koe.transnavi.jp/guide.html">
+<meta property="og:image" content="https://koe.transnavi.jp/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Koenami · 女声・男声のボイトレツール">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Koenami · 使い方">
+<meta name="twitter:description" content="Koenamiの使い方。画面の見方、見本を選んで録音し見比べる練習の流れ、リアルタイム測定、録音の保存、見本の追加、設定、うまく測れないときの対処、ショートカット。">
+<meta name="twitter:image" content="https://koe.transnavi.jp/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://koe.transnavi.jp/#website","url":"https://koe.transnavi.jp/","name":"Koenami","inLanguage":"ja","publisher":{"@id":"https://transnavi.jp/#organization"}},{"@type":"Organization","@id":"https://transnavi.jp/#organization","name":"とらんすナビ","url":"https://transnavi.jp/","logo":"https://transnavi.jp/favicon.svg"},{"@type":"TechArticle","@id":"https://koe.transnavi.jp/guide.html#article","url":"https://koe.transnavi.jp/guide.html","headline":"使い方","name":"Koenami · 使い方","description":"Koenamiの使い方。画面の見方、見本を選んで録音し見比べる練習の流れ、リアルタイム測定、録音の保存、見本の追加、設定、うまく測れないときの対処、ショートカット。","inLanguage":"ja","mainEntityOfPage":"https://koe.transnavi.jp/guide.html","image":"https://koe.transnavi.jp/og-image.png","author":{"@id":"https://transnavi.jp/#organization"},"publisher":{"@id":"https://transnavi.jp/#organization"},"isPartOf":{"@id":"https://koe.transnavi.jp/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Koenami","item":"https://koe.transnavi.jp/"},{"@type":"ListItem","position":2,"name":"使い方","item":"https://koe.transnavi.jp/guide.html"}]}]}</script>
+<link rel="sitemap" href="/sitemap.xml">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+<link rel="manifest" href="/site.webmanifest">
+<script type="module" src="/theme.js"></script>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="method-header"><a class="brand" href="/">← Koenami</a><nav class="method-nav"><span>使い方</span><a href="/method.html">測定方法と出典</a></nav></header>
+<main class="method">
+<h1>Koenamiの使い方</h1>
+<p>Koenamiは、見本の声を聴きながら自分の声を録音し、5つの音響指標で見比べるためのツールです。マイクのある端末と最新のブラウザー（Chrome、Firefox、Safari、Edge）があれば、インストールなしで使えます。自分の声を聴きながら練習するときはイヤホンをおすすめします。スピーカーの音がマイクに回り込むと、測定が乱れます。</p>
+
+<h2 id="screen">画面の見方</h2>
+<ul>
+<li><strong>上のバー</strong>：見本の言語（日本語・中国語・英語・韓国語）、設定、出典と関連ツール、明暗の切り替え。</li>
+<li><strong>声の特徴</strong>（左）：高さ・響き・質感・明るさ・抑揚の5指標を、自分（紫）と見本（桃色）で並べて表示します。各指標の帯は、選んだ参照グループの話者の中央80%です。左下の「見本との差」は、5指標をまとめた距離で、0に近いほど測定値が近いことを表します。</li>
+<li><strong>声の分布</strong>（中央）：見本の音声を点として並べた地図です。2Dと3Dを切り替えられ、2Dでは「主成分」（全体のばらつきが大きい方向）と「男女差」（女性的な声と男性的な声が最も離れる方向を横軸にする）を選べます。自分の声は紫の破線、選んだ見本はその見本の色の実線で囲まれます。拡大・縮小、表示のリセット、3Dの自動回転はボタンで切り替えます。</li>
+<li><strong>波形のドック</strong>（下）：高さの推移、スペクトログラム、スペクトル、波形を自分と見本で見比べます。「重ねる」で2つの音声の長さをそろえて重ねます。波形をドラッグすると、その範囲だけを測り直せます。</li>
+<li><strong>見本の声</strong>（右）：見本の一覧です。女性的な声・中性的な声・男性的な声・すべて・お気に入り・読み込んだ声で絞り込み、話者名順・自分の声に近い順・高さが低い順・高い順で並べ替えられます。高さ・響き・重さの「低い・中間・高い」でも絞り込めます。</li>
+</ul>
+
+<h2 id="flow">練習の流れ</h2>
+<ol>
+<li><strong>見本を選ぶ。</strong>右の一覧から、近づきたい声を選びます。★を押すと「お気に入り」に入ります。自分の録音があると「自分の声に近い順」に並べ替えられ、いまの声からの距離が短い見本から探せます。</li>
+<li><strong>聴く。</strong>見本の再生ボタンで聴きます。再生速度は下のスライダーで変えられ、遅くしても高さは変わりません。「1×」で標準速度に戻します。</li>
+<li><strong>録音する。</strong>マイクのボタンか<kbd>R</kbd>で録音を始め、もう一度押すと止まります。<kbd>Esc</kbd>で中止します。公開版の録音は1分までです。見本と同じ言葉を同じくらいの長さで言うと、指標を比べやすくなります。</li>
+<li><strong>見比べる。</strong>録音が止まると測定が始まり、数秒で「声の特徴」と「声の分布」に自分の声が表示されます。<kbd>Space</kbd>で自分の声を再生し、「A/B」で見本、自分の順に続けて聴けます。</li>
+<li><strong>リアルタイムで調整する。</strong>「リアルタイム」を押すと、話している声がそのまま地図に描かれ、直近の数秒の軌跡が残ります。見本の点に近づく方向を確かめながら声を変えてみてください。終了すると、元の録音の表示に戻ります。</li>
+<li><strong>レポートを見る。</strong>「見本との差」の数値を押すと比較レポートが開き、指標ごとの差と、図に表示されていない方向の差を確認できます。レポートはHTMLとして保存できます。</li>
+</ol>
+
+<h2 id="recordings">録音の保存と履歴</h2>
+<p>録音はブラウザーの中（IndexedDB）に保存され、ページを開き直しても残ります。録音名のメニューから過去の録音を選び、ダウンロードや削除ができます。保存済みの録音の平均点は地図にも表示されます。解析に失敗した録音も音声は残り、同じメニューから再解析できます。ブラウザーのサイトデータを消すと、録音と読み込んだ見本も消えます。</p>
+
+<h2 id="import">見本を増やす</h2>
+<p>手元の音声ファイル（WAV、MP3、M4Aなど）を読み込むと、見本として表示・比較できます。日本語では、<a href="https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_corpus">JVSコーパス</a>の公式ZIPまたは展開したフォルダーを読み込むと、100人・5,000音声を見本に加えられます。読み込んだ音声はブラウザーに保存され、サーバーには残りません。音声の利用はJVSの規約に従ってください。</p>
+
+<h2 id="settings">設定</h2>
+<ul>
+<li><strong>配色</strong>：ライト、ダーク、端末に合わせる。</li>
+<li><strong>リアルタイムの解析時間</strong>：1.5〜12秒。短いほど反応が早く、長いほど値が安定します。</li>
+<li><strong>リアルタイムに表示する時間</strong>：地図に残す軌跡の長さ（1〜30秒）。</li>
+<li><strong>再生音量をそろえる</strong>：自分と見本の音量差をならして聴き比べます。</li>
+<li><strong>測定値を書き出す</strong>：録音の測定値をファイルに保存します。</li>
+</ul>
+
+<h2 id="trouble">うまく測れないとき</h2>
+<ul>
+<li>「0.25秒以上録音してください」：録音が短すぎます。一文を言い切る長さで録音してください。</li>
+<li>「響きを安定して測定できませんでした」：母音の区間が短いか、雑音が多い状態です。静かな場所で、口をはっきり開けて母音を伸ばし気味に話すと測りやすくなります。</li>
+<li>高さが極端な値になる：マイクに近すぎる、息の音が入っている、周囲の機械音を拾っている場合に起こります。マイクから10〜20cmほど離し、環境音の少ない場所で試してください。</li>
+<li>見本と長さが大きく違う：抑揚の値は録音の長さに影響されます。同じ文か、短い句で比べてください。</li>
+</ul>
+
+<h2 id="keys">ショートカット</h2>
+<table>
+<tr><th>キー</th><th>動作</th></tr>
+<tr><td><kbd>R</kbd></td><td>録音の開始・停止</td></tr>
+<tr><td><kbd>Space</kbd></td><td>自分の声の再生・一時停止</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>録音の中止、リアルタイム測定の停止、選択範囲の解除</td></tr>
+</table>
+<p class="small">文字入力中はショートカットは働きません。</p>
+
+<h2 id="privacy">音声の扱い</h2>
+<p>マイクの音声と、比較のために選んだ読み込み済み音声は、測定のために解析サーバーへ送られます。解析サーバーは音声を保存しません。録音履歴と読み込んだ見本はブラウザーの中だけにあります。指標の定義、見本の出典、利用条件は<a href="/method.html">測定方法と出典</a>にまとめています。</p>
+</main>
+</body>
+</html>
