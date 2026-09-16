@@ -35,7 +35,7 @@ fs.writeFileSync(`${out}/favicon.ico`, Buffer.concat([header, ...dir, ...entries
 
 // Open Graph card: title block on the left, the studio screenshot on the right.
 const W = 1200, H = 630;
-const shotW = 660, shotH = Math.round((shotW * 1000) / 1600), shotX = 600, shotY = 150;
+const shotW = 540, shotH = Math.round((shotW * 1000) / 1600), shotX = 600, shotY = Math.round((H - shotH) / 2);
 const card = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
