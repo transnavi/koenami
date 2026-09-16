@@ -78,6 +78,18 @@ def main(url):
             assert page.evaluate('reviewApp.queue[reviewApp.at].clips[reviewApp.clip].id') == clip
             assert page.evaluate('reviewApp.ratings') == {'femininity': 4} and page.evaluate('[...reviewApp.chosen]') == ['distorted'] and page.locator('#note').input_value() == '途中'
             assert page.evaluate('reviewApp.queue.at(-1).speaker') == second
+            # Playback loops; 追加項目 mode prefills a reviewed speaker and points at the first missing row.
+            assert page.evaluate('document.querySelector("#play")&&true') and page.evaluate('new Audio().loop') is False
+            assert page.evaluate('(()=>{for(const a of performance.getEntriesByType("resource"))if(a.name.includes("/samples/"))return true;return false})()')
+            page.locator('#mode button[data-mode=update]').click(); wait(page, 'reviewApp.mode==="update"&&!!reviewApp.queue[0]?.previous')
+            item = page.evaluate('({missing:reviewApp.queue[reviewApp.at].missing,prev:reviewApp.queue[reviewApp.at].previous.ratings})')
+            assert item['missing'] and set(item['prev']) <= set(page.evaluate('reviewApp.ratings'))
+            assert page.evaluate('reviewApp.scales[reviewApp.active].key') == item['missing'][0]
+            assert page.locator('.scale[data-missing=true]').count() == len(item['missing'])
+            page.keyboard.press('3'); page.keyboard.press('Enter'); wait(page, 'reviewApp.at===1||reviewApp.queue.length===0')
+            assert saved[-1]['ratings'][item['missing'][0]] == 3 and all(saved[-1]['ratings'][k] == v for k, v in item['prev'].items())
+            page.reload(); wait(page, 'window.reviewApp?.queue.length>=0'); assert page.evaluate('reviewApp.mode') == 'update'
+            page.locator('#mode button[data-mode=new]').click(); wait(page, 'reviewApp.mode==="new"&&reviewApp.queue.length>0&&!reviewApp.queue[0].previous')
             # The main app no longer carries a rating panel or neural capability.
             page.goto(url + '/ja/'); wait(page, '!!window.voiceApp?.state.refFull')
             assert page.locator('#perception-button').count() == 0 and page.locator('#perception-dialog').count() == 0
@@ -87,7 +99,7 @@ def main(url):
                 assert 'jvs002' in page.locator('.speaker-folder').get_attribute('data-speaker')
             page.locator('#search').fill('F263'); assert page.locator('.speaker-folder').count() == 1
             assert not errors, errors
-            print(json.dumps({'passed': ['Review queue orders unreviewed female speakers first', 'Grouped scales from the server, digit auto-advance, decade ages, quality flags with scope', 'Save posts the review and advances; skip requeues, empty save refused', 'Position, skipped speakers and draft survive reload', 'Main app has no rating panel; speaker search works']}, ensure_ascii=False))
+            print(json.dumps({'passed': ['Review queue orders unreviewed female speakers first', 'Grouped scales from the server, digit auto-advance, decade ages, quality flags with scope', 'Save posts the review and advances; skip requeues, empty save refused', 'Position, skipped speakers and draft survive reload', 'Looped playback; 追加項目 mode prefills previous answers and targets missing scales', 'Main app has no rating panel; speaker search works']}, ensure_ascii=False))
         finally:
             browser.close()
 

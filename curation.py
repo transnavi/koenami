@@ -105,17 +105,31 @@ class Verdicts:
         japanese = self.ratings('japanese')
         self.pronunciation = {s: 'native_like' if v >= NATIVE_MIN else 'not_native_like' if v <= NON_NATIVE_MAX else 'tentative' if v <= DOUBTFUL_MAX else 'unlabelled'
                               for s, v in japanese.items()}
+        # Quality flags can be corrected: the latest speaker-scoped review decides speaker-level problems
+        # (an empty one clears them), and the latest review that listened to a clip decides that clip.
+        latest_speaker, latest_clip = {}, {}
         for r in reviews:
-            flags = set(r.get('flags', []))
-            quality = flags & QUALITY.keys()
-            if quality and r.get('scope') == 'speaker': self.excluded_speakers.add(r['speaker'])
-            elif quality and r.get('clip'): self.excluded_clips.add(r['clip'])
+            if r.get('scope') == 'speaker': latest_speaker[r['speaker']] = r
+            if r.get('clip'): latest_clip[r['clip']] = r
+        for r in latest_speaker.values():
+            if set(r.get('flags', [])) & QUALITY.keys(): self.excluded_speakers.add(r['speaker'])
+        for clip, r in latest_clip.items():
+            if set(r.get('flags', [])) & QUALITY.keys() and r.get('scope') != 'speaker': self.excluded_clips.add(clip)
         self.native_speakers = {s for s, flag in self.pronunciation.items() if flag == 'native_like'}
         self.excluded_speakers |= {s for s, flag in self.pronunciation.items() if flag in ('not_native_like', 'tentative')}
 
     def pronunciation_labels(self):
         """1 for native-like, 0 for firmly non-native; doubtful ratings and quality exclusions carry no label."""
         return {s: 1 if flag == 'native_like' else 0 for s, flag in self.pronunciation.items() if flag in ('native_like', 'not_native_like')}
+
+    def latest(self, speaker):
+        """Merged view of a speaker's reviews: latest value per rating key, flags and scope of the latest review."""
+        rows = [r for r in self.reviews if r['speaker'] == speaker]
+        if not rows: return None
+        ratings = {}
+        for r in rows: ratings.update(r.get('ratings', {}))
+        last = rows[-1]
+        return {'ratings': ratings, 'flags': last.get('flags', []), 'scope': last.get('scope', 'clip'), 'clip': last.get('clip'), 'note': last.get('note', ''), 'reviewed': last.get('reviewed')}
 
     def ratings(self, key):
         """Latest rating per speaker for one RATING_KEYS entry."""

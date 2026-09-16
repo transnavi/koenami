@@ -57,6 +57,13 @@ class ReviewLogTests(unittest.TestCase):
         v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['noise'], 'scope': 'clip'}, {'speaker': 'b', 'clip': 'y', 'flags': ['noise'], 'scope': 'speaker'}])
         self.assertEqual(v.excluded_clips, {'x'}); self.assertEqual(v.excluded_speakers, {'b'})
 
+    def test_later_reviews_correct_quality_flags(self):
+        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['noise'], 'scope': 'clip'}, {'speaker': 'a', 'clip': 'x', 'flags': [], 'scope': 'clip'},
+                      {'speaker': 'b', 'clip': 'y', 'flags': ['distorted'], 'scope': 'speaker'}, {'speaker': 'b', 'clip': 'z', 'flags': [], 'scope': 'clip'},
+                      {'speaker': 'c', 'clip': 'w', 'flags': ['distorted'], 'scope': 'speaker'}, {'speaker': 'c', 'clip': 'w', 'flags': [], 'scope': 'speaker'}])
+        self.assertEqual(v.excluded_clips, set()); self.assertEqual(v.excluded_speakers, {'b'})
+        self.assertEqual(v.latest('b')['flags'], []); self.assertEqual(v.latest('b')['clip'], 'z')
+
     def test_ratings_alone_do_not_exclude(self):
         v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': [], 'ratings': {'femininity': 2}}])
         self.assertEqual(v.excluded_speakers, set()); self.assertEqual(v.ratings('femininity'), {'a': 2})

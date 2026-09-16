@@ -190,8 +190,11 @@ def create_app():
 
     app.router.add_get('/api/import-index/jvs', import_index)
 
-    def review_queue(lang):
-        """One representative clip per unreviewed human speaker, female group first, longest plotted clip."""
+    def review_queue(lang, mode='new'):
+        """One representative clip per human speaker, female group first, longest plotted clip.
+
+        mode 'new' lists unreviewed speakers; 'update' lists reviewed speakers whose ratings miss a current scale.
+        """
         verdicts = curation.Verdicts()
         by_speaker = {}
         for c in libraries[lang]['clips']:
@@ -204,14 +207,23 @@ def create_app():
                           audio=c['audio'], duration=c.get('duration')) for c in sorted(clips, key=lambda c: c['id'])], 'first': best['id']})
         queue.sort(key=lambda q: (q['group'] != 'female', q['clips'][0]['display'] or ''))
         reviewed = {r['speaker'] for r in verdicts.reviews if r.get('language', 'ja') == lang}
-        queue = [q for q in queue if q['speaker'] not in reviewed]
-        return {'language': lang, 'reviewed': len(reviewed), 'queue': queue}
+        keys = [s['key'] for s in curation.SCALES if not s.get('only') or s['only'] == lang]
+        if mode == 'update':
+            queue = [q for q in queue if q['speaker'] in reviewed]
+            for q in queue:
+                q['previous'] = verdicts.latest(q['speaker'])
+                q['missing'] = [k for k in keys if k not in q['previous']['ratings']]
+                if q['previous']['clip'] in {c['id'] for c in q['clips']}: q['first'] = q['previous']['clip']
+            queue = [q for q in queue if q['missing']]
+        else:
+            queue = [q for q in queue if q['speaker'] not in reviewed]
+        return {'language': lang, 'mode': mode, 'reviewed': len(reviewed), 'queue': queue}
 
     async def review_get(request):
         if PUBLIC: raise web.HTTPNotFound()
-        lang = request.query.get('lang', 'ja')
-        if lang not in libraries: raise web.HTTPNotFound()
-        return respond({**review_queue(lang), 'flags': curation.QUALITY, 'scales': curation.SCALES, 'ageDecades': curation.AGE_DECADES, 'log': curation.load()[-200:]})
+        lang, mode = request.query.get('lang', 'ja'), request.query.get('mode', 'new')
+        if lang not in libraries or mode not in ('new', 'update'): raise web.HTTPNotFound()
+        return respond({**review_queue(lang, mode), 'flags': curation.QUALITY, 'scales': curation.SCALES, 'ageDecades': curation.AGE_DECADES, 'log': curation.load()[-200:]})
 
     async def review_post(request):
         if PUBLIC: raise web.HTTPNotFound()
