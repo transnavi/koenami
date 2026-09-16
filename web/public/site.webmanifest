@@ -1,7 +1,7 @@
 {
-  "name": "Koenami · 声の練習",
+  "name": "Koenami · 女声・男声のボイトレツール",
   "short_name": "Koenami",
-  "description": "見本の声を聴いて録音し、5つの音響指標で自分の声と見比べる声の練習サイト。",
+  "description": "見本の声を真似して録音し、近づきたい声との距離を見るボイトレツール。",
   "lang": "ja",
   "start_url": "/",
   "scope": "/",
