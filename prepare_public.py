@@ -2,6 +2,7 @@
 import hashlib
 import json
 import shutil
+import subprocess
 from pathlib import Path
 from statistics import median
 
@@ -93,6 +94,14 @@ def main():
         for lang, label in LANGUAGES.items()]}
     write(OUT / 'assets' / 'public-api' / 'catalog.json', catalog)
     write(OUT / 'manifest.json', manifest)
+    # Sitemap with last-modified dates taken from git, so a page's date only
+    # moves when its source does.
+    pages = {'/': ['web/index.html', 'web/app.js'], '/method.html': ['web/method.html']}
+    entries = []
+    for path, sources in pages.items():
+        modified = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', *sources], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
+        entries.append(f'<url><loc>https://koe.transnavi.jp{path}</loc>' + (f'<lastmod>{modified}</lastmod>' if modified else '') + '</url>')
+    (OUT / 'assets' / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(entries) + '\n</urlset>\n')
     # No fallback SPA route may expose private baselines or local model files.
     assert not any('baseline' in p.name or p.name == 'x.wav' for p in OUT.rglob('*'))
     (OUT / 'assets' / '_headers').write_text("""/*
