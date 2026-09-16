@@ -1,0 +1,411 @@
+{
+ "afterFinish": {
+  "recording-index": [
+   {
+    "at": 1700000000004,
+    "duration": 1,
+    "features": {
+     "f0": 3
+    },
+    "id": "r3",
+    "name": "take 4",
+    "takeId": "r3"
+   },
+   {
+    "at": 1700000000002,
+    "id": "r2",
+    "name": "take 2",
+    "takeId": "r2"
+   },
+   {
+    "at": 1700000000003,
+    "duration": 2.5,
+    "features": {
+     "f0": 1
+    },
+    "id": "r1",
+    "name": "take 3",
+    "takeId": "r1"
+   }
+  ],
+  "recording:r1": {
+   "detail": {
+    "duration": 2.5,
+    "features": {
+     "f0": 1
+    }
+   },
+   "measurement": {
+    "duration": 2.5,
+    "features": {
+     "f0": 1
+    }
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     3,
+     4
+    ]
+   },
+   "range": null
+  },
+  "recording:r2": {
+   "measurement": {
+    "f0": 102
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     2,
+     3
+    ]
+   },
+   "range": null
+  },
+  "recording:r3": {
+   "detail": {
+    "duration": 1,
+    "features": {
+     "f0": 3
+    }
+   },
+   "measurement": {
+    "f0": 4
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     4,
+     5
+    ]
+   },
+   "range": [
+    0,
+    1
+   ]
+  },
+  "takes": {
+   "current": {
+    "takeId": "r2"
+   },
+   "previous": {
+    "takeId": "r1"
+   }
+  }
+ },
+ "d1": [
+  {
+   "at": 1700000000004,
+   "duration": 1,
+   "features": {
+    "f0": 3
+   },
+   "id": "r3",
+   "name": "take 4",
+   "takeId": "r3"
+  }
+ ],
+ "d2": [
+  {
+   "at": 1700000000004,
+   "duration": 1,
+   "features": {
+    "f0": 3
+   },
+   "id": "r3",
+   "name": "take 4",
+   "takeId": "r3"
+  },
+  {
+   "at": 1700000000003,
+   "duration": 2.5,
+   "features": {
+    "f0": 1
+   },
+   "id": "r1",
+   "name": "take 3",
+   "takeId": "r1"
+  }
+ ],
+ "dMissing": [
+  {
+   "at": 1700000000004,
+   "duration": 1,
+   "features": {
+    "f0": 3
+   },
+   "id": "r3",
+   "name": "take 4",
+   "takeId": "r3"
+  },
+  {
+   "at": 1700000000003,
+   "duration": 2.5,
+   "features": {
+    "f0": 1
+   },
+   "id": "r1",
+   "name": "take 3",
+   "takeId": "r1"
+  }
+ ],
+ "f1": {
+  "index": [
+   {
+    "at": 1700000000002,
+    "id": "r2",
+    "name": "take 2",
+    "takeId": "r2"
+   },
+   {
+    "at": 1700000000003,
+    "duration": 2.5,
+    "features": {
+     "f0": 1
+    },
+    "id": "r1",
+    "name": "take 3",
+    "takeId": "r1"
+   }
+  ],
+  "snapshot": {
+   "detail": {
+    "duration": 2.5,
+    "features": {
+     "f0": 1
+    }
+   },
+   "measurement": {
+    "duration": 2.5,
+    "features": {
+     "f0": 1
+    }
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     3,
+     4
+    ]
+   },
+   "range": null
+  }
+ },
+ "f3": {
+  "index": [
+   {
+    "at": 1700000000004,
+    "duration": 1,
+    "features": {
+     "f0": 3
+    },
+    "id": "r3",
+    "name": "take 4",
+    "takeId": "r3"
+   },
+   {
+    "at": 1700000000002,
+    "id": "r2",
+    "name": "take 2",
+    "takeId": "r2"
+   },
+   {
+    "at": 1700000000003,
+    "duration": 2.5,
+    "features": {
+     "f0": 1
+    },
+    "id": "r1",
+    "name": "take 3",
+    "takeId": "r1"
+   }
+  ],
+  "snapshot": {
+   "detail": {
+    "duration": 1,
+    "features": {
+     "f0": 3
+    }
+   },
+   "measurement": {
+    "f0": 4
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     4,
+     5
+    ]
+   },
+   "range": [
+    0,
+    1
+   ]
+  }
+ },
+ "fMissing": null,
+ "final": {
+  "recording-index": [
+   {
+    "at": 1700000000004,
+    "duration": 1,
+    "features": {
+     "f0": 3
+    },
+    "id": "r3",
+    "name": "take 4",
+    "takeId": "r3"
+   }
+  ],
+  "recording:r3": {
+   "detail": {
+    "duration": 1,
+    "features": {
+     "f0": 3
+    }
+   },
+   "measurement": {
+    "f0": 4
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     4,
+     5
+    ]
+   },
+   "range": [
+    0,
+    1
+   ]
+  },
+  "takes": {
+   "current": null,
+   "previous": null
+  }
+ },
+ "ranged": {
+  "index": [
+   {
+    "at": 1700000000004,
+    "id": "r3",
+    "name": "take 4",
+    "takeId": "r3"
+   },
+   {
+    "at": 1700000000002,
+    "id": "r2",
+    "name": "take 2",
+    "takeId": "r2"
+   },
+   {
+    "at": 1700000000003,
+    "duration": 2.5,
+    "features": {
+     "f0": 1
+    },
+    "id": "r1",
+    "name": "take 3",
+    "takeId": "r1"
+   }
+  ],
+  "snapshot": {
+   "measurement": {
+    "f0": 4
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     4,
+     5
+    ]
+   },
+   "range": [
+    0,
+    1
+   ]
+  }
+ },
+ "s1": {
+  "index": [
+   {
+    "at": 1700000000001,
+    "id": "r1",
+    "name": "take 1",
+    "takeId": "r1"
+   }
+  ],
+  "snapshot": {
+   "measurement": {
+    "f0": 101
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     1,
+     2
+    ]
+   },
+   "range": null
+  }
+ },
+ "s1again": {
+  "index": [
+   {
+    "at": 1700000000002,
+    "id": "r2",
+    "name": "take 2",
+    "takeId": "r2"
+   },
+   {
+    "at": 1700000000003,
+    "id": "r1",
+    "name": "take 3",
+    "takeId": "r1"
+   }
+  ],
+  "snapshot": {
+   "measurement": {
+    "f0": 103
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     3,
+     4
+    ]
+   },
+   "range": null
+  }
+ },
+ "s2": {
+  "index": [
+   {
+    "at": 1700000000002,
+    "id": "r2",
+    "name": "take 2",
+    "takeId": "r2"
+   },
+   {
+    "at": 1700000000001,
+    "id": "r1",
+    "name": "take 1",
+    "takeId": "r1"
+   }
+  ],
+  "snapshot": {
+   "measurement": {
+    "f0": 102
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     2,
+     3
+    ]
+   },
+   "range": null
+  }
+ }
+}

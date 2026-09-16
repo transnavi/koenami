@@ -1,0 +1,39 @@
+{
+ "aborted": {
+  "error": "This operation was aborted",
+  "progress": [
+   [
+    0,
+    16
+   ],
+   [
+    1,
+    16
+   ],
+   [
+    2,
+    16
+   ]
+  ]
+ },
+ "preAborted": {
+  "error": "This operation was aborted",
+  "progress": []
+ },
+ "stored": {
+  "audio": [
+   [
+    "jvs001-parallel100-VOICEACTRESS100_001",
+    "36c14a43636abedc566c86cbf70bc09ddeb4c1dd4004a8f4c70bbadb35a73247"
+   ],
+   [
+    "jvs001-parallel100-VOICEACTRESS100_002",
+    "a033b35e21215cf78f489488bcb4f3a9e69c3f57aa434ae6e6287dc30dfded72"
+   ]
+  ],
+  "ids": [
+   "jvs001-parallel100-VOICEACTRESS100_001",
+   "jvs001-parallel100-VOICEACTRESS100_002"
+  ]
+ }
+}

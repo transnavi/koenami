@@ -1,0 +1,7 @@
+{
+ "key": "GET /api/catalog",
+ "status": 200,
+ "contentType": "application/json; charset=utf-8",
+ "body": "{\"capabilities\": {\"words\": true, \"maxSeconds\": 900, \"review\": true}, \"languages\": [{\"id\": \"ja\", \"label\": \"\\u65e5\\u672c\\u8a9e\", \"clips\": 57, \"speakers\": 20, \"synthetic\": 4}, {\"id\": \"zh-CN\", \"label\": \"\\u666e\\u901a\\u8bdd\", \"clips\": 31, \"speakers\": 16, \"synthetic\": 0}, {\"id\": \"en\", \"label\": \"English\", \"clips\": 17, \"speakers\": 16, \"synthetic\": 0}, {\"id\": \"ko\", \"label\": \"\\ud55c\\uad6d\\uc5b4\", \"clips\": 30, \"speakers\": 15, \"synthetic\": 0}]}",
+ "base64": false
+}

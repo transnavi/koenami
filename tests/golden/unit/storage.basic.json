@@ -1,0 +1,28 @@
+{
+ "all": {
+  "custom": {
+   "k": 1
+  },
+  "jvs-index": [
+   "x"
+  ],
+  "takes": {
+   "current": {
+    "takeId": "a"
+   },
+   "previous": null
+  }
+ },
+ "before": {
+  "$undefined": true
+ },
+ "jvs": [
+  "x"
+ ],
+ "takes": {
+  "current": {
+   "takeId": "a"
+  },
+  "previous": null
+ }
+}
