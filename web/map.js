@@ -41,18 +41,19 @@ export class VoiceMap{
  project(v){if(!v)return null;const w=this.width-48,h=this.height-48,cx=this.width/2+this.pan[0],cy=this.height/2+this.pan[1];if(this.dimension===2)return [cx+(v[0]-this.center[0])*w*this.zoom,cy-(v[1]-this.center[1])*h*this.zoom,0];const x=v[0]-(this.camera?.[0]??.5),y=v[1]-(this.camera?.[1]??.5),z=v[2]-(this.camera?.[2]??.5),u=x*Math.cos(this.yaw)+z*Math.sin(this.yaw),d=-x*Math.sin(this.yaw)+z*Math.cos(this.yaw),yy=y*Math.cos(this.tilt)-d*Math.sin(this.tilt),dd=y*Math.sin(this.tilt)+d*Math.cos(this.tilt),s=Math.min(w,h)*.86*this.zoom;return [cx+u*s,cy-yy*s,dd];}
  pick(x,y){let best=null,dist=12;for(const p of this.hit){const d=Math.hypot(p.xy[0]-x,p.xy[1]-y);if(d<dist){best=p.sample;dist=d;}}return best;}
  rangeTrack(detail,range){return (detail?.track||[]).filter(p=>!range||(p.t>=range[0]&&p.t<=range[1]));}
- smoothTrack(detail,range){
+ smoothTrack(detail,range,hold=false){
   if(!detail?.track)return [];
-  this.trackCache ||= new WeakMap();let smooth=this.trackCache.get(detail.track);
+  this.trackCache ||= new WeakMap();const cached=this.trackCache.get(detail.track)||{};let smooth=cached[hold?'held':'plain'];
   if(!smooth){
+   const reach=hold?3:1.2;
    smooth=detail.track.map((row,i,all)=>{
     if(!finite(row.f0))return {t:row.t};
-    const near=[],held=[];for(let j=i;j>=0&&row.t-all[j].t<=3;j--)if(finite(all[j].f0)){held.push(all[j]);if(row.t-all[j].t<=1.2)near.push(all[j]);}
+    const near=[],held=[];for(let j=i;j>=0&&row.t-all[j].t<=reach;j--)if(finite(all[j].f0)){held.push(all[j]);if(row.t-all[j].t<=1.2)near.push(all[j]);}
     if(near.length<8)return {t:row.t};
-    // Resonance is measured far less often than pitch; hold its last readings for up to 3 s so the point keeps moving.
-    const f={t:row.t};for(const k of AcousticSpace.keys){let values=near.map(p=>p[k]).filter(finite);if(values.length<4)values=held.map(p=>p[k]).filter(finite).slice(0,4);f[k]=values.length>=(k==='delta_f'?2:4)?quantile(values,.5):null;}
+    // Live view: resonance is measured far less often than pitch, so its last readings are held for up to 3 s to keep the point moving.
+    const f={t:row.t};for(const k of AcousticSpace.keys){let values=near.map(p=>p[k]).filter(finite);if(hold&&values.length<4)values=held.map(p=>p[k]).filter(finite).slice(0,4);f[k]=values.length>=(hold&&k==='delta_f'?2:4)?quantile(values,.5):null;}
     return f;
-   });this.trackCache.set(detail.track,smooth);
+   });this.trackCache.set(detail.track,{...cached,[hold?'held':'plain']:smooth});
   }
   return range?smooth.filter(p=>p.t>=range[0]&&p.t<=range[1]):smooth;
  }
@@ -104,8 +105,9 @@ export class VoiceMap{
  }
  label(p,text,color){const g=this.ctx;g.font='11px system-ui';g.textAlign='left';const width=g.measureText(text).width;let x=clamp(p[0]+14,46,this.width-width-30),y=clamp(p[1]-14,22,this.height-62);g.fillStyle=this.colors.bg;g.globalAlpha=.94;g.fillRect(x-4,y-13,width+8,19);g.globalAlpha=1;g.fillStyle=color;g.fillText(text,x,y);}
  trajectory(detail,range,color,time,own){
-  const track=this.smoothTrack(detail,range);if(!track.length){if(this.shapeCache){delete this.shapeCache[own?'own':'ref'];this.fitDirty=true;}return;}
-  const live=this.live&&own,seconds=this.liveShapeSeconds,end=Math.floor((finite(time)?time:detail.duration)*10)/10;
+  const live=this.live&&own;if(own&&!live){this.headPos=this.headTarget=null;this.headSeen=undefined;}
+  const track=this.smoothTrack(detail,range,live);if(!track.length){if(this.shapeCache){delete this.shapeCache[own?'own':'ref'];this.fitDirty=true;}return;}
+  const seconds=this.liveShapeSeconds,end=Math.floor((finite(time)?time:detail.duration)*10)/10;
   const visible=live?track.filter(p=>p.t> end-seconds&&p.t<=end):track;
   const points=visible.map(p=>this.project(this.vector(p))).filter(Boolean),g=this.ctx;
   if(this.showRange&&points.length>3)this.shape(visible,color,own,live);else if(this.shapeCache)delete this.shapeCache[own?'own':'ref'];
