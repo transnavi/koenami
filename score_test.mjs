@@ -1,7 +1,7 @@
 // Checks the shareable verdict against the built public libraries: node score_test.mjs
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Scorer,parseResultParams,resultParams,verdictOf,shareText} from './web/score.js';
+import {Scorer,parseResultParams,resultParams,verdictOf,shareText,gateFailure} from './web/score.js';
 import {cardSVG} from './web/card.js';
 
 const quantile=(values,q)=>{const s=[...values].sort((a,b)=>a-b);return s[Math.round(q*(s.length-1))];};
@@ -28,3 +28,8 @@ assert.equal(shareText({verdict:'androgynous',display:0}),'私の声は中間的
 assert.equal(parseResultParams(new URLSearchParams('v=1&l=ja&f0=abc')),null);
 assert.equal(parseResultParams(new URLSearchParams('v=1&l=ja&f0=150')),null,'missing measurements are rejected, not read as 0');
 console.log('score_test: ok');
+assert.equal(gateFailure({voiced_seconds:2,formant_seconds:1,clipping_fraction:0,resonance_sensitivity_pct:3}),null);
+assert.equal(gateFailure({voiced_seconds:.6,formant_seconds:1,clipping_fraction:0}).label,'有声区間');
+assert.equal(gateFailure({voiced_seconds:2,formant_seconds:1,clipping_fraction:.02}).need,'0.5 %以下');
+assert.equal(gateFailure({voiced_seconds:2,formant_seconds:1,clipping_fraction:0,resonance_sensitivity_pct:20}).label,'響きの推定のぶれ');
+console.log('gate: ok');

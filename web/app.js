@@ -6,7 +6,7 @@ import {SignalView} from './signals.js';
 import {TakeStore} from './storage.js';
 import {localize} from './locale.js';
 import {loadImported,importedAudio,importJVS} from './corpus-import.js';
-import {Scorer,VERDICTS,LEANINGS,formatScore,representatives,distance2} from './score.js';
+import {Scorer,VERDICTS,LEANINGS,formatScore,gateFailure,representatives,distance2} from './score.js';
 import {shareBundle,cardImage,systemShare,labelled} from './share.js';
 'use strict';
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -306,9 +306,13 @@ setInterval(saveView,1000);window.addEventListener('beforeunload',saveView);docu
 
 function restoreCamera(){if(!recordCamera)return;if(map.navigationVersion===recordCamera.navigationVersion){map.autoFit=recordCamera.autoFit;map.autoRotate=recordCamera.autoRotate;}recordCamera=null;map.fitDirty=true;map.invalidate();$('auto-rotate').setAttribute('aria-pressed',String(map.autoRotate));}
 /* The share dialog scores whatever the indicators show: the whole recording, or the selected range. */
-function shareResult(){return state.scorer?.available&&state.ownFull&&!state.ownFull.analysisPending?state.scorer.score(activeFeatures('own')):null;}
+function activeMeasurement(){return state.own||state.ownFull;}
+function shareResult(){const m=activeMeasurement();return state.scorer?.available&&m&&!m.analysisPending&&!gateFailure(m)?state.scorer.score(m.features||{}):null;}
 const scalePos=s=>`${clamp((s+60)/120,0,1)*100}%`;
-function updateVerdict(){const result=shareResult(),scorer=state.scorer;const readout=$('verdict-readout');readout.disabled=!result;$('verdict-main').dataset.verdict=result?.verdict||'';$('verdict-word').textContent=result?VERDICTS[result.verdict]:scorer?.available?'録音すると表示':'この言語では計算できません';$('verdict-number').textContent=result?formatScore(result.display):'';for(const g of ['male','female']){const band=scorer?.available?scorer.bands[g]:null,el=$('verdict-band-'+g);el.hidden=!band;if(band){el.style.left=scalePos(band[0]);el.style.width=`calc(${scalePos(band[1])} - ${scalePos(band[0])})`;}}if(result)$('verdict-dot').style.left=scalePos(result.score);}
+function updateVerdict(){const result=shareResult(),scorer=state.scorer;const readout=$('verdict-readout');readout.disabled=!result;$('verdict-main').dataset.verdict=result?.verdict||'';const m=activeMeasurement(),gate=m&&!m.analysisPending&&scorer?.available?gateFailure(m):null;
+ $('verdict-word').textContent=result?VERDICTS[result.verdict]:!scorer?.available?'この言語では計算できません':!m?'録音すると表示':m.analysisPending?'解析中':'まだ判定できません';
+ $('verdict-number').textContent=result?formatScore(result.display):'';
+ $('verdict-gate').hidden=!gate||!!result;if(gate&&!result)$('verdict-gate').textContent=gate.value?`${gate.label} ${gate.value}（${gate.need}）`:gate.label;for(const g of ['male','female']){const band=scorer?.available?scorer.bands[g]:null,el=$('verdict-band-'+g);el.hidden=!band;if(band){el.style.left=scalePos(band[0]);el.style.width=`calc(${scalePos(band[1])} - ${scalePos(band[0])})`;}}if(result)$('verdict-dot').style.left=scalePos(result.score);}
 let shareImage=null;
 $('verdict-readout').onclick=()=>$('share-button').click();
 $('verdict-help').onclick=()=>{const s=state.scorer;openHelp(VERDICT_HELP,s?.available?[['男性的な見本 · 中央80%',`${formatScore(Math.round(s.bands.male[0]))}〜${formatScore(Math.round(s.bands.male[1]))}`],['女性的な見本 · 中央80%',`${formatScore(Math.round(s.bands.female[0]))}〜${formatScore(Math.round(s.bands.female[1]))}`],['参照話者数',s.speakers.length]]:[]);};
