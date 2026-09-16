@@ -34,6 +34,11 @@ def main(url):
             assert page.evaluate('reviewApp.ratings') == {'femininity': 5, 'masculinity': 1, 'japanese': 6}
             page.keyboard.press('5'); page.keyboard.press('ArrowUp'); page.keyboard.press('3'); page.keyboard.press('3')
             assert page.evaluate('reviewApp.ratings') == {'femininity': 5, 'masculinity': 1, 'japanese': 5}
+            # Age is a decade choice: digits 1-6 pick 10代以下 … 60代以上, 0 does nothing.
+            page.keyboard.press('ArrowDown'); page.keyboard.press('ArrowDown'); page.keyboard.press('0'); page.keyboard.press('2')
+            assert page.evaluate('reviewApp.ratings.age') == 20 and page.locator('.scale[data-active=true] output').inner_text() == '20代'
+            page.keyboard.press('2'); assert page.evaluate('reviewApp.ratings.age') is None
+            page.locator('.scale[data-active=true] .steps button', has_text='60代以上').click(); assert page.evaluate('reviewApp.ratings.age') == 60
             # Flags: pronunciation flags are exclusive, clip flags accumulate.
             page.keyboard.press('n'); page.keyboard.press('m'); page.keyboard.press('z'); page.keyboard.press('e')
             assert page.evaluate('[...reviewApp.chosen]') == ['native_like', 'noise', 'no_speech']
@@ -44,9 +49,9 @@ def main(url):
                 page.keyboard.press('ArrowRight'); assert page.evaluate('reviewApp.clip') == (page.evaluate('reviewApp.queue[0].clips.findIndex(c=>c.id===reviewApp.queue[0].first)') + 1) % first['clips']
             page.locator('#note').fill('テスト'); page.keyboard.press('Enter')
             wait(page, 'reviewApp.at===1')
-            assert saved[0]['speaker'] == first['speaker'] and saved[0]['flags'] == ['native_like', 'noise'] and saved[0]['ratings'] == {'femininity': 5, 'masculinity': 1, 'japanese': 5} and saved[0]['note'] == 'テスト'
+            assert saved[0]['speaker'] == first['speaker'] and saved[0]['flags'] == ['native_like', 'noise'] and saved[0]['ratings'] == {'femininity': 5, 'masculinity': 1, 'japanese': 5, 'age': 60} and saved[0]['note'] == 'テスト'
             assert saved[0]['language'] == 'ja' and saved[0]['clip'].startswith('common_voice_ja_')
-            assert 'テスト' in page.locator('#log').inner_text()
+            assert 'テスト' in page.locator('#log').inner_text() and '聞こえる年齢 60代以上' in page.locator('#log').inner_text()
             # Skipping advances without a save; an empty save is refused.
             page.keyboard.press('s'); assert page.evaluate('reviewApp.at') == 2 and len(saved) == 1
             page.keyboard.press('Enter'); assert len(saved) == 1 and page.locator('#status').inner_text() != ''

@@ -5,7 +5,7 @@ const SCALES=[
  {key:'masculinity',name:'男性らしさ',ends:['感じない','強く感じる']},
  {key:'naturalness',name:'自然さ',ends:['不自然','自然']},
  {key:'japanese',name:'母語話者らしさ',ends:['感じない','強く感じる'],only:'ja'},
- {key:'age',name:'聞こえる年齢',number:[10,90]},
+ {key:'age',name:'聞こえる年齢',decades:true},
 ];
 const PRONUNCIATION=['native_like','not_native_like','tentative'];
 const KEYS={speaker:{native_like:'M',not_native_like:'N',tentative:'T',distorted_audio:'D'},clip:{no_speech:'E',murmur:'U',noise:'Z',other_speaker:'O',distorted:'X'}};
@@ -14,7 +14,7 @@ const audio=new Audio();audio.onplay=audio.onpause=audio.onended=()=>$('play').s
 
 async function load(){
  const r=await fetch('/api/review?lang='+encodeURIComponent(state.lang));if(!r.ok)throw Error(await r.text());
- const data=await r.json();state.queue=data.queue;state.flags=data.flags;state.log=data.log;state.reviewed=data.reviewed;state.at=0;show();
+ const data=await r.json();state.queue=data.queue;state.flags=data.flags;state.decades=data.ageDecades;state.log=data.log;state.reviewed=data.reviewed;state.at=0;show();
 }
 function current(){return state.queue[state.at];}
 function scales(){return SCALES.filter(s=>!s.only||s.only===state.lang);}
@@ -34,14 +34,15 @@ function renderScales(){
  scales().forEach((s,i)=>{
   const row=document.createElement('div');row.className='scale';row.dataset.active=String(i===state.active);row.onclick=()=>{state.active=i;renderScales();};
   const name=document.createElement('span');name.className='name';name.textContent=s.name;row.append(name);
-  if(s.number){const input=document.createElement('input');input.type='number';input.min=s.number[0];input.max=s.number[1];input.step=5;input.value=state.ratings.age??'';input.placeholder='歳';input.oninput=()=>{const v=Number(input.value);if(input.value&&v>=s.number[0]&&v<=s.number[1])state.ratings.age=v;else delete state.ratings.age;};row.append(input);}
-  else{const steps=document.createElement('div');steps.className='steps';for(let v=0;v<=6;v++){const b=document.createElement('button');b.type='button';b.textContent=String(v);b.setAttribute('aria-pressed',String(state.ratings[s.key]===v));b.onclick=e=>{e.stopPropagation();state.active=i;rate(v);};steps.append(b);}
-   const out=document.createElement('output');out.textContent=Number.isFinite(state.ratings[s.key])?String(state.ratings[s.key]):'—';row.append(steps,out);
-   const ends=document.createElement('div');ends.className='ends';for(const e of s.ends){const span=document.createElement('span');span.textContent=e;ends.append(span);}row.append(ends);}
+  const choices=s.decades?Object.entries(state.decades).map(([v,label])=>[Number(v),label]):Array.from({length:7},(_,v)=>[v,String(v)]);
+  {const steps=document.createElement('div');steps.className='steps';for(const [v,label] of choices){const b=document.createElement('button');b.type='button';b.textContent=label;b.setAttribute('aria-pressed',String(state.ratings[s.key]===v));b.onclick=e=>{e.stopPropagation();state.active=i;rate(v);};steps.append(b);}
+   const out=document.createElement('output');out.textContent=Number.isFinite(state.ratings[s.key])?(s.decades?state.decades[state.ratings[s.key]]:String(state.ratings[s.key])):'—';row.append(steps,out);
+   if(s.ends){const ends=document.createElement('div');ends.className='ends';for(const e of s.ends){const span=document.createElement('span');span.textContent=e;ends.append(span);}row.append(ends);}}
   $('scales').append(row);
  });
 }
-function rate(v){const s=scales()[state.active];if(!s||s.number)return;state.ratings[s.key]=state.ratings[s.key]===v?undefined:v;if(state.ratings[s.key]===undefined)delete state.ratings[s.key];renderScales();}
+function key(d){const s=scales()[state.active];if(!s)return;if(!s.decades)return rate(d);const v=Object.keys(state.decades).map(Number)[d-1];if(v!==undefined)rate(v);}
+function rate(v){const s=scales()[state.active];if(!s)return;state.ratings[s.key]=state.ratings[s.key]===v?undefined:v;if(state.ratings[s.key]===undefined)delete state.ratings[s.key];renderScales();}
 function renderFlags(){
  for(const scope of ['speaker','clip']){const box=$(scope+'-flags');box.querySelectorAll('button').forEach(b=>b.remove());
   for(const [flag,label] of Object.entries(state.flags[scope]||{})){const b=document.createElement('button');b.type='button';b.textContent=label;const k=document.createElement('kbd');k.textContent=KEYS[scope][flag]||'';b.append(k);b.setAttribute('aria-pressed',String(state.chosen.has(flag)));b.onclick=()=>toggle(flag);box.append(b);}}
@@ -62,7 +63,7 @@ function skip(){if(!current())return;state.at++;show();}
 function renderLog(){
  $('log').replaceChildren();
  for(const r of state.log.slice(-8).reverse()){const p=document.createElement('div');const s=document.createElement('strong');s.textContent=r.display||r.speaker;
-  const parts=[...(r.flags||[]).map(f=>state.flags.speaker?.[f]||state.flags.clip?.[f]||f),...Object.entries(r.ratings||{}).map(([k,v])=>(SCALES.find(s=>s.key===k)?.name||k)+' '+v)];
+  const parts=[...(r.flags||[]).map(f=>state.flags.speaker?.[f]||state.flags.clip?.[f]||f),...Object.entries(r.ratings||{}).map(([k,v])=>(SCALES.find(s=>s.key===k)?.name||k)+' '+(k==='age'?state.decades?.[v]??v:v))];
   p.append(s,' '+parts.join(' · ')+(r.note?' · '+r.note:''));$('log').append(p);}
 }
 document.addEventListener('keydown',e=>{
@@ -73,7 +74,7 @@ document.addEventListener('keydown',e=>{
  if(k===' ')audio.paused?play():audio.pause();
  else if(k==='ArrowLeft')step(-1);else if(k==='ArrowRight')step(1);
  else if(k==='ArrowUp'){state.active=Math.max(0,state.active-1);renderScales();}else if(k==='ArrowDown'){state.active=Math.min(scales().length-1,state.active+1);renderScales();}
- else if(/^[0-6]$/.test(k))rate(Number(k));
+ else if(/^[0-6]$/.test(k))key(Number(k));
  else if(k==='Enter')save();else if(k.toLowerCase()==='s')skip();
  else{const upper=k.toUpperCase();for(const scope of ['speaker','clip'])for(const [flag,key] of Object.entries(KEYS[scope]))if(key===upper)toggle(flag);}
 });

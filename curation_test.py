@@ -60,11 +60,11 @@ class ReviewLogTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             log = Path(folder) / 'reviews.jsonl'
             record = append({'speaker': 'a', 'clip': 'x', 'flags': ['noise', 'noise'], 'ratings': {'age': 40, 'femininity': None}}, log)
-            self.assertEqual(record['flags'], ['noise']); self.assertEqual(record['ratings'], {'age': 40.0})
+            self.assertEqual(record['flags'], ['noise']); self.assertEqual(record['ratings'], {'age': 40})
             self.assertEqual(json.loads(log.read_text())['speaker'], 'a')
             for bad in [{'speaker': 'a', 'ratings': {'femininity': 9}}, {'speaker': 'a'}, {'speaker': 'a', 'flags': ['bogus']},
                         {'speaker': 'a', 'flags': ['noise']}, {'speaker': 'a', 'flags': ['native_like', 'tentative']},
-                        {'speaker': 'a', 'flags': 'noise'}, {'speaker': 'a', 'ratings': {'age': True}}, {'speaker': 'a', 'note': 'x' * 1001}, 'text']:
+                        {'speaker': 'a', 'flags': 'noise'}, {'speaker': 'a', 'ratings': {'age': True}}, {'speaker': 'a', 'ratings': {'age': 25}}, {'speaker': 'a', 'note': 'x' * 1001}, 'text']:
                 with self.assertRaises(ValueError, msg=bad): append(bad, log)
             self.assertEqual(len(log.read_text().splitlines()), 1)
 
