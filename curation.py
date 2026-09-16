@@ -6,14 +6,14 @@
 - clip: clip id the reviewer listened to (optional for speaker-level notes)
 - display: label shown in the app at review time, kept for readability
 - language: library language code
-- flags: list of QUALITY keys (problems with the audio)
-- scope: 'clip' (default) or 'speaker'; with 'speaker', quality flags exclude every clip of the speaker
+- flags: list of QUALITY keys (problems with this clip's audio)
 - ratings: optional 0-6 scores keyed by RATING_KEYS; `age` is the decade the voice sounds like (AGE_DECADES).
   `japanese` doubles as the pronunciation judgement (see NATIVE_MIN and friends).
 - note: free text
 - reviewed: ISO timestamp
 
-Verdicts are recomputed from the log on every read; nothing is edited in place.
+A review describes one clip. Pronunciation (母語話者らしさ) is taken as a property of the speaker, everything
+else stays with the clip. Verdicts are recomputed from the log on every read; nothing is edited in place.
 """
 import json
 from datetime import datetime, timezone
@@ -55,7 +55,6 @@ QUALITY = {
 RETIRED = {'other_speaker': '別の話者'}
 FLAGS = QUALITY
 PROBLEMS = {**QUALITY, **RETIRED}
-SCOPES = ('clip', 'speaker')
 
 
 def load(path=LOG):
@@ -70,9 +69,7 @@ def append(review, path=LOG):
     flags = list(dict.fromkeys(review.get('flags', [])))
     unknown = [f for f in flags if f not in FLAGS]
     if unknown: raise ValueError(f'unknown flags: {unknown}')
-    scope = review.get('scope') or 'clip'
-    if scope not in SCOPES: raise ValueError('scope must be clip or speaker')
-    if scope == 'clip' and not review.get('clip') and any(f in QUALITY for f in flags): raise ValueError('clip-level quality flags need a clip')
+    if not review.get('clip') and any(f in QUALITY for f in flags): raise ValueError('quality flags need a clip')
     ratings = {}
     for key, value in (review.get('ratings') or {}).items():
         if key not in RATING_KEYS or value is None: continue
@@ -89,7 +86,7 @@ def append(review, path=LOG):
     if not isinstance(note, str) or len(note) > 1000: raise ValueError('note must be text under 1000 characters')
     if not flags and not ratings and not note.strip(): raise ValueError('empty review')
     record = {'speaker': speaker, 'clip': review.get('clip') or None, 'display': review.get('display'),
-              'language': review.get('language', 'ja'), 'flags': flags, 'scope': scope, 'ratings': ratings,
+              'language': review.get('language', 'ja'), 'flags': flags, 'ratings': ratings,
               'note': note.strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a') as f: f.write(json.dumps(record, ensure_ascii=False) + '\n')
@@ -109,16 +106,12 @@ class Verdicts:
         japanese = self.ratings('japanese')
         self.pronunciation = {s: 'native_like' if v >= NATIVE_MIN else 'not_native_like' if v <= NON_NATIVE_MAX else 'tentative' if v <= DOUBTFUL_MAX else 'unlabelled'
                               for s, v in japanese.items()}
-        # Quality flags can be corrected: the latest speaker-scoped review decides speaker-level problems
-        # (an empty one clears them), and the latest review that listened to a clip decides that clip.
-        latest_speaker, latest_clip = {}, {}
+        # Quality flags can be corrected: the latest review that listened to a clip decides that clip.
+        latest_clip = {}
         for r in reviews:
-            if r.get('scope') == 'speaker': latest_speaker[r['speaker']] = r
             if r.get('clip'): latest_clip[r['clip']] = r
-        for r in latest_speaker.values():
-            if set(r.get('flags', [])) & PROBLEMS.keys(): self.excluded_speakers.add(r['speaker'])
         for clip, r in latest_clip.items():
-            if set(r.get('flags', [])) & PROBLEMS.keys() and r.get('scope') != 'speaker': self.excluded_clips.add(clip)
+            if set(r.get('flags', [])) & PROBLEMS.keys(): self.excluded_clips.add(clip)
         self.native_speakers = {s for s, flag in self.pronunciation.items() if flag == 'native_like'}
         self.excluded_speakers |= {s for s, flag in self.pronunciation.items() if flag in ('not_native_like', 'tentative')}
 
@@ -127,13 +120,13 @@ class Verdicts:
         return {s: 1 if flag == 'native_like' else 0 for s, flag in self.pronunciation.items() if flag in ('native_like', 'not_native_like')}
 
     def latest(self, speaker):
-        """Merged view of a speaker's reviews: latest value per rating key, flags and scope of the latest review."""
+        """Merged view of a speaker's reviews: latest value per rating key, flags of the latest review."""
         rows = [r for r in self.reviews if r['speaker'] == speaker]
         if not rows: return None
         ratings = {}
         for r in rows: ratings.update(r.get('ratings', {}))
         last = rows[-1]
-        return {'ratings': ratings, 'flags': last.get('flags', []), 'scope': last.get('scope', 'clip'), 'clip': last.get('clip'), 'note': last.get('note', ''), 'reviewed': last.get('reviewed')}
+        return {'ratings': ratings, 'flags': last.get('flags', []), 'clip': last.get('clip'), 'note': last.get('note', ''), 'reviewed': last.get('reviewed')}
 
     def ratings(self, key):
         """Latest rating per speaker for one RATING_KEYS entry."""

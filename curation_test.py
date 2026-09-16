@@ -41,9 +41,9 @@ class SelectionTests(unittest.TestCase):
 
 class ReviewLogTests(unittest.TestCase):
     def test_audio_exclusions_carry_no_pronunciation_label(self):
-        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['distorted'], 'scope': 'speaker'}, {'speaker': 'b', 'ratings': {'japanese': 3}},
+        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['distorted']}, {'speaker': 'b', 'ratings': {'japanese': 3}},
                       {'speaker': 'c', 'ratings': {'japanese': 2}}, {'speaker': 'd', 'ratings': {'japanese': 5}}, {'speaker': 'e', 'ratings': {'japanese': 4}}])
-        self.assertEqual(v.excluded_speakers, {'a', 'b', 'c'})
+        self.assertEqual(v.excluded_speakers, {'b', 'c'}); self.assertEqual(v.excluded_clips, {'x'})
         self.assertEqual(v.pronunciation_labels(), {'c': 0, 'd': 1})
         self.assertEqual(v.pronunciation['e'], 'unlabelled')
 
@@ -53,15 +53,10 @@ class ReviewLogTests(unittest.TestCase):
         v = Verdicts([{'speaker': 'a', 'ratings': {'japanese': 3}}, {'speaker': 'a', 'ratings': {'japanese': 6}}])
         self.assertEqual(v.native_speakers, {'a'}); self.assertEqual(v.excluded_speakers, set()); self.assertEqual(v.pronunciation_labels(), {'a': 1})
 
-    def test_quality_scope_decides_clip_or_speaker_exclusion(self):
-        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['noise'], 'scope': 'clip'}, {'speaker': 'b', 'clip': 'y', 'flags': ['noise'], 'scope': 'speaker'}])
-        self.assertEqual(v.excluded_clips, {'x'}); self.assertEqual(v.excluded_speakers, {'b'})
-
     def test_later_reviews_correct_quality_flags(self):
-        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['noise'], 'scope': 'clip'}, {'speaker': 'a', 'clip': 'x', 'flags': [], 'scope': 'clip'},
-                      {'speaker': 'b', 'clip': 'y', 'flags': ['distorted'], 'scope': 'speaker'}, {'speaker': 'b', 'clip': 'z', 'flags': [], 'scope': 'clip'},
-                      {'speaker': 'c', 'clip': 'w', 'flags': ['distorted'], 'scope': 'speaker'}, {'speaker': 'c', 'clip': 'w', 'flags': [], 'scope': 'speaker'}])
-        self.assertEqual(v.excluded_clips, set()); self.assertEqual(v.excluded_speakers, {'b'})
+        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['noise']}, {'speaker': 'a', 'clip': 'x', 'flags': []},
+                      {'speaker': 'b', 'clip': 'y', 'flags': ['distorted']}, {'speaker': 'b', 'clip': 'z', 'flags': []}])
+        self.assertEqual(v.excluded_clips, {'y'}); self.assertEqual(v.excluded_speakers, set())
         self.assertEqual(v.latest('b')['flags'], []); self.assertEqual(v.latest('b')['clip'], 'z')
 
     def test_ratings_alone_do_not_exclude(self):
@@ -72,11 +67,11 @@ class ReviewLogTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             log = Path(folder) / 'reviews.jsonl'
             record = append({'speaker': 'a', 'clip': 'x', 'flags': ['noise', 'noise'], 'ratings': {'age': 40, 'femininity': None}}, log)
-            self.assertEqual(record['flags'], ['noise']); self.assertEqual(record['scope'], 'clip'); self.assertEqual(record['ratings'], {'age': 40})
-            self.assertEqual(append({'speaker': 'a', 'flags': ['noise'], 'scope': 'speaker'}, log)['scope'], 'speaker')
+            self.assertEqual(record['flags'], ['noise']); self.assertNotIn('scope', record); self.assertEqual(record['ratings'], {'age': 40})
+            self.assertEqual(append({'speaker': 'a', 'clip': 'x', 'flags': ['noise']}, log)['flags'], ['noise'])
             self.assertEqual(json.loads(log.read_text().splitlines()[0])['speaker'], 'a')
             for bad in [{'speaker': 'a', 'ratings': {'femininity': 9}}, {'speaker': 'a'}, {'speaker': 'a', 'flags': ['bogus']},
-                        {'speaker': 'a', 'flags': ['noise']}, {'speaker': 'a', 'flags': ['noise'], 'scope': 'all'}, {'speaker': 'a', 'flags': ['native_like']},
+                        {'speaker': 'a', 'flags': ['noise']}, {'speaker': 'a', 'flags': ['native_like']},
                         {'speaker': 'a', 'flags': 'noise'}, {'speaker': 'a', 'ratings': {'age': True}}, {'speaker': 'a', 'ratings': {'age': 25}}, {'speaker': 'a', 'note': 'x' * 1001}, 'text']:
                 with self.assertRaises(ValueError, msg=bad): append(bad, log)
             self.assertEqual(len(log.read_text().splitlines()), 2)
@@ -84,7 +79,7 @@ class ReviewLogTests(unittest.TestCase):
     def test_migrated_log_matches_previous_exclusions(self):
         migrated = [r for r in Verdicts().reviews if r['reviewed'].startswith('2026-09-15')]
         v = Verdicts(migrated)
-        self.assertEqual(len(v.native_speakers), 3); self.assertEqual(len(v.excluded_speakers), 20); self.assertEqual(len(v.excluded_clips), 8)
+        self.assertEqual(len(v.native_speakers), 3); self.assertEqual(len(v.excluded_speakers), 19); self.assertEqual(len(v.excluded_clips), 15)
 
     def test_every_scale_key_is_accepted(self):
         with tempfile.TemporaryDirectory() as folder:
