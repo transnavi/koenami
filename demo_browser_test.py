@@ -83,15 +83,15 @@ def main(url):
             assert page.locator('#state').is_hidden()
             box=page.locator('#signal-canvas').bounding_box()
             duration=page.evaluate('voiceApp.state.ownFull.duration')
-            middle=box['x']+38+(box['width']-48)*.5
+            gutter=page.evaluate('voiceApp.signal.gutter');middle=box['x']+gutter+(box['width']-gutter-10)*.5
             page.mouse.click(middle,box['y']+18)
             wait(page,f'Math.abs(document.querySelector("#player").currentTime-{duration*.5})<.04')
             page.locator('#signal-canvas').focus()
             page.keyboard.press('ArrowRight')
             wait(page,f'Math.abs(document.querySelector("#player").currentTime-{duration*.5+.1})<.04')
-            page.mouse.move(box['x']+38+(box['width']-48)*.2,box['y']+18)
+            page.mouse.move(box['x']+gutter+(box['width']-gutter-10)*.2,box['y']+18)
             page.mouse.down()
-            page.mouse.move(box['x']+38+(box['width']-48)*.7,box['y']+18,steps=8)
+            page.mouse.move(box['x']+gutter+(box['width']-gutter-10)*.7,box['y']+18,steps=8)
             page.mouse.up()
             wait(page,'!!voiceApp.state.ranges.own')
             selection=page.evaluate('voiceApp.state.ranges.own')
