@@ -1,6 +1,6 @@
 import {finite} from './math.js';
 import {Scorer,parseResultParams,shareText,METRIC_KEYS,METRIC_LABELS,METRIC_UNITS,METRIC_DIGITS,VERDICTS} from './score.js';
-import {cardImage,intents,resultURL,systemShare} from './share.js';
+import {cardImage,intents,resultURL,systemShare,labelled} from './share.js';
 'use strict';
 const $=id=>document.getElementById(id);
 const fmt=(v,n=0)=>finite(v)?v.toFixed(n):'—';
@@ -20,12 +20,12 @@ async function main(){
  $('result-version').textContent=`v${result.version}`;if(parsed.version!==result.version)$('result-status').textContent=`このリンクは判定方式v${parsed.version}で作られました。現在の方式（v${result.version}）で計算し直しています。`;$('result-try').href=`/${parsed.lang}/`;
  $('result-metric-rows').innerHTML=METRIC_KEYS.map(key=>{const bands=scorer.metricBands[key],n=METRIC_DIGITS[key],range=b=>`${fmt(b[0],n)}〜${fmt(b[1],n)}`;return `<tr><td>${METRIC_LABELS[key]} · ${METRIC_UNITS[key]}</td><td>${fmt(result.features[key],n)}</td><td>${range(bands.female)}</td><td>${range(bands.male)}</td></tr>`;}).join('');
  $('result-metrics').hidden=false;$('result-notes').hidden=false;
- $('result-intents').replaceChildren(...intents(url,text).map(i=>{const a=document.createElement('a');a.href=i.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=`${i.label}に投稿`;return a;}));
+ $('result-intents').replaceChildren(...intents(url,text).map(i=>{const a=document.createElement('a');a.href=i.href;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=labelled(i.icon,i.label);a.title=`${i.label}に投稿`;return a;}));
  $('result-copy').onclick=async()=>{try{await navigator.clipboard.writeText(url);$('result-status').textContent='リンクをコピーしました。';}catch{$('result-status').textContent=url;}};
  let image=null;const render=async()=>image||(image=await cardImage(result,scorer));
  $('result-save').onclick=async()=>{try{const file=await render();const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}catch(e){$('result-status').textContent=e.message;}};
- if(navigator.share){const b=document.createElement('button');b.type='button';b.textContent='共有…';b.onclick=()=>systemShare(result,scorer,parsed.lang).catch(e=>{if(e.name!=='AbortError')$('result-status').textContent=e.message;});$('result-copy').before(b);}
- $('result-actions').hidden=false;
+ if(navigator.share){const b=document.createElement('button');b.type='button';b.innerHTML=labelled('share','共有…');b.onclick=()=>systemShare(result,scorer,parsed.lang).catch(e=>{if(e.name!=='AbortError')$('result-status').textContent=e.message;});$('result-copy').before(b);}
+ $('result-copy').innerHTML=labelled('link','リンクをコピー');$('result-save').innerHTML=labelled('image','画像を保存');$('result-actions').hidden=false;
  try{const file=await render();const img=$('result-image');img.src=URL.createObjectURL(file);img.alt=`${text}。5つの指標と見本の分布を描いた画像。`;img.hidden=false;}catch(e){$('result-status').textContent=e.message;}
 }
 main().catch(e=>fail(e.message));
