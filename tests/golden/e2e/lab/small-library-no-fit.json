@@ -1,10 +1,10 @@
 {
- "url": "/ja/",
+ "url": "/en/",
  "title": "Koenami · 女声・男声のボイトレツール",
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "words-button",
+ "focus": "body",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -155,7 +155,7 @@
    "attrs": {
     "aria-label": "見本の言語"
    },
-   "value": "ja",
+   "value": "en",
    "options": [
     {
      "value": "ja",
@@ -188,7 +188,7 @@
      "data": {}
     }
    ],
-   "trigger": "日本語",
+   "trigger": "English",
    "expanded": "false",
    "text": "日本語普通话English한국어発声の見本",
    "style": "display: inline-flex;"
@@ -197,7 +197,7 @@
    "tag": "span",
    "class": "toolbar-count",
    "attrs": {},
-   "text": "142音声 · 50人"
+   "text": "20音声 · 20人"
   },
   "settings-button": {
    "tag": "button",
@@ -241,7 +241,7 @@
     "role": "group",
     "aria-label": "声の指標"
    },
-   "text": "高さ191Hz204響き1160Hz ΔF905質感3.5dB13.2明るさ-7.3dB-18.7抑揚13.9半音2.1"
+   "text": "高さ226Hz270響き1097Hz ΔF1143質感9.3dB11.0明るさ-15.1dB-20.9抑揚7.5半音9.4"
   },
   "report-button": {
    "tag": "button",
@@ -249,13 +249,13 @@
    "attrs": {
     "title": "見本との5指標の標準化距離。0が一致。比較レポートを開く。"
    },
-   "text": "見本との差6.95"
+   "text": "見本との差1.88"
   },
   "fit-value": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "6.95"
+   "text": "1.88"
   },
   "projection-controls": {
    "tag": "div",
@@ -413,7 +413,7 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "aria-pressed": "false"
+    "aria-pressed": "true"
    },
    "text": "自分"
   },
@@ -421,7 +421,7 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "aria-pressed": "true"
+    "aria-pressed": "false"
    },
    "text": "見本"
   },
@@ -448,14 +448,15 @@
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "0.87–1.12s"
+   "text": "0:06"
   },
   "range-reset": {
    "tag": "button",
    "class": "icon-button",
    "attrs": {
     "title": "選択範囲を解除（Esc）",
-    "aria-label": "選択範囲を解除"
+    "aria-label": "選択範囲を解除",
+    "hidden": ""
    },
    "text": ""
   },
@@ -475,7 +476,7 @@
     "role": "group",
     "aria-label": "推定した単語の位置"
    },
-   "text": "今日もカレーよ"
+   "text": ""
   },
   "sample-browser": {
    "tag": "dialog",
@@ -484,13 +485,13 @@
     "aria-label": "見本を選ぶ"
    },
    "open": false,
-   "text": "見本の声26女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641F 25873F 26732F 26581もっと見る"
+   "text": "見本の声10女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 0101Roll the dice, please.270 Hz · 0:03☆F 0041F 0061F 0021F 0011F 0071F 0031F 0051F 0081F 0091もっと見る"
   },
   "library-count": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "26"
+   "text": "10"
   },
   "add-reference": {
    "tag": "button",
@@ -784,12 +785,14 @@
    "tag": "div",
    "class": "sample-scroll",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641F 25873F 26732F 26581もっと見る"
+   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 0101Roll the dice, please.270 Hz · 0:03☆F 0041F 0061F 0021F 0011F 0071F 0031F 0051F 0081F 0091もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
    "class": "jvs-banner",
-   "attrs": {},
+   "attrs": {
+    "hidden": ""
+   },
    "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込む"
   },
   "jvs-download": {
@@ -814,55 +817,37 @@
    "class": "",
    "attrs": {},
    "rows": {
-    "count": 58,
+    "count": 22,
     "head": [
-     "details#ja:Common Voice:50a288fb7fb3|speaker-folder||true|F 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:1",
-     "summary#||||F 26243",
-     "button#common_voice_ja_36363162|sample-row|true||今日もカレーよ423 Hz · 0:02",
+     "details#en:female:1c1f78f06fdf|speaker-folder||true|F 0101Roll the dice, please.270 Hz · 0:03☆",
+     "summary#||||F 0101",
+     "button#common_voice_en_17839501|sample-row|true||Roll the dice, please.270 Hz · 0:03",
      "button#|favorite|false||☆",
-     "button#common_voice_ja_36363165|sample-row|false||かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10",
-     "button#|favorite|false||☆",
-     "button#common_voice_ja_36363168|sample-row|false||環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06",
-     "button#|favorite|false||☆",
-     "details#ja:female:voicevox-四国めたん|speaker-folder||false|VOICEVOX:四国めたんAI4",
-     "summary#||||VOICEVOX:四国めたんAI4",
-     "details#ja:Common Voice:6c36d39f08db|speaker-folder||false|F 26232",
-     "summary#||||F 26232",
-     "details#ja:Common Voice:fd9de2d213a9|speaker-folder||false|F 27053",
-     "summary#||||F 27053",
-     "details#ja:Common Voice:f3b15d7bf076|speaker-folder||false|F 26323",
-     "summary#||||F 26323",
-     "details#ja:Common Voice:f89d530d282e|speaker-folder||false|F 27081",
-     "summary#||||F 27081",
-     "details#ja:Common Voice:b2a35bfe1379|speaker-folder||false|F 26003",
-     "summary#||||F 26003",
-     "details#ja:Common Voice:97738c057dab|speaker-folder||false|F 26603",
-     "summary#||||F 26603",
-     "details#ja:Common Voice:bafc7f7f1e0d|speaker-folder||false|F 27002",
-     "summary#||||F 27002",
-     "details#ja:Common Voice:b675726edbb3|speaker-folder||false|F 255633",
-     "summary#||||F 255633",
-     "details#ja:Common Voice:1eab7adfaeee|speaker-folder||false|F 26572",
-     "summary#||||F 26572",
-     "details#ja:Common Voice:b66c552c4205|speaker-folder||false|F 26962",
-     "summary#||||F 26962",
-     "details#ja:Common Voice:6bceea6338fa|speaker-folder||false|F 26983",
-     "summary#||||F 26983",
-     "details#ja:Common Voice:5d48646ba95e|speaker-folder||false|F 26913",
-     "summary#||||F 26913",
-     "details#ja:Common Voice:fcb7fdc1e2b0|speaker-folder||false|F 26882",
-     "summary#||||F 26882",
-     "details#ja:Common Voice:2e66c2d9230b|speaker-folder||false|F 26673",
-     "summary#||||F 26673",
-     "details#ja:Common Voice:940de57d1a26|speaker-folder||false|F 26792",
-     "summary#||||F 26792"
+     "details#en:female:470a80e28937|speaker-folder||false|F 0041",
+     "summary#||||F 0041",
+     "details#en:female:a2f52a649528|speaker-folder||false|F 0061",
+     "summary#||||F 0061",
+     "details#en:female:bcb7c332cbfa|speaker-folder||false|F 0021",
+     "summary#||||F 0021",
+     "details#en:female:03ebc9c1104d|speaker-folder||false|F 0011",
+     "summary#||||F 0011",
+     "details#en:female:033b81304fd7|speaker-folder||false|F 0071",
+     "summary#||||F 0071",
+     "details#en:female:a2b0960b9858|speaker-folder||false|F 0031",
+     "summary#||||F 0031",
+     "details#en:female:0edcaafb8336|speaker-folder||false|F 0051",
+     "summary#||||F 0051",
+     "details#en:female:826c4a40b1c1|speaker-folder||false|F 0081",
+     "summary#||||F 0081",
+     "details#en:female:6d06f0216c70|speaker-folder||false|F 0091",
+     "summary#||||F 0091"
     ],
     "tail": [
-     "summary#||||F 25873",
-     "details#ja:Common Voice:1c9ebb4a04a7|speaker-folder||false|F 26732",
-     "summary#||||F 26732",
-     "details#ja:Common Voice:a590a36d0deb|speaker-folder||false|F 26581",
-     "summary#||||F 26581"
+     "summary#||||F 0051",
+     "details#en:female:826c4a40b1c1|speaker-folder||false|F 0081",
+     "summary#||||F 0081",
+     "details#en:female:6d06f0216c70|speaker-folder||false|F 0091",
+     "summary#||||F 0091"
     ]
    }
   },
@@ -889,19 +874,19 @@
    "attrs": {
     "title": "見本を選ぶ"
    },
-   "text": "F 2624423 Hz · 1239 ΔF"
+   "text": "F 010270 Hz · 1143 ΔF"
   },
   "selected-name": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "F 2624"
+   "text": "F 010"
   },
   "selected-meta": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "423 Hz · 1239 ΔF"
+   "text": "270 Hz · 1143 ΔF"
   },
   "favorite-selected": {
    "tag": "button",
@@ -921,7 +906,7 @@
     "aria-label": "出典",
     "target": "_blank",
     "rel": "noreferrer",
-    "href": "https://huggingface.co/datasets/FluidInference/cv-corpus-25.0-ja/resolve/365b7654cd582e20e8000921ef7b0e32caa1906a/ja_01/clips/common_voice_ja_36363162.mp3"
+    "href": "https://huggingface.co/datasets/fsicoli/common_voice_17_0/resolve/8262c16bf297c87a9cd88c51997c4758ed7a8ba2/audio/en/test/en_test_0.tar"
    },
    "text": ""
   },
@@ -935,9 +920,9 @@
    "tag": "p",
    "class": "",
    "attrs": {
-    "lang": "ja"
+    "lang": "en"
    },
-   "text": "今日もカレーよ"
+   "text": "Roll the dice, please."
   },
   "record": {
    "tag": "button",
@@ -1093,10 +1078,10 @@
    "tag": "audio",
    "class": "",
    "attrs": {
-    "src": "/samples/common_voice_ja_36363162.mp3"
+    "src": "/samples/common_voice_en_17839501.mp3"
    },
    "media": {
-    "src": "/samples/common_voice_ja_36363162.mp3",
+    "src": "/samples/common_voice_en_17839501.mp3",
     "paused": true,
     "rate": 1,
     "volume": 1,
@@ -1330,13 +1315,13 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "比較×5.44見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。この2音声の差：図に表示 82% · 省略 18%5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。指標自分見本参照音声の中央80%高さ · Hz226423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—話す速さ · mora/s4.3——見本の高さは自分より10.9半音高めです。速度を落として聴き、無理のない高さで同じ文を試してください。響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を"
+   "text": "比較×レポートを保存"
   },
   "report-content": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "5.44見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。この2音声の差：図に表示 82% · 省略 18%5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。指標自分見本参照音声の中央80%高さ · Hz226423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—話す速さ · mora/s4.3——見本の高さは自分より10.9半音高めです。速度を落として聴き、無理のない高さで同じ文を試してください。響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、"
+   "text": ""
   },
   "report-save": {
    "tag": "button",
@@ -1374,27 +1359,25 @@
   "local": {
    "voice-speed": 1,
    "koenami-session": {
-    "lang": "ja",
-    "group": "female",
-    "sort": "high",
+    "lang": "lab",
+    "group": "all",
+    "sort": "name",
     "search": "",
-    "reference": "common_voice_ja_36363162",
-    "referenceRange": [
-     0.8700000000000001,
-     1.12
-    ],
+    "reference": "lab-3",
+    "referenceRange": null,
     "openSpeakers": [
-     "ja:Common Voice:50a288fb7fb3"
+     "lab:lab:001",
+     "lab:lab:003"
     ],
     "dimension": 3,
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.914281430867266,
+    "zoom": 0.7561898266993523,
     "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
-     0.7587527919899949
+     0.5764964534216006,
+     0.5518314149178085,
+     0.7124593269755278
     ],
     "center": [
      0.5,
@@ -1406,7 +1389,7 @@
     ],
     "autoRotate": false,
     "signal": "pitch",
-    "signalSource": "ref",
+    "signalSource": "own",
     "overlay": true,
     "liveShapeSeconds": 5
    }
@@ -1414,7 +1397,7 @@
   "idb": {
    "recording-index": [
     {
-     "date": "2026-01-01T03:00:05.000Z",
+     "date": "2026-01-01T03:00:06.300Z",
      "duration": 6.696,
      "features": {
       "balance": -15.115525244433902,
@@ -1435,7 +1418,7 @@
       "quiet_pct": 22.401433691756278
      },
      "id": "00000000-0000-4000-8000-000000000001",
-     "language": "ja",
+     "language": "en",
      "name": "own-a.wav",
      "stored": true
     }
@@ -3504,7 +3487,7 @@
      "voiced_seconds": 3.22
     },
     "id": null,
-    "language": "ja",
+    "language": "en",
     "measurement": {
      "clipping_fraction": 0,
      "duration": 6.696,
@@ -7643,7 +7626,7 @@
       "voiced_seconds": 3.22
      },
      "id": null,
-     "language": "ja",
+     "language": "en",
      "measurement": {
       "clipping_fraction": 0,
       "duration": 6.696,
@@ -9745,43 +9728,58 @@
   },
   {
    "seq": 4,
-   "method": "POST",
-   "path": "/api/analyze",
-   "query": "",
-   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+   "method": "GET",
+   "path": "/api/library",
+   "query": "lang=lab",
    "status": 200
   },
   {
    "seq": 5,
-   "method": "POST",
-   "path": "/api/words",
-   "query": "lang=ja",
-   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+   "method": "GET",
+   "path": "/api/detail/lab-1",
+   "query": "",
    "status": 200
   },
   {
    "seq": 6,
-   "method": "POST",
-   "path": "/api/analyze",
+   "method": "GET",
+   "path": "/api/detail/lab-3",
    "query": "",
-   "body": "16000b 4464ca95d86e386bd3494a8882888f073f00fc7b96cbf1737f7d84f18dcfdd91",
    "status": 200
   },
   {
    "seq": 7,
    "method": "GET",
-   "path": "/api/words/common_voice_ja_36363162",
-   "query": "lang=ja",
+   "path": "/api/words/lab-3",
+   "query": "lang=en",
    "status": 200
   },
   {
    "seq": 8,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
+   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+   "status": 200
+  },
+  {
+   "seq": 9,
    "method": "GET",
-   "path": "/api/detail/common_voice_ja_36363162",
-   "query": "end=1.12&start=0.8700000000000001",
+   "path": "/api/library",
+   "query": "lang=en",
+   "status": 200
+  },
+  {
+   "seq": 10,
+   "method": "GET",
+   "path": "/api/detail/common_voice_en_17839501",
+   "query": "",
    "status": 200
   }
  ],
- "media": [],
+ "media": [
+  "/samples/common_voice_ja_22751172.mp3",
+  "/samples/common_voice_ja_22794219.mp3"
+ ],
  "errors": []
 }

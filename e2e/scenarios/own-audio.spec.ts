@@ -28,6 +28,23 @@ test.describe('own audio', () => {
 		await page.locator('#report-button').click();
 		await studio.tick(100);
 		await studio.golden('report-open');
+		await page.locator('#report-dialog [data-close]').click();
+		// With a masculine reference the report names the other group.
+		await studio.choose('library-group', 'male');
+		await page.locator('#sample-list details.speaker-folder summary').first().click();
+		await page.locator('#sample-list .sample-row').first().click();
+		await studio.until('window.voiceApp.state.selected?.group === "male" && !!window.voiceApp.state.refFull');
+		await studio.until('!document.getElementById("reference-player").paused');
+		await page.locator('#play-reference').click();
+		await studio.until('document.getElementById("reference-player").paused');
+		await page.locator('#report-button').click();
+		await studio.tick(100);
+		await studio.golden('report-male-reference');
+		await page.locator('#report-dialog [data-close]').click();
+		await page.locator('#reference-seek').fill('0');
+		await studio.until('document.getElementById("reference-player").currentTime === 0');
+		await page.locator('#report-button').click();
+		await studio.tick(100);
 		const report = await studio.download(() => page.locator('#report-save').click());
 		await studio.golden('report-saved', { extra: { report } });
 		await page.locator('#report-dialog [data-close]').click();
@@ -163,6 +180,9 @@ test.describe('own audio', () => {
 		await studio.until('!!window.voiceApp.state.words.ref');
 		await studio.tick(300);
 		await studio.golden('ref-words');
+		await page.locator('#word-list button').nth(1).click();
+		await studio.tick(100);
+		await studio.golden('ref-word-seek');
 		await page.locator('#words-button').click();
 		await studio.tick(100);
 		await studio.golden('ref-words-again');

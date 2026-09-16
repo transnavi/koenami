@@ -1375,25 +1375,24 @@
   "local": {
    "voice-speed": 1,
    "koenami-session": {
-    "lang": "lab",
-    "group": "all",
-    "sort": "name",
+    "lang": "ja",
+    "group": "female",
+    "sort": "high",
     "search": "",
-    "reference": "lab-3",
+    "reference": "common_voice_ja_36363162",
     "referenceRange": null,
     "openSpeakers": [
-     "lab:lab:001",
-     "lab:lab:003"
+     "ja:Common Voice:50a288fb7fb3"
     ],
     "dimension": 3,
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.7561898266993523,
+    "zoom": 0.914281430867266,
     "camera": [
-     0.5764964534216006,
-     0.5518314149178085,
-     0.7124593269755278
+     0.48432510759557895,
+     0.6283765936675773,
+     0.7587527919899949
     ],
     "center": [
      0.5,
@@ -9782,11 +9781,25 @@
    "seq": 9,
    "method": "GET",
    "path": "/api/library",
-   "query": "lang=ja",
+   "query": "lang=en",
    "status": 200
   },
   {
    "seq": 10,
+   "method": "GET",
+   "path": "/api/detail/common_voice_en_17839501",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 11,
+   "method": "GET",
+   "path": "/api/library",
+   "query": "lang=ja",
+   "status": 200
+  },
+  {
+   "seq": 12,
    "method": "GET",
    "path": "/api/detail/common_voice_ja_36363162",
    "query": "",

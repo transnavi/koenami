@@ -13,6 +13,8 @@ test.describe('cold start', () => {
 		await page.locator('#signal-canvas').focus();
 		await page.keyboard.press('ArrowRight');
 		await page.keyboard.press('Shift+ArrowLeft');
+		await page.locator('body').click({ position: { x: 5, y: 5 } });
+		await page.keyboard.press('Escape');
 		await page.locator('#signal-canvas').dispatchEvent('pointerup', { offsetX: 10, offsetY: 10 });
 		await page.locator('#signal-canvas').dispatchEvent('pointercancel');
 		await studio.tick(200);

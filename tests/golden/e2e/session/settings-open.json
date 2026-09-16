@@ -1368,7 +1368,41 @@
  "storage": {
   "local": {
    "voice-speed": 1,
-   "voice-theme": "light"
+   "voice-theme": "light",
+   "koenami-session": {
+    "lang": "ja",
+    "group": "female",
+    "sort": "high",
+    "search": "",
+    "reference": "common_voice_ja_36363162",
+    "referenceRange": null,
+    "openSpeakers": [
+     "ja:Common Voice:50a288fb7fb3"
+    ],
+    "dimension": 3,
+    "projection": "variance",
+    "yaw": -0.45,
+    "tilt": 0.3,
+    "zoom": 0.914281430867266,
+    "camera": [
+     0.48432510759557895,
+     0.6283765936675773,
+     0.7587527919899949
+    ],
+    "center": [
+     0.5,
+     0.5
+    ],
+    "pan": [
+     0,
+     0
+    ],
+    "autoRotate": false,
+    "signal": "pitch",
+    "signalSource": "ref",
+    "overlay": true,
+    "liveShapeSeconds": 5
+   }
   },
   "idb": {}
  },

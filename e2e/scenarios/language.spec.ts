@@ -5,7 +5,7 @@ const lang = (id: string) => `window.voiceApp?.state.lang === ${JSON.stringify(i
 
 test.describe('reference language', () => {
 	test('switching languages pushes the route and restores it on back', async ({ page, studio }) => {
-		await studio.open('/ja/');
+		await studio.open('/');
 		await studio.until(ready);
 		// In 2D the contrast axis needs sixteen speakers per group; smaller libraries fall
 		// back to the principal components.
@@ -31,6 +31,11 @@ test.describe('reference language', () => {
 		await studio.until(lang('ja'));
 		await studio.tick(1200);
 		await studio.golden('back-to-ja');
+		// Back to the root entry, whose path names no language.
+		for (let i = 0; i < 4; i++) await studio.back();
+		await studio.until(lang('ja'));
+		await studio.tick(300);
+		await studio.golden('back-to-root');
 	});
 
 	test('direct routes: /en/, an unknown language, the root', async ({ page, studio }) => {

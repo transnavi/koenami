@@ -5,11 +5,18 @@ const idle = '!window.voiceApp.state.busy && window.voiceApp.state.analyzing.siz
 
 test.describe('server and storage faults', () => {
 	test('catalog and library failures', async ({ page, studio }) => {
-		await page.route('**/api/catalog', (route) => route.fulfill({ status: 500, contentType: 'text/plain', body: 'catalog down' }));
+		await page.route('**/api/catalog', (route) => route.fulfill({ status: 500, contentType: 'text/plain', body: '' }));
 		await studio.open('/ja/');
 		await studio.tick(600);
 		await studio.golden('catalog-500');
 		await page.unroute('**/api/catalog');
+		// The public catalog has no research library, so the language list lacks the lab entry.
+		await page.route('**/api/catalog', async (route) => {
+			const response = await route.fetch();
+			const catalog = await response.json();
+			catalog.languages = catalog.languages.filter((l: { id: string }) => l.id !== 'lab');
+			await route.fulfill({ response, json: catalog });
+		});
 		await page.route('**/api/library?lang=ko', (route) => route.fulfill({ status: 404, contentType: 'text/plain; charset=utf-8', body: 'Not found' }));
 		await studio.open('/ja/');
 		await studio.until(ready);
@@ -17,6 +24,13 @@ test.describe('server and storage faults', () => {
 		await studio.until('!window.voiceApp.state.loadingLanguage');
 		await studio.tick(300);
 		await studio.golden('library-404-keeps-current');
+		// Reference audio that cannot be fetched reports a playback error.
+		await page.route('**/samples/common_voice_ja_36363165.mp3', (route) => route.fulfill({ status: 404, body: '' }));
+		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
+		await studio.until('window.voiceApp.state.selected?.id === "common_voice_ja_36363165" && !!window.voiceApp.state.refFull');
+		await studio.until('document.getElementById("reference-player").error !== null');
+		await studio.tick(300);
+		await studio.golden('reference-audio-missing');
 	});
 
 	test('analysis failures for uploads: 413, 429, 422 and a network error', async ({ page, studio }) => {
@@ -72,6 +86,10 @@ test.describe('server and storage faults', () => {
 			await studio.tick(200);
 			await studio.golden(`bare-${view}`);
 		}
+		await page.locator('#report-button').click();
+		await studio.tick(100);
+		await studio.golden('bare-report');
+		await page.locator('#report-dialog [data-close]').click();
 		await page.locator('#play-mine').click();
 		await studio.until('!document.getElementById("player").paused');
 		await studio.until('document.getElementById("player").currentTime > 1');

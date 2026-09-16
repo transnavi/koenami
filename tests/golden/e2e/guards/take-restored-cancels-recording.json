@@ -1388,8 +1388,8 @@
     ],
     "dimension": 3,
     "projection": "variance",
-    "yaw": -0.45,
-    "tilt": 0.3,
+    "yaw": 0.02999999999999997,
+    "tilt": 0.42000000000000004,
     "zoom": 1.1,
     "camera": [
      0.5,

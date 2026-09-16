@@ -205,5 +205,15 @@ test.describe('sample library', () => {
 		await studio.until('!!window.voiceApp.state.words.ref');
 		await studio.tick(300);
 		await studio.golden('custom-words');
+		await page.locator('#word-list button').first().click();
+		await studio.tick(100);
+		// A favourited custom reference survives a reload.
+		await page.locator('#favorite-selected').click();
+		await studio.tick(1200);
+		await studio.open('/ja/');
+		await studio.until(ready);
+		await studio.choose('library-group', 'custom');
+		await studio.tick(300);
+		await studio.golden('custom-favourite-restored');
 	});
 });

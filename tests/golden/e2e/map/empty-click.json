@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "play-mine",
+ "focus": "voice-map",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -241,7 +241,7 @@
     "role": "group",
     "aria-label": "声の指標"
    },
-   "text": "高さ—Hz423響き1097Hz ΔF1239質感9.3dB16.3明るさ-15.1dB-7.5抑揚7.5半音17.3"
+   "text": "高さ—Hz423響き—Hz ΔF1239質感—dB16.3明るさ—dB-7.5抑揚—半音17.3"
   },
   "report-button": {
    "tag": "button",
@@ -260,9 +260,7 @@
   "projection-controls": {
    "tag": "div",
    "class": "segment",
-   "attrs": {
-    "hidden": ""
-   },
+   "attrs": {},
    "text": "主成分男女差"
   },
   "auto-rotate": {
@@ -270,7 +268,8 @@
    "class": "rotate-button",
    "attrs": {
     "aria-pressed": "false",
-    "title": "3Dの自動回転を切り替え"
+    "title": "3Dの自動回転を切り替え",
+    "hidden": ""
    },
    "text": "↻ 自動回転"
   },
@@ -278,7 +277,7 @@
    "tag": "span",
    "class": "",
    "attrs": {
-    "title": "5つの指標から計算した主成分空間"
+    "title": "5つの指標から計算。横軸は女性的な声と男性的な声が最も離れる方向です。"
    },
    "text": "声の分布"
   },
@@ -377,7 +376,7 @@
    "attrs": {
     "aria-label": "音声の表示"
    },
-   "value": "waveform",
+   "value": "pitch",
    "options": [
     {
      "value": "pitch",
@@ -404,7 +403,7 @@
      "data": {}
     }
    ],
-   "trigger": "波形",
+   "trigger": "高さ",
    "expanded": "false",
    "text": "高さスペクトログラムスペクトル波形",
    "style": "display: inline-flex;"
@@ -413,7 +412,7 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "aria-pressed": "true"
+    "aria-pressed": "false"
    },
    "text": "自分"
   },
@@ -421,7 +420,7 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "aria-pressed": "false"
+    "aria-pressed": "true"
    },
    "text": "見本"
   },
@@ -448,7 +447,7 @@
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "0:06"
+   "text": "0:02"
   },
   "range-reset": {
    "tag": "button",
@@ -955,7 +954,8 @@
    "class": "play-button",
    "attrs": {
     "title": "自分の声を再生（Space）",
-    "aria-label": "自分の声を再生"
+    "aria-label": "自分の声を再生",
+    "disabled": ""
    },
    "text": "再生"
   },
@@ -965,23 +965,13 @@
    "attrs": {
     "aria-label": "録音履歴",
     "title": "録音履歴",
-    "data-display-label": "own-a.wav"
+    "data-display-label": "録音履歴"
    },
-   "value": "0",
-   "options": [
-    {
-     "value": "0",
-     "text": "own-a.wav",
-     "disabled": false,
-     "data": {
-      "data-detail": "0:06",
-      "data-actions": "download,delete"
-     }
-    }
-   ],
-   "trigger": "own-a.wav",
+   "value": "",
+   "options": [],
+   "trigger": "録音履歴",
    "expanded": "false",
-   "text": "own-a.wav",
+   "text": "",
    "style": "display: inline-flex;"
   },
   "timer": {
@@ -1077,11 +1067,9 @@
   "player": {
    "tag": "audio",
    "class": "",
-   "attrs": {
-    "src": "blob:"
-   },
+   "attrs": {},
    "media": {
-    "src": "blob:",
+    "src": null,
     "paused": true,
     "rate": 1,
     "volume": 1,
@@ -1110,9 +1098,10 @@
    "tag": "div",
    "class": "toast",
    "attrs": {
-    "role": "status"
+    "role": "status",
+    "hidden": ""
    },
-   "text": "音声を読み込みました。"
+   "text": ""
   },
   "live-status": {
    "tag": "div",
@@ -1121,7 +1110,7 @@
     "role": "status",
     "aria-live": "polite"
    },
-   "text": "音声を読み込みました。"
+   "text": ""
   },
   "live-alert": {
    "tag": "div",
@@ -1331,13 +1320,13 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "比較×—見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。指標自分見本参照音声の中央80%高さ · Hz—423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べてください。own-a.wav · 0:06 · 見本 F 2624録音言語 ja · 見本の言語 ja分布図は5次元を3次元に投影しています。表示する分散は90%。省略された方向の違いは左の指標で確認できます。レポートを保存"
+   "text": "比較×レポートを保存"
   },
   "report-content": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "—見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。指標自分見本参照音声の中央80%高さ · Hz—423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べてください。own-a.wav · 0:06 · 見本 F 2624録音言語 ja · 見本の言語 ja分布図は5次元を3次元に投影しています。表示する分散は90%。省略された方向の違いは左の指標で確認できます。"
+   "text": ""
   },
   "report-save": {
    "tag": "button",
@@ -1384,15 +1373,15 @@
     "openSpeakers": [
      "ja:Common Voice:50a288fb7fb3"
     ],
-    "dimension": 3,
-    "projection": "variance",
+    "dimension": 2,
+    "projection": "contrast",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.914281430867266,
+    "zoom": 1.3666633071248098,
     "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
-     0.7587527919899949
+     0.5,
+     0.5,
+     0.5
     ],
     "center": [
      0.5,
@@ -1403,236 +1392,13 @@
      0
     ],
     "autoRotate": false,
-    "signal": "waveform",
-    "signalSource": "own",
+    "signal": "pitch",
+    "signalSource": "ref",
     "overlay": true,
     "liveShapeSeconds": 5
    }
   },
-  "idb": {
-   "recording-index": [
-    {
-     "date": "2026-01-01T03:00:05.000Z",
-     "duration": 6.696,
-     "features": {
-      "balance": -15.115525244433902,
-      "delta_f": 1096.9253741143095,
-      "delta_f_alternative": 1091.9652618631958,
-      "f0_mean": 221.2231144223791,
-      "f1": 477.36824301977697,
-      "f2": 1668.1889344186832,
-      "f3": 2621.5067342524194,
-      "f3_alternative": 2573.512840024639,
-      "f4": 4217.962164522833,
-      "hnr": 9.30773223489885,
-      "pitch_sd_hz": 56.36666962722617,
-      "pitch_sd_st": 3.899581760174577,
-      "pitch_span": 7.481012254628286,
-      "quiet_mean": 0.7500000000000001,
-      "quiet_pct": 22.401433691756278
-     },
-     "id": "00000000-0000-4000-8000-000000000001",
-     "language": "ja",
-     "name": "own-a.wav",
-     "stored": true
-    }
-   ],
-   "recording:00000000-0000-4000-8000-000000000001": {
-    "detail": {
-     "clipping_fraction": 0,
-     "duration": 6.696,
-     "features": {
-      "balance": -15.115525244433902,
-      "delta_f": 1096.9253741143095,
-      "delta_f_alternative": 1091.9652618631958,
-      "f0_mean": 221.2231144223791,
-      "f1": 477.36824301977697,
-      "f2": 1668.1889344186832,
-      "f3": 2621.5067342524194,
-      "f3_alternative": 2573.512840024639,
-      "f4": 4217.962164522833,
-      "hnr": 9.30773223489885,
-      "pitch_sd_hz": 56.36666962722617,
-      "pitch_sd_st": 3.899581760174577,
-      "pitch_span": 7.481012254628286,
-      "quiet_mean": 0.7500000000000001,
-      "quiet_pct": 22.401433691756278
-     },
-     "formant_seconds": 1.98,
-     "formant_sensitivity_pct": 1.9,
-     "level_dbfs": -14.46429916099856,
-     "peak": 0.8627919554710388,
-     "pitch_p10": 167.92642399550678,
-     "pitch_p90": 258.6940640785254,
-     "quiet_intervals": [
-      {
-       "end": 1.138,
-       "start": 0.038
-      },
-      {
-       "end": 6.658,
-       "start": 6.258
-      }
-     ],
-     "reason": null,
-     "resonance_sensitivity_pct": 0.5,
-     "version": "3.0.0",
-     "voiced_seconds": 3.22
-    },
-    "id": null,
-    "language": "ja",
-    "measurement": {
-     "clipping_fraction": 0,
-     "duration": 6.696,
-     "features": {
-      "balance": -15.115525244433902,
-      "delta_f": 1096.9253741143095,
-      "delta_f_alternative": 1091.9652618631958,
-      "f0_mean": 221.2231144223791,
-      "f1": 477.36824301977697,
-      "f2": 1668.1889344186832,
-      "f3": 2621.5067342524194,
-      "f3_alternative": 2573.512840024639,
-      "f4": 4217.962164522833,
-      "hnr": 9.30773223489885,
-      "pitch_sd_hz": 56.36666962722617,
-      "pitch_sd_st": 3.899581760174577,
-      "pitch_span": 7.481012254628286,
-      "quiet_mean": 0.7500000000000001,
-      "quiet_pct": 22.401433691756278
-     },
-     "formant_seconds": 1.98,
-     "formant_sensitivity_pct": 1.9,
-     "level_dbfs": -14.46429916099856,
-     "peak": 0.8627919554710388,
-     "pitch_p10": 167.92642399550678,
-     "pitch_p90": 258.6940640785254,
-     "quiet_intervals": [
-      {
-       "end": 1.138,
-       "start": 0.038
-      },
-      {
-       "end": 6.658,
-       "start": 6.258
-      }
-     ],
-     "reason": null,
-     "resonance_sensitivity_pct": 0.5,
-     "version": "3.0.0",
-     "voiced_seconds": 3.22
-    },
-    "name": "own-a.wav",
-    "pcm": {
-     "$typed": "Float32Array",
-     "length": 107136,
-     "sha256": "68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4"
-    },
-    "range": null,
-    "takeId": "00000000-0000-4000-8000-000000000001",
-    "url": null,
-    "words": null
-   },
-   "takes": {
-    "current": {
-     "detail": {
-      "clipping_fraction": 0,
-      "duration": 6.696,
-      "features": {
-       "balance": -15.115525244433902,
-       "delta_f": 1096.9253741143095,
-       "delta_f_alternative": 1091.9652618631958,
-       "f0_mean": 221.2231144223791,
-       "f1": 477.36824301977697,
-       "f2": 1668.1889344186832,
-       "f3": 2621.5067342524194,
-       "f3_alternative": 2573.512840024639,
-       "f4": 4217.962164522833,
-       "hnr": 9.30773223489885,
-       "pitch_sd_hz": 56.36666962722617,
-       "pitch_sd_st": 3.899581760174577,
-       "pitch_span": 7.481012254628286,
-       "quiet_mean": 0.7500000000000001,
-       "quiet_pct": 22.401433691756278
-      },
-      "formant_seconds": 1.98,
-      "formant_sensitivity_pct": 1.9,
-      "level_dbfs": -14.46429916099856,
-      "peak": 0.8627919554710388,
-      "pitch_p10": 167.92642399550678,
-      "pitch_p90": 258.6940640785254,
-      "quiet_intervals": [
-       {
-        "end": 1.138,
-        "start": 0.038
-       },
-       {
-        "end": 6.658,
-        "start": 6.258
-       }
-      ],
-      "reason": null,
-      "resonance_sensitivity_pct": 0.5,
-      "version": "3.0.0",
-      "voiced_seconds": 3.22
-     },
-     "id": null,
-     "language": "ja",
-     "measurement": {
-      "clipping_fraction": 0,
-      "duration": 6.696,
-      "features": {
-       "balance": -15.115525244433902,
-       "delta_f": 1096.9253741143095,
-       "delta_f_alternative": 1091.9652618631958,
-       "f0_mean": 221.2231144223791,
-       "f1": 477.36824301977697,
-       "f2": 1668.1889344186832,
-       "f3": 2621.5067342524194,
-       "f3_alternative": 2573.512840024639,
-       "f4": 4217.962164522833,
-       "hnr": 9.30773223489885,
-       "pitch_sd_hz": 56.36666962722617,
-       "pitch_sd_st": 3.899581760174577,
-       "pitch_span": 7.481012254628286,
-       "quiet_mean": 0.7500000000000001,
-       "quiet_pct": 22.401433691756278
-      },
-      "formant_seconds": 1.98,
-      "formant_sensitivity_pct": 1.9,
-      "level_dbfs": -14.46429916099856,
-      "peak": 0.8627919554710388,
-      "pitch_p10": 167.92642399550678,
-      "pitch_p90": 258.6940640785254,
-      "quiet_intervals": [
-       {
-        "end": 1.138,
-        "start": 0.038
-       },
-       {
-        "end": 6.658,
-        "start": 6.258
-       }
-      ],
-      "reason": null,
-      "resonance_sensitivity_pct": 0.5,
-      "version": "3.0.0",
-      "voiced_seconds": 3.22
-     },
-     "name": "own-a.wav",
-     "pcm": {
-      "$typed": "Float32Array",
-      "length": 107136,
-      "sha256": "68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4"
-     },
-     "range": null,
-     "takeId": "00000000-0000-4000-8000-000000000001",
-     "url": null,
-     "words": null
-    },
-    "previous": null
-   }
-  }
+  "idb": {}
  },
  "network": [
   {
@@ -1655,16 +1421,10 @@
    "path": "/api/detail/common_voice_ja_36363162",
    "query": "",
    "status": 200
-  },
-  {
-   "seq": 4,
-   "method": "POST",
-   "path": "/api/analyze",
-   "query": "",
-   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
-   "status": 200
   }
  ],
  "media": [],
- "errors": []
+ "errors": [
+  "NotFoundError: Failed to execute 'setPointerCapture' on 'Element': No active pointer with the given id is found."
+ ]
 }

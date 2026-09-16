@@ -1028,7 +1028,7 @@
    "attrs": {
     "role": "status"
    },
-   "text": "読み込めませんでした: catalog down"
+   "text": "読み込めませんでした: Request failed (500)"
   },
   "live-status": {
    "tag": "div",
@@ -1045,7 +1045,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": "読み込めませんでした: catalog down"
+   "text": "読み込めませんでした: Request failed (500)"
   },
   "import-dialog": {
    "tag": "dialog",

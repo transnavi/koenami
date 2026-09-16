@@ -241,7 +241,7 @@
     "role": "group",
     "aria-label": "声の指標"
    },
-   "text": "高さ176Hz423響き1059Hz ΔF1239質感8.9dB16.3明るさ-22.8dB-7.5抑揚11.7半音17.3"
+   "text": "高さ176Hz204響き1059Hz ΔF905質感8.9dB13.2明るさ-22.8dB-18.7抑揚11.7半音2.1"
   },
   "report-button": {
    "tag": "button",
@@ -249,13 +249,13 @@
    "attrs": {
     "title": "見本との5指標の標準化距離。0が一致。比較レポートを開く。"
    },
-   "text": "見本との差5.79"
+   "text": "見本との差4.63"
   },
   "fit-value": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "5.79"
+   "text": "4.63"
   },
   "projection-controls": {
    "tag": "div",
@@ -1389,7 +1389,10 @@
     "sort": "high",
     "search": "",
     "reference": "common_voice_ja_36363162",
-    "referenceRange": null,
+    "referenceRange": [
+     0.8700000000000001,
+     1.12
+    ],
     "openSpeakers": [
      "ja:Common Voice:50a288fb7fb3"
     ],
@@ -1397,11 +1400,11 @@
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.9491637713967666,
+    "zoom": 0.914281430867266,
     "camera": [
      0.48432510759557895,
      0.6283765936675773,
-     0.7323857022259104
+     0.7587527919899949
     ],
     "center": [
      0.5,
@@ -1413,7 +1416,7 @@
     ],
     "autoRotate": false,
     "signal": "pitch",
-    "signalSource": "own",
+    "signalSource": "ref",
     "overlay": true,
     "liveShapeSeconds": 5
    }
@@ -1421,7 +1424,7 @@
   "idb": {
    "recording-index": [
     {
-     "date": "2026-01-01T03:00:05.900Z",
+     "date": "2026-01-01T03:00:06.000Z",
      "duration": 4.776,
      "features": {
       "balance": -22.75062396481386,
@@ -13931,6 +13934,13 @@
   },
   {
    "seq": 8,
+   "method": "GET",
+   "path": "/api/detail/common_voice_ja_36363162",
+   "query": "end=1.12&start=0.8700000000000001",
+   "status": 200
+  },
+  {
+   "seq": 9,
    "method": "POST",
    "path": "/api/analyze",
    "query": "",
@@ -13938,7 +13948,7 @@
    "status": 200
   },
   {
-   "seq": 9,
+   "seq": 10,
    "method": "POST",
    "path": "/api/words",
    "query": "lang=ja",

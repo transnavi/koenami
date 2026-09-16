@@ -55,6 +55,12 @@ test.describe('busy and recording guards', () => {
 		await page.keyboard.press('ArrowRight');
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
 		await page.locator('#jvs-zip').setInputFiles([]);
+		// Orbiting the map while recording keeps that view afterwards.
+		const map = (await page.locator('#voice-map').boundingBox())!;
+		await page.mouse.move(map.x + 400, map.y + 300);
+		await page.mouse.down();
+		await page.mouse.move(map.x + 480, map.y + 320, { steps: 4 });
+		await page.mouse.up();
 		await studio.tick(200);
 		await studio.golden('recording-guards', { maskAudio: true });
 		await studio.choose('take-select', '0');
@@ -162,11 +168,20 @@ test.describe('busy and recording guards', () => {
 		await studio.until(idle);
 		await studio.tick(300);
 		await studio.golden('history-point-restored');
-		// Deleting the current take falls back to the previous one.
+		// Deleting the current take falls back to the previous one; with no previous take
+		// left, the newest stored take is applied instead.
 		await page.locator('#take-select button.trigger').click();
 		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
 		await studio.until(idle);
 		await studio.tick(300);
 		await studio.golden('current-deleted-previous-applied');
+		await page.locator('#take-select button.trigger').click();
+		await page.locator('#take-select button.row-action[data-value="1"][data-action="delete"]').click();
+		await studio.until(idle);
+		await page.locator('#take-select button.trigger').click();
+		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
+		await studio.until(idle);
+		await studio.tick(300);
+		await studio.golden('current-deleted-stored-applied');
 	});
 });

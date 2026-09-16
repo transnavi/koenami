@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "words-button",
+ "focus": "body",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -1372,44 +1372,7 @@
  },
  "storage": {
   "local": {
-   "voice-speed": 1,
-   "koenami-session": {
-    "lang": "ja",
-    "group": "female",
-    "sort": "high",
-    "search": "",
-    "reference": "common_voice_ja_36363162",
-    "referenceRange": [
-     0.8700000000000001,
-     1.12
-    ],
-    "openSpeakers": [
-     "ja:Common Voice:50a288fb7fb3"
-    ],
-    "dimension": 3,
-    "projection": "variance",
-    "yaw": -0.45,
-    "tilt": 0.3,
-    "zoom": 0.914281430867266,
-    "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
-     0.7587527919899949
-    ],
-    "center": [
-     0.5,
-     0.5
-    ],
-    "pan": [
-     0,
-     0
-    ],
-    "autoRotate": false,
-    "signal": "pitch",
-    "signalSource": "ref",
-    "overlay": true,
-    "liveShapeSeconds": 5
-   }
+   "voice-speed": 1
   },
   "idb": {
    "recording-index": [

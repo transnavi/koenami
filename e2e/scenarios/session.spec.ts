@@ -21,13 +21,23 @@ test.describe('session and settings', () => {
 		await page.locator('#theme-button').click();
 		await studio.tick(300);
 		await studio.golden('toggled-light');
+		await page.locator('#theme-button').click();
+		await page.locator('#theme-button').click();
+		await studio.tick(300);
+		await studio.golden('toggled-twice-more');
 		await page.locator('#settings-button').click();
 		await studio.tick(100);
 		await studio.golden('settings-open');
+		// A click on the dialog's own padding stays inside its box and keeps it open.
+		await page.locator('#settings-dialog').click({ position: { x: 3, y: 3 } });
+		await studio.tick(100);
+		await studio.golden('dialog-padding-click');
 		await studio.choose('theme-select', 'system');
 		await studio.tick(300);
 		await studio.golden('theme-system-light');
 		await page.emulateMedia({ colorScheme: 'dark' });
+		await studio.choose('theme-select', 'light');
+		await studio.choose('theme-select', 'system');
 		await studio.tick(300);
 		await studio.golden('theme-system-dark');
 		await studio.choose('theme-select', 'dark');
@@ -94,8 +104,12 @@ test.describe('session and settings', () => {
 	});
 
 	test('settings: live window, live shape window, normalize, exports, info dialog', async ({ page, studio }) => {
-		await studio.open('/ja/');
+		await studio.open('/ja/', async (p) => p.addInitScript(() => { Object.defineProperty(document, 'hidden', { get: () => (window as unknown as { __hidden?: boolean }).__hidden === true }); }));
 		await studio.until(ready);
+		// Hiding the tab saves the session at once.
+		await page.evaluate(() => { (window as unknown as { __hidden?: boolean }).__hidden = true; document.dispatchEvent(new Event('visibilitychange')); (window as unknown as { __hidden?: boolean }).__hidden = false; document.dispatchEvent(new Event('visibilitychange')); });
+		await studio.tick(100);
+		await studio.golden('saved-on-hide');
 		await page.locator('#settings-button').click();
 		await studio.choose('live-window', '6');
 		await page.locator('#live-shape-window').fill('20');

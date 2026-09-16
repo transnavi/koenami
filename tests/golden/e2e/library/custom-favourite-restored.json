@@ -1,0 +1,2973 @@
+{
+ "url": "/ja/",
+ "title": "Koenami · 女声・男声のボイトレツール",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "library-group",
+ "vars": {
+  "--reference": "#bc8642",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "i-book": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-mic": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-stop": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-play": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-pause": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-upload": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-download": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-sun": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-moon": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-globe": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-info": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-search": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-close": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-gear": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-history": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-reset": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-focus": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-plus": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-minus": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-link": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-wave": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-chevron": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-check": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "language": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "見本の言語"
+   },
+   "value": "ja",
+   "options": [
+    {
+     "value": "ja",
+     "text": "日本語",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "zh-CN",
+     "text": "普通话",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "en",
+     "text": "English",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "ko",
+     "text": "한국어",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "lab",
+     "text": "発声の見本",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "日本語",
+   "expanded": "false",
+   "text": "日本語普通话English한국어発声の見本",
+   "style": "display: inline-flex;"
+  },
+  "corpus-count": {
+   "tag": "span",
+   "class": "toolbar-count",
+   "attrs": {},
+   "text": "142音声 · 50人"
+  },
+  "settings-button": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "設定",
+    "aria-label": "設定"
+   },
+   "text": ""
+  },
+  "info-button": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "出典と関連ツール",
+    "aria-label": "出典と関連ツール"
+   },
+   "text": ""
+  },
+  "theme-button": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "明暗を切り替え",
+    "aria-label": "明暗を切り替え"
+   },
+   "text": ""
+  },
+  "profile-canvas": {
+   "tag": "canvas",
+   "class": "",
+   "attrs": {
+    "aria-label": "自分と見本の5指標を重ねた図"
+   },
+   "text": ""
+  },
+  "indicators": {
+   "tag": "div",
+   "class": "indicators",
+   "attrs": {
+    "role": "group",
+    "aria-label": "声の指標"
+   },
+   "text": "高さ—Hz191響き—Hz ΔF1160質感—dB3.5明るさ—dB-7.3抑揚—半音13.9"
+  },
+  "report-button": {
+   "tag": "button",
+   "class": "fit-readout",
+   "attrs": {
+    "title": "比較レポートを開く"
+   },
+   "text": "見本との差—"
+  },
+  "fit-value": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "—"
+  },
+  "projection-controls": {
+   "tag": "div",
+   "class": "segment",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "主成分男女差"
+  },
+  "auto-rotate": {
+   "tag": "button",
+   "class": "rotate-button",
+   "attrs": {
+    "aria-pressed": "false",
+    "title": "3Dの自動回転を切り替え"
+   },
+   "text": "↻ 自動回転"
+  },
+  "space-label": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "title": "5つの指標から計算した主成分空間"
+   },
+   "text": "声の分布"
+  },
+  "group-legend": {
+   "tag": "div",
+   "class": "legend",
+   "attrs": {},
+   "text": "女性的な声男性的な声"
+  },
+  "show-female": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox",
+    "checked": ""
+   },
+   "value": "on",
+   "checked": true,
+   "text": ""
+  },
+  "show-male": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox",
+    "checked": ""
+   },
+   "value": "on",
+   "checked": true,
+   "text": ""
+  },
+  "voice-map": {
+   "tag": "canvas",
+   "class": "",
+   "attrs": {
+    "tabindex": "0",
+    "aria-label": "声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。形は1.2秒の移動中央値のうち中心に近い80%。"
+   },
+   "text": ""
+  },
+  "map-tooltip": {
+   "tag": "div",
+   "class": "tooltip",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "zoom-in": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "拡大",
+    "aria-label": "拡大"
+   },
+   "text": ""
+  },
+  "zoom-out": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "縮小",
+    "aria-label": "縮小"
+   },
+   "text": ""
+  },
+  "find-me": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "声の広がりに表示を合わせる",
+    "aria-label": "声の広がりに表示を合わせる"
+   },
+   "text": ""
+  },
+  "reset-view": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "表示をリセット",
+    "aria-label": "表示をリセット"
+   },
+   "text": ""
+  },
+  "quality-state": {
+   "tag": "span",
+   "class": "quality-state",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "signal-view": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "音声の表示"
+   },
+   "value": "pitch",
+   "options": [
+    {
+     "value": "pitch",
+     "text": "高さ",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "spectrogram",
+     "text": "スペクトログラム",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "spectrum",
+     "text": "スペクトル",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "waveform",
+     "text": "波形",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "高さ",
+   "expanded": "false",
+   "text": "高さスペクトログラムスペクトル波形",
+   "style": "display: inline-flex;"
+  },
+  "signal-own": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "false"
+   },
+   "text": "自分"
+  },
+  "signal-ref": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "true"
+   },
+   "text": "見本"
+  },
+  "signal-overlay": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox",
+    "checked": ""
+   },
+   "value": "on",
+   "checked": true,
+   "text": ""
+  },
+  "words-button": {
+   "tag": "button",
+   "class": "text-button",
+   "attrs": {
+    "title": "文字起こしと単語分割"
+   },
+   "text": "単語"
+  },
+  "range-label": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "0.24–0.88s"
+  },
+  "range-reset": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "選択範囲を解除（Esc）",
+    "aria-label": "選択範囲を解除"
+   },
+   "text": ""
+  },
+  "signal-canvas": {
+   "tag": "canvas",
+   "class": "",
+   "attrs": {
+    "tabindex": "0",
+    "aria-label": "波形をクリックして再生位置を移動、ドラッグして範囲を選択。左右キーで再生位置を移動。"
+   },
+   "text": ""
+  },
+  "word-list": {
+   "tag": "div",
+   "class": "word-list",
+   "attrs": {
+    "role": "group",
+    "aria-label": "推定した単語の位置"
+   },
+   "text": ""
+  },
+  "sample-browser": {
+   "tag": "dialog",
+   "class": "sample-browser",
+   "attrs": {
+    "aria-label": "見本を選ぶ"
+   },
+   "open": false,
+   "text": "見本の声1女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むown-b.wav1★own-b.wav176 Hz · 0:04★もっと見る"
+  },
+  "library-count": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "1"
+  },
+  "add-reference": {
+   "tag": "button",
+   "class": "icon-button reference-import",
+   "attrs": {
+    "title": "見本の音声を読み込む",
+    "aria-label": "見本の音声を読み込む"
+   },
+   "text": ""
+  },
+  "library-group": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "見本の種類"
+   },
+   "value": "custom",
+   "options": [
+    {
+     "value": "female",
+     "text": "女性的な声",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "androgynous",
+     "text": "中性的な声",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "male",
+     "text": "男性的な声",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "all",
+     "text": "すべての声",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "favorites",
+     "text": "★ お気に入り",
+     "disabled": false,
+     "data": {
+      "data-divider": ""
+     }
+    },
+    {
+     "value": "custom",
+     "text": "読み込んだ声",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "読み込んだ声",
+   "expanded": "false",
+   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声",
+   "style": "display: inline-flex;"
+  },
+  "reference-upload": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "file",
+    "aria-label": "見本の音声を読み込む",
+    "hidden": ""
+   },
+   "value": "",
+   "files": 0,
+   "text": ""
+  },
+  "sort": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "並び順"
+   },
+   "value": "name",
+   "options": [
+    {
+     "value": "name",
+     "text": "話者名順",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "near",
+     "text": "自分の声に近い順",
+     "disabled": true,
+     "data": {}
+    },
+    {
+     "value": "low",
+     "text": "高さが低い順",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "high",
+     "text": "高さが高い順",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "話者名順",
+   "expanded": "false",
+   "text": "話者名順自分の声に近い順高さが低い順高さが高い順",
+   "style": "display: inline-flex;"
+  },
+  "search": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "search",
+    "placeholder": "検索",
+    "aria-label": "見本を検索"
+   },
+   "value": "",
+   "text": ""
+  },
+  "research-controls": {
+   "tag": "div",
+   "class": "research-controls",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い"
+  },
+  "teacher": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "講師"
+   },
+   "value": "all",
+   "options": [
+    {
+     "value": "all",
+     "text": "講師",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "001",
+     "text": "001",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "002",
+     "text": "002",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "003",
+     "text": "003",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "DSFD",
+     "text": "DSFD",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "講師",
+   "expanded": "false",
+   "text": "講師001002003DSFD",
+   "style": "display: inline-flex;"
+  },
+  "teacher-pitch": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "講師の声の高さ"
+   },
+   "value": "all",
+   "options": [
+    {
+     "value": "all",
+     "text": "高さ",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "low",
+     "text": "低い",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "med",
+     "text": "中間",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "high",
+     "text": "高い",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "高さ",
+   "expanded": "false",
+   "text": "高さ低い中間高い",
+   "style": "display: inline-flex;"
+  },
+  "teacher-resonance": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "講師の響き"
+   },
+   "value": "all",
+   "options": [
+    {
+     "value": "all",
+     "text": "響き",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "low",
+     "text": "低い",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "med",
+     "text": "中間",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "high",
+     "text": "高い",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "響き",
+   "expanded": "false",
+   "text": "響き低い中間高い",
+   "style": "display: inline-flex;"
+  },
+  "teacher-weight": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "講師の声の重さ"
+   },
+   "value": "all",
+   "options": [
+    {
+     "value": "all",
+     "text": "重さ",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "low",
+     "text": "軽い",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "med",
+     "text": "中間",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "high",
+     "text": "重い",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "重さ",
+   "expanded": "false",
+   "text": "重さ軽い中間重い",
+   "style": "display: inline-flex;"
+  },
+  "sample-scroll": {
+   "tag": "div",
+   "class": "sample-scroll",
+   "attrs": {},
+   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むown-b.wav1★own-b.wav176 Hz · 0:04★もっと見る"
+  },
+  "jvs-banner": {
+   "tag": "div",
+   "class": "jvs-banner",
+   "attrs": {},
+   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込む"
+  },
+  "jvs-download": {
+   "tag": "a",
+   "class": "",
+   "attrs": {
+    "title": "JVS公式配布（ZIP、約3.5GB）",
+    "href": "https://drive.google.com/file/d/19oAw8wWn3Y7z6CKChRdAyGOB9yupL_Xt/view",
+    "target": "_blank",
+    "rel": "noreferrer"
+   },
+   "text": "ダウンロード ↗"
+  },
+  "jvs-banner-import": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "読み込む"
+  },
+  "sample-list": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "rows": {
+    "count": 4,
+    "head": [
+     "details#ja:custom:custom-1767236405200|speaker-folder||true|own-b.wav1★own-b.wav176 Hz · 0:04★",
+     "summary#||||own-b.wav1★",
+     "button#custom-1767236405200|sample-row|true||own-b.wav176 Hz · 0:04",
+     "button#|favorite|true||★"
+    ],
+    "tail": [
+     "details#ja:custom:custom-1767236405200|speaker-folder||true|own-b.wav1★own-b.wav176 Hz · 0:04★",
+     "summary#||||own-b.wav1★",
+     "button#custom-1767236405200|sample-row|true||own-b.wav176 Hz · 0:04",
+     "button#|favorite|true||★"
+    ]
+   }
+  },
+  "load-more": {
+   "tag": "button",
+   "class": "load-more",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "もっと見る"
+  },
+  "play-reference": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "見本を再生",
+    "aria-label": "見本を再生"
+   },
+   "text": ""
+  },
+  "samples-toggle": {
+   "tag": "button",
+   "class": "samples-toggle",
+   "attrs": {
+    "title": "見本を選ぶ"
+   },
+   "text": "own-b.wav176 Hz · 1059 ΔF"
+  },
+  "selected-name": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "own-b.wav"
+  },
+  "selected-meta": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "176 Hz · 1059 ΔF"
+  },
+  "favorite-selected": {
+   "tag": "button",
+   "class": "favorite",
+   "attrs": {
+    "aria-label": "お気に入りから外す",
+    "title": "お気に入り",
+    "aria-pressed": "true"
+   },
+   "text": "★"
+  },
+  "source-link": {
+   "tag": "a",
+   "class": "icon-button",
+   "attrs": {
+    "title": "出典",
+    "aria-label": "出典",
+    "target": "_blank",
+    "rel": "noreferrer",
+    "href": "https://huggingface.co/datasets/FluidInference/cv-corpus-25.0-ja/resolve/365b7654cd582e20e8000921ef7b0e32caa1906a/ja_01/clips/common_voice_ja_36363162.mp3",
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "reference-seek": {
+   "followsPlayback": true
+  },
+  "reference-time": {
+   "followsPlayback": true
+  },
+  "selected-text": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "lang": "ja"
+   },
+   "text": "own-b.wav"
+  },
+  "record": {
+   "tag": "button",
+   "class": "record-button",
+   "attrs": {
+    "title": "録音（R）",
+    "aria-label": "新しく録音",
+    "aria-pressed": "false"
+   },
+   "text": ""
+  },
+  "play-mine": {
+   "tag": "button",
+   "class": "play-button",
+   "attrs": {
+    "title": "自分の声を再生（Space）",
+    "aria-label": "自分の声を再生",
+    "disabled": ""
+   },
+   "text": "再生"
+  },
+  "take-select": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "録音履歴",
+    "title": "録音履歴",
+    "data-display-label": "録音履歴"
+   },
+   "value": "",
+   "options": [],
+   "trigger": "録音履歴",
+   "expanded": "false",
+   "text": "",
+   "style": "display: inline-flex;"
+  },
+  "timer": {
+   "followsPlayback": true
+  },
+  "state": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "live-mode": {
+   "tag": "button",
+   "class": "live-button",
+   "attrs": {
+    "role": "switch",
+    "aria-checked": "false",
+    "title": "マイクの声をリアルタイムに表示",
+    "aria-label": "リアルタイム測定を開始"
+   },
+   "text": "リアルタイム0:00"
+  },
+  "live-mode-label": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "リアルタイム"
+  },
+  "live-time": {
+   "tag": "time",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "0:00"
+  },
+  "loopback": {
+   "tag": "button",
+   "class": "loopback-button",
+   "attrs": {
+    "aria-pressed": "false",
+    "aria-label": "自分の声を聴く",
+    "title": "自分の声を聴く（イヤホン推奨）",
+    "disabled": ""
+   },
+   "text": ""
+  },
+  "playback-speed": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "range",
+    "min": "0.5",
+    "max": "1.5",
+    "step": "0.05",
+    "aria-label": "再生速度"
+   },
+   "value": "1",
+   "text": ""
+  },
+  "speed-reset": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "標準速度に戻す",
+    "aria-label": "標準速度に戻す"
+   },
+   "text": "1×"
+  },
+  "compare-ab": {
+   "tag": "button",
+   "class": "ab-button icon-button",
+   "attrs": {
+    "title": "見本、自分の順に再生",
+    "aria-label": "見本、自分の順に再生",
+    "aria-pressed": "false"
+   },
+   "text": "A/B"
+  },
+  "upload": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "file",
+    "aria-label": "音声を読み込む"
+   },
+   "value": "",
+   "files": 0,
+   "text": ""
+  },
+  "player": {
+   "tag": "audio",
+   "class": "",
+   "attrs": {},
+   "media": {
+    "src": null,
+    "paused": true,
+    "rate": 1,
+    "volume": 1,
+    "muted": false,
+    "loop": false
+   },
+   "text": ""
+  },
+  "reference-player": {
+   "tag": "audio",
+   "class": "",
+   "attrs": {
+    "src": "blob:"
+   },
+   "media": {
+    "src": "blob:",
+    "paused": true,
+    "rate": 1,
+    "volume": 1,
+    "muted": false,
+    "loop": false
+   },
+   "text": ""
+  },
+  "notice": {
+   "tag": "div",
+   "class": "toast",
+   "attrs": {
+    "role": "status",
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "live-status": {
+   "tag": "div",
+   "class": "sr-only",
+   "attrs": {
+    "role": "status",
+    "aria-live": "polite"
+   },
+   "text": ""
+  },
+  "live-alert": {
+   "tag": "div",
+   "class": "sr-only",
+   "attrs": {
+    "role": "alert"
+   },
+   "text": ""
+  },
+  "import-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "見本を追加×音声ファイルを選ぶ ↗JVSを追加公式サイトでダウンロード ↗公式のZIP、または展開したフォルダーを選択。100人・5,000音声を追加できます。ZIPを選ぶフォルダーを選ぶ中止音声の利用はJVSの規約に従ってください。読み込んだ見本は、このブラウザーに保存されます。"
+  },
+  "import-audio": {
+   "tag": "button",
+   "class": "import-choice",
+   "attrs": {},
+   "text": "音声ファイルを選ぶ ↗"
+  },
+  "choose-jvs-zip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "ZIPを選ぶ"
+  },
+  "choose-jvs-folder": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "フォルダーを選ぶ"
+  },
+  "jvs-zip": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "file",
+    "hidden": ""
+   },
+   "value": "",
+   "files": 0,
+   "text": ""
+  },
+  "jvs-folder": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "file",
+    "hidden": ""
+   },
+   "value": "",
+   "files": 0,
+   "text": ""
+  },
+  "jvs-progress": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "role": "progressbar",
+    "aria-label": "JVSの読み込み",
+    "aria-valuemin": "0",
+    "aria-valuemax": "100",
+    "aria-valuenow": "0",
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "jvs-status": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "cancel-jvs": {
+   "tag": "button",
+   "class": "text-button",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "中止"
+  },
+  "settings-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "設定配色ライトダーク端末に合わせるリアルタイムの解析時間1.5 s3 s6 s12 sリアルタイムに表示する時間5 秒再生音量をそろえる測定値を書き出す"
+  },
+  "theme-select": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {},
+   "value": "system",
+   "options": [
+    {
+     "value": "light",
+     "text": "ライト",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "dark",
+     "text": "ダーク",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "system",
+     "text": "端末に合わせる",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "端末に合わせる",
+   "expanded": "false",
+   "text": "ライトダーク端末に合わせる",
+   "style": "display: inline-flex;"
+  },
+  "live-window": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {},
+   "value": "3",
+   "options": [
+    {
+     "value": "1.5",
+     "text": "1.5 s",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "3",
+     "text": "3 s",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "6",
+     "text": "6 s",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "12",
+     "text": "12 s",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "3 s",
+   "expanded": "false",
+   "text": "1.5 s3 s6 s12 s",
+   "style": "display: inline-flex;"
+  },
+  "live-shape-window": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "range",
+    "min": "1",
+    "max": "30",
+    "step": "1",
+    "aria-valuetext": "5 秒"
+   },
+   "value": "5",
+   "text": ""
+  },
+  "live-shape-duration": {
+   "tag": "output",
+   "class": "",
+   "attrs": {
+    "for": "live-shape-window"
+   },
+   "value": "5 秒",
+   "text": "5 秒"
+  },
+  "normalize": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox",
+    "checked": ""
+   },
+   "value": "on",
+   "checked": true,
+   "text": ""
+  },
+  "export": {
+   "tag": "button",
+   "class": "text-button",
+   "attrs": {},
+   "text": "測定値を書き出す"
+  },
+  "info-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考： transnavi.jp"
+  },
+  "report-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "比較×レポートを保存"
+  },
+  "report-content": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "report-save": {
+   "tag": "button",
+   "class": "text-button",
+   "attrs": {},
+   "text": "レポートを保存"
+  },
+  "metric-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": ""
+  },
+  "metric-title": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "metric-description": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "metric-details": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-speed": 1,
+   "koenami-session": {
+    "lang": "ja",
+    "group": "custom",
+    "sort": "name",
+    "search": "",
+    "reference": "custom-1767236405200",
+    "referenceRange": [
+     0.24000000000000002,
+     0.88
+    ],
+    "openSpeakers": [
+     "ja:Common Voice:50a288fb7fb3",
+     "ja:custom:custom-1767236405200"
+    ],
+    "dimension": 3,
+    "projection": "variance",
+    "yaw": -0.45,
+    "tilt": 0.3,
+    "zoom": 1.1807190930786582,
+    "camera": [
+     0.6301335730190382,
+     0.42359207330883336,
+     0.49144570409681565
+    ],
+    "center": [
+     0.5,
+     0.5
+    ],
+    "pan": [
+     0,
+     0
+    ],
+    "autoRotate": false,
+    "signal": "pitch",
+    "signalSource": "ref",
+    "overlay": true,
+    "liveShapeSeconds": 5
+   },
+   "voice-favorites": [
+    "custom-1767236405200"
+   ]
+  },
+  "idb": {
+   "references": [
+    {
+     "detail": {
+      "clipping_fraction": 0,
+      "duration": 4.776,
+      "features": {
+       "balance": -22.75062396481386,
+       "delta_f": 1059.1278431454432,
+       "delta_f_alternative": 1079.26492280916,
+       "f0": 175.5876837960758,
+       "f0_mean": 173.2965092125899,
+       "f1": 406.8126017274295,
+       "f2": 1291.1753892696572,
+       "f3": 3004.772574676201,
+       "f3_alternative": 3018.9313367191385,
+       "f4": 4404.849347688854,
+       "hnr": 8.946347683353924,
+       "pitch_sd_hz": 40.94994838993422,
+       "pitch_sd_st": 5.105678705707998,
+       "pitch_span": 11.734087511820254,
+       "quiet_mean": 0,
+       "quiet_pct": 0
+      },
+      "formant_seconds": 0.72,
+      "formant_sensitivity_pct": 0.5,
+      "level_dbfs": -25.65237474111324,
+      "peak": 0.3078831434249878,
+      "pitch_p10": 112.4583973408426,
+      "pitch_p90": 221.48853441341342,
+      "quiet_intervals": [],
+      "reason": null,
+      "resonance_sensitivity_pct": 1.9,
+      "track": [
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.048
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.088
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.128
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.168
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.208
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.248
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.288
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.328
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.368
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.408
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.448
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.488
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.528
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.568
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.608
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.648
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.688
+       },
+       {
+        "balance": -11.598872760235539,
+        "delta_f": null,
+        "f0": 212.81804188882643,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 8.46790440125779,
+        "pitch_span": null,
+        "t": 0.728
+       },
+       {
+        "balance": -17.252482782841362,
+        "delta_f": 1076.5540612590016,
+        "f0": 220.4940378787426,
+        "f1": 505.6100953722361,
+        "f2": 990.0297515562955,
+        "f3": 3138.6097600552375,
+        "f4": 4828.363105645014,
+        "hnr": 9.797666009968388,
+        "pitch_span": 8.349410159881842,
+        "t": 0.768
+       },
+       {
+        "balance": -23.35393876316697,
+        "delta_f": null,
+        "f0": 224.07443123532292,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 12.179852642301821,
+        "pitch_span": 5.631590478020632,
+        "t": 0.808
+       },
+       {
+        "balance": -23.27953923373262,
+        "delta_f": null,
+        "f0": 226.88556397864818,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 14.785206138601104,
+        "pitch_span": 3.2543323820699444,
+        "t": 0.848
+       },
+       {
+        "balance": -18.66990159829872,
+        "delta_f": 1138.659180600716,
+        "f0": 226.74828027129084,
+        "f1": 572.0180848612692,
+        "f2": 1175.2818540815822,
+        "f3": 3113.6517503085356,
+        "f4": 4835.665157758831,
+        "hnr": 14.758931925074064,
+        "pitch_span": 1.108132267474797,
+        "t": 0.888
+       },
+       {
+        "balance": -19.346628214533517,
+        "delta_f": 1124.995877256445,
+        "f0": 219.72583537544114,
+        "f1": 445.16609314808596,
+        "f2": 1501.2401632282492,
+        "f3": 3192.5657112432486,
+        "f4": 4661.293919613833,
+        "hnr": 11.41534590979704,
+        "pitch_span": 1.1036431679625514,
+        "t": 0.928
+       },
+       {
+        "balance": -29.74448501003263,
+        "delta_f": null,
+        "f0": 209.57741938980467,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 8.252182615196192,
+        "pitch_span": 1.2851685607998915,
+        "t": 0.968
+       },
+       {
+        "balance": -27.07020925929995,
+        "delta_f": null,
+        "f0": 193.33459355918126,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 5.348039350755243,
+        "pitch_span": 2.2966613485380867,
+        "t": 1.008
+       },
+       {
+        "balance": -24.408255113193448,
+        "delta_f": null,
+        "f0": 175.7118258586798,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 6.024242322256805,
+        "pitch_span": 3.9897442160122987,
+        "t": 1.048
+       },
+       {
+        "balance": -26.11667365743682,
+        "delta_f": null,
+        "f0": 161.61855127245448,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 8.679635174029205,
+        "pitch_span": 5.070766965636665,
+        "t": 1.088
+       },
+       {
+        "balance": -27.99018290902465,
+        "delta_f": null,
+        "f0": 153.7568075914056,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 11.206032377398301,
+        "pitch_span": 6.0304001725756535,
+        "t": 1.128
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 1.168
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 1.208
+       },
+       {
+        "balance": -20.340376302006856,
+        "delta_f": null,
+        "f0": 171.60073196830774,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 9.715528094636706,
+        "pitch_span": 5.973951414600202,
+        "t": 1.248
+       },
+       {
+        "balance": -18.494968099808204,
+        "delta_f": 1117.6772444495164,
+        "f0": 182.33175295422393,
+        "f1": 500.34977283050495,
+        "f2": 1242.8020127464108,
+        "f3": 3208.3553952564616,
+        "f4": 4753.464096045693,
+        "hnr": 8.622839101132183,
+        "pitch_span": 5.9176124701199075,
+        "t": 1.288
+       },
+       {
+        "balance": -17.522120755419916,
+        "delta_f": 1108.910232528084,
+        "f0": 189.9114593565888,
+        "f1": 488.813959473306,
+        "f2": 1280.4601450417438,
+        "f3": 3230.1066015445713,
+        "f4": 4593.155958486898,
+        "hnr": 8.482954106788993,
+        "pitch_span": 5.86138272155047,
+        "t": 1.328
+       },
+       {
+        "balance": -19.069165780150826,
+        "delta_f": 1055.0757400059692,
+        "f0": 200.1662807988673,
+        "f1": 410.6404235664032,
+        "f2": 1275.7375898763391,
+        "f3": 3220.2344705114856,
+        "f4": 4411.528093357876,
+        "hnr": 7.545005677030533,
+        "pitch_span": 5.805261556003176,
+        "t": 1.368
+       },
+       {
+        "balance": -26.18790251918015,
+        "delta_f": null,
+        "f0": 204.6062626762772,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 6.928367333194103,
+        "pitch_span": 5.668769834995414,
+        "t": 1.408
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 1.448
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 1.488
+       },
+       {
+        "balance": -22.24478961557445,
+        "delta_f": 1044.362487961758,
+        "f0": 225.67984170637055,
+        "f1": 424.51169585899515,
+        "f2": 1223.3574281249385,
+        "f3": 3152.32561064328,
+        "f4": 4381.736439926197,
+        "hnr": 7.95949928374027,
+        "pitch_span": 5.543148621544456,
+        "t": 1.528
+       },
+       {
+        "balance": -19.722186097620984,
+        "delta_f": 1034.1939769834562,
+        "f0": 226.2769155164297,
+        "f1": 442.84592666363665,
+        "f2": 1147.6570863747477,
+        "f3": 3175.4342531503607,
+        "f4": 4255.319701838013,
+        "hnr": 15.325203556192811,
+        "pitch_span": 5.436757797752914,
+        "t": 1.568
+       },
+       {
+        "balance": -21.22158839619589,
+        "delta_f": 1016.718947026365,
+        "f0": 219.76944504741442,
+        "f1": 432.82661860253666,
+        "f2": 1159.8073756799351,
+        "f3": 3072.0356858601194,
+        "f4": 4197.211758027337,
+        "hnr": 9.838147623224536,
+        "pitch_span": 5.332589981918257,
+        "t": 1.608
+       },
+       {
+        "balance": -25.464213714524952,
+        "delta_f": null,
+        "f0": 207.55428655725785,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 14.716872652459434,
+        "pitch_span": 5.202462900755073,
+        "t": 1.648
+       },
+       {
+        "balance": -30.296272479521807,
+        "delta_f": null,
+        "f0": 209.2951861929543,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 16.151354876622324,
+        "pitch_span": 5.164650634080576,
+        "t": 1.688
+       },
+       {
+        "balance": -26.872386249756378,
+        "delta_f": null,
+        "f0": 204.6653373967196,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 14.454503267949795,
+        "pitch_span": 5.126902752770159,
+        "t": 1.728
+       },
+       {
+        "balance": -26.492978563488148,
+        "delta_f": null,
+        "f0": 191.42588789612915,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 8.79883340865706,
+        "pitch_span": 5.089219003012916,
+        "t": 1.768
+       },
+       {
+        "balance": -29.4606127509547,
+        "delta_f": null,
+        "f0": 172.1492823493724,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 8.903827750346101,
+        "pitch_span": 5.05159913246736,
+        "t": 1.808
+       },
+       {
+        "balance": -24.264047474100757,
+        "delta_f": 1019.280379554697,
+        "f0": 161.226408182244,
+        "f1": 383.0814276687083,
+        "f2": 1301.8906334975707,
+        "f3": 2878.485299109124,
+        "f4": 4520.731089837695,
+        "hnr": 9.608844097377471,
+        "pitch_span": 5.2767317390817015,
+        "t": 1.848
+       },
+       {
+        "balance": -18.850265765790976,
+        "delta_f": null,
+        "f0": 150.6760860366794,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 7.708880196238512,
+        "pitch_span": 5.833892836829946,
+        "t": 1.888
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 1.928
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 1.968
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 2.008
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 2.048
+       },
+       {
+        "balance": -27.186690818670694,
+        "delta_f": null,
+        "f0": 160.87449998891074,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 9.147198310372936,
+        "pitch_span": 5.962040623901225,
+        "t": 2.088
+       },
+       {
+        "balance": -13.440876301093798,
+        "delta_f": 1111.339697484139,
+        "f0": 161.25573429683627,
+        "f1": 416.72709116503233,
+        "f2": 1906.2184772955898,
+        "f3": 3095.4707918744534,
+        "f4": 3860.1639043087735,
+        "hnr": 7.125361440414474,
+        "pitch_span": 6.064463010995036,
+        "t": 2.128
+       },
+       {
+        "balance": -25.382566815028454,
+        "delta_f": null,
+        "f0": 178.78911910923097,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 11.615911712703529,
+        "pitch_span": 6.034810101612411,
+        "t": 2.168
+       },
+       {
+        "balance": -22.650734755621734,
+        "delta_f": 1066.5472331431895,
+        "f0": 185.1695332446438,
+        "f1": 367.4786808208452,
+        "f2": 1694.363625186026,
+        "f3": 2829.4915893873053,
+        "f4": 4444.507147682449,
+        "hnr": 15.18090285233246,
+        "pitch_span": 6.019996244251594,
+        "t": 2.208
+       },
+       {
+        "balance": -25.25561394865729,
+        "delta_f": 1027.8777322990222,
+        "f0": 180.72795162274795,
+        "f1": 290.95218260631,
+        "f2": 1736.5099693269233,
+        "f3": 2946.679805901076,
+        "f4": 4176.41465058448,
+        "hnr": 10.541377892895351,
+        "pitch_span": 6.019996244251594,
+        "t": 2.248
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 2.288
+       },
+       {
+        "balance": -19.568890845283285,
+        "delta_f": 1044.645269652354,
+        "f0": 195.31764525460125,
+        "f1": 349.6206834632628,
+        "f2": 1636.3819382066076,
+        "f3": 2910.6500668705335,
+        "f4": 4284.554374789286,
+        "hnr": 8.349114177571751,
+        "pitch_span": 6.064463010995036,
+        "t": 2.328
+       },
+       {
+        "balance": -19.158788144795246,
+        "delta_f": 1088.684882047174,
+        "f0": 199.98277540349153,
+        "f1": 402.9847798884558,
+        "f2": 1650.3767494605318,
+        "f3": 2979.7465752477415,
+        "f4": 4398.170602019832,
+        "hnr": 13.302159076866122,
+        "pitch_span": 5.767324454725505,
+        "t": 2.368
+       },
+       {
+        "balance": -21.2314709665686,
+        "delta_f": 1062.7539238264085,
+        "f0": 200.2193732899392,
+        "f1": 395.24131628369275,
+        "f2": 1537.7234208689647,
+        "f3": 2982.648387726453,
+        "f4": 4348.136661405917,
+        "hnr": 14.241191864167195,
+        "pitch_span": 5.229111492275114,
+        "t": 2.408
+       },
+       {
+        "balance": -33.372072892212216,
+        "delta_f": null,
+        "f0": 192.68230650747765,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 8.074569785825954,
+        "pitch_span": 4.791080878317685,
+        "t": 2.448
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 2.488
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 2.528
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 2.568
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 2.608
+       },
+       {
+        "balance": -20.153226763522788,
+        "delta_f": null,
+        "f0": 83.05233812651394,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 2.8131509097582836,
+        "pitch_span": 5.169276972461945,
+        "t": 2.648
+       },
+       {
+        "balance": -26.78954529904976,
+        "delta_f": null,
+        "f0": 79.08541608420953,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 1.9793573846021593,
+        "pitch_span": 5.63712246743987,
+        "t": 2.688
+       },
+       {
+        "balance": -25.600959539489526,
+        "delta_f": null,
+        "f0": 76.64397517264679,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 3.2451886772173646,
+        "pitch_span": 6.275411814130219,
+        "t": 2.728
+       },
+       {
+        "balance": -18.852691137173668,
+        "delta_f": 972.7214408060576,
+        "f0": 74.38703742648528,
+        "f1": 360.5771044920479,
+        "f2": 978.7908957217915,
+        "f3": 2976.0191771400296,
+        "f4": 4643.788168493582,
+        "hnr": 6.040522980230327,
+        "pitch_span": 15.969392203274515,
+        "t": 2.768
+       },
+       {
+        "balance": -15.87120551025604,
+        "delta_f": 979.6201979959662,
+        "f0": 73.93469823245754,
+        "f1": 350.7193326163603,
+        "f2": 1073.310490230017,
+        "f3": 2902.4655665090386,
+        "f4": 4691.804506646312,
+        "hnr": 8.670769831126021,
+        "pitch_span": 16.833167236256013,
+        "t": 2.808
+       },
+       {
+        "balance": -15.763002732925361,
+        "delta_f": 1053.8890888528538,
+        "f0": 147.4223635777805,
+        "f1": 412.22302821097503,
+        "f2": 1171.4922943684592,
+        "f3": 3042.5278038972456,
+        "f4": 4875.865100813911,
+        "hnr": 11.24613318023332,
+        "pitch_span": 16.833167236256013,
+        "t": 2.848
+       },
+       {
+        "balance": -19.707325558217597,
+        "delta_f": null,
+        "f0": 147.48498826329435,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 15.016591608737537,
+        "pitch_span": 16.833167236256013,
+        "t": 2.888
+       },
+       {
+        "balance": -22.850513174005993,
+        "delta_f": null,
+        "f0": 152.38533838777872,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 13.919563946156355,
+        "pitch_span": 16.833167236256013,
+        "t": 2.928
+       },
+       {
+        "balance": -22.00041523215639,
+        "delta_f": null,
+        "f0": 149.23986494497748,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 11.564573281336942,
+        "pitch_span": 16.74922047383499,
+        "t": 2.968
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.008
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.048
+       },
+       {
+        "balance": -25.84034490428856,
+        "delta_f": null,
+        "f0": 166.2315041302674,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 6.831801933014741,
+        "pitch_span": 16.585301328816985,
+        "t": 3.088
+       },
+       {
+        "balance": -29.86962252290197,
+        "delta_f": null,
+        "f0": 167.91370321336413,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 5.703619009703277,
+        "pitch_span": 16.016930239404324,
+        "t": 3.128
+       },
+       {
+        "balance": -31.08206902027502,
+        "delta_f": null,
+        "f0": 168.35041993374625,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 7.533784249782959,
+        "pitch_span": 16.0013178316146,
+        "t": 3.168
+       },
+       {
+        "balance": -24.702629366810385,
+        "delta_f": null,
+        "f0": 172.84291391047287,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 9.730845851570319,
+        "pitch_span": 15.95999936525269,
+        "t": 3.208
+       },
+       {
+        "balance": -25.287615588589823,
+        "delta_f": 955.0539927305019,
+        "f0": 172.04566301579817,
+        "f1": 327.21322047568805,
+        "f2": 1365.8931417207352,
+        "f3": 2858.2548823305196,
+        "f4": 3891.6225222861026,
+        "hnr": 5.572872329147602,
+        "pitch_span": 15.53478462145775,
+        "t": 3.248
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.288
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.328
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.368
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.408
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.448
+       },
+       {
+        "balance": -16.816213983156384,
+        "delta_f": null,
+        "f0": 148.25718571579924,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 6.275738998526786,
+        "pitch_span": 16.001210944326434,
+        "t": 3.488
+       },
+       {
+        "balance": -17.520802062531672,
+        "delta_f": null,
+        "f0": 143.44502517545752,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 10.746470500527215,
+        "pitch_span": 15.826433346117136,
+        "t": 3.528
+       },
+       {
+        "balance": -16.18816878827276,
+        "delta_f": 1007.9283717210034,
+        "f0": 139.77323001473093,
+        "f1": 519.8018925702739,
+        "f2": 1247.112641977688,
+        "f3": 2852.5655002187646,
+        "f4": 3568.8627578479195,
+        "hnr": 6.679418808369554,
+        "pitch_span": 15.73919847558674,
+        "t": 3.568
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.608
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.648
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.688
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.728
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.768
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.808
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.848
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.888
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.928
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 3.968
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.008
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.048
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.088
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.128
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.168
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.208
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.248
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.288
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.328
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.368
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.408
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.448
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.488
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.528
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.568
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.608
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.648
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.688
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 4.728
+       }
+      ],
+      "version": "3.0.0",
+      "visuals": {
+       "duration": 4.7760625,
+       "spectrogram": {
+        "bins": 321,
+        "data": {
+         "$string": 202016,
+         "sha256": "781d1e5d4ffa0394009f34b0e10c8c6e530b9148b5d7c029a17bb775af739024"
+        },
+        "frames": 472,
+        "hop_seconds": 0.01,
+        "max_hz": 5000,
+        "range_db": 80,
+        "window_seconds": 0.064
+       },
+       "spectrum": {
+        "db": {
+         "$numbers": 321,
+         "sha256": "588cfd416cb88b981f85f832d370c9e76cadb18a4e5397326538c3c28dd4eb22"
+        },
+        "hz_step": 15.625
+       },
+       "waveform": {
+        "$numbers": 1600,
+        "sha256": "ee4f380ace20ede41f0966bf84a77304f739d2e4c40ee30b093418735e64e9ea"
+       }
+      },
+      "voiced_seconds": 2.12
+     },
+     "duration": 4.776,
+     "features": {
+      "balance": -22.75062396481386,
+      "delta_f": 1059.1278431454432,
+      "delta_f_alternative": 1079.26492280916,
+      "f0": 175.5876837960758,
+      "f0_mean": 173.2965092125899,
+      "f1": 406.8126017274295,
+      "f2": 1291.1753892696572,
+      "f3": 3004.772574676201,
+      "f3_alternative": 3018.9313367191385,
+      "f4": 4404.849347688854,
+      "hnr": 8.946347683353924,
+      "pitch_sd_hz": 40.94994838993422,
+      "pitch_sd_st": 5.105678705707998,
+      "pitch_span": 11.734087511820254,
+      "quiet_mean": 0,
+      "quiet_pct": 0
+     },
+     "group": "custom",
+     "id": "custom-1767236405200",
+     "language": "ja",
+     "name": "own-b.wav",
+     "pcm": {
+      "$typed": "Float32Array",
+      "length": 76417,
+      "sha256": "efb47d10fadb1506ccf1c64a5da99ec7ce27798c1e536dd50a0667317773a7e4"
+     },
+     "plotted": true,
+     "speaker": "custom-1767236405200",
+     "text": "own-b.wav"
+    }
+   ]
+  }
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/catalog",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 2,
+   "method": "GET",
+   "path": "/api/library",
+   "query": "lang=ja",
+   "status": 200
+  },
+  {
+   "seq": 3,
+   "method": "GET",
+   "path": "/api/detail/common_voice_ja_36363162",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 4,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
+   "body": "305668b efb47d10fadb1506ccf1c64a5da99ec7ce27798c1e536dd50a0667317773a7e4",
+   "status": 200
+  },
+  {
+   "seq": 5,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
+   "body": "100548b 5da1eb40f73708cb41c01791fc903517e098480b072d02b27c0d51e00fd7063c",
+   "status": 200
+  },
+  {
+   "seq": 6,
+   "method": "POST",
+   "path": "/api/words",
+   "query": "lang=ja",
+   "body": "305668b efb47d10fadb1506ccf1c64a5da99ec7ce27798c1e536dd50a0667317773a7e4",
+   "status": 200
+  },
+  {
+   "seq": 7,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
+   "body": "40960b 81f7a65bdaa2b7d5aac05e7d9878afc26dca4a9507d33f293ad816b7afe2d989",
+   "status": 200
+  },
+  {
+   "seq": 8,
+   "method": "GET",
+   "path": "/api/catalog",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 9,
+   "method": "GET",
+   "path": "/api/library",
+   "query": "lang=ja",
+   "status": 200
+  },
+  {
+   "seq": 10,
+   "method": "GET",
+   "path": "/api/detail/common_voice_ja_36363162",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 11,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
+   "body": "40960b 81f7a65bdaa2b7d5aac05e7d9878afc26dca4a9507d33f293ad816b7afe2d989",
+   "status": 200
+  }
+ ],
+ "media": [],
+ "errors": []
+}

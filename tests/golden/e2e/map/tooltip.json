@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "reset-view",
+ "focus": "voice-map",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",

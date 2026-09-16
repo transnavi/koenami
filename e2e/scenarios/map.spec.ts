@@ -96,6 +96,7 @@ test.describe('voice map', () => {
 		await studio.open('/ja/');
 		await studio.until(ready);
 		await page.locator('[data-dimension="2"]').click();
+		await page.locator('#find-me').click();
 		await studio.tick(300);
 		// Two synthetic pointers, as a touch pinch delivers them.
 		await page.locator('#voice-map').evaluate((canvas) => {
@@ -110,6 +111,11 @@ test.describe('voice map', () => {
 		await page.locator('#reset-view').click();
 		await studio.tick(300);
 
+		// Extra mouse buttons and clicks on empty space do nothing.
+		await page.locator('#voice-map').dispatchEvent('pointerdown', { button: 3, pointerId: 7, clientX: 10, clientY: 10 });
+		await page.locator('#voice-map').click({ position: { x: 5, y: 5 } });
+		await studio.tick(100);
+		await studio.golden('empty-click');
 		const target = await pointOn(page, 'common_voice_ja_36363165');
 		await page.mouse.move(target.x, target.y);
 		await studio.tick(100);

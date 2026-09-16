@@ -71,6 +71,8 @@ test.describe('listening review page', () => {
 		await page.locator('#scales .scale').nth(4).locator('button').nth(2).click();
 		await page.locator('#quality-flags > button').first().click();
 		await page.locator('#note').fill('テスト');
+		await page.keyboard.press('x');
+		await page.keyboard.press('Backspace');
 		await page.keyboard.press('Escape');
 		await studio.tick(1200);
 		await studio.golden('rated-by-pointer');

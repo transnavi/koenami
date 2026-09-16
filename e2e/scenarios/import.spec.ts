@@ -161,6 +161,17 @@ test.describe('JVS import', () => {
 		await studio.golden('cancelled');
 	});
 
+	test('an import while another language is shown', async ({ page, studio }, info) => {
+		await studio.open('/en/');
+		await studio.until('window.voiceApp?.state.lang === "en" && !!window.voiceApp.state.refFull');
+		await page.locator('#add-reference').click();
+		await page.locator('#jvs-zip').setInputFiles(await archive(info.outputPath()));
+		await studio.until('document.getElementById("jvs-status").textContent.includes("追加済み")');
+		await studio.until(idle);
+		await studio.tick(300);
+		await studio.golden('imported-in-english');
+	});
+
 	test('index unavailable', async ({ page, studio }, info) => {
 		await page.route('**/api/import-index/jvs', (route) => route.fulfill({ status: 503, contentType: 'text/plain', body: 'down' }));
 		await studio.open('/ja/');

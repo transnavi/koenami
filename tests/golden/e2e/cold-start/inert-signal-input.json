@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "signal-canvas",
+ "focus": "body",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -241,7 +241,7 @@
     "role": "group",
     "aria-label": "声の指標"
    },
-   "text": "高さ—Hz480響き—Hz ΔF1206質感—dB18.1明るさ—dB4.7抑揚—半音11.2"
+   "text": "高さ—Hz423響き—Hz ΔF1239質感—dB16.3明るさ—dB-7.5抑揚—半音17.3"
   },
   "report-button": {
    "tag": "button",
@@ -448,14 +448,15 @@
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "0.00–0.90s"
+   "text": "0:02"
   },
   "range-reset": {
    "tag": "button",
    "class": "icon-button",
    "attrs": {
     "title": "選択範囲を解除（Esc）",
-    "aria-label": "選択範囲を解除"
+    "aria-label": "選択範囲を解除",
+    "hidden": ""
    },
    "text": ""
   },

@@ -51,6 +51,11 @@ test.describe('research library', () => {
 		await studio.until('!!window.voiceApp.state.ownFull && !window.voiceApp.state.busy && window.voiceApp.state.analyzing.size === 0');
 		await studio.tick(1200);
 		await studio.golden('lab-own-uploaded');
+		// A small library has no density model, so the fit readout stays empty.
+		await studio.choose('language', 'en');
+		await studio.until(lang('en') + ' && !!window.voiceApp.state.refFull');
+		await studio.tick(300);
+		await studio.golden('small-library-no-fit');
 		await studio.choose('language', 'ja');
 		await studio.until(lang('ja') + ' && !!window.voiceApp.state.refFull');
 		await studio.tick(300);

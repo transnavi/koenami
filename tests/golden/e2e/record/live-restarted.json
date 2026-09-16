@@ -1501,6 +1501,22 @@
    "query": "live=1",
    "body": "<audio>",
    "status": 200
+  },
+  {
+   "seq": 17,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 200
+  },
+  {
+   "seq": 18,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 200
   }
  ],
  "media": [],

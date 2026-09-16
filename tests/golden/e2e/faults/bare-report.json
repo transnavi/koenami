@@ -3,8 +3,10 @@
  "title": "Koenami · 女声・男声のボイトレツール",
  "lang": "ja",
  "theme": "light",
- "dialogs": [],
- "focus": "play-mine",
+ "dialogs": [
+  "report-dialog"
+ ],
+ "focus": "button",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -1329,8 +1331,10 @@
   "report-dialog": {
    "tag": "dialog",
    "class": "",
-   "attrs": {},
-   "open": false,
+   "attrs": {
+    "open": ""
+   },
+   "open": true,
    "text": "比較×—見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。指標自分見本参照音声の中央80%高さ · Hz—423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べてください。own-a.wav · 0:06 · 見本 F 2624録音言語 ja · 見本の言語 ja分布図は5次元を3次元に投影しています。表示する分散は90%。省略された方向の違いは左の指標で確認できます。レポートを保存"
   },
   "report-content": {
@@ -1373,41 +1377,7 @@
  },
  "storage": {
   "local": {
-   "voice-speed": 1,
-   "koenami-session": {
-    "lang": "ja",
-    "group": "female",
-    "sort": "high",
-    "search": "",
-    "reference": "common_voice_ja_36363162",
-    "referenceRange": null,
-    "openSpeakers": [
-     "ja:Common Voice:50a288fb7fb3"
-    ],
-    "dimension": 3,
-    "projection": "variance",
-    "yaw": -0.45,
-    "tilt": 0.3,
-    "zoom": 0.914281430867266,
-    "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
-     0.7587527919899949
-    ],
-    "center": [
-     0.5,
-     0.5
-    ],
-    "pan": [
-     0,
-     0
-    ],
-    "autoRotate": false,
-    "signal": "waveform",
-    "signalSource": "own",
-    "overlay": true,
-    "liveShapeSeconds": 5
-   }
+   "voice-speed": 1
   },
   "idb": {
    "recording-index": [

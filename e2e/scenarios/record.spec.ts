@@ -149,6 +149,10 @@ test.describe('recording', () => {
 		await page.route('**/api/analyze?live=1', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: 'busy' }));
 		await studio.tick(4000);
 		await studio.golden('live-silent', live);
+		// Measurements that resume after a gap draw the trail with a pause.
+		await page.unroute('**/api/analyze?live=1');
+		await studio.tick(1000);
+		await studio.golden('live-resumed-after-gap', live);
 		await page.keyboard.press('r');
 		await studio.until('window.voiceApp.state.recording === false && ' + idle);
 		await studio.tick(300);

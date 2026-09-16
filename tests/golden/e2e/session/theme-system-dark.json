@@ -2,15 +2,15 @@
  "url": "/ja/",
  "title": "Koenami · 女声・男声のボイトレツール",
  "lang": "ja",
- "theme": "light",
+ "theme": "dark",
  "dialogs": [
   "settings-dialog"
  ],
  "focus": "theme-select",
  "vars": {
-  "--reference": "#d56498",
-  "--self": "#6b4aaf",
-  "--accent": "#1a78c2"
+  "--reference": "#ff9ecb",
+  "--self": "#bb9ee8",
+  "--accent": "#74bbf2"
  },
  "elements": {
   "i-book": {

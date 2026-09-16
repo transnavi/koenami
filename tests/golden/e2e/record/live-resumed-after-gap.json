@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "play-mine",
+ "focus": "settings-button",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -235,27 +235,13 @@
    "text": ""
   },
   "indicators": {
-   "tag": "div",
-   "class": "indicators",
-   "attrs": {
-    "role": "group",
-    "aria-label": "声の指標"
-   },
-   "text": "高さ—Hz423響き1097Hz ΔF1239質感9.3dB16.3明るさ-15.1dB-7.5抑揚7.5半音17.3"
+   "ignored": true
   },
   "report-button": {
-   "tag": "button",
-   "class": "fit-readout",
-   "attrs": {
-    "title": "比較レポートを開く"
-   },
-   "text": "見本との差—"
+   "ignored": true
   },
   "fit-value": {
-   "tag": "strong",
-   "class": "",
-   "attrs": {},
-   "text": "—"
+   "ignored": true
   },
   "projection-controls": {
    "tag": "div",
@@ -364,12 +350,7 @@
    "text": ""
   },
   "quality-state": {
-   "tag": "span",
-   "class": "quality-state",
-   "attrs": {
-    "hidden": ""
-   },
-   "text": ""
+   "ignored": true
   },
   "signal-view": {
    "tag": "koe-select",
@@ -377,7 +358,7 @@
    "attrs": {
     "aria-label": "音声の表示"
    },
-   "value": "waveform",
+   "value": "pitch",
    "options": [
     {
      "value": "pitch",
@@ -404,7 +385,7 @@
      "data": {}
     }
    ],
-   "trigger": "波形",
+   "trigger": "高さ",
    "expanded": "false",
    "text": "高さスペクトログラムスペクトル波形",
    "style": "display: inline-flex;"
@@ -440,7 +421,8 @@
    "tag": "button",
    "class": "text-button",
    "attrs": {
-    "title": "文字起こしと単語分割"
+    "title": "文字起こしと単語分割",
+    "disabled": ""
    },
    "text": "単語"
   },
@@ -448,7 +430,7 @@
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "0:06"
+   "text": "0:00"
   },
   "range-reset": {
    "tag": "button",
@@ -456,7 +438,8 @@
    "attrs": {
     "title": "選択範囲を解除（Esc）",
     "aria-label": "選択範囲を解除",
-    "hidden": ""
+    "hidden": "",
+    "disabled": ""
    },
    "text": ""
   },
@@ -498,7 +481,8 @@
    "class": "icon-button reference-import",
    "attrs": {
     "title": "見本の音声を読み込む",
-    "aria-label": "見本の音声を読み込む"
+    "aria-label": "見本の音声を読み込む",
+    "disabled": ""
    },
    "text": ""
   },
@@ -560,7 +544,8 @@
    "attrs": {
     "type": "file",
     "aria-label": "見本の音声を読み込む",
-    "hidden": ""
+    "hidden": "",
+    "disabled": ""
    },
    "value": "",
    "files": 0,
@@ -880,7 +865,8 @@
    "class": "icon-button",
    "attrs": {
     "title": "見本を再生",
-    "aria-label": "見本を再生"
+    "aria-label": "見本を再生",
+    "disabled": ""
    },
    "text": ""
   },
@@ -945,8 +931,9 @@
    "class": "record-button",
    "attrs": {
     "title": "録音（R）",
-    "aria-label": "新しく録音",
-    "aria-pressed": "false"
+    "aria-label": "録音を停止",
+    "aria-pressed": "false",
+    "disabled": ""
    },
    "text": ""
   },
@@ -955,7 +942,8 @@
    "class": "play-button",
    "attrs": {
     "title": "自分の声を再生（Space）",
-    "aria-label": "自分の声を再生"
+    "aria-label": "自分の声を再生",
+    "disabled": ""
    },
    "text": "再生"
   },
@@ -965,23 +953,13 @@
    "attrs": {
     "aria-label": "録音履歴",
     "title": "録音履歴",
-    "data-display-label": "own-a.wav"
+    "data-display-label": "録音履歴"
    },
-   "value": "0",
-   "options": [
-    {
-     "value": "0",
-     "text": "own-a.wav",
-     "disabled": false,
-     "data": {
-      "data-detail": "0:06",
-      "data-actions": "download,delete"
-     }
-    }
-   ],
-   "trigger": "own-a.wav",
+   "value": "",
+   "options": [],
+   "trigger": "録音履歴",
    "expanded": "false",
-   "text": "own-a.wav",
+   "text": "",
    "style": "display: inline-flex;"
   },
   "timer": {
@@ -990,35 +968,20 @@
   "state": {
    "tag": "span",
    "class": "",
-   "attrs": {
-    "hidden": ""
-   },
-   "text": ""
+   "attrs": {},
+   "text": "測定中"
   },
   "live-mode": {
-   "tag": "button",
-   "class": "live-button",
-   "attrs": {
-    "role": "switch",
-    "aria-checked": "false",
-    "title": "マイクの声をリアルタイムに表示",
-    "aria-label": "リアルタイム測定を開始"
-   },
-   "text": "リアルタイム0:00"
+   "ignored": true
   },
   "live-mode-label": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "リアルタイム"
+   "text": "測定中"
   },
   "live-time": {
-   "tag": "time",
-   "class": "",
-   "attrs": {
-    "hidden": ""
-   },
-   "text": "0:00"
+   "ignored": true
   },
   "loopback": {
    "tag": "button",
@@ -1026,8 +989,7 @@
    "attrs": {
     "aria-pressed": "false",
     "aria-label": "自分の声を聴く",
-    "title": "自分の声を聴く（イヤホン推奨）",
-    "disabled": ""
+    "title": "自分の声を聴く（イヤホン推奨）"
    },
    "text": ""
   },
@@ -1059,7 +1021,8 @@
    "attrs": {
     "title": "見本、自分の順に再生",
     "aria-label": "見本、自分の順に再生",
-    "aria-pressed": "false"
+    "aria-pressed": "false",
+    "disabled": ""
    },
    "text": "A/B"
   },
@@ -1068,7 +1031,8 @@
    "class": "",
    "attrs": {
     "type": "file",
-    "aria-label": "音声を読み込む"
+    "aria-label": "音声を読み込む",
+    "disabled": ""
    },
    "value": "",
    "files": 0,
@@ -1077,11 +1041,9 @@
   "player": {
    "tag": "audio",
    "class": "",
-   "attrs": {
-    "src": "blob:"
-   },
+   "attrs": {},
    "media": {
-    "src": "blob:",
+    "src": null,
     "paused": true,
     "rate": 1,
     "volume": 1,
@@ -1108,11 +1070,11 @@
   },
   "notice": {
    "tag": "div",
-   "class": "toast",
+   "class": "error toast",
    "attrs": {
     "role": "status"
    },
-   "text": "音声を読み込みました。"
+   "text": "busy"
   },
   "live-status": {
    "tag": "div",
@@ -1121,7 +1083,7 @@
     "role": "status",
     "aria-live": "polite"
    },
-   "text": "音声を読み込みました。"
+   "text": ""
   },
   "live-alert": {
    "tag": "div",
@@ -1129,7 +1091,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": ""
+   "text": "busy"
   },
   "import-dialog": {
    "tag": "dialog",
@@ -1212,7 +1174,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "設定配色ライトダーク端末に合わせるリアルタイムの解析時間1.5 s3 s6 s12 sリアルタイムに表示する時間5 秒再生音量をそろえる測定値を書き出す"
+   "text": "設定配色ライトダーク端末に合わせるリアルタイムの解析時間1.5 s3 s6 s12 sリアルタイムに表示する時間2 秒再生音量をそろえる測定値を書き出す"
   },
   "theme-select": {
    "tag": "koe-select",
@@ -1288,9 +1250,9 @@
     "min": "1",
     "max": "30",
     "step": "1",
-    "aria-valuetext": "5 秒"
+    "aria-valuetext": "2 秒"
    },
-   "value": "5",
+   "value": "2",
    "text": ""
   },
   "live-shape-duration": {
@@ -1299,8 +1261,8 @@
    "attrs": {
     "for": "live-shape-window"
    },
-   "value": "5 秒",
-   "text": "5 秒"
+   "value": "2 秒",
+   "text": "2 秒"
   },
   "normalize": {
    "tag": "input",
@@ -1331,13 +1293,13 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "比較×—見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。指標自分見本参照音声の中央80%高さ · Hz—423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べてください。own-a.wav · 0:06 · 見本 F 2624録音言語 ja · 見本の言語 ja分布図は5次元を3次元に投影しています。表示する分散は90%。省略された方向の違いは左の指標で確認できます。レポートを保存"
+   "text": "比較×レポートを保存"
   },
   "report-content": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "—見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。指標自分見本参照音声の中央80%高さ · Hz—423192〜234響き · Hz ΔF109712391076〜1209質感 · dB9.316.310.4〜15.5明るさ · dB-15.1-7.5-23.1〜-11.2抑揚 · 半音7.517.33.5〜14.0高さの標準偏差 · Hz56.4142.3—高さの標準偏差 · 半音3.99.0—無音の割合 · %22.410.0—無音区間の平均 · 秒0.80.3—F1 · Hz477.4991.5—F2 · Hz1668.21504.4—F3 · Hz2621.52402.2—F4 · Hz4218.03666.7—響きの推定値は自分 1097、見本 1239 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べてください。own-a.wav · 0:06 · 見本 F 2624録音言語 ja · 見本の言語 ja分布図は5次元を3次元に投影しています。表示する分散は90%。省略された方向の違いは左の指標で確認できます。"
+   "text": ""
   },
   "report-save": {
    "tag": "button",
@@ -1388,11 +1350,11 @@
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.914281430867266,
+    "zoom": 1.1,
     "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
-     0.7587527919899949
+     0.5,
+     0.5,
+     0.5
     ],
     "center": [
      0.5,
@@ -1403,236 +1365,13 @@
      0
     ],
     "autoRotate": false,
-    "signal": "waveform",
+    "signal": "pitch",
     "signalSource": "own",
     "overlay": true,
-    "liveShapeSeconds": 5
+    "liveShapeSeconds": 2
    }
   },
-  "idb": {
-   "recording-index": [
-    {
-     "date": "2026-01-01T03:00:05.000Z",
-     "duration": 6.696,
-     "features": {
-      "balance": -15.115525244433902,
-      "delta_f": 1096.9253741143095,
-      "delta_f_alternative": 1091.9652618631958,
-      "f0_mean": 221.2231144223791,
-      "f1": 477.36824301977697,
-      "f2": 1668.1889344186832,
-      "f3": 2621.5067342524194,
-      "f3_alternative": 2573.512840024639,
-      "f4": 4217.962164522833,
-      "hnr": 9.30773223489885,
-      "pitch_sd_hz": 56.36666962722617,
-      "pitch_sd_st": 3.899581760174577,
-      "pitch_span": 7.481012254628286,
-      "quiet_mean": 0.7500000000000001,
-      "quiet_pct": 22.401433691756278
-     },
-     "id": "00000000-0000-4000-8000-000000000001",
-     "language": "ja",
-     "name": "own-a.wav",
-     "stored": true
-    }
-   ],
-   "recording:00000000-0000-4000-8000-000000000001": {
-    "detail": {
-     "clipping_fraction": 0,
-     "duration": 6.696,
-     "features": {
-      "balance": -15.115525244433902,
-      "delta_f": 1096.9253741143095,
-      "delta_f_alternative": 1091.9652618631958,
-      "f0_mean": 221.2231144223791,
-      "f1": 477.36824301977697,
-      "f2": 1668.1889344186832,
-      "f3": 2621.5067342524194,
-      "f3_alternative": 2573.512840024639,
-      "f4": 4217.962164522833,
-      "hnr": 9.30773223489885,
-      "pitch_sd_hz": 56.36666962722617,
-      "pitch_sd_st": 3.899581760174577,
-      "pitch_span": 7.481012254628286,
-      "quiet_mean": 0.7500000000000001,
-      "quiet_pct": 22.401433691756278
-     },
-     "formant_seconds": 1.98,
-     "formant_sensitivity_pct": 1.9,
-     "level_dbfs": -14.46429916099856,
-     "peak": 0.8627919554710388,
-     "pitch_p10": 167.92642399550678,
-     "pitch_p90": 258.6940640785254,
-     "quiet_intervals": [
-      {
-       "end": 1.138,
-       "start": 0.038
-      },
-      {
-       "end": 6.658,
-       "start": 6.258
-      }
-     ],
-     "reason": null,
-     "resonance_sensitivity_pct": 0.5,
-     "version": "3.0.0",
-     "voiced_seconds": 3.22
-    },
-    "id": null,
-    "language": "ja",
-    "measurement": {
-     "clipping_fraction": 0,
-     "duration": 6.696,
-     "features": {
-      "balance": -15.115525244433902,
-      "delta_f": 1096.9253741143095,
-      "delta_f_alternative": 1091.9652618631958,
-      "f0_mean": 221.2231144223791,
-      "f1": 477.36824301977697,
-      "f2": 1668.1889344186832,
-      "f3": 2621.5067342524194,
-      "f3_alternative": 2573.512840024639,
-      "f4": 4217.962164522833,
-      "hnr": 9.30773223489885,
-      "pitch_sd_hz": 56.36666962722617,
-      "pitch_sd_st": 3.899581760174577,
-      "pitch_span": 7.481012254628286,
-      "quiet_mean": 0.7500000000000001,
-      "quiet_pct": 22.401433691756278
-     },
-     "formant_seconds": 1.98,
-     "formant_sensitivity_pct": 1.9,
-     "level_dbfs": -14.46429916099856,
-     "peak": 0.8627919554710388,
-     "pitch_p10": 167.92642399550678,
-     "pitch_p90": 258.6940640785254,
-     "quiet_intervals": [
-      {
-       "end": 1.138,
-       "start": 0.038
-      },
-      {
-       "end": 6.658,
-       "start": 6.258
-      }
-     ],
-     "reason": null,
-     "resonance_sensitivity_pct": 0.5,
-     "version": "3.0.0",
-     "voiced_seconds": 3.22
-    },
-    "name": "own-a.wav",
-    "pcm": {
-     "$typed": "Float32Array",
-     "length": 107136,
-     "sha256": "68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4"
-    },
-    "range": null,
-    "takeId": "00000000-0000-4000-8000-000000000001",
-    "url": null,
-    "words": null
-   },
-   "takes": {
-    "current": {
-     "detail": {
-      "clipping_fraction": 0,
-      "duration": 6.696,
-      "features": {
-       "balance": -15.115525244433902,
-       "delta_f": 1096.9253741143095,
-       "delta_f_alternative": 1091.9652618631958,
-       "f0_mean": 221.2231144223791,
-       "f1": 477.36824301977697,
-       "f2": 1668.1889344186832,
-       "f3": 2621.5067342524194,
-       "f3_alternative": 2573.512840024639,
-       "f4": 4217.962164522833,
-       "hnr": 9.30773223489885,
-       "pitch_sd_hz": 56.36666962722617,
-       "pitch_sd_st": 3.899581760174577,
-       "pitch_span": 7.481012254628286,
-       "quiet_mean": 0.7500000000000001,
-       "quiet_pct": 22.401433691756278
-      },
-      "formant_seconds": 1.98,
-      "formant_sensitivity_pct": 1.9,
-      "level_dbfs": -14.46429916099856,
-      "peak": 0.8627919554710388,
-      "pitch_p10": 167.92642399550678,
-      "pitch_p90": 258.6940640785254,
-      "quiet_intervals": [
-       {
-        "end": 1.138,
-        "start": 0.038
-       },
-       {
-        "end": 6.658,
-        "start": 6.258
-       }
-      ],
-      "reason": null,
-      "resonance_sensitivity_pct": 0.5,
-      "version": "3.0.0",
-      "voiced_seconds": 3.22
-     },
-     "id": null,
-     "language": "ja",
-     "measurement": {
-      "clipping_fraction": 0,
-      "duration": 6.696,
-      "features": {
-       "balance": -15.115525244433902,
-       "delta_f": 1096.9253741143095,
-       "delta_f_alternative": 1091.9652618631958,
-       "f0_mean": 221.2231144223791,
-       "f1": 477.36824301977697,
-       "f2": 1668.1889344186832,
-       "f3": 2621.5067342524194,
-       "f3_alternative": 2573.512840024639,
-       "f4": 4217.962164522833,
-       "hnr": 9.30773223489885,
-       "pitch_sd_hz": 56.36666962722617,
-       "pitch_sd_st": 3.899581760174577,
-       "pitch_span": 7.481012254628286,
-       "quiet_mean": 0.7500000000000001,
-       "quiet_pct": 22.401433691756278
-      },
-      "formant_seconds": 1.98,
-      "formant_sensitivity_pct": 1.9,
-      "level_dbfs": -14.46429916099856,
-      "peak": 0.8627919554710388,
-      "pitch_p10": 167.92642399550678,
-      "pitch_p90": 258.6940640785254,
-      "quiet_intervals": [
-       {
-        "end": 1.138,
-        "start": 0.038
-       },
-       {
-        "end": 6.658,
-        "start": 6.258
-       }
-      ],
-      "reason": null,
-      "resonance_sensitivity_pct": 0.5,
-      "version": "3.0.0",
-      "voiced_seconds": 3.22
-     },
-     "name": "own-a.wav",
-     "pcm": {
-      "$typed": "Float32Array",
-      "length": 107136,
-      "sha256": "68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4"
-     },
-     "range": null,
-     "takeId": "00000000-0000-4000-8000-000000000001",
-     "url": null,
-     "words": null
-    },
-    "previous": null
-   }
-  }
+  "idb": {}
  },
  "network": [
   {
@@ -1640,6 +1379,7 @@
    "method": "GET",
    "path": "/api/catalog",
    "query": "",
+   "body": "<audio>",
    "status": 200
   },
   {
@@ -1647,6 +1387,7 @@
    "method": "GET",
    "path": "/api/library",
    "query": "lang=ja",
+   "body": "<audio>",
    "status": 200
   },
   {
@@ -1654,14 +1395,119 @@
    "method": "GET",
    "path": "/api/detail/common_voice_ja_36363162",
    "query": "",
+   "body": "<audio>",
    "status": 200
   },
   {
    "seq": 4,
    "method": "POST",
    "path": "/api/analyze",
-   "query": "",
-   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 200
+  },
+  {
+   "seq": 5,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 200
+  },
+  {
+   "seq": 6,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 200
+  },
+  {
+   "seq": 7,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 8,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 9,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 10,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 11,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 12,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 13,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 14,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 15,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 503
+  },
+  {
+   "seq": 16,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
+   "status": 200
+  },
+  {
+   "seq": 17,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "live=1",
+   "body": "<audio>",
    "status": 200
   }
  ],
