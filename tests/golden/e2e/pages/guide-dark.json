@@ -1,0 +1,72 @@
+{
+ "url": "/guide.html",
+ "title": "Koenami · 使い方",
+ "lang": "ja",
+ "theme": "dark",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#ff9ecb",
+  "--self": "#bb9ee8",
+  "--accent": "#74bbf2"
+ },
+ "elements": {
+  "screen": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "画面の見方"
+  },
+  "flow": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "練習の流れ"
+  },
+  "recordings": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "録音の保存と履歴"
+  },
+  "import": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "見本を増やす"
+  },
+  "settings": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "設定"
+  },
+  "trouble": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "うまく測れないとき"
+  },
+  "keys": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "ショートカット"
+  },
+  "privacy": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "音声の扱い"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-theme": "system"
+  },
+  "idb": {}
+ },
+ "network": [],
+ "media": [],
+ "errors": []
+}

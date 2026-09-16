@@ -1,0 +1,7 @@
+{
+ "key": "POST /api/review 23cc1dcc568aea1ca35455adc5503cf82f1700d9e2ff21a8e55e11ad2bdda8b0",
+ "status": 200,
+ "contentType": "application/json; charset=utf-8",
+ "body": "{\"speaker\": \"1ed8dc009e30\", \"clip\": \"common_voice_ja_26011748\", \"display\": \"F 2594\", \"language\": \"ja\", \"flags\": [], \"ratings\": {}, \"note\": \"memo\", \"reviewed\": \"2026-09-16T09:17:54+00:00\"}",
+ "base64": false
+}

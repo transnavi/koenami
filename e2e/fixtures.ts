@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { join, basename } from 'node:path';
 import { domProjection, storageDump, type Observation } from './observe';
 
-export { expect };
+export { expect, type Page };
 export const record = process.env.RECORD === '1';
 export const root = fileURLToPath(new URL('..', import.meta.url));
 export const goldenDir = join(root, 'tests/golden/e2e');
@@ -18,7 +18,7 @@ type Studio = {
 	log: NetEntry[];
 	/** Golden a named observation of the page. `ignore` drops element ids whose state
 	 *  follows real-time media playback and cannot be pinned. */
-	golden: (name: string, options?: { ignore?: string[]; maskAudio?: boolean; extra?: Record<string, unknown> }) => Promise<void>;
+	golden: (name: string, options?: { ignore?: readonly string[]; maskAudio?: boolean; extra?: Record<string, unknown> }) => Promise<void>;
 	/** Advance the fake clock, letting timers, intervals and animation frames run. */
 	tick: (ms?: number) => Promise<void>;
 	/** Wait (real time) until a page expression is truthy. The fake clock does not move,
@@ -32,7 +32,10 @@ type Studio = {
 	/** Choose a value in a koe-select by clicking its popover item. */
 	choose: (id: string, value: string) => Promise<void>;
 	/** Full page navigation to the studio with the harness installed. */
-	open: (path?: string, before?: (page: Page) => Promise<void>) => Promise<void>;
+	open: (path?: string, before?: (page: Page) => Promise<unknown>) => Promise<void>;
+	/** History navigation with coverage preserved. */
+	back: () => Promise<void>;
+	forward: () => Promise<void>;
 	/** Absolute path of an audio fixture. */
 	audio: (name: string) => string;
 };
@@ -52,12 +55,18 @@ async function install(page: Page) {
 }
 
 const sha = (buffer: Buffer) => createHash('sha256').update(buffer).digest('hex');
+const flushers = new WeakMap<Page, () => Promise<void>>();
 
 export const test = base.extend<{ studio: Studio; coverage: void }>({
+	// V8 only reports scripts that are still alive, so coverage is flushed before every
+	// navigation (see `flush` in the studio fixture) and written once per test.
 	coverage: [async ({ page }, use) => {
 		await page.coverage.startJSCoverage({ resetOnNavigation: false });
+		const entries: Awaited<ReturnType<typeof page.coverage.stopJSCoverage>> = [];
+		flushers.set(page, async () => { entries.push(...(await page.coverage.stopJSCoverage())); await page.coverage.startJSCoverage({ resetOnNavigation: false }); });
 		await use();
-		const entries = await page.coverage.stopJSCoverage();
+		entries.push(...(await page.coverage.stopJSCoverage()));
+		flushers.delete(page);
 		const dir = join(root, 'coverage/e2e/raw');
 		mkdirSync(dir, { recursive: true });
 		const name = `${sha(Buffer.from(test.info().titlePath.join(' > ')))}.json`;
@@ -70,9 +79,13 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const dir = join(goldenDir, file);
 		mkdirSync(dir, { recursive: true });
 		let seq = 0;
+		// Media elements fetch /samples in a variable number of range requests, so those
+		// are kept as the set of files touched rather than as log entries.
+		const media = new Set<string>();
 		page.on('request', (request) => {
 			const url = new URL(request.url());
-			if (!/^\/(api|samples|data)\//.test(url.pathname)) return;
+			if (url.pathname.startsWith('/samples/')) { media.add(url.pathname); return; }
+			if (!/^\/(api|data)\//.test(url.pathname)) return;
 			const body = request.postDataBuffer();
 			log.push({ seq: ++seq, method: request.method(), path: url.pathname, query: [...url.searchParams].sort().map(([k, v]) => `${k}=${v}`).join('&'), body: body ? `${body.length}b ${sha(body)}` : undefined });
 		});
@@ -88,17 +101,18 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const until = async (expression: string, timeoutMs = 30_000) => {
 			const started = Date.now();
 			while (!(await page.evaluate(expression))) {
-				if (Date.now() - started > timeoutMs) throw new Error(`timed out waiting for ${expression}; notice: ${await page.locator('#notice').innerText().catch(() => '')}`);
+				if (Date.now() - started > timeoutMs) throw new Error(`timed out waiting for ${expression}; notice: ${await page.locator('#notice').innerText({ timeout: 500 }).catch(() => '')}`);
 				await page.waitForTimeout(25);
 			}
 		};
-		const golden = async (name: string, { ignore = [], maskAudio = false, extra = {} }: { ignore?: string[]; maskAudio?: boolean; extra?: Record<string, unknown> } = {}) => {
+		const golden = async (name: string, { ignore = [], maskAudio = false, extra = {} }: { ignore?: readonly string[]; maskAudio?: boolean; extra?: Record<string, unknown> } = {}) => {
 			const dom = await page.evaluate(domProjection);
 			for (const id of ignore) dom.elements[id] = { ignored: true };
-			let observation: Observation & { network: NetEntry[]; errors: string[] } = {
+			let observation: Observation & { network: NetEntry[]; media: string[]; errors: string[] } = {
 				...dom,
 				storage: await page.evaluate(storageDump),
 				network: log.slice(),
+				media: [...media].sort(),
 				errors: errors.slice(),
 				...extra
 			};
@@ -128,12 +142,23 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			await page.locator(`#${id} button.trigger`).click();
 			await page.locator(`#${id} button.item[data-value="${value}"]`).click();
 		};
-		const open = async (path = '/ja/', before?: (page: Page) => Promise<void>) => {
+		// Init scripts stay attached to the page, so a test may install them once; a second
+		// `before` would silently stack on the first.
+		let prepared = false;
+		const flush = async () => { await flushers.get(page)?.(); };
+		const back = async () => { await flush(); await page.goBack(); };
+		const forward = async () => { await flush(); await page.goForward(); };
+		const open = async (path = '/ja/', before?: (page: Page) => Promise<unknown>) => {
+			await flush();
 			await install(page);
-			if (before) await before(page);
+			if (before) {
+				if (prepared) throw new Error('open(): only one before() per test; split the scenario');
+				prepared = true;
+				await before(page);
+			}
 			await page.goto(path);
 		};
-		await use({ log, golden, tick, until, canvas, download, choose, open, audio: fixtureAudio });
+		await use({ log, golden, tick, until, canvas, download, choose, open, back, forward, audio: fixtureAudio });
 	}
 });
 

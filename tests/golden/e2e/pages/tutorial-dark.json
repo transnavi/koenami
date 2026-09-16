@@ -1,0 +1,204 @@
+{
+ "url": "/tutorial.html",
+ "title": "Koenami · 声のしくみと練習の手引き",
+ "lang": "ja",
+ "theme": "dark",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#ff9ecb",
+  "--self": "#bb9ee8",
+  "--accent": "#74bbf2"
+ },
+ "elements": {
+  "contents": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "目次"
+  },
+  "what": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "声とは何か：音源とフィルター"
+  },
+  "how": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "人はどうやって声を出しているか"
+  },
+  "perception": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "聞き手は声の性別を何で判断しているか"
+  },
+  "change": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "声はどこまで、どうやって変えられるか"
+  },
+  "koenami": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "Koenamiの指標との対応"
+  },
+  "safety": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "無理をしないために"
+  },
+  "todo": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "これから書く節"
+  },
+  "refs": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "出典"
+  },
+  "ref-fant": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Fant, G. (1960). Acoustic Theory of Speech Production. The Hague: Mouton."
+  },
+  "ref-titze-book": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Titze, I. R. (1994). Principles of Voice Production. Englewood Cliffs: Prentice Hall."
+  },
+  "ref-titze-1989": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Titze, I. R. (1989). Physiologic and acoustic differences between male and female voices. The Journal of the Acoustical Society of America, 85(4), 1699–1707. doi:10.1121/1.397959"
+  },
+  "ref-fitch": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Fitch, W. T., & Giedd, J. (1999). Morphology and development of the human vocal tract: A study using magnetic resonance imaging. The Journal of the Acoustical Society of America, 106(3), 1511–1522. doi:10.1121/1.427148"
+  },
+  "ref-simpson": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Simpson, A. P. (2009). Phonetic differences between male and female speech. Language and Linguistics Compass, 3(2), 621–640. doi:10.1111/j.1749-818X.2009.00125.x"
+  },
+  "ref-leung": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Leung, Y., Oates, J., & Chan, S. P. (2018). Voice, articulation, and prosody contribute to listener perceptions of speaker gender: A systematic review and meta-analysis. Journal of Speech, Language, and Hearing Research, 61(2), 266–297. doi:10.1044/2017_JSLHR-S-17-0067"
+  },
+  "ref-hillenbrand": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Hillenbrand, J. M., & Clark, M. J. (2009). The role of f0 and formant frequencies in distinguishing the voices of men and women. Attention, Perception, & Psychophysics, 71(5), 1150–1166. doi:10.3758/APP.71.5.1150"
+  },
+  "ref-gelfer": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Gelfer, M. P., & Schofield, K. J. (2000). Comparison of acoustic and perceptual measures of voice in male-to-female transsexuals perceived as female versus those perceived as male. Journal of Voice, 14(1), 22–33. doi:10.1016/S0892-1997(00)80092-2"
+  },
+  "ref-rsos": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Rosi, V., & McGettigan, C. (2025). Voice gender diversity: expression, perception and acoustics. Royal Society Open Science, 12(10). doi:10.1098/rsos.251193"
+  },
+  "ref-netzorg": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Netzorg, R., Carvalho, N., Guzman, A., Wang, L., Francis, J., Garoute, K. V., Johnson, K., & Anumanchipalli, G. K. (2025). On the production and perception of a single speaker's gender. Interspeech 2025. isca-archive.org"
+  },
+  "ref-mcaleer": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "McAleer, P., Todorov, A., & Belin, P. (2014). How do you say 'hello'? Personality impressions from brief novel voices. PLoS ONE, 9(3), e90779. doi:10.1371/journal.pone.0090779"
+  },
+  "ref-kido": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "木戸博・粕谷英樹（2001）「通常発話の声質に関連した日常表現語—聴取評価による抽出」『日本音響学会誌』57(5). J-STAGE"
+  },
+  "ref-davies": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Davies, S., Papp, V. G., & Antoni, C. (2015). Voice and communication change for gender nonconforming individuals: Giving voice to the person inside. International Journal of Transgenderism, 16(3), 117–159. doi:10.1080/15532739.2015.1075931"
+  },
+  "ref-carew": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Carew, L., Dacakis, G., & Oates, J. (2007). The effectiveness of oral resonance therapy on the perception of femininity of voice in male-to-female transsexuals. Journal of Voice, 21(5), 591–603. doi:10.1016/j.jvoice.2006.05.005"
+  },
+  "ref-hasegawa": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "長谷川翔太（2017）「男性両声類の女声らしさに関わる特徴量の分析」日本大学卒業論文. PDF。1回のコンテスト音声に基づく学部論文で、証拠としては弱い。"
+  },
+  "ref-tvl": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "TransVoiceLessons（Zheanna Erose ほか）。英語のYouTubeチャンネルと講座. youtube.com/@TransVoiceLessons。練習者向けの教材で、査読を経た研究ではない。"
+  },
+  "ref-ziegler": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Ziegler, A., Henke, T., Wiedrick, J., & Helou, L. B. (2018). Effectiveness of testosterone therapy for masculinizing voice in transgender patients: A meta-analytic review. International Journal of Transgenderism, 19(1), 25–45. doi:10.1080/15532739.2017.1411857"
+  },
+  "ref-nygren": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Nygren, U., Nordenskjöld, A., Arver, S., & Södersten, M. (2016). Effects on voice fundamental frequency and satisfaction with voice in trans men during testosterone treatment—A longitudinal study. Journal of Voice, 30(6), 766.e23–766.e34. doi:10.1016/j.jvoice.2015.10.016"
+  },
+  "ref-soc8": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Coleman, E., et al. (2022). Standards of Care for the Health of Transgender and Gender Diverse People, Version 8. International Journal of Transgender Health, 23(sup1), S1–S259. doi:10.1080/26895269.2022.2100644"
+  },
+  "ref-aogi": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "あおぎ葵（2021年7月12日）「MTF声音女性化练习手册」Bilibili. bilibili.com/opus/546442165017071774。中国語のコミュニティ練習資料。"
+  },
+  "ref-mtfwiki": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "MtF.wiki「嗓音女性化训练」（中国語）. mtf.wiki/zh-cn/docs/vocal-therapy。コミュニティ編集のウィキ。"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-theme": "system"
+  },
+  "idb": {}
+ },
+ "network": [],
+ "media": [],
+ "errors": []
+}

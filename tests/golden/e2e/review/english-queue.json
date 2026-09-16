@@ -1,0 +1,335 @@
+{
+ "url": "/review.html",
+ "title": "Koenami · 聴取レビュー",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "play",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "i-globe": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-sun": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-moon": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-list": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "lang": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "言語"
+   },
+   "value": "en",
+   "options": [
+    {
+     "value": "ja",
+     "text": "日本語",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "zh-CN",
+     "text": "普通话",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "en",
+     "text": "English",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "ko",
+     "text": "한국어",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "English",
+   "expanded": "false",
+   "text": "日本語普通话English한국어",
+   "style": "display: inline-flex;"
+  },
+  "mode": {
+   "tag": "span",
+   "class": "mode segment",
+   "attrs": {},
+   "text": "新規追加項目"
+  },
+  "progress": {
+   "tag": "span",
+   "class": "progress",
+   "attrs": {},
+   "text": "済 0人 · 残り 20人"
+  },
+  "theme-button": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "明暗を切り替え",
+    "aria-label": "明暗を切り替え"
+   },
+   "text": ""
+  },
+  "card": {
+   "tag": "section",
+   "class": "card",
+   "attrs": {},
+   "text": "03ebc9c1104d女性的な声 · 1音声一覧L ▶If not true, it is very ingenious.1/1 · 4.0 秒‹› 性別・発音女性らしさ0123456—感じない強く感じる男性らしさ0123456—感じない強く感じる自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる 問題無音EつぶやきのみU雑音Z歪みXこの音声だけ話者の全音声A スキップS保存して次へEnter"
+  },
+  "prev-speaker": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "前の話者",
+    "aria-label": "前の話者"
+   },
+   "text": ""
+  },
+  "display": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "03ebc9c1104d"
+  },
+  "speaker-meta": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "女性的な声 · 1音声"
+  },
+  "jump": {
+   "tag": "button",
+   "class": "list-button",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "一覧L"
+  },
+  "play": {
+   "tag": "button",
+   "class": "play",
+   "attrs": {
+    "aria-pressed": "false",
+    "aria-label": "再生",
+    "title": "Space：再生／一時停止　R：最初から"
+   },
+   "text": "▶"
+  },
+  "text": {
+   "tag": "div",
+   "class": "text",
+   "attrs": {},
+   "text": "If not true, it is very ingenious.1/1 · 4.0 秒"
+  },
+  "prev-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-label": "前の音声"
+   },
+   "text": "‹"
+  },
+  "next-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-label": "次の音声"
+   },
+   "text": "›"
+  },
+  "scales": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "性別・発音女性らしさ0123456—感じない強く感じる男性らしさ0123456—感じない強く感じる自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる"
+  },
+  "quality-flags": {
+   "tag": "div",
+   "class": "flags",
+   "attrs": {},
+   "text": "問題無音EつぶやきのみU雑音Z歪みXこの音声だけ話者の全音声A"
+  },
+  "scope": {
+   "tag": "span",
+   "class": "scope",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "この音声だけ話者の全音声A"
+  },
+  "scope-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "true"
+   },
+   "text": "この音声だけ"
+  },
+  "scope-speaker": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "false"
+   },
+   "text": "話者の全音声A"
+  },
+  "note": {
+   "tag": "input",
+   "class": "note",
+   "attrs": {
+    "placeholder": "メモ"
+   },
+   "value": "",
+   "text": ""
+  },
+  "status": {
+   "tag": "span",
+   "class": "status",
+   "attrs": {},
+   "text": ""
+  },
+  "skip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "スキップS"
+  },
+  "save": {
+   "tag": "button",
+   "class": "primary",
+   "attrs": {},
+   "text": "保存して次へEnter"
+  },
+  "done": {
+   "tag": "p",
+   "class": "done",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "この言語の話者はすべてレビュー済みです。"
+  },
+  "log": {
+   "tag": "div",
+   "class": "log",
+   "attrs": {},
+   "text": "M 1 女性らしさ 1 · 男性らしさ 5F 2674 女性らしさ 3 · 男性らしさ 1 · 母語話者らしさ 6 · 自然さ 4 · 聞こえる年代 20代 · 澄み 1 · 張り 2 · 太さ 4 · 鼻声 2 · 滑舌 2 · 明るさ 1 · 上品さ 0 · 温かさ 0 · 甘さ 2F 2672 雑音 · 甘さ 3 · 女性らしさ 5 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 5 · 聞こえる年代 20代 · 澄み 3 · 張り 3 · 太さ 2 · 鼻声 1 · 滑舌 2 · 明るさ 4 · 上品さ 4 · 温かさ 2F 2668 女性らしさ 5 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 5 · 聞こえる年代 30代 · 澄み 2 · 張り 2 · 太さ 3 · 鼻声 1 · 滑舌 5 · 明るさ 1 · 上品さ 2 · 温かさ 3 · 甘さ 1F 2664 甘さ 3 · 女性らしさ 4 · 男性らしさ 1 · 母語話者らしさ 6 · 自然さ 5 · 聞こえる年代 20代 · 澄み 2 · 張り 2 · 太さ 1 · 鼻声 0 · 滑舌 1 · 明るさ 3 · 上品さ 3 · 温かさ 1F 2662 女性らしさ 4 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 3 · 聞こえる年代 20代 · 澄み 1 · 張り 2 · 太さ 1 · 鼻"
+  },
+  "list-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "話者一覧 20人×03ebc9c1104dIf not true, it is very ingenious.bcb7c332cbfaThe more you stir, the more it stinks.a2b0960b9858Tell me whom you keep company with, and I' will tell you what you do.470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.0edcaafb8336Please, be humble.a2f52a649528Well, the merry-go-round wasn't exactly spectacular.033b81304fd7Are you still using your computer for the research?826c4a40b1c1During the epoch, a majority of the city's buildings were erected.6d06f0216c70What did you say your name was?1c1f78f06fdfRoll the dice, please.f65607943c"
+  },
+  "list-count": {
+   "tag": "span",
+   "class": "small",
+   "attrs": {},
+   "text": "20人"
+  },
+  "list-filter": {
+   "tag": "input",
+   "class": "note",
+   "attrs": {
+    "placeholder": "番号や文で絞り込む"
+   },
+   "value": "",
+   "text": ""
+  },
+  "list-items": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "03ebc9c1104dIf not true, it is very ingenious.bcb7c332cbfaThe more you stir, the more it stinks.a2b0960b9858Tell me whom you keep company with, and I' will tell you what you do.470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.0edcaafb8336Please, be humble.a2f52a649528Well, the merry-go-round wasn't exactly spectacular.033b81304fd7Are you still using your computer for the research?826c4a40b1c1During the epoch, a majority of the city's buildings were erected.6d06f0216c70What did you say your name was?1c1f78f06fdfRoll the dice, please.f65607943cd8A scien"
+  }
+ },
+ "storage": {
+  "local": {
+   "koenami-review": {
+    "lang": "en",
+    "mode": "new",
+    "skipped": {
+     "ja:new": [],
+     "en:new": []
+    },
+    "speaker": "03ebc9c1104d",
+    "drafts": {
+     "61211de94190": {
+      "clip": "common_voice_ja_19673792",
+      "ratings": {},
+      "chosen": [],
+      "scope": "clip",
+      "note": "",
+      "active": 0
+     },
+     "9453b56bfa15": {
+      "clip": "common_voice_ja_20023827",
+      "ratings": {},
+      "chosen": [],
+      "scope": "clip",
+      "note": "",
+      "active": 0
+     },
+     "03ebc9c1104d": {
+      "clip": "common_voice_en_17266327",
+      "ratings": {},
+      "chosen": [],
+      "scope": "clip",
+      "note": "",
+      "active": 0
+     }
+    }
+   },
+   "voice-theme": "light"
+  },
+  "idb": {}
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/review",
+   "query": "lang=ja&mode=new",
+   "status": 200
+  },
+  {
+   "seq": 2,
+   "method": "GET",
+   "path": "/api/review",
+   "query": "lang=en&mode=new",
+   "status": 200
+  }
+ ],
+ "media": [
+  "/samples/common_voice_en_17266327.mp3",
+  "/samples/common_voice_ja_19673792.mp3",
+  "/samples/common_voice_ja_20023827.mp3"
+ ],
+ "errors": []
+}

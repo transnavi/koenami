@@ -12,7 +12,10 @@ const root = fileURLToPath(new URL('../..', import.meta.url));
 const args = process.argv.slice(2);
 const tree = args.find((a) => !a.startsWith('--')) || process.env.KOENAMI_TREE || 'old';
 const only = args.find((a) => a.startsWith('--only='))?.slice(7).split(',');
-const prefix = tree === 'new' ? 'src/lib/' : 'tests/old-tree/web/';
+// Unit tests run the pinned copy under tests/old-tree, the browser runs the checked-out
+// web/; both describe the same files when the tree is `old`, so they merge by path.
+const prefix = tree === 'new' ? 'src/' : 'web/';
+const normalize = (rel) => rel.replace(/^tests\/old-tree\//, '');
 const wanted = (rel) => rel.startsWith(prefix) && (!only || only.includes(rel.split('/').pop().replace(/\.[^.]+$/, '')));
 const exclusions = JSON.parse(readFileSync(join(root, 'tests/coverage/exclusions.json'), 'utf8'))[tree];
 
@@ -26,7 +29,14 @@ function* reports(dir) {
 	}
 }
 const map = libCoverage.createCoverageMap({});
-for (const path of reports(reportRoot)) map.merge(JSON.parse(readFileSync(path, 'utf8')));
+for (const path of reports(reportRoot)) {
+	const report = JSON.parse(readFileSync(path, 'utf8'));
+	for (const [file, data] of Object.entries(report)) {
+		const rel = normalize(relative(root, file.startsWith('/') ? file : join(root, file)));
+		const fc = libCoverage.createFileCoverage({ ...data, path: join(root, rel) });
+		map.merge(libCoverage.createCoverageMap({ [join(root, rel)]: fc }));
+	}
+}
 
 // An exclusion names a file, a kind and the source text at the location, so it follows
 // the code through reformatting and still fails once that code is gone or reachable.
@@ -45,6 +55,7 @@ for (const file of map.files()) {
 	const rel = relative(root, file);
 	if (!wanted(rel)) continue;
 	const fc = map.fileCoverageFor(file);
+	if (!existsSync(join(root, rel))) { misses.push(`${rel}: covered file missing from the tree`); continue; }
 	summary.merge(fc.toSummary());
 	const excluded = (kind, loc) => {
 		const text = textAt(rel, loc);

@@ -5,12 +5,12 @@ import { fileURLToPath } from 'node:url';
 // the goldens and, together with MOCK_API_RECORD on the mock server, the API fixtures.
 const root = fileURLToPath(new URL('.', import.meta.url));
 const mic = `${root}tests/fixtures/audio/microphone.wav`;
-// Ports beside the default dev server (8766 / 35511), so a developer's session survives a test run.
+// A port beside the default dev server (8766), so a developer's session survives a test run.
 const port = Number(process.env.E2E_PORT || 8776);
-const apiPort = Number(process.env.E2E_API_PORT || 35521);
 
 export default defineConfig({
 	testDir: 'e2e/scenarios',
+	globalSetup: './e2e/global-setup.ts',
 	outputDir: 'test-output/e2e',
 	fullyParallel: false,
 	workers: 1,
@@ -44,8 +44,6 @@ export default defineConfig({
 			]
 		}
 	},
-	webServer: [
-		{ command: 'node tests/mock-api/server.mjs', port: apiPort, reuseExistingServer: true, env: { MOCK_API_PORT: String(apiPort) }, stdout: 'pipe', stderr: 'pipe' },
-		{ command: 'devrun bun x vite', port, reuseExistingServer: true, env: { KOENAMI_PORT: String(port), KOENAMI_API_PORT: String(apiPort) }, stdout: 'ignore', stderr: 'pipe' }
-	]
+	// One process serves the committed web/ files, the recorded API and the sample audio.
+	webServer: { command: 'node tests/mock-api/server.mjs', port, reuseExistingServer: true, env: { MOCK_API_PORT: String(port) }, stdout: 'pipe', stderr: 'pipe' }
 });

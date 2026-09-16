@@ -1,0 +1,302 @@
+{
+ "url": "/review.html",
+ "title": "Koenami · 聴取レビュー",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "i-globe": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-sun": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-moon": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-list": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "lang": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "言語"
+   },
+   "value": "ja",
+   "options": [
+    {
+     "value": "ja",
+     "text": "日本語",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "zh-CN",
+     "text": "普通话",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "en",
+     "text": "English",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "ko",
+     "text": "한국어",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "日本語",
+   "expanded": "false",
+   "text": "日本語普通话English한국어",
+   "style": "display: inline-flex;"
+  },
+  "mode": {
+   "tag": "span",
+   "class": "mode segment",
+   "attrs": {},
+   "text": "新規追加項目"
+  },
+  "progress": {
+   "tag": "span",
+   "class": "progress",
+   "attrs": {},
+   "text": ""
+  },
+  "theme-button": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "明暗を切り替え",
+    "aria-label": "明暗を切り替え"
+   },
+   "text": ""
+  },
+  "card": {
+   "tag": "section",
+   "class": "card",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "一覧L ▶‹› 問題この音声だけ話者の全音声A スキップS保存して次へEnter"
+  },
+  "prev-speaker": {
+   "tag": "button",
+   "class": "icon-button",
+   "attrs": {
+    "title": "前の話者",
+    "aria-label": "前の話者"
+   },
+   "text": ""
+  },
+  "display": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "speaker-meta": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "jump": {
+   "tag": "button",
+   "class": "list-button",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "一覧L"
+  },
+  "play": {
+   "tag": "button",
+   "class": "play",
+   "attrs": {
+    "aria-pressed": "false",
+    "aria-label": "再生",
+    "title": "Space：再生／一時停止　R：最初から"
+   },
+   "text": "▶"
+  },
+  "text": {
+   "tag": "div",
+   "class": "text",
+   "attrs": {},
+   "text": ""
+  },
+  "prev-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-label": "前の音声"
+   },
+   "text": "‹"
+  },
+  "next-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-label": "次の音声"
+   },
+   "text": "›"
+  },
+  "scales": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "quality-flags": {
+   "tag": "div",
+   "class": "flags",
+   "attrs": {},
+   "text": "問題この音声だけ話者の全音声A"
+  },
+  "scope": {
+   "tag": "span",
+   "class": "scope",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "この音声だけ話者の全音声A"
+  },
+  "scope-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "true"
+   },
+   "text": "この音声だけ"
+  },
+  "scope-speaker": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "false"
+   },
+   "text": "話者の全音声A"
+  },
+  "note": {
+   "tag": "input",
+   "class": "note",
+   "attrs": {
+    "placeholder": "メモ"
+   },
+   "value": "",
+   "text": ""
+  },
+  "status": {
+   "tag": "span",
+   "class": "status",
+   "attrs": {},
+   "text": ""
+  },
+  "skip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "スキップS"
+  },
+  "save": {
+   "tag": "button",
+   "class": "primary",
+   "attrs": {},
+   "text": "保存して次へEnter"
+  },
+  "done": {
+   "tag": "p",
+   "class": "done",
+   "attrs": {},
+   "text": "読み込めませんでした: broken"
+  },
+  "log": {
+   "tag": "div",
+   "class": "log",
+   "attrs": {},
+   "text": ""
+  },
+  "list-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "話者一覧 ×"
+  },
+  "list-count": {
+   "tag": "span",
+   "class": "small",
+   "attrs": {},
+   "text": ""
+  },
+  "list-filter": {
+   "tag": "input",
+   "class": "note",
+   "attrs": {
+    "placeholder": "番号や文で絞り込む"
+   },
+   "value": "",
+   "text": ""
+  },
+  "list-items": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  }
+ },
+ "storage": {
+  "local": {
+   "koenami-review": {
+    "lang": "ja",
+    "speaker": "23bbcff6f628",
+    "clip": "common_voice_ja_19580185",
+    "ratings": {
+     "femininity": 2
+    },
+    "chosen": [
+     "noise"
+    ],
+    "scope": "clip",
+    "note": "old",
+    "active": 1
+   }
+  },
+  "idb": {}
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/review",
+   "query": "lang=ja&mode=new",
+   "status": 500
+  }
+ ],
+ "media": [],
+ "errors": []
+}

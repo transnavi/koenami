@@ -1,5 +1,5 @@
 {
- "url": "/xx/",
+ "url": "/ja/",
  "title": "Koenami · 女声・男声のボイトレツール",
  "lang": "ja",
  "theme": "light",
@@ -1079,12 +1079,11 @@
   },
   "notice": {
    "tag": "div",
-   "class": "toast",
+   "class": "error toast",
    "attrs": {
-    "role": "status",
-    "hidden": ""
+    "role": "status"
    },
-   "text": ""
+   "text": "Failed to fetch"
   },
   "live-status": {
    "tag": "div",
@@ -1101,7 +1100,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": ""
+   "text": "Failed to fetch"
   },
   "import-dialog": {
    "tag": "dialog",
@@ -1296,7 +1295,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。測定方法と出典 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考： transnavi.jp"
+   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考： transnavi.jp"
   },
   "report-dialog": {
    "tag": "dialog",
@@ -1347,24 +1346,24 @@
   "local": {
    "voice-speed": 1,
    "koenami-session": {
-    "lang": "en",
+    "lang": "ja",
     "group": "female",
     "sort": "high",
     "search": "",
-    "reference": "common_voice_en_17839501",
+    "reference": "common_voice_ja_36363162",
     "referenceRange": null,
     "openSpeakers": [
-     "en:female:1c1f78f06fdf"
+     "ja:Common Voice:50a288fb7fb3"
     ],
     "dimension": 3,
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 1.6390814396069777,
+    "zoom": 0.801464474306227,
     "camera": [
-     0.3876456894882133,
-     0.41744911220235414,
-     0.6179073619498192
+     0.4378284090095006,
+     0.7397146134849503,
+     0.5875554267810748
     ],
     "center": [
      0.5,
@@ -1395,37 +1394,48 @@
    "seq": 2,
    "method": "GET",
    "path": "/api/library",
-   "query": "lang=en",
+   "query": "lang=ja",
    "status": 200
   },
   {
    "seq": 3,
    "method": "GET",
-   "path": "/api/detail/common_voice_en_17839501",
+   "path": "/api/detail/common_voice_ja_36363162",
    "query": "",
    "status": 200
   },
   {
    "seq": 4,
-   "method": "GET",
-   "path": "/api/catalog",
+   "method": "POST",
+   "path": "/api/analyze",
    "query": "",
-   "status": 200
+   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+   "status": 413
   },
   {
    "seq": 5,
-   "method": "GET",
-   "path": "/api/library",
-   "query": "lang=ja",
-   "status": 200
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
+   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+   "status": 429
   },
   {
    "seq": 6,
-   "method": "GET",
-   "path": "/api/detail/common_voice_ja_36363162",
+   "method": "POST",
+   "path": "/api/analyze",
    "query": "",
-   "status": 200
+   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+   "status": 422
+  },
+  {
+   "seq": 7,
+   "method": "POST",
+   "path": "/api/analyze",
+   "query": "",
+   "body": "428544b 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4"
   }
  ],
+ "media": [],
  "errors": []
 }

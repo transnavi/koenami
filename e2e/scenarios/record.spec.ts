@@ -8,7 +8,7 @@ const buffered = (seconds: number) => `window.voiceApp.captureDebug().bufferSeco
 // A two-second cap keeps takes short. Manual stops happen between 1.4 s and 1.7 s of
 // capture, so their sample count always rounds to the 1.5 s fixture bucket of the mock
 // API; the cap itself trims automatic stops to exactly two seconds.
-const shortCap = async (page: Page) => page.route('**/api/catalog', async (route) => {
+const shortCap = async (page: Page) => page.route('**/api/catalog', async (route: import('@playwright/test').Route) => {
 	const response = await route.fetch();
 	const catalog = await response.json();
 	catalog.capabilities.maxSeconds = 2;
@@ -136,7 +136,7 @@ test.describe('recording', () => {
 		await studio.golden('live-toggled-off', live);
 	});
 
-	test('microphone refused, no media devices, and a worklet that fails to load', async ({ page, studio }) => {
+	test('microphone refused', async ({ page, studio }) => {
 		await studio.open('/ja/', async (p) => p.addInitScript(() => {
 			navigator.mediaDevices.getUserMedia = () => Promise.reject(Object.assign(new Error('denied'), { name: 'NotAllowedError' }));
 		}));
@@ -145,12 +145,18 @@ test.describe('recording', () => {
 		await studio.until(idle);
 		await studio.tick(300);
 		await studio.golden('mic-denied');
+	});
+
+	test('no media devices at all', async ({ page, studio }) => {
 		await studio.open('/ja/', async (p) => p.addInitScript(() => { Object.defineProperty(navigator, 'mediaDevices', { value: undefined }); }));
 		await studio.until(ready);
 		await page.locator('#live-mode').click();
 		await studio.until(idle);
 		await studio.tick(300);
 		await studio.golden('no-media-devices');
+	});
+
+	test('a worklet that fails to load', async ({ page, studio }) => {
 		await studio.open('/ja/', async (p) => p.addInitScript(() => {
 			const original = AudioWorklet.prototype.addModule;
 			AudioWorklet.prototype.addModule = function () { void original; return Promise.reject(new Error('worklet unavailable')); };

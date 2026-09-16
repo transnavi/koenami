@@ -1,17 +1,18 @@
-// Stand-in for the Python analyzer on port 35511. It serves recorded responses from
-// tests/fixtures/api and the audio under tests/fixtures/data/samples, so browser runs
-// see identical API output on every machine.
+// Test server for the browser suite. It serves the app's own files from web/ exactly
+// as committed (so coverage ranges line up with the unit layer), recorded API responses
+// from tests/fixtures/api, and the audio under tests/fixtures/data/samples.
 //
 //   node tests/mock-api/server.mjs                 replay
 //   MOCK_API_RECORD=http://127.0.0.1:35512 node tests/mock-api/server.mjs
-//                                                  proxy to a real server.py and save every answer
+//                                                  proxy API calls to a real server.py and save every answer
+//   MOCK_API_STATIC=web                            directory served for page and script requests (default web)
 //
 // Fixture key: METHOD path?sorted-query [sha256(body)]. Recordings of the microphone
 // vary with capture timing, so POST /api/analyze also stores a copy keyed by the
 // sample count rounded to half a second, which replay falls back to.
 import { createServer } from 'node:http';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -20,6 +21,17 @@ const fixtures = join(root, 'tests/fixtures/api');
 const samples = join(root, 'tests/fixtures/data/samples');
 const upstream = process.env.MOCK_API_RECORD;
 const port = Number(process.env.MOCK_API_PORT || 35511);
+const site = join(root, process.env.MOCK_API_STATIC || 'web');
+const types = { html: 'text/html; charset=utf-8', js: 'text/javascript; charset=utf-8', css: 'text/css; charset=utf-8', svg: 'image/svg+xml', png: 'image/png', ico: 'image/x-icon', webmanifest: 'application/manifest+json', txt: 'text/plain; charset=utf-8', json: 'application/json' };
+// Routes as worker.ts serves them: the studio at / and /<lang>/, pages and scripts by
+// name, and everything in web/public at the root.
+function staticFile(pathname) {
+	if (pathname === '/' || /^\/(ja|zh-CN|en|ko)\/?$/.test(pathname)) return join(site, 'index.html');
+	const name = pathname.slice(1);
+	if (!name || name.includes('..')) return null;
+	for (const candidate of [join(site, name), join(site, 'public', name)]) if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
+	return null;
+}
 mkdirSync(fixtures, { recursive: true });
 
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -62,6 +74,22 @@ async function record(req, url, body) {
 
 createServer(async (req, res) => {
 	const url = new URL(req.url, 'http://localhost');
+	if ((req.method === 'GET' || req.method === 'HEAD') && !/^\/(api|samples|data)\//.test(url.pathname)) {
+		// The production build bundles this dependency; served unbundled, the bare
+		// specifier needs an import map.
+		if (url.pathname.startsWith('/node_modules/@zip.js/')) {
+			const path = join(root, url.pathname.slice(1));
+			if (!existsSync(path)) { res.writeHead(404); return res.end(); }
+			res.writeHead(200, { 'content-type': types.js, 'cache-control': 'no-store' });
+			return res.end(readFileSync(path));
+		}
+		const path = staticFile(url.pathname);
+		if (!path) { res.writeHead(404, { 'content-type': 'text/plain' }); return res.end('not found'); }
+		let body = readFileSync(path);
+		if (path.endsWith('.html')) body = Buffer.from(body.toString('utf8').replace('<head>', '<head><script type="importmap">{"imports":{"@zip.js/zip.js/index-native.js":"/node_modules/@zip.js/zip.js/index-native.js"}}</script>'));
+		res.writeHead(200, { 'content-type': types[path.split('.').pop()] || 'application/octet-stream', 'cache-control': 'no-store' });
+		return res.end(req.method === 'HEAD' ? undefined : body);
+	}
 	if (req.method === 'GET' && url.pathname.startsWith('/samples/')) {
 		const path = join(samples, basename(url.pathname));
 		if (!existsSync(path)) { res.writeHead(404); return res.end('no sample'); }

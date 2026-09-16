@@ -1,0 +1,7 @@
+{
+ "key": "POST /api/review 2b566454da5a3bfcc0ecbfe8a06742ea8d30bfb00257ad614a1fa00da75971d5",
+ "status": 200,
+ "contentType": "application/json; charset=utf-8",
+ "body": "{\"speaker\": \"61211de94190\", \"clip\": \"common_voice_ja_19673792\", \"display\": \"M 2456\", \"language\": \"ja\", \"flags\": [], \"scope\": \"clip\", \"ratings\": {\"femininity\": 4.0}, \"note\": \"\", \"reviewed\": \"2026-09-16T10:18:24+00:00\"}",
+ "base64": false
+}

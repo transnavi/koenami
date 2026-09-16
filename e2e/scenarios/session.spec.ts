@@ -39,12 +39,15 @@ test.describe('session and settings', () => {
 		await studio.golden('settings-closed-by-escape');
 	});
 
-	test('system preference and a storage that throws', async ({ page, studio }) => {
+	test('system preference', async ({ page, studio }) => {
 		await page.emulateMedia({ colorScheme: 'dark' });
 		await studio.open('/ja/');
 		await studio.until(ready);
 		await studio.tick(200);
 		await studio.golden('system-dark-default');
+	});
+
+	test('a storage that throws', async ({ studio }) => {
 		await studio.open('/ja/', async (p) => p.addInitScript(() => {
 			const broken = () => { throw new Error('storage disabled'); };
 			Object.defineProperty(window, 'localStorage', { get: () => ({ getItem: broken, setItem: broken, removeItem: broken, key: broken, length: 0 }) });
@@ -73,11 +76,14 @@ test.describe('session and settings', () => {
 		await expect(page.locator('#playback-speed')).toHaveValue('1.25');
 	});
 
-	test('corrupt or foreign-language sessions are ignored', async ({ studio }) => {
+	test('a corrupt session is ignored', async ({ studio }) => {
 		await studio.open('/ja/', preset({ 'koenami-session': '{not json', 'voice-favorites': '[broken' }));
 		await studio.until(ready);
 		await studio.tick(1200);
 		await studio.golden('corrupt-session');
+	});
+
+	test('a session saved for another language is ignored', async ({ studio }) => {
 		await studio.open('/ja/', preset({ 'koenami-session': { lang: 'en', group: 'male', sort: 'name', search: 'x' } }));
 		await studio.until(ready);
 		await studio.tick(300);

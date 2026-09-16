@@ -1,0 +1,7 @@
+{
+ "key": "POST /api/words?lang=ja d3165d711b702b7d78241c9637470d51061b368676ecf9b7039c983b77d7773b",
+ "status": 200,
+ "contentType": "application/json; charset=utf-8",
+ "body": "{\"pace\": 0.0, \"pace_unit\": \"mora/s\", \"units\": 0, \"words\": [], \"phrases\": [], \"language\": \"ja\", \"engine\": \"faster-whisper large-v3-turbo / CUDA float16\", \"timing\": \"estimated\", \"duration\": 1.5}",
+ "base64": false
+}

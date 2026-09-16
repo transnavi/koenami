@@ -1,0 +1,30 @@
+{
+ "url": "/method.html",
+ "title": "Koenami · 測定方法と出典",
+ "lang": "ja",
+ "theme": "dark",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#ff9ecb",
+  "--self": "#bb9ee8",
+  "--accent": "#74bbf2"
+ },
+ "elements": {
+  "review": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "聴取レビュー"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-theme": "dark"
+  },
+  "idb": {}
+ },
+ "network": [],
+ "media": [],
+ "errors": []
+}
