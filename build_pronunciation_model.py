@@ -32,8 +32,9 @@ def main():
         import onnxruntime as ort
         ort.preload_dlls()
     labels = {s: 1 for s in POLICY['reviewed_speakers']}
-    tentative = {r['speaker'] for r in POLICY.get('listening_reviews', []) if r['judgement'] == 'tentative'}
-    labels.update({s: 0 for s in POLICY['excluded_speakers'] if s not in tentative})
+    # Only firm pronunciation judgements train the negative class; speakers excluded for
+    # audio problems or tentative impressions carry no pronunciation label.
+    labels.update({r['speaker']: 0 for r in POLICY.get('listening_reviews', []) if r['judgement'] == 'not_native_like'})
     groups = {}
     for row in sorted(metadata(), key=lambda r: r['file_name']):
         sid = speaker_id(row)

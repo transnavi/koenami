@@ -23,7 +23,8 @@
     "6d87ebe150f0",
     "3df590fdf971",
     "05086d9b480b",
-    "24f35acc3540"
+    "24f35acc3540",
+    "ee1e679f54a1"
   ],
   "excluded_accents": [
     "外国人のアクセント",
@@ -165,6 +166,13 @@
       "clip": "common_voice_ja_41766619",
       "display": "F 3116",
       "judgement": "not_native_like"
+    },
+    {
+      "speaker": "ee1e679f54a1",
+      "clip": "common_voice_ja_38930360",
+      "display": "F 2686",
+      "judgement": "distorted_audio",
+      "note": "Every clip from this speaker is distorted or noisy; F 2680 from the same speaker was already removed as murmur."
     }
   ],
   "clip_reviews": [
