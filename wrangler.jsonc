@@ -5,6 +5,7 @@
   "account_id": "5e6d5236e83c2395b253db1ec8e28a3e",
   "compatibility_date": "2026-09-15",
   "compatibility_flags": ["nodejs_compat"],
+  "rules": [{ "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true }],
   "routes": [{ "pattern": "koe.transnavi.jp", "custom_domain": true }],
   "assets": {
     "directory": ".deploy/assets",

@@ -19,6 +19,7 @@ The recording track in these screenshots uses a public Common Voice clip.
 - **Live** continuously plots microphone input. Its shape shows the most recent five seconds; settings let you choose 1–30 seconds. The headphones button enables microphone monitoring; headphones avoid acoustic feedback.
 - Recordings are saved and playable as soon as capture stops. Measurements finish in the background, so another take can start immediately. Saved recordings remain available after refresh. Their averages appear on the map; the recording title opens the history menu. Each row has download and delete buttons.
 - Compare pitch, resonance, harmonicity, spectral balance, and pitch variation. Orbit, pan, and scroll to zoom the 3D map. The dock combines a waveform playback timeline with pitch, spectrum, and spectrogram comparisons. Click the waveform to seek or drag to select a section.
+- Share a verdict: the toolbar's share button scores the current recording on the female–male contrast axis of the selected language (25 = male median, 75 = female median), draws a card with the five measurements and the reference cloud, and offers X / Bluesky / Misskey posts, a link, and a PNG. The link carries only the five numbers; `/r` recomputes the result and the Worker renders the card as the link's preview image (`/og.png`, resvg-wasm with a subset Noto Sans JP built by `build_share_font.py`).
 - Browse references by speaker, search speaker IDs with or without spaces, favorite individual clips, and adjust playback speed without changing pitch.
 - Import an official **JVS ZIP or extracted folder** through the **JVS banner** in the sample library. Imports are verified against original-file checksums, saved in IndexedDB, and restored on refresh. A single speaker folder also works.
 
@@ -81,6 +82,7 @@ Microphone audio and selected imported samples are sent to the analysis service 
 ```sh
 npm run build:public
 npm run check:worker
+node score_test.mjs
 .venv/bin/python demo_browser_test.py
 .venv/bin/python review_browser_test.py
 ```
