@@ -70,6 +70,9 @@ async function resultImage(request: Request, env: Env, ctx: ExecutionContext, ur
   const key = new Request(shared.image, { method: 'GET' });
   const hit = await cache.match(key);
   if (hit) return hit;
+  // Every distinct query renders anew, so uncached renders share the analysis rate limit.
+  const { success } = await env.ANALYSIS_LIMIT.limit({ key: request.headers.get('CF-Connecting-IP') || 'unknown' });
+  if (!success) return text('少し待ってからお試しください。', 429, { 'Retry-After': '10' });
   resvgReady ??= initWasm(resvgWasm);
   await resvgReady;
   const svg = cardSVG(shared.result, shared.scorer);

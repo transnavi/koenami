@@ -16,6 +16,8 @@ export function distance2(a,b){return finite(a?.f0)&&finite(a?.delta_f)&&finite(
 /* One clip per labeled human speaker: the clip nearest that speaker's median pitch and resonance. */
 export function representatives(clips){const by=new Map();for(const c of clips.filter(c=>c.plotted&&!c.synthetic&&['female','male'].includes(c.group))){if(!by.has(c.speaker))by.set(c.speaker,[]);by.get(c.speaker).push(c);}return [...by.values()].map(group=>{const f=quantile(group.map(c=>c.features.f0),.5),d=quantile(group.map(c=>c.features.delta_f),.5);return [...group].sort((a,b)=>distance2(a.features,{f0:f,delta_f:d})-distance2(b.features,{f0:f,delta_f:d}))[0];});}
 export function verdictOf(score){return score>=65?'female':score<=35?'male':'androgynous';}
+/* Built from the public library alone, never from imported references, so the studio's
+   verdict equals what /r and /og.png recompute from the shared numbers. */
 export class Scorer{
  constructor(clips){
   this.speakers=representatives(clips);
