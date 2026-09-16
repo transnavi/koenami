@@ -29,17 +29,17 @@ The current map uses speaker-balanced PCA of five acoustic measurements. The com
 
 ## Local development
 
-Requires Node.js 22.12 or newer, Python 3.12, and [uv](https://docs.astral.sh/uv/).
+Requires [Bun](https://bun.sh/), Python 3.12, and [uv](https://docs.astral.sh/uv/).
 
 ```sh
-npm ci
+bun install
 uv venv --python 3.12 .venv
 uv pip install --python .venv/bin/python -r requirements.txt
 .venv/bin/python fetch_demo.py
-npm run dev
+bun run dev
 ```
 
-Open `http://localhost:8766/ja/`. Vite provides HMR and proxies the Python analyzer on port 35511. Where `devrun` is available, launch with `devrun npm run dev` to cap resources and stop both services together.
+Open `http://localhost:8766/ja/`. Vite provides HMR and proxies the Python analyzer on port 35511. Where `devrun` is available, launch with `devrun bun run dev` to cap resources and stop both services together.
 
 `fetch_demo.py` downloads the reference audio from the public demo. The datasets are not included in this repository. To rebuild the larger local JVS collection, download the official archive into `research/jvs_ver1.zip`, then run `build_native.py` and `build_import_index.py`. Development loads all 5,000 prepared JVS recordings by default. The public-demo fetch supplies an import index without requiring a local copy of the full archive. To rebuild the Japanese Common Voice collection from its pinned source, run `.venv/bin/python build_common_voice_ja.py`; selection rules are in `curation/common-voice-ja.json`. Run `.venv/bin/python screen_reference_speech.py` (or `--cpu` without CUDA), then rebuild the collection. The screen runs Silero VAD and a Whisper transcription over every eligible clip and drops a clip when little speech is detected and the transcript is empty, a stock phrase Whisper emits on silence, or unintelligible against the prompt at a very low level. Model outputs are cached by audio checksum; verdicts are recomputed on each run. Display numbers are preserved in `curation/reference-labels.json`.
 
@@ -56,9 +56,9 @@ Optional word timing uses Whisper large-v3-turbo with CUDA and Sudachi. Install 
 The frontend and approved sample files run on Cloudflare Workers Static Assets. A Cloudflare Container runs the same Python acoustic analyzer. The configuration permits one `basic` container, which sleeps after one minute idle. Public recordings are limited to one minute; failed analysis preserves the recording and offers retry from its title menu. GPU word timing is available only in the local setup.
 
 ```sh
-npm run build:public
-npm run check:worker
-npx wrangler deploy
+bun run build:public
+bun run check:worker
+bunx wrangler deploy
 ```
 
 Configure your own Cloudflare account and hostname in `wrangler.jsonc` before deploying a fork. Docker must be running for the container build. Production deployments use `main`.
@@ -82,8 +82,8 @@ Microphone audio and selected imported samples are sent to the analysis service 
 ## Verification
 
 ```sh
-npm run build:public
-npm run check:worker
+bun run build:public
+bun run check:worker
 node score_test.mjs
 .venv/bin/python demo_browser_test.py
 .venv/bin/python review_browser_test.py
