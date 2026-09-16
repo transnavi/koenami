@@ -95,7 +95,7 @@ def main():
     write(OUT / 'manifest.json', manifest)
     # Sitemap with last-modified dates taken from git, so a page's date only
     # moves when its source does.
-    pages = {'/': ['web/index.html', 'web/app.js'], '/guide.html': ['web/guide.html'], '/method.html': ['web/method.html']}
+    pages = {'/': ['web/index.html', 'web/app.js'], '/guide.html': ['web/guide.html'], '/tutorial.html': ['web/tutorial.html'], '/method.html': ['web/method.html']}
     entries = []
     for path, sources in pages.items():
         modified = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', *sources], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
