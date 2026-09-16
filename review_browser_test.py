@@ -31,7 +31,7 @@ def main(url):
             assert page.evaluate('reviewApp.queue.every(q=>q.clips.length>0)')
             # Rows come from the server in groups; a digit rates the active row and moves to the next one.
             assert page.evaluate('reviewApp.scales.map(s=>s.key)')[:5] == ['femininity', 'masculinity', 'japanese', 'naturalness', 'age']
-            assert page.locator('.scale-group').all_inner_texts() == ['性別・発音', '声質', '印象']
+            assert page.locator('.scale-group').all_inner_texts() == ['性別・発音', '声質', '話し方', '印象']
             page.keyboard.press('5'); page.keyboard.press('1'); page.keyboard.press('6')
             assert page.evaluate('reviewApp.ratings') == {'femininity': 5, 'masculinity': 1, 'japanese': 6} and page.evaluate('reviewApp.active') == 3
             page.keyboard.press('ArrowUp'); page.keyboard.press('5'); page.keyboard.press('3'); page.keyboard.press('ArrowUp'); page.keyboard.press('3')
@@ -44,7 +44,7 @@ def main(url):
             page.locator('.scale').nth(4).locator('.steps button', has_text='60代以上').click(); assert page.evaluate('reviewApp.ratings.age') == 60
             # Voice-quality and impression rows take digits too.
             page.locator('.scale').nth(8).click(); page.keyboard.press('4'); page.keyboard.press('2')
-            assert page.evaluate('reviewApp.ratings.nasality') == 4 and page.evaluate('reviewApp.ratings.brightness') == 2
+            assert page.evaluate('reviewApp.ratings.nasality') == 4 and page.evaluate('reviewApp.ratings.articulation') == 2
             # Flags: pronunciation flags are exclusive, clip flags accumulate.
             assert page.locator('#scope').is_hidden() and page.locator('#pronunciation-flags').count() == 0
             page.keyboard.press('z'); page.keyboard.press('e')
@@ -60,7 +60,7 @@ def main(url):
                 page.keyboard.press('ArrowRight'); assert page.evaluate('reviewApp.clip') == (page.evaluate('reviewApp.queue[0].clips.findIndex(c=>c.id===reviewApp.queue[0].first)') + 1) % first['clips']
             page.locator('#note').fill('テスト'); page.keyboard.press('Enter')
             wait(page, 'reviewApp.at===1')
-            assert saved[0]['speaker'] == first['speaker'] and saved[0]['flags'] == ['noise'] and saved[0]['scope'] == 'speaker' and saved[0]['ratings'] == {'femininity': 5, 'masculinity': 1, 'japanese': 5, 'age': 60, 'nasality': 4, 'brightness': 2} and saved[0]['note'] == 'テスト'
+            assert saved[0]['speaker'] == first['speaker'] and saved[0]['flags'] == ['noise'] and saved[0]['scope'] == 'speaker' and saved[0]['ratings'] == {'femininity': 5, 'masculinity': 1, 'japanese': 5, 'age': 60, 'nasality': 4, 'articulation': 2} and saved[0]['note'] == 'テスト'
             assert saved[0]['language'] == 'ja' and saved[0]['clip'].startswith('common_voice_ja_')
             assert 'テスト' in page.locator('#log').inner_text() and '雑音（話者全体）' in page.locator('#log').inner_text() and '聞こえる年代 60代以上' in page.locator('#log').inner_text()
             # Skipping moves the speaker to the end of the queue without a save; an empty save is refused.

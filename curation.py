@@ -33,6 +33,7 @@ SCALES = [
     {'key': 'firmness', 'name': '張り', 'ends': ['弱々しい', '張りのある'], 'group': '声質'},
     {'key': 'thickness', 'name': '太さ', 'ends': ['細い', '太い'], 'group': '声質'},
     {'key': 'nasality', 'name': '鼻声', 'ends': ['感じない', '強い'], 'group': '声質'},
+    {'key': 'articulation', 'name': '滑舌', 'ends': ['ろれつが回らない', 'はっきり'], 'group': '話し方'},
     {'key': 'brightness', 'name': '明るさ', 'ends': ['暗い', '明るい'], 'group': '印象'},
     {'key': 'refinement', 'name': '上品さ', 'ends': ['雑', '上品'], 'group': '印象'},
     {'key': 'warmth', 'name': '温かさ', 'ends': ['冷たい', '温かい'], 'group': '印象'},
