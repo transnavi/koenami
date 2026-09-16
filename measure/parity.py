@@ -46,7 +46,7 @@ FEATURES = [
 ]
 SCALARS = [
     "duration", "voiced_seconds", "active_seconds", "clipping_fraction", "level_dbfs", "formant_seconds",
-    "pitch_p10", "pitch_p90", "formant_sensitivity_pct", "resonance_sensitivity_pct", "peak",
+    "pitch_p10", "pitch_p90", "formant_sensitivity_pct", "resonance_sensitivity_pct", "pitch_halving_pct", "peak",
     "voicing.voiced_fraction",
 ]
 
