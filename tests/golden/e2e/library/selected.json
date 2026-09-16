@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "body",
+ "focus": "play-reference",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -236,7 +236,7 @@
     "role": "group",
     "aria-label": "声の指標"
    },
-   "text": "高さ—Hz423響き—Hz ΔF1239質感—dB16.3明るさ—dB-7.5抑揚—半音17.3"
+   "text": "高さ—Hz219響き—Hz ΔF1061質感—dB15.5明るさ—dB-22.6抑揚—半音12.9"
   },
   "report-button": {
    "tag": "button",
@@ -443,7 +443,7 @@
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "0:02"
+   "text": "0:10"
   },
   "range-reset": {
    "tag": "button",
@@ -814,9 +814,9 @@
     "head": [
      "details#ja:Common Voice:50a288fb7fb3|speaker-folder||true|F 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:1",
      "summary#||||F 26243",
-     "button#common_voice_ja_36363162|sample-row|true||今日もカレーよ423 Hz · 0:02",
+     "button#common_voice_ja_36363162|sample-row|false||今日もカレーよ423 Hz · 0:02",
      "button#|favorite|false||☆",
-     "button#common_voice_ja_36363165|sample-row|false||かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10",
+     "button#common_voice_ja_36363165|sample-row|true||かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10",
      "button#|favorite|false||☆",
      "button#common_voice_ja_36363168|sample-row|false||環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06",
      "button#|favorite|false||☆",
@@ -873,19 +873,19 @@
    "attrs": {
     "title": "見本を選ぶ"
    },
-   "text": "F 2624423 Hz · 1239 ΔF"
+   "text": "F 2625219 Hz · 1061 ΔF"
   },
   "selected-name": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "F 2624"
+   "text": "F 2625"
   },
   "selected-meta": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "423 Hz · 1239 ΔF"
+   "text": "219 Hz · 1061 ΔF"
   },
   "favorite-selected": {
    "tag": "button",
@@ -905,7 +905,7 @@
     "aria-label": "出典",
     "target": "_blank",
     "rel": "noreferrer",
-    "href": "https://huggingface.co/datasets/FluidInference/cv-corpus-25.0-ja/resolve/365b7654cd582e20e8000921ef7b0e32caa1906a/ja_01/clips/common_voice_ja_36363162.mp3"
+    "href": "https://huggingface.co/datasets/FluidInference/cv-corpus-25.0-ja/resolve/365b7654cd582e20e8000921ef7b0e32caa1906a/ja_01/clips/common_voice_ja_36363165.mp3"
    },
    "text": ""
   },
@@ -921,7 +921,7 @@
    "attrs": {
     "lang": "ja"
    },
-   "text": "今日もカレーよ"
+   "text": "かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、"
   },
   "record": {
    "tag": "button",
@@ -1066,10 +1066,10 @@
    "tag": "audio",
    "class": "",
    "attrs": {
-    "src": "/samples/common_voice_ja_36363162.mp3"
+    "src": "/samples/common_voice_ja_36363165.mp3"
    },
    "media": {
-    "src": "/samples/common_voice_ja_36363162.mp3",
+    "src": "/samples/common_voice_ja_36363165.mp3",
     "paused": true,
     "rate": 1,
     "volume": 1,
@@ -1346,41 +1346,7 @@
  },
  "storage": {
   "local": {
-   "voice-speed": 1,
-   "koenami-session": {
-    "lang": "ja",
-    "group": "female",
-    "sort": "high",
-    "search": "",
-    "reference": "common_voice_ja_36363162",
-    "referenceRange": null,
-    "openSpeakers": [
-     "ja:Common Voice:50a288fb7fb3"
-    ],
-    "dimension": 3,
-    "projection": "variance",
-    "yaw": -0.45,
-    "tilt": 0.3,
-    "zoom": 0.801464474306227,
-    "camera": [
-     0.4378284090095006,
-     0.7397146134849503,
-     0.5875554267810748
-    ],
-    "center": [
-     0.5,
-     0.5
-    ],
-    "pan": [
-     0,
-     0
-    ],
-    "autoRotate": false,
-    "signal": "pitch",
-    "signalSource": "ref",
-    "overlay": true,
-    "liveShapeSeconds": 5
-   }
+   "voice-speed": 1
   },
   "idb": {}
  },
@@ -1405,6 +1371,20 @@
    "path": "/api/detail/common_voice_ja_36363162",
    "query": "",
    "status": 200
+  },
+  {
+   "seq": 4,
+   "method": "GET",
+   "path": "/api/detail/common_voice_ja_36363165",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 5,
+   "method": "GET",
+   "path": "/samples/common_voice_ja_36363165.mp3",
+   "query": "",
+   "status": 206
   }
  ],
  "errors": []

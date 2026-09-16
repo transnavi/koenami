@@ -11,7 +11,7 @@ export function domProjection(): Observation {
 	const collapse = (s: string | null) => (s || '').replace(/\s+/g, ' ').trim();
 	const attrs = (el: Element) => {
 		const out: Record<string, string> = {};
-		for (const a of el.attributes) if (/^(aria-|data-|role$|hidden$|disabled$|open$|href$|title$|placeholder$|lang$|type$|min$|max$|step$|tabindex$|checked$|selected$|for$|src$|download$|target$|rel$)/.test(a.name)) out[a.name] = a.value;
+		for (const a of el.attributes) if (/^(aria-|data-|role$|hidden$|disabled$|open$|href$|title$|placeholder$|lang$|type$|min$|max$|step$|tabindex$|checked$|selected$|for$|src$|download$|target$|rel$)/.test(a.name)) out[a.name] = a.value.replace(/^blob:.*/, 'blob:');
 		return out;
 	};
 	const elements: Record<string, unknown> = {};
@@ -38,6 +38,10 @@ export function domProjection(): Observation {
 		if (el instanceof HTMLElement && el.style.cssText) entry.style = el.style.cssText;
 		elements[id] = entry;
 	}
+	// The seek slider and the clocks show media time, which depends on how long audio
+	// really played before a pause; they are replaced by a marker, and scenarios assert
+	// them directly after a deterministic seek.
+	for (const id of ['reference-seek', 'reference-time', 'timer']) if (elements[id]) elements[id] = { followsPlayback: true };
 	const cs = getComputedStyle(document.documentElement);
 	const vars: Record<string, string> = {};
 	for (const name of ['--reference', '--self', '--accent', '--mic-level']) vars[name] = cs.getPropertyValue(name).trim();

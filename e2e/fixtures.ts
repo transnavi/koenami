@@ -16,11 +16,14 @@ const START = Date.UTC(2026, 0, 1, 3, 0, 0); // 2026-01-01 12:00 JST
 type NetEntry = { seq: number; method: string; path: string; query: string; body?: string; status?: number };
 type Studio = {
 	log: NetEntry[];
-	/** Golden a named observation of the page. */
-	golden: (name: string, extra?: Record<string, unknown>) => Promise<void>;
+	/** Golden a named observation of the page. `ignore` drops element ids whose state
+	 *  follows real-time media playback and cannot be pinned. */
+	golden: (name: string, options?: { ignore?: string[]; extra?: Record<string, unknown> }) => Promise<void>;
 	/** Advance the fake clock, letting timers, intervals and animation frames run. */
 	tick: (ms?: number) => Promise<void>;
-	/** Wait until a page expression is truthy while the fake clock advances. */
+	/** Wait (real time) until a page expression is truthy. The fake clock does not move,
+	 *  so page time advances only through tick(); that keeps timer-driven state identical
+	 *  between runs. */
 	until: (expression: string, timeoutMs?: number) => Promise<void>;
 	/** Pixel-exact screenshot golden of one element. */
 	canvas: (name: string, selector: string) => Promise<void>;
@@ -30,6 +33,8 @@ type Studio = {
 	choose: (id: string, value: string) => Promise<void>;
 	/** Full page navigation to the studio with the harness installed. */
 	open: (path?: string, before?: (page: Page) => Promise<void>) => Promise<void>;
+	/** Absolute path of an audio fixture. */
+	audio: (name: string) => string;
 };
 
 async function install(page: Page) {
@@ -40,7 +45,10 @@ async function install(page: Page) {
 		Math.random = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 0x100000000; };
 		Object.defineProperty(window, 'devicePixelRatio', { get: () => 1 });
 	});
+	// Installed and paused: page time moves only through tick(), so Date.now(), timers
+	// and animation frames are identical on every run.
 	await page.clock.install({ time: START });
+	await page.clock.pauseAt(START);
 }
 
 const sha = (buffer: Buffer) => createHash('sha256').update(buffer).digest('hex');
@@ -81,13 +89,14 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			const started = Date.now();
 			while (!(await page.evaluate(expression))) {
 				if (Date.now() - started > timeoutMs) throw new Error(`timed out waiting for ${expression}; notice: ${await page.locator('#notice').innerText().catch(() => '')}`);
-				await page.clock.runFor(50);
-				await page.waitForTimeout(20);
+				await page.waitForTimeout(25);
 			}
 		};
-		const golden = async (name: string, extra: Record<string, unknown> = {}) => {
+		const golden = async (name: string, { ignore = [], extra = {} }: { ignore?: string[]; extra?: Record<string, unknown> } = {}) => {
+			const dom = await page.evaluate(domProjection);
+			for (const id of ignore) dom.elements[id] = { ignored: true };
 			const observation: Observation & { network: NetEntry[]; errors: string[] } = {
-				...(await page.evaluate(domProjection)),
+				...dom,
 				storage: await page.evaluate(storageDump),
 				network: log.slice(),
 				errors: errors.slice(),
@@ -121,7 +130,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			if (before) await before(page);
 			await page.goto(path);
 		};
-		await use({ log, golden, tick, until, canvas, download, choose, open });
+		await use({ log, golden, tick, until, canvas, download, choose, open, audio: fixtureAudio });
 	}
 });
 

@@ -3,8 +3,10 @@
  "title": "Koenami · 女声・男声のボイトレツール",
  "lang": "ja",
  "theme": "light",
- "dialogs": [],
- "focus": "body",
+ "dialogs": [
+  "import-dialog"
+ ],
+ "focus": "button",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -1107,8 +1109,10 @@
   "import-dialog": {
    "tag": "dialog",
    "class": "",
-   "attrs": {},
-   "open": false,
+   "attrs": {
+    "open": ""
+   },
+   "open": true,
    "text": "見本を追加×音声ファイルを選ぶ ↗JVSを追加公式サイトでダウンロード ↗公式のZIP、または展開したフォルダーを選択。100人・5,000音声を追加できます。ZIPを選ぶフォルダーを選ぶ中止音声の利用はJVSの規約に従ってください。読み込んだ見本は、このブラウザーに保存されます。"
   },
   "import-audio": {
@@ -1346,41 +1350,7 @@
  },
  "storage": {
   "local": {
-   "voice-speed": 1,
-   "koenami-session": {
-    "lang": "ja",
-    "group": "female",
-    "sort": "high",
-    "search": "",
-    "reference": "common_voice_ja_36363162",
-    "referenceRange": null,
-    "openSpeakers": [
-     "ja:Common Voice:50a288fb7fb3"
-    ],
-    "dimension": 3,
-    "projection": "variance",
-    "yaw": -0.45,
-    "tilt": 0.3,
-    "zoom": 0.801464474306227,
-    "camera": [
-     0.4378284090095006,
-     0.7397146134849503,
-     0.5875554267810748
-    ],
-    "center": [
-     0.5,
-     0.5
-    ],
-    "pan": [
-     0,
-     0
-    ],
-    "autoRotate": false,
-    "signal": "pitch",
-    "signalSource": "ref",
-    "overlay": true,
-    "liveShapeSeconds": 5
-   }
+   "voice-speed": 1
   },
   "idb": {}
  },

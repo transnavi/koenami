@@ -863,7 +863,7 @@
    "class": "icon-button",
    "attrs": {
     "title": "見本を再生",
-    "aria-label": "見本を再生"
+    "aria-label": "見本を一時停止"
    },
    "text": ""
   },
@@ -1070,7 +1070,7 @@
    },
    "media": {
     "src": "/samples/common_voice_ja_36363162.mp3",
-    "paused": true,
+    "paused": false,
     "rate": 1,
     "volume": 1,
     "muted": false,
@@ -1352,7 +1352,7 @@
     "group": "female",
     "sort": "high",
     "search": "",
-    "reference": "common_voice_ja_36363162",
+    "reference": "common_voice_ja_36363165",
     "referenceRange": null,
     "openSpeakers": [
      "ja:Common Voice:50a288fb7fb3"
@@ -1361,11 +1361,11 @@
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.801464474306227,
+    "zoom": 1.037252046718322,
     "camera": [
-     0.4378284090095006,
-     0.7397146134849503,
-     0.5875554267810748
+     0.36830942279451007,
+     0.6424246376434078,
+     0.38133697517315474
     ],
     "center": [
      0.5,
@@ -1380,9 +1380,12 @@
     "signalSource": "ref",
     "overlay": true,
     "liveShapeSeconds": 5
-   }
+   },
+   "voice-favorites": []
   },
-  "idb": {}
+  "idb": {
+   "references": []
+  }
  },
  "network": [
   {
@@ -1405,6 +1408,34 @@
    "path": "/api/detail/common_voice_ja_36363162",
    "query": "",
    "status": 200
+  },
+  {
+   "seq": 4,
+   "method": "GET",
+   "path": "/api/detail/common_voice_ja_36363165",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 5,
+   "method": "GET",
+   "path": "/samples/common_voice_ja_36363165.mp3",
+   "query": "",
+   "status": 206
+  },
+  {
+   "seq": 6,
+   "method": "GET",
+   "path": "/api/detail/common_voice_ja_36363162",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 7,
+   "method": "GET",
+   "path": "/samples/common_voice_ja_36363162.mp3",
+   "query": "",
+   "status": 206
   }
  ],
  "errors": []

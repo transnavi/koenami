@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "body",
+ "focus": "summary",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
@@ -480,13 +480,13 @@
     "aria-label": "見本を選ぶ"
    },
    "open": false,
-   "text": "見本の声11女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 26324F 26003F 25564F 26572F 25944F 26404F 26282F 25874もっと見る"
+   "text": "見本の声21女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4おはようございます。今日もよろしくお願いします。338 Hz · 0:03 · AI☆ありがとうございます。それでは、また明日お会いしましょう。320 Hz · 0:04 · AI☆すみません、駅までの道を教えていただけますか。316 Hz · 0:03 · AI☆今日はいい天気ですね。少し散歩に出かけませんか。306 Hz · 0:03 · AI☆F 26232F 26324F 26003M 24524F 25564F 26572F 25944F 26404F 26282F 25874M 24684M 24813M 24614M 24802M 24593M 24662M 24561M 24601M 24781もっと見る"
   },
   "library-count": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "11"
+   "text": "21"
   },
   "add-reference": {
    "tag": "button",
@@ -503,7 +503,7 @@
    "attrs": {
     "aria-label": "見本の種類"
    },
-   "value": "female",
+   "value": "all",
    "options": [
     {
      "value": "female",
@@ -544,7 +544,7 @@
      "data": {}
     }
    ],
-   "trigger": "女性的な声",
+   "trigger": "すべての声",
    "expanded": "false",
    "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声",
    "style": "display: inline-flex;"
@@ -780,7 +780,7 @@
    "tag": "div",
    "class": "sample-scroll",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 26324F 26003F 25564F 26572F 25944F 26404F 26282F 25874もっと見る"
+   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4おはようございます。今日もよろしくお願いします。338 Hz · 0:03 · AI☆ありがとうございます。それでは、また明日お会いしましょう。320 Hz · 0:04 · AI☆すみません、駅までの道を教えていただけますか。316 Hz · 0:03 · AI☆今日はいい天気ですね。少し散歩に出かけませんか。306 Hz · 0:03 · AI☆F 26232F 26324F 26003M 24524F 25564F 26572F 25944F 26404F 26282F 25874M 24684M 24813M 24614M 24802M 24593M 24662M 24561M 24601M 24781もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
@@ -810,7 +810,7 @@
    "class": "",
    "attrs": {},
    "rows": {
-    "count": 28,
+    "count": 56,
     "head": [
      "details#ja:Common Voice:50a288fb7fb3|speaker-folder||true|F 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:1",
      "summary#||||F 26243",
@@ -820,14 +820,24 @@
      "button#|favorite|false||☆",
      "button#common_voice_ja_36363168|sample-row|false||環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06",
      "button#|favorite|false||☆",
-     "details#ja:female:voicevox-四国めたん|speaker-folder||false|VOICEVOX:四国めたんAI4",
+     "details#ja:female:voicevox-四国めたん|speaker-folder||true|VOICEVOX:四国めたんAI4おはようございます。今日もよろしくお願いします。338 Hz · 0:03 · AI☆ありがとうございます。それでは、また明日",
      "summary#||||VOICEVOX:四国めたんAI4",
+     "button#voicevox-939532de4e3eb5e7|sample-row|false||おはようございます。今日もよろしくお願いします。338 Hz · 0:03 · AI",
+     "button#|favorite|false||☆",
+     "button#voicevox-731b0ca4a848df6e|sample-row|false||ありがとうございます。それでは、また明日お会いしましょう。320 Hz · 0:04 · AI",
+     "button#|favorite|false||☆",
+     "button#voicevox-8e19698be06959f8|sample-row|false||すみません、駅までの道を教えていただけますか。316 Hz · 0:03 · AI",
+     "button#|favorite|false||☆",
+     "button#voicevox-9937d798779ec411|sample-row|false||今日はいい天気ですね。少し散歩に出かけませんか。306 Hz · 0:03 · AI",
+     "button#|favorite|false||☆",
      "details#ja:Common Voice:6c36d39f08db|speaker-folder||false|F 26232",
      "summary#||||F 26232",
      "details#ja:Common Voice:f3b15d7bf076|speaker-folder||false|F 26324",
      "summary#||||F 26324",
      "details#ja:Common Voice:b2a35bfe1379|speaker-folder||false|F 26003",
      "summary#||||F 26003",
+     "details#ja:Common Voice:23bbcff6f628|speaker-folder||false|M 24524",
+     "summary#||||M 24524",
      "details#ja:Common Voice:b675726edbb3|speaker-folder||false|F 25564",
      "summary#||||F 25564",
      "details#ja:Common Voice:1eab7adfaeee|speaker-folder||false|F 26572",
@@ -839,14 +849,16 @@
      "details#ja:Common Voice:3d5c33514fc7|speaker-folder||false|F 26282",
      "summary#||||F 26282",
      "details#ja:Common Voice:2ff3e0b01ed5|speaker-folder||false|F 25874",
-     "summary#||||F 25874"
+     "summary#||||F 25874",
+     "details#ja:Common Voice:e3fddd3b40d8|speaker-folder||false|M 24684",
+     "summary#||||M 24684"
     ],
     "tail": [
-     "summary#||||F 26404",
-     "details#ja:Common Voice:3d5c33514fc7|speaker-folder||false|F 26282",
-     "summary#||||F 26282",
-     "details#ja:Common Voice:2ff3e0b01ed5|speaker-folder||false|F 25874",
-     "summary#||||F 25874"
+     "summary#||||M 24561",
+     "details#ja:Common Voice:f504d98b0f67|speaker-folder||false|M 24601",
+     "summary#||||M 24601",
+     "details#ja:Common Voice:c78fc31d53b5|speaker-folder||false|M 24781",
+     "summary#||||M 24781"
     ]
    }
   },
@@ -1349,7 +1361,7 @@
    "voice-speed": 1,
    "koenami-session": {
     "lang": "ja",
-    "group": "female",
+    "group": "all",
     "sort": "high",
     "search": "",
     "reference": "common_voice_ja_36363162",

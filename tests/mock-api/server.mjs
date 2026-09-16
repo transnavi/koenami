@@ -66,8 +66,18 @@ createServer(async (req, res) => {
 		const path = join(samples, basename(url.pathname));
 		if (!existsSync(path)) { res.writeHead(404); return res.end('no sample'); }
 		const type = path.endsWith('.mp3') ? 'audio/mpeg' : path.endsWith('.flac') ? 'audio/flac' : 'audio/wav';
-		res.writeHead(200, { 'content-type': type, 'cache-control': 'no-store' });
-		return res.end(readFileSync(path));
+		// Range requests, as aiohttp's FileResponse answers them; without them Chromium
+		// reports an infinite duration and cannot seek.
+		const bytes = readFileSync(path);
+		const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+		if (range) {
+			const start = range[1] ? Number(range[1]) : Math.max(0, bytes.length - Number(range[2]));
+			const end = range[1] && range[2] ? Math.min(Number(range[2]), bytes.length - 1) : bytes.length - 1;
+			res.writeHead(206, { 'content-type': type, 'cache-control': 'no-store', 'accept-ranges': 'bytes', 'content-range': `bytes ${start}-${end}/${bytes.length}`, 'content-length': end - start + 1 });
+			return res.end(bytes.subarray(start, end + 1));
+		}
+		res.writeHead(200, { 'content-type': type, 'cache-control': 'no-store', 'accept-ranges': 'bytes', 'content-length': bytes.length });
+		return res.end(bytes);
 	}
 	const body = await readBody(req);
 	const candidates = keys(req.method, url, body);
