@@ -64,3 +64,34 @@ await sharp(card).composite([
   { input: border, left: shotX - 2, top: shotY - 2 },
 ]).png({ compressionLevel: 9 }).toFile(`${out}/og-image.png`);
 console.log('brand assets written to', out);
+
+// Per-page cards for the document pages: a category label, the page title, and
+// a short line, on the same gradient; the mark and site name anchor the corners.
+const PAGES = [
+  { file: 'og-guide', label: '使い方', title: 'Koenamiの使い方', lines: ['見本を選び、録音し、見比べる。', '画面の見方と練習の流れ。'] },
+  { file: 'og-tutorial', label: '声のしくみと練習の手引き', title: '声はどう作られ、', title2: 'どう変えられるか', lines: ['音源とフィルター、性別の聞こえ方、', '女性化・男性化の練習を、出典付きで。'] },
+  { file: 'og-method', label: '測定方法と出典', title: '5つの指標の測り方', lines: ['高さ・響き・質感・明るさ・抑揚の定義、', '見本の音声の出典と利用条件。'] },
+];
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+for (const page of PAGES) {
+  const svg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffdcec"/><stop offset=".46" stop-color="#f4e8fb"/><stop offset="1" stop-color="#ddecff"/></linearGradient></defs>
+  <rect width="${W}" height="${H}" fill="url(#bg)"/>
+  <path d="M3 10v4m4-8v12m5-16v20m5-16v12m4-8v4" transform="translate(760 150) scale(18)" fill="none" stroke="#d56498" stroke-opacity=".14" stroke-width="2.4" stroke-linecap="round"/>
+  <g transform="translate(72 72) scale(2.5)">
+    <rect x=".5" y=".5" width="23" height="23" rx="5.5" fill="#fff" stroke="#4ba8ea" stroke-width=".5"/>
+    <path d="M3 10v4m4-8v12m5-16v20m5-16v12m4-8v4" transform="translate(3.6 3.6) scale(.7)" fill="none" stroke="#d56498" stroke-width="3.2" stroke-linecap="round"/>
+  </g>
+  <g font-family="Noto Sans CJK JP" fill="#27374c">
+    <text x="150" y="114" font-size="30" font-weight="700">Koenami</text>
+    <text x="72" y="222" font-size="26" font-weight="500" fill="#d56498">${esc(page.label)}</text>
+    <text x="72" y="${page.title2 ? 306 : 320}" font-size="${page.title2 ? 64 : 68}" font-weight="700" letter-spacing="-1">${esc(page.title)}</text>
+    ${page.title2 ? `<text x="72" y="386" font-size="64" font-weight="700" letter-spacing="-1">${esc(page.title2)}</text>` : ''}
+    <text x="72" y="${page.title2 ? 460 : 410}" font-size="28" fill="#3f4a62">${esc(page.lines[0])}</text>
+    <text x="72" y="${page.title2 ? 504 : 454}" font-size="28" fill="#3f4a62">${esc(page.lines[1])}</text>
+    <text x="72" y="562" font-size="26" font-weight="500" fill="#1a78c2">koe.transnavi.jp</text>
+  </g>
+</svg>`);
+  await sharp(svg).png({ compressionLevel: 9 }).toFile(`${out}/${page.file}.png`);
+}
+console.log('page cards written');
