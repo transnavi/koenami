@@ -34,8 +34,8 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return env.ASSETS.fetch(new Request(url, request));
   }
 
-  const analysis = ['/api/analyze', '/api/perception'].includes(url.pathname) && request.method === 'POST';
-  const detail = /^\/api\/(detail|perception)\/[a-zA-Z0-9_-]+$/.test(url.pathname) && get;
+  const analysis = url.pathname === '/api/analyze' && request.method === 'POST';
+  const detail = /^\/api\/detail\/[a-zA-Z0-9_-]+$/.test(url.pathname) && get;
   if (!analysis && !detail && !(get && url.pathname === '/api/health')) return text('Not found', 404);
   const { success } = await env.ANALYSIS_LIMIT.limit({ key: request.headers.get('CF-Connecting-IP') || 'unknown' });
   if (!success) return text('少し待ってからお試しください。', 429, { 'Retry-After': '10' });

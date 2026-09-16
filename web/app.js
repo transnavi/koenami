@@ -4,7 +4,6 @@ import {VoiceMap} from './map.js';
 import {AcousticSpace} from './space.js';
 import {SignalView} from './signals.js';
 import {TakeStore} from './storage.js';
-import {setupPerception} from './perception.js';
 import {localize} from './locale.js';
 import {loadImported,importedAudio,importJVS} from './corpus-import.js';
 'use strict';
@@ -293,9 +292,4 @@ setInterval(saveView,1000);window.addEventListener('beforeunload',saveView);docu
 function restoreCamera(){if(!recordCamera)return;if(map.navigationVersion===recordCamera.navigationVersion){map.autoFit=recordCamera.autoFit;map.autoRotate=recordCamera.autoRotate;}recordCamera=null;map.fitDirty=true;map.invalidate();$('auto-rotate').setAttribute('aria-pressed',String(map.autoRotate));}
 init().catch(e=>notify('読み込めませんでした: '+e.message,true));
 
-const perceptionPanel=setupPerception({
- context(side){if(side==='own')return state.ownTakeId&&state.ownPCM?{key:'own:'+state.ownTakeId,speaker:'self',name:state.ownName,language:state.ownLanguage,side,pcm:state.ownPCM}:null;const c=state.selected;return c?{key:'ref:'+c.id,speaker:c.speaker||c.id,name:nameOf(c),language:state.lang,side,id:c.id,pcm:state.refPCM,local:c.localLibrary||c.group==='custom'}:null;},
- request(c,cancel){if(c.local&&!c.pcm?.length)throw new Error('音声を読み込み中です。少し待ってからもう一度お試しください。');const signal=AbortSignal.any([cancel,AbortSignal.timeout(45000)]);return c.side==='ref'&&!c.local?api('/api/perception/'+encodeURIComponent(c.id),{signal}):api('/api/perception',{method:'POST',body:c.pcm,signal});},
- play(side){toggle(side).catch(e=>notify(e.message,true));},
- async next(rated){const candidates=state.clips.filter(c=>c.plotted&&!c.synthetic),at=candidates.findIndex(c=>c.id===state.selected?.id),ordered=candidates.slice(at+1).concat(candidates.slice(0,Math.max(0,at)));const c=ordered.find(c=>!rated.includes(c.speaker))||ordered[0];if(c)await selectSample(c,false);},notify,download
-});
+

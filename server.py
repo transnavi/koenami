@@ -13,7 +13,7 @@ import soundfile as sf
 from aiohttp import web, ClientSession, ClientTimeout
 from acoustics import measure, mono16, RATE
 from signals import visualise
-import perception
+import curation
 
 ROOT = Path(__file__).parent
 PUBLIC = os.environ.get('KOENAMI_PUBLIC') == '1'
@@ -41,11 +41,9 @@ def create_app():
                 if clip['language'] in libraries: libraries[clip['language']]['clips'].append(clip)
     clips = {s['id']: s for lib in libraries.values() for s in lib['clips']}
     sample_files = {Path(s['audio']).name for s in clips.values() if s['audio'].startswith('/samples/')}
-    gate, asr_gate, neural_gate = asyncio.Semaphore(1), asyncio.Semaphore(1), asyncio.Semaphore(1)
-    neural_tasks = set()
+    gate, asr_gate = asyncio.Semaphore(1), asyncio.Semaphore(1)
     cache = OrderedDict()
     pcm_cache = OrderedDict()
-    perception_cache = OrderedDict()
 
     @web.middleware
     async def local_only(request, handler):
@@ -161,59 +159,8 @@ def create_app():
                 print(f'Word timing failed: {type(error).__name__}', flush=True)
                 raise web.HTTPServiceUnavailable(text='Word timing is unavailable. Select a range on the waveform.')
 
-    async def voice_impression(request):
-        if not perception.available():
-            raise web.HTTPServiceUnavailable(text='声の推定モデルを準備してください。')
-        name = request.match_info.get('name')
-        if name and name in perception_cache:
-            perception_cache.move_to_end(name)
-            return respond(perception_cache[name])
-        if neural_gate.locked():
-            raise web.HTTPServiceUnavailable(text='声の推定中です。少し待ってからお試しください。', headers={'Retry-After': '2'})
-        await neural_gate.acquire()
-        try:
-            x = await asyncio.wait_for(known_audio(name) if name else read_audio(request), timeout=10)
-        except asyncio.TimeoutError:
-            neural_gate.release()
-            raise web.HTTPRequestTimeout(text='音声の読み込みが時間内に終わりませんでした。')
-        except BaseException:
-            neural_gate.release()
-            raise
-
-        def infer():
-            # Validate the exact sampled regions, including clips with quiet edges.
-            parts = perception.windows(x)
-            checked = measure(np.concatenate([part[0] for part in parts]))
-            if checked.get('voiced_seconds', 0) < 1:
-                raise ValueError('声が十分に検出できません。2秒以上、話した音声を選んでください。')
-            return perception.describe(x)
-
-        async def run():
-            try: return await asyncio.to_thread(infer)
-            finally: neural_gate.release()
-
-        task = asyncio.create_task(run())
-        neural_tasks.add(task)
-        def finished(t):
-            neural_tasks.discard(t)
-            if not t.cancelled(): t.exception()
-        task.add_done_callback(finished)
-        try:
-            # On timeout/disconnect the gate remains held until inference exits.
-            result = await asyncio.wait_for(asyncio.shield(task), timeout=30)
-        except asyncio.TimeoutError:
-            raise web.HTTPGatewayTimeout(text='声の推定が時間内に終わりませんでした。')
-        except ValueError as error:
-            raise web.HTTPUnprocessableEntity(text=str(error))
-        except Exception:
-            raise web.HTTPInternalServerError(text='この音声の推定に失敗しました。')
-        if name:
-            perception_cache[name] = result
-            while len(perception_cache) > 32: perception_cache.popitem(last=False)
-        return respond(result)
-
     async def catalog(request):
-        return respond({'capabilities': {'words': not PUBLIC, 'maxSeconds': LIMIT, 'perception': perception.available()}, 'languages': [dict(id=k, label=v,
+        return respond({'capabilities': {'words': not PUBLIC, 'maxSeconds': LIMIT, 'review': not PUBLIC}, 'languages': [dict(id=k, label=v,
             clips=sum(not s.get('synthetic') for s in libraries[k]['clips']),
             speakers=len({s['speaker'] for s in libraries[k]['clips'] if not s.get('synthetic')}),
             synthetic=sum(bool(s.get('synthetic')) for s in libraries[k]['clips']))
@@ -242,13 +189,44 @@ def create_app():
         return web.FileResponse(DATA / 'jvs-import-index.json')
 
     app.router.add_get('/api/import-index/jvs', import_index)
+
+    def review_queue(lang):
+        """One representative clip per unreviewed human speaker, female group first, longest plotted clip."""
+        verdicts = curation.Verdicts()
+        by_speaker = {}
+        for c in libraries[lang]['clips']:
+            if c.get('synthetic') or c.get('dataset') == 'JVS': continue
+            by_speaker.setdefault(c['speaker'], []).append(c)
+        queue = []
+        for sid, clips in by_speaker.items():
+            if sid in verdicts.reviewed_speakers: continue
+            best = max(clips, key=lambda c: (bool(c.get('plotted')), c.get('duration', 0)))
+            queue.append({'speaker': sid, 'group': best['group'], 'clips': [dict(id=c['id'], display=c.get('display_label'), text=c.get('text'),
+                          audio=c['audio'], duration=c.get('duration')) for c in sorted(clips, key=lambda c: c['id'])], 'first': best['id']})
+        queue.sort(key=lambda q: (q['group'] != 'female', q['clips'][0]['display'] or ''))
+        reviewed = {r['speaker'] for r in verdicts.reviews if r.get('language', 'ja') == lang}
+        return {'language': lang, 'reviewed': len(reviewed), 'queue': queue}
+
+    async def review_get(request):
+        if PUBLIC: raise web.HTTPNotFound()
+        lang = request.query.get('lang', 'ja')
+        if lang not in libraries: raise web.HTTPNotFound()
+        return respond({**review_queue(lang), 'flags': {'speaker': curation.SPEAKER_FLAGS, 'clip': curation.CLIP_FLAGS},
+                        'ratings': list(curation.RATING_KEYS), 'log': curation.load()[-200:]})
+
+    async def review_post(request):
+        if PUBLIC: raise web.HTTPNotFound()
+        try: record = curation.append(await request.json())
+        except (ValueError, TypeError) as error: raise web.HTTPUnprocessableEntity(text=str(error))
+        return respond(record)
+
+    app.router.add_get('/api/review', review_get)
+    app.router.add_post('/api/review', review_post)
     async def health(request):
         return respond({'ok': True})
 
     app.router.add_get('/api/health', health)
     app.router.add_post('/api/analyze', measurement)
-    app.router.add_post('/api/perception', voice_impression)
-    app.router.add_get('/api/perception/{name}', voice_impression)
     app.router.add_get('/api/catalog', catalog)
     app.router.add_get('/api/library', metadata)
     app.router.add_get('/api/detail/{name}', detail)

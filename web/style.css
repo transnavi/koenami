@@ -67,10 +67,6 @@ koe-select>option{display:none}koe-select{padding:0!important;min-height:28px;bo
 .setting-slider{display:flex;align-items:center;gap:12px}.setting-slider input{width:120px}.setting-slider output{min-width:34px;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
 
 /* Listener judgements stay in one optional panel. */
-#perception-button{white-space:nowrap;padding:5px;font-size:12px}
-#perception-dialog{width:min(530px,calc(100vw - 32px))}
-.rating-subject{display:flex;align-items:center;gap:12px;margin-bottom:16px}.rating-subject strong{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rating-row{display:block;padding:10px 0;border-bottom:1px solid var(--line)}.rating-label{display:flex;align-items:center;gap:8px;font-size:13px}.rating-label output{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}.rating-label button{padding:0 3px}.rating-row input{width:100%;margin:12px 0 5px}.rating-row input.unrated{opacity:.35}.rating-ends{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}.rating-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.rating-actions #rating-delete{margin-right:auto}.rating-actions #rating-save{background:var(--accent);color:var(--bg)}#rating-status{font-size:12px;color:var(--muted);min-height:1em}.rating-details{border-top:1px solid var(--line);padding-top:12px;font-size:13px}.rating-details summary{cursor:pointer}.rating-details p{line-height:1.6}.rating-details small{display:block;color:var(--muted);margin-top:5px;font-size:11px}
 
 /* Live capture shares the compact transport with recording and playback. */
 .transport .live-controls{gap:5px;padding-left:12px;border-left:1px solid var(--line)}.transport .live-button{height:34px;border:0;border-radius:6px;background:transparent}.transport .loopback-button{height:34px;width:30px}.transport .recording-summary{margin-right:auto}

@@ -1,6 +1,10 @@
 """Pronunciation exclusions must survive future Common Voice expansion."""
 import unittest
+import json
+import tempfile
+from pathlib import Path
 from build_common_voice_ja import POLICY, selection, speaker_id
+from curation import Verdicts, append
 from screen_reference_speech import verdict
 
 
@@ -13,8 +17,8 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(selection(self.row), 'common_voice_validated')
 
     def test_excluded_speaker_cannot_return_with_standard_accent(self):
-        policy = {**POLICY, 'excluded_speakers': [speaker_id(self.row)]}
-        self.assertIsNone(selection({**self.row, 'accent': '標準語'}, policy))
+        verdicts = Verdicts([{'speaker': speaker_id(self.row), 'flags': ['not_native_like']}])
+        self.assertIsNone(selection({**self.row, 'accent': '標準語'}, POLICY, verdicts))
 
     def test_explicit_non_native_accents_are_excluded(self):
         for accent in POLICY['excluded_accents']:
@@ -22,23 +26,46 @@ class SelectionTests(unittest.TestCase):
 
     def test_declared_dialect_is_distinct_from_listening_review(self):
         self.assertEqual(selection({**self.row, 'accent': 'Hakata-ben'}), 'declared_japanese_accent')
-        policy = {**POLICY, 'reviewed_speakers': {speaker_id(self.row): 'CV Test'}}
-        self.assertEqual(selection(self.row, policy), 'reviewed_speaker')
+        verdicts = Verdicts([{'speaker': speaker_id(self.row), 'flags': ['native_like']}])
+        self.assertEqual(selection(self.row, POLICY, verdicts), 'reviewed_speaker')
 
     def test_validation_and_adult_reference_requirements(self):
         for change in [{'down_votes': 1}, {'up_votes': 1}, {'age': 'teens'}, {'age': ''}]:
             self.assertIsNone(selection({**self.row, **change}))
 
     def test_bad_clip_exclusion_does_not_remove_the_speaker(self):
-        policy = {**POLICY, 'excluded_clips': ['empty']}
-        self.assertIsNone(selection({**self.row, 'file_name': 'empty.mp3'}, policy))
-        self.assertEqual(selection({**self.row, 'file_name': 'other.mp3'}, policy), 'common_voice_validated')
+        verdicts = Verdicts([{'speaker': speaker_id(self.row), 'clip': 'empty', 'flags': ['no_speech']}])
+        self.assertIsNone(selection({**self.row, 'file_name': 'empty.mp3'}, POLICY, verdicts))
+        self.assertEqual(selection({**self.row, 'file_name': 'other.mp3'}, POLICY, verdicts), 'common_voice_validated')
 
+
+class ReviewLogTests(unittest.TestCase):
     def test_audio_exclusions_carry_no_pronunciation_label(self):
-        firm = {r['speaker'] for r in POLICY['listening_reviews'] if r['judgement'] == 'not_native_like'}
-        other = {r['speaker'] for r in POLICY['listening_reviews'] if r['judgement'] != 'not_native_like'}
-        self.assertTrue(firm <= set(POLICY['excluded_speakers']))
-        self.assertTrue(other.isdisjoint(firm))
+        v = Verdicts([{'speaker': 'a', 'flags': ['distorted_audio']}, {'speaker': 'b', 'flags': ['tentative']},
+                      {'speaker': 'c', 'flags': ['not_native_like']}, {'speaker': 'd', 'flags': ['native_like']}])
+        self.assertEqual(v.excluded_speakers, {'a', 'b', 'c'})
+        self.assertEqual(v.pronunciation_labels(), {'c': 0, 'd': 1})
+
+    def test_later_firm_judgement_outranks_native_like(self):
+        v = Verdicts([{'speaker': 'a', 'flags': ['native_like']}, {'speaker': 'a', 'flags': ['not_native_like']}])
+        self.assertEqual(v.native_speakers, set()); self.assertEqual(v.pronunciation_labels(), {'a': 0})
+
+    def test_ratings_alone_do_not_exclude(self):
+        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': [], 'ratings': {'femininity': 2}}])
+        self.assertEqual(v.excluded_speakers, set()); self.assertEqual(v.ratings('femininity'), {'a': 2})
+
+    def test_append_validates_and_persists(self):
+        with tempfile.TemporaryDirectory() as folder:
+            log = Path(folder) / 'reviews.jsonl'
+            record = append({'speaker': 'a', 'clip': 'x', 'flags': ['noise', 'bogus'], 'ratings': {'age': 40, 'femininity': None}}, log)
+            self.assertEqual(record['flags'], ['noise']); self.assertEqual(record['ratings'], {'age': 40.0})
+            self.assertEqual(json.loads(log.read_text())['speaker'], 'a')
+            with self.assertRaises(ValueError): append({'speaker': 'a', 'ratings': {'femininity': 9}}, log)
+            with self.assertRaises(ValueError): append({'speaker': 'a'}, log)
+
+    def test_migrated_log_matches_previous_exclusions(self):
+        v = Verdicts()
+        self.assertEqual(len(v.native_speakers), 3); self.assertEqual(len(v.excluded_speakers), 20); self.assertEqual(len(v.excluded_clips), 8)
 
 
 class SpeechScreenTests(unittest.TestCase):

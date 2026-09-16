@@ -119,7 +119,6 @@ def whisper(cpu):
 
 
 def main(cpu=False):
-    policy = json.loads((ROOT / 'curation/common-voice-ja.json').read_text())
     import asyncio
     from build_common_voice_ja import metadata, selection
     from build_library import collect
@@ -130,11 +129,12 @@ def main(cpu=False):
         raise RuntimeError('Some reference audio could not be downloaded; screen aborted.')
     library = [{'id': Path(r['file_name']).stem, 'text': r['text']} for r in rows]
     prompts = {c['id']: c['text'] for c in library}
-    # Reviewed empty clips stay in the run as controls even though the build excludes them.
+    # Clips a listener flagged stay in the run as controls even though the build excludes them.
+    from curation import Verdicts
     texts = {Path(r.get('file_name', '')).stem: r.get('text', '') for r in all_rows}
-    for row in policy.get('clip_reviews', []):
-        if row['clip'] not in prompts:
-            library.append({'id': row['clip'], 'text': texts.get(row['clip'], '')}); prompts[row['clip']] = texts.get(row['clip'], '')
+    for clip in sorted(Verdicts().excluded_clips):
+        if clip not in prompts and (ROOT / 'data/samples' / (clip + '.mp3')).exists():
+            library.append({'id': clip, 'text': texts.get(clip, '')}); prompts[clip] = texts.get(clip, '')
     path = ROOT / 'data/speech-quality.json'; cache = json.loads(path.read_text()) if path.exists() else {}
     pending = []
     for clip in library:

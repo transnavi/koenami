@@ -9,7 +9,7 @@ from server import create_app, RATE
 async def main():
  async with TestClient(TestServer(create_app())) as client:
   response=await client.get('/api/catalog'); assert response.status==200
-  catalog=await response.json(); assert catalog['capabilities']=={'words':False,'maxSeconds':60,'perception':True}
+  catalog=await response.json(); assert catalog['capabilities']=={'words':False,'maxSeconds':60,'review':False}
   response=await client.get('/api/library?lang=ja'); library=await response.json()
   assert len(library['clips'])>1550
   assert sum(c.get('dataset')=='JVS' for c in library['clips'])==10
@@ -19,17 +19,11 @@ async def main():
   response=await client.get('/api/detail/'+clip['id']); assert response.status==200
   assert (await response.json())['features']['f0']>65
   started=time.perf_counter()
-  neural=asyncio.create_task(client.get('/api/perception/'+clip['id']))
-  await asyncio.sleep(.05)
   live_pcm=(.2*np.sin(2*np.pi*200*np.arange(RATE*3)/RATE)).astype('<f4').tobytes()
   live=await client.post('/api/analyze?live=1',data=live_pcm)
   assert live.status==200,await live.text()
-  print('Concurrent live seconds:',round(time.perf_counter()-started,2),flush=True)
-  response=await neural; assert response.status==200, await response.text()
-  print('Neural cold seconds:',round(time.perf_counter()-started,2),'peak RSS MiB:',round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024),flush=True)
-  descriptor=await response.json(); assert len(descriptor['embedding'])==512
-  assert descriptor['age']['target']=='speaker-age'
-  assert abs(np.linalg.norm(descriptor['embedding'])-1)<.001
+  print('Live seconds:',round(time.perf_counter()-started,2),'peak RSS MiB:',round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024),flush=True)
+  response=await client.get('/api/review'); assert response.status==404
   pcm=(.2*np.sin(2*np.pi*200*np.arange(RATE*2)/RATE)).astype('<f4').tobytes()
   for query in ['', '?live=1']:
    response=await client.post('/api/analyze'+query,data=pcm); assert response.status==200
