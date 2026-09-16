@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import random
 import io
 import json
 import logging
@@ -216,7 +217,17 @@ def create_app():
                 if q['previous']['clip'] in {c['id'] for c in q['clips']}: q['first'] = q['previous']['clip']
             queue = [q for q in queue if q['missing']]
         else:
-            queue = [q for q in queue if q['speaker'] not in reviewed]
+            fresh = [q for q in queue if q['speaker'] not in reviewed]
+            # Blind repeats: every tenth item is an already-rated speaker on a clip not yet heard, with an
+            # empty form, so the log accumulates independent second judgements for test-retest reliability.
+            heard = {r['clip'] for r in verdicts.reviews}
+            repeats = [dict(q, first=next(c['id'] for c in q['clips'] if c['id'] not in heard), repeat=True)
+                       for q in queue if q['speaker'] in reviewed and any(c['id'] not in heard for c in q['clips'])]
+            random.Random(len(reviewed)).shuffle(repeats)
+            queue = []
+            for i, q in enumerate(fresh):
+                queue.append(q)
+                if i % 10 == 9 and repeats: queue.append(repeats.pop())
         return {'language': lang, 'mode': mode, 'reviewed': len(reviewed), 'queue': queue}
 
     async def review_get(request):

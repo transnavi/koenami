@@ -75,7 +75,7 @@ function toggle(flag){if(state.chosen.has(flag))state.chosen.delete(flag);else s
 let inflight=false;
 async function save(){
  const item=current();if(!item||inflight)return;const c=item.clips[state.clip];
- const body={speaker:item.speaker,clip:c.id,display:c.display,language:state.lang,flags:[...state.chosen],ratings:state.ratings,note:$('note').value};
+ const body={speaker:item.speaker,clip:c.id,display:c.display,language:state.lang,mode:item.repeat?'repeat':state.mode,flags:[...state.chosen],ratings:state.ratings,note:$('note').value};
  if(!body.flags.length&&!Object.keys(body.ratings).length&&!body.note.trim()){$('status').textContent='評価か判定を1つ以上つけてください';return;}
  inflight=true;$('save').disabled=true;
  try{const r=await fetch('/api/review',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw Error(await r.text());

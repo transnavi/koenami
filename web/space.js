@@ -72,5 +72,4 @@ export class AcousticSpace{
  }
  explained(n=2,name='variance'){const p=this.projection(name);return p.values.slice(0,n).reduce((a,b)=>a+b,0)/(this.projections.variance.values.reduce((a,b)=>a+b,0)||1);}
 }
-window.AcousticSpace=AcousticSpace;
-window.AcousticSpace=AcousticSpace;
+if(typeof window!=='undefined')window.AcousticSpace=AcousticSpace;
