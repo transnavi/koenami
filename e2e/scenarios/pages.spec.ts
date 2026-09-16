@@ -1,19 +1,19 @@
 import { test, expect } from '../fixtures';
+import { app } from '../hooks';
 
-const ready = '!!window.voiceApp?.state.refFull && !window.voiceApp.state.loadingLanguage';
 
 test.describe('phone layout', () => {
 	test.use({ viewport: { width: 390, height: 844 } });
 	test('bottom-sheet sample browser', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(300);
 		await studio.golden('phone');
 		await page.locator('#samples-toggle').click();
 		await studio.tick(100);
 		await studio.golden('sheet-open');
 		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
-		await studio.until('window.voiceApp.state.selected?.id === "common_voice_ja_36363165"');
+		await studio.until(app.selectedId('common_voice_ja_36363165'));
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');
 		await studio.tick(300);
@@ -53,7 +53,7 @@ test.describe('method page', () => {
 test.describe('keyboard guard', () => {
 	test('shortcuts are ignored inside inputs, selects and open dialogs', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#search').focus();
 		await page.keyboard.press('r');
 		await page.keyboard.press('Space');

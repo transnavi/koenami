@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '../fixtures';
+import { app } from '../hooks';
 
-const ready = '!!window.voiceApp?.state.refFull && !window.voiceApp.state.loadingLanguage';
 const preset = (values: Record<string, unknown>) => async (page: Page) => page.addInitScript((v) => { for (const [k, val] of Object.entries(v)) localStorage.setItem(k, typeof val === 'string' ? val : JSON.stringify(val)); }, values);
 
 test.describe('session and settings', () => {
@@ -12,7 +12,7 @@ test.describe('session and settings', () => {
 				new MutationObserver(() => { (window as unknown as { __firstTheme?: string }).__firstTheme ??= document.documentElement.dataset.theme; }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 			});
 		});
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(300);
 		await studio.golden('saved-dark', { extra: { firstTheme: await page.evaluate('window.__firstTheme') } });
 		await studio.canvas('dark-map', '#voice-map');
@@ -52,7 +52,7 @@ test.describe('session and settings', () => {
 	test('system preference', async ({ page, studio }) => {
 		await page.emulateMedia({ colorScheme: 'dark' });
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(200);
 		await studio.golden('system-dark-default');
 	});
@@ -62,7 +62,7 @@ test.describe('session and settings', () => {
 			const broken = () => { throw new Error('storage disabled'); };
 			Object.defineProperty(window, 'localStorage', { get: () => ({ getItem: broken, setItem: broken, removeItem: broken, key: broken, length: 0 }) });
 		}));
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(1200);
 		await studio.golden('storage-throws');
 		await page.locator('#favorite-selected').click();
@@ -80,8 +80,8 @@ test.describe('session and settings', () => {
 				autoRotate: false, signal: 'spectrogram', overlay: false, signalSource: 'ref', liveShapeSeconds: 12
 			}
 		}));
-		await studio.until(ready);
-		await studio.until('!!window.voiceApp.state.ranges.ref');
+		await studio.until(app.ready);
+		await studio.until(app.range('ref'));
 		await studio.tick(1200);
 		await studio.golden('restored');
 		await studio.canvas('restored-map', '#voice-map');
@@ -91,21 +91,21 @@ test.describe('session and settings', () => {
 
 	test('a corrupt session is ignored', async ({ studio }) => {
 		await studio.open('/ja/', preset({ 'koenami-session': '{not json', 'voice-favorites': '[broken' }));
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(1200);
 		await studio.golden('corrupt-session');
 	});
 
 	test('a session saved for another language is ignored', async ({ studio }) => {
 		await studio.open('/ja/', preset({ 'koenami-session': { lang: 'en', group: 'male', sort: 'name', search: 'x' } }));
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(300);
 		await studio.golden('other-language-session');
 	});
 
 	test('settings: live window, live shape window, normalize, exports, info dialog', async ({ page, studio }) => {
 		await studio.open('/ja/', async (p) => p.addInitScript(() => { Object.defineProperty(document, 'hidden', { get: () => (window as unknown as { __hidden?: boolean }).__hidden === true }); }));
-		await studio.until(ready);
+		await studio.until(app.ready);
 		// Hiding the tab saves the session at once.
 		await page.evaluate(() => { (window as unknown as { __hidden?: boolean }).__hidden = true; document.dispatchEvent(new Event('visibilitychange')); (window as unknown as { __hidden?: boolean }).__hidden = false; document.dispatchEvent(new Event('visibilitychange')); });
 		await studio.tick(100);

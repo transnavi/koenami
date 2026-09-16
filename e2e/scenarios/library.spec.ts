@@ -1,12 +1,11 @@
 import { test, expect } from '../fixtures';
+import { app } from '../hooks';
 
-const ready = '!!window.voiceApp?.state.refFull && !window.voiceApp.state.busy';
-const selected = (id: string) => `window.voiceApp.state.selected?.id === ${JSON.stringify(id)} && !!window.voiceApp.state.refFull`;
 
 test.describe('sample library', () => {
 	test('groups, sort, search and folders', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(200);
 
 		await studio.choose('library-group', 'male');
@@ -86,7 +85,7 @@ test.describe('sample library', () => {
 
 	test('load more: speaker folders beyond thirty, and rows beyond thirty inside a folder', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.choose('library-group', 'all');
 		await studio.tick(200);
 		await expect(page.locator('#load-more')).toBeVisible();
@@ -111,13 +110,13 @@ test.describe('sample library', () => {
 
 	test('selecting, playing, seeking and favouriting a reference', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(200);
 
 		// A click selects and starts playback of the reference; pause before observing, since
 		// the playhead follows real audio time.
 		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
-		await studio.until(selected('common_voice_ja_36363165'));
+		await studio.until(app.selected('common_voice_ja_36363165'));
 		await studio.until('!document.getElementById("reference-player").paused');
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');
@@ -158,7 +157,7 @@ test.describe('sample library', () => {
 		await studio.tick(200);
 
 		await page.locator('.sample-row[data-id="common_voice_ja_36363162"]').click();
-		await studio.until(selected('common_voice_ja_36363162'));
+		await studio.until(app.selected('common_voice_ja_36363162'));
 		await studio.tick(200);
 		await studio.golden('reselected-first');
 		await expect(page.locator('#source-link')).toHaveAttribute('href', /huggingface/);
@@ -169,14 +168,14 @@ test.describe('sample library', () => {
 		await studio.tick(300);
 		await page.locator('#sample-list details.speaker-folder[data-speaker*="voicevox"] summary').first().click();
 		await page.locator('#sample-list details.speaker-folder[data-speaker*="voicevox"] .sample-row').first().click();
-		await studio.until('window.voiceApp.state.selected.synthetic === true && !window.voiceApp.state.busy');
+		await studio.until(app.selectedSynthetic + ' && ' + app.notBusy);
 		await studio.tick(300);
 		await studio.golden('synthetic-selected');
 	});
 
 	test('reference uploaded from a file', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#add-reference').click();
 		await studio.tick(100);
 		await studio.golden('import-dialog');
@@ -185,7 +184,7 @@ test.describe('sample library', () => {
 		await studio.tick(100);
 		await studio.golden('import-audio-chosen');
 		await page.locator('#reference-upload').setInputFiles(studio.audio('own-b.wav'));
-		await studio.until('window.voiceApp.state.selected?.group === "custom" && !window.voiceApp.state.busy');
+		await studio.until(app.selectedGroup('custom') + ' && ' + app.notBusy);
 		await studio.tick(300);
 		await studio.golden('custom-reference');
 		await studio.canvas('custom-reference-signal', '#signal-canvas');
@@ -198,11 +197,11 @@ test.describe('sample library', () => {
 		await page.mouse.down();
 		await page.mouse.move(box.x + 500, box.y + 80, { steps: 4 });
 		await page.mouse.up();
-		await studio.until('!!window.voiceApp.state.ranges.ref && !window.voiceApp.state.busy');
+		await studio.until(app.range('ref') + ' && ' + app.notBusy);
 		await studio.tick(300);
 		await studio.golden('custom-range');
 		await page.locator('#words-button').click();
-		await studio.until('!!window.voiceApp.state.words.ref');
+		await studio.until(app.words('ref'));
 		await studio.tick(300);
 		await studio.golden('custom-words');
 		await page.locator('#word-list button').first().click();
@@ -211,7 +210,7 @@ test.describe('sample library', () => {
 		await page.locator('#favorite-selected').click();
 		await studio.tick(1200);
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.choose('library-group', 'custom');
 		await studio.tick(300);
 		await studio.golden('custom-favourite-restored');

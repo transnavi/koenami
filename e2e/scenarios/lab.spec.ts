@@ -1,16 +1,15 @@
 import { test, expect } from '../fixtures';
+import { app } from '../hooks';
 
-const ready = '!!window.voiceApp?.state.refFull && !window.voiceApp.state.loadingLanguage';
-const lang = (id: string) => `window.voiceApp?.state.lang === ${JSON.stringify(id)} && !window.voiceApp.state.loadingLanguage`;
 
 // The research library (KOENAMI_PUBLIC=0 only) replaces the gender groups by teacher
 // configurations.
 test.describe('research library', () => {
 	test('teacher filters, research naming and English words', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.choose('language', 'lab');
-		await studio.until(lang('lab') + ' && !!window.voiceApp.state.refFull');
+		await studio.until(app.languageLoaded('lab'));
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');
 		await studio.tick(300);
@@ -39,25 +38,25 @@ test.describe('research library', () => {
 		await studio.golden('teacher-all');
 		await page.locator('#sample-list details.speaker-folder[data-speaker*="003"] summary').first().click();
 		await page.locator('.sample-row[data-id="lab-3"]').click();
-		await studio.until('window.voiceApp.state.selected?.id === "lab-3" && !!window.voiceApp.state.refFull');
+		await studio.until(app.selected('lab-3'));
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');
 		await page.locator('#signal-ref').click();
 		await page.locator('#words-button').click();
-		await studio.until('!!window.voiceApp.state.words.ref');
+		await studio.until(app.words('ref'));
 		await studio.tick(300);
 		await studio.golden('lab-clip-words');
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until('!!window.voiceApp.state.ownFull && !window.voiceApp.state.busy && window.voiceApp.state.analyzing.size === 0');
+		await studio.until(app.analysed);
 		await studio.tick(1200);
 		await studio.golden('lab-own-uploaded');
 		// A small library has no density model, so the fit readout stays empty.
 		await studio.choose('language', 'en');
-		await studio.until(lang('en') + ' && !!window.voiceApp.state.refFull');
+		await studio.until(app.languageLoaded('en'));
 		await studio.tick(300);
 		await studio.golden('small-library-no-fit');
 		await studio.choose('language', 'ja');
-		await studio.until(lang('ja') + ' && !!window.voiceApp.state.refFull');
+		await studio.until(app.languageLoaded('ja'));
 		await studio.tick(300);
 		await studio.golden('back-from-lab');
 	});

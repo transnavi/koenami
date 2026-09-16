@@ -1,13 +1,13 @@
 import { test, expect } from '../fixtures';
+import { app, review } from '../hooks';
 
-const loaded = 'window.reviewApp && window.reviewApp.queue.length > 0';
 const paused = 'document.querySelector("#play[aria-pressed=false]") !== null';
 
 // Playback starts on every speaker and clip change (except when a draft is restored);
 // it is paused before observing. The start is awaited briefly so a click cannot land
 // before play() and leave the audio running.
 async function settle(page: import('@playwright/test').Page, studio: { until: (e: string, ms?: number) => Promise<void>; tick: (ms?: number) => Promise<void> }) {
-	await studio.until('window.reviewApp && window.reviewApp.queue.length > 0');
+	await studio.until(review.loaded);
 	await studio.until('document.querySelector("#play[aria-pressed=true]") !== null', 1500).catch(() => {});
 	if (await page.evaluate('document.getElementById("play").getAttribute("aria-pressed") === "true"')) await page.locator('#play').click();
 	await studio.until(paused);
@@ -17,7 +17,7 @@ async function settle(page: import('@playwright/test').Page, studio: { until: (e
 test.describe('listening review page', () => {
 	test('queue, keyboard ratings and flags, scope, note, save, skip', async ({ page, studio }) => {
 		await studio.open('/review.html');
-		await studio.until(loaded);
+		await studio.until(review.loaded);
 		await settle(page, studio);
 		await studio.golden('loaded');
 
@@ -77,11 +77,11 @@ test.describe('listening review page', () => {
 		await studio.tick(1200);
 		await studio.golden('rated-by-pointer');
 		await studio.open('/review.html');
-		await studio.until(loaded);
+		await studio.until(review.loaded);
 		await settle(page, studio);
 		await studio.golden('draft-restored');
 		await page.locator('#save').click();
-		await studio.until('window.reviewApp.at === 1');
+		await studio.until(review.at(1));
 		await settle(page, studio);
 		await studio.golden('saved');
 		await page.keyboard.press('s');
@@ -89,7 +89,7 @@ test.describe('listening review page', () => {
 		await studio.golden('skipped');
 		await page.locator('#note').fill('memo');
 		await page.keyboard.press('Enter');
-		await studio.until('window.reviewApp.at === 2');
+		await studio.until(review.at(2));
 		await settle(page, studio);
 		await studio.golden('saved-from-note');
 		await page.keyboard.press('z');
@@ -110,14 +110,14 @@ test.describe('listening review page', () => {
 		await page.keyboard.press('Escape');
 		// The skipped speaker stays at the end after a reload.
 		await studio.open('/review.html');
-		await studio.until(loaded);
+		await studio.until(review.loaded);
 		await settle(page, studio);
 		await studio.golden('skipped-restored');
 	});
 
 	test('jump list, filter, theme and language', async ({ page, studio }) => {
 		await studio.open('/review.html');
-		await studio.until(loaded);
+		await studio.until(review.loaded);
 		await settle(page, studio);
 		await page.locator('#jump').click();
 		await studio.tick(100);
@@ -141,7 +141,7 @@ test.describe('listening review page', () => {
 		await studio.golden('dark');
 		await page.locator('#theme-button').click();
 		await studio.choose('lang', 'en');
-		await studio.until('window.reviewApp.lang === "en" && window.reviewApp.queue.length > 0');
+		await studio.until(review.language('en'));
 		await settle(page, studio);
 		await studio.golden('english-queue');
 		await page.route('**/api/review?lang=ko*', (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'no ko' }));
@@ -160,17 +160,17 @@ test.describe('listening review page', () => {
 
 	test('update mode re-reviews a speaker with missing scales', async ({ page, studio }) => {
 		await studio.open('/review.html');
-		await studio.until(loaded);
+		await studio.until(review.loaded);
 		await settle(page, studio);
 		await page.locator('#mode button[data-mode="update"]').click();
-		await studio.until('window.reviewApp.mode === "update" && window.reviewApp.queue.length > 0');
+		await studio.until(review.modeLoaded('update'));
 		await settle(page, studio);
 		await studio.golden('update-mode');
 		await page.locator('#mode button[data-mode="update"]').click();
 		await studio.tick(100);
 		await page.keyboard.press('4');
 		await page.keyboard.press('Enter');
-		await studio.until('window.reviewApp.at === 1');
+		await studio.until(review.at(1));
 		await settle(page, studio);
 		await studio.golden('update-saved');
 		// Jump to the last speaker and finish the queue.
@@ -179,11 +179,11 @@ test.describe('listening review page', () => {
 		await settle(page, studio);
 		await page.keyboard.press('3');
 		await page.keyboard.press('Enter');
-		await studio.until('window.reviewApp.queue.length === window.reviewApp.at');
+		await studio.until(review.finished);
 		await studio.tick(200);
 		await studio.golden('update-done');
 		await studio.open('/review.html');
-		await studio.until('window.reviewApp && window.reviewApp.mode === "update"');
+		await studio.until(review.mode('update'));
 		await studio.tick(200);
 		await studio.golden('update-mode-remembered');
 		await page.route('**/api/review?lang=ja&mode=new', (route) => route.fulfill({ status: 500, contentType: 'text/plain', body: 'broken' }));
@@ -207,14 +207,14 @@ test.describe('listening review page', () => {
 		await studio.golden('keys-without-queue');
 		await page.unroute('**/api/review?lang=ja*');
 		await studio.open('/review.html');
-		await studio.until(loaded);
+		await studio.until(review.loaded);
 		await settle(page, studio);
 		await studio.golden('legacy-draft-migrated');
 	});
 
 	test('a corrupt saved state is ignored', async ({ page, studio }) => {
 		await studio.open('/review.html', async (p) => p.addInitScript(() => localStorage.setItem('koenami-review', '{broken')));
-		await studio.until(loaded);
+		await studio.until(review.loaded);
 		await settle(page, studio);
 		await studio.golden('corrupt-state');
 	});

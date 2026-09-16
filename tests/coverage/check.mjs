@@ -30,6 +30,7 @@ function* reports(dir) {
 }
 const map = libCoverage.createCoverageMap({});
 for (const path of reports(reportRoot)) {
+	console.log(`merging ${relative(root, path)} (${statSync(path).mtime.toISOString()})`);
 	const report = JSON.parse(readFileSync(path, 'utf8'));
 	for (const [file, data] of Object.entries(report)) {
 		const rel = normalize(relative(root, file.startsWith('/') ? file : join(root, file)));

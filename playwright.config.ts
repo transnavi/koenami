@@ -7,6 +7,11 @@ const root = fileURLToPath(new URL('.', import.meta.url));
 const mic = `${root}tests/fixtures/audio/microphone.wav`;
 // A port beside the default dev server (8766), so a developer's session survives a test run.
 const port = Number(process.env.E2E_PORT || 8776);
+// Which tree the browser gets: the pinned vanilla files for `old` (extracted by the
+// global setup), or the directory named by E2E_STATIC for the rewrite.
+const tree = process.env.KOENAMI_TREE || 'old';
+const site = tree === 'old' ? 'tests/old-tree/web' : process.env.E2E_STATIC;
+if (!site) throw new Error('KOENAMI_TREE=new needs E2E_STATIC=<directory with the built site>');
 
 export default defineConfig({
 	testDir: 'e2e/scenarios',
@@ -47,6 +52,8 @@ export default defineConfig({
 			]
 		}
 	},
-	// One process serves the committed web/ files, the recorded API and the sample audio.
-	webServer: { command: 'node tests/mock-api/server.mjs', port, reuseExistingServer: true, env: { MOCK_API_PORT: String(port) }, stdout: 'pipe', stderr: 'pipe' }
+	// One process, owned by Playwright, serves the site, the recorded API and the sample
+	// audio. MOCK_API_RECORD (set by tests/scripts/record-e2e.sh) makes it proxy API
+	// calls to a real analyzer and save the answers.
+	webServer: { command: 'node tests/mock-api/server.mjs', port, reuseExistingServer: false, env: { MOCK_API_PORT: String(port), MOCK_API_STATIC: site, ...(process.env.MOCK_API_RECORD ? { MOCK_API_RECORD: process.env.MOCK_API_RECORD } : {}) }, stdout: 'pipe', stderr: 'pipe' }
 });

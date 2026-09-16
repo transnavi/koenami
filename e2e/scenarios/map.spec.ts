@@ -1,13 +1,11 @@
 import { test, expect, type Page } from '../fixtures';
+import { app } from '../hooks';
 
-const ready = '!!window.voiceApp?.state.refFull && !window.voiceApp.state.loadingLanguage';
-const analysed = '!!window.voiceApp?.state.ownFull && !window.voiceApp.state.busy && window.voiceApp.state.analyzing.size === 0';
 
 // Canvas-space position of a plotted sample, taken from the map's hit list.
-const hit = (id: string) => `(() => { const p = window.voiceApp.map.hit.find(h => h.sample.id === ${JSON.stringify(id)}); return p ? [p.xy[0], p.xy[1]] : null; })()`;
 async function pointOn(page: Page, id: string) {
 	const box = (await page.locator('#voice-map').boundingBox())!;
-	const xy = (await page.evaluate(hit(id))) as [number, number] | null;
+	const xy = (await page.evaluate(app.hit(id))) as [number, number] | null;
 	if (!xy) throw new Error(`${id} is not plotted`);
 	return { x: box.x + xy[0], y: box.y + xy[1] };
 }
@@ -25,9 +23,9 @@ async function drag(page: Page, from: [number, number], to: [number, number], op
 test.describe('voice map', () => {
 	test('dimensions, projections, zoom, pan, orbit, reset and fit', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(analysed);
+		await studio.until(app.analysed);
 		await studio.tick(600);
 
 		await page.locator('[data-dimension="2"]').click();
@@ -94,7 +92,7 @@ test.describe('voice map', () => {
 
 	test('pinch, tooltip, picking a point and group toggles', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('[data-dimension="2"]').click();
 		await page.locator('#find-me').click();
 		await studio.tick(300);
@@ -124,7 +122,7 @@ test.describe('voice map', () => {
 		await studio.tick(100);
 		await studio.golden('tooltip-hidden');
 		await page.mouse.click(target.x, target.y);
-		await studio.until('window.voiceApp.state.selected?.id === "common_voice_ja_36363165" && !!window.voiceApp.state.refFull');
+		await studio.until(app.selected('common_voice_ja_36363165'));
 		await studio.until('!document.getElementById("reference-player").paused');
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');
@@ -147,7 +145,7 @@ test.describe('voice map', () => {
 	test('auto-rotation advances with the clock', async ({ page, studio }) => {
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(300);
 		await studio.golden('rotating');
 		await studio.canvas('rotating-0', '#voice-map');

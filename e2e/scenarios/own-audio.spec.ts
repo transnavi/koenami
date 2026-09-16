@@ -1,8 +1,6 @@
 import { test, expect } from '../fixtures';
+import { app } from '../hooks';
 
-const ready = '!!window.voiceApp?.state.refFull && !window.voiceApp.state.loadingLanguage';
-const analysed = '!!window.voiceApp?.state.ownFull && !window.voiceApp.state.busy && window.voiceApp.state.analyzing.size === 0';
-const idle = '!window.voiceApp.state.busy && window.voiceApp.state.analyzing.size === 0';
 
 async function dragSignal(page: import('@playwright/test').Page, from: number, to: number, y = 80) {
 	const box = (await page.locator('#signal-canvas').boundingBox())!;
@@ -16,9 +14,9 @@ async function dragSignal(page: import('@playwright/test').Page, from: number, t
 test.describe('own audio', () => {
 	test('upload, indicators, report, metric dialogs and signal views', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(analysed);
+		await studio.until(app.analysed);
 		await studio.tick(1200);
 		await studio.golden('uploaded');
 		await studio.canvas('uploaded-map', '#voice-map');
@@ -33,7 +31,7 @@ test.describe('own audio', () => {
 		await studio.choose('library-group', 'male');
 		await page.locator('#sample-list details.speaker-folder summary').first().click();
 		await page.locator('#sample-list .sample-row').first().click();
-		await studio.until('window.voiceApp.state.selected?.group === "male" && !!window.voiceApp.state.refFull');
+		await studio.until(app.selectedGroup('male') + ' && ' + app.referenceLoaded);
 		await studio.until('!document.getElementById("reference-player").paused');
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');
@@ -58,7 +56,7 @@ test.describe('own audio', () => {
 		// A focused indicator keeps focus when the panel is rebuilt.
 		await page.locator('#indicators [data-metric="hnr"]').focus();
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
-		await studio.until('window.voiceApp.state.ownName === "own-b.wav" && ' + analysed);
+		await studio.until(app.ownName('own-b.wav') + ' && ' + app.analysed);
 		await studio.tick(300);
 		await studio.golden('indicator-focus-kept');
 
@@ -84,19 +82,19 @@ test.describe('own audio', () => {
 
 	test('ranges: drag, click seek, arrow keys, reset and escape', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(analysed);
+		await studio.until(app.analysed);
 		await studio.tick(300);
 
 		// Shift+arrow without a selection starts one from the first second.
 		await page.locator('#signal-canvas').focus();
 		await page.keyboard.press('Shift+ArrowRight');
-		await studio.until('!!window.voiceApp.state.ranges.own && ' + idle);
+		await studio.until(app.range('own') + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('own-range-from-keyboard');
 		await page.locator('#range-reset').click();
-		await studio.until('!window.voiceApp.state.ranges.own');
+		await studio.until(app.noRange('own'));
 		// A frame drawn mid-drag shows the pending selection.
 		const box = (await page.locator('#signal-canvas').boundingBox())!;
 		await page.mouse.move(box.x + 200, box.y + 80);
@@ -106,7 +104,7 @@ test.describe('own audio', () => {
 		await studio.canvas('own-drag-pending', '#signal-canvas');
 		await page.mouse.move(box.x + 500, box.y + 80, { steps: 3 });
 		await page.mouse.up();
-		await studio.until('!!window.voiceApp.state.ranges.own && ' + idle);
+		await studio.until(app.range('own') + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('own-range');
 		await studio.canvas('own-range-signal', '#signal-canvas');
@@ -121,32 +119,32 @@ test.describe('own audio', () => {
 		await studio.tick(100);
 		await studio.golden('own-arrow-seek');
 		await page.keyboard.press('Shift+ArrowRight');
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('own-range-grown');
 		await page.keyboard.press('Shift+ArrowLeft');
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('own-range-shrunk');
 		await page.locator('#range-reset').click();
-		await studio.until('!window.voiceApp.state.ranges.own');
+		await studio.until(app.noRange('own'));
 		await studio.tick(300);
 		await studio.golden('own-range-reset');
 		// A selection whose analysis fails is reported.
 		await page.route('**/api/analyze', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: '解析サーバーを準備しています。' }), { times: 1 });
 		await dragSignal(page, 200, 500);
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('own-range-analysis-failed');
 
 		// Timeline drags select on the full duration; a too-narrow drag is ignored.
 		await dragSignal(page, 100, 400, 6);
-		await studio.until('!!window.voiceApp.state.ranges.own && ' + idle);
+		await studio.until(app.range('own') + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('own-timeline-range');
 		await page.locator('#signal-ref').click();
 		await dragSignal(page, 150, 450);
-		await studio.until('!!window.voiceApp.state.ranges.ref && ' + idle);
+		await studio.until(app.range('ref') + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('ref-range');
 		await dragSignal(page, 100, 110);
@@ -154,18 +152,18 @@ test.describe('own audio', () => {
 		await studio.golden('ref-range-too-short-ignored');
 		await page.locator('body').click({ position: { x: 5, y: 5 } });
 		await page.keyboard.press('Escape');
-		await studio.until('!window.voiceApp.state.ranges.own && !window.voiceApp.state.ranges.ref');
+		await studio.until(app.noRanges);
 		await studio.tick(300);
 		await studio.golden('ranges-cleared-by-escape');
 	});
 
 	test('words for own and reference audio', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(analysed);
+		await studio.until(app.analysed);
 		await page.locator('#words-button').click();
-		await studio.until('!!window.voiceApp.state.words.own');
+		await studio.until(app.words('own'));
 		await studio.tick(300);
 		await studio.golden('own-words');
 		await page.locator('#report-button').click();
@@ -177,7 +175,7 @@ test.describe('own audio', () => {
 		await studio.golden('own-word-seek');
 		await page.locator('#signal-ref').click();
 		await page.locator('#words-button').click();
-		await studio.until('!!window.voiceApp.state.words.ref');
+		await studio.until(app.words('ref'));
 		await studio.tick(300);
 		await studio.golden('ref-words');
 		await page.locator('#word-list button').nth(1).click();
@@ -188,7 +186,7 @@ test.describe('own audio', () => {
 		await studio.golden('ref-words-again');
 		await page.route('**/api/words**', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: 'Word timing is unavailable.' }));
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
-		await studio.until('window.voiceApp.state.ownName === "own-b.wav" && ' + analysed);
+		await studio.until(app.ownName('own-b.wav') + ' && ' + app.analysed);
 		await page.locator('#signal-own').click();
 		await page.locator('#words-button').click();
 		await studio.until('!document.getElementById("words-button").disabled');
@@ -198,9 +196,9 @@ test.describe('own audio', () => {
 
 	test('playback: own, A/B, speed and normalisation', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(analysed);
+		await studio.until(app.analysed);
 		await page.locator('#play-mine').click();
 		await studio.until('!document.getElementById("player").paused');
 		await studio.tick(300);
@@ -245,7 +243,7 @@ test.describe('own audio', () => {
 		await page.mouse.down();
 		await page.mouse.move(box.x + 220, box.y + 80, { steps: 4 });
 		await page.mouse.up();
-		await studio.until('!!window.voiceApp.state.ranges.ref && !window.voiceApp.state.busy');
+		await studio.until(app.range('ref') + ' && ' + app.notBusy);
 		await page.locator('#play-reference').click();
 		await studio.untilTicking('document.getElementById("reference-player").paused');
 		await studio.tick(5000);
@@ -258,16 +256,16 @@ test.describe('own audio', () => {
 
 	test('takes: second upload, history, download, restore and delete', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(analysed);
+		await studio.until(app.analysed);
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
-		await studio.until('window.voiceApp.state.ownName === "own-b.wav" && ' + analysed);
+		await studio.until(app.ownName('own-b.wav') + ' && ' + app.analysed);
 		await studio.tick(1200);
 		await studio.golden('two-takes');
 		// The current take comes back after a reload.
 		await studio.open('/ja/');
-		await studio.until(analysed);
+		await studio.until(app.analysed);
 		await studio.tick(300);
 		await studio.golden('reloaded-with-take');
 		await studio.choose('sort', 'near');
@@ -280,34 +278,34 @@ test.describe('own audio', () => {
 		await studio.golden('downloaded-previous', { extra: { wav } });
 		await page.keyboard.press('Escape');
 		await studio.choose('take-select', '1');
-		await studio.until('window.voiceApp.state.ownName === "own-a.wav" && ' + idle);
+		await studio.until(app.ownName('own-a.wav') + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('restored-first');
 		await page.locator('#take-select button.trigger').click();
 		await page.locator('#take-select button.row-action[data-value="1"][data-action="delete"]').click();
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('deleted-other');
 		await page.locator('#take-select button.trigger').click();
 		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('deleted-current');
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(300);
 		await studio.golden('after-reload');
 	});
 
 	test('rejected uploads: too short, undecodable, empty selection', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('too-short.wav'));
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('too-short');
 		await page.locator('#upload').setInputFiles(studio.audio('not-audio.wav'));
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('not-audio');
 		await studio.tick(5000);

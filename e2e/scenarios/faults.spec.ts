@@ -1,7 +1,6 @@
 import { test } from '../fixtures';
+import { app } from '../hooks';
 
-const ready = '!!window.voiceApp?.state.refFull && !window.voiceApp.state.loadingLanguage';
-const idle = '!window.voiceApp.state.busy && window.voiceApp.state.analyzing.size === 0';
 
 test.describe('server and storage faults', () => {
 	test('catalog and library failures', async ({ page, studio }) => {
@@ -19,15 +18,15 @@ test.describe('server and storage faults', () => {
 		});
 		await page.route('**/api/library?lang=ko', (route) => route.fulfill({ status: 404, contentType: 'text/plain; charset=utf-8', body: 'Not found' }));
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.choose('language', 'ko');
-		await studio.until('!window.voiceApp.state.loadingLanguage');
+		await studio.until(app.libraryLoaded);
 		await studio.tick(300);
 		await studio.golden('library-404-keeps-current');
 		// Reference audio that cannot be fetched reports a playback error.
 		await page.route('**/samples/common_voice_ja_36363165.mp3', (route) => route.fulfill({ status: 404, body: '' }));
 		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
-		await studio.until('window.voiceApp.state.selected?.id === "common_voice_ja_36363165" && !!window.voiceApp.state.refFull');
+		await studio.until(app.selected('common_voice_ja_36363165'));
 		await studio.until('document.getElementById("reference-player").error !== null');
 		await studio.tick(300);
 		await studio.golden('reference-audio-missing');
@@ -35,25 +34,25 @@ test.describe('server and storage faults', () => {
 
 	test('analysis failures for uploads: 413, 429, 422 and a network error', async ({ page, studio }) => {
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		const statuses: [number, string][] = [[413, '1分以内の音声を選んでください。'], [429, '少し待ってからお試しください。'], [422, '音声を解析できませんでした。']];
 		for (const [status, body] of statuses) {
 			await page.route('**/api/analyze', (route) => route.fulfill({ status, contentType: 'text/plain; charset=utf-8', body }), { times: 1 });
 			await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-			await studio.until(idle);
+			await studio.until(app.idle);
 			await studio.tick(300);
 			await studio.golden(`analyze-${status}`);
 			await studio.tick(5000);
 		}
 		await page.route('**/api/analyze', (route) => route.abort('connectionfailed'), { times: 1 });
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('analyze-network-error');
 		await page.route('**/api/detail/**', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: '解析サーバーを準備しています。' }), { times: 1 });
 		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
-		await studio.until('window.voiceApp.state.selected?.id === "common_voice_ja_36363165"');
-		await studio.until(idle);
+		await studio.until(app.selectedId('common_voice_ja_36363165'));
+		await studio.until(app.idle);
 		await studio.until('!document.getElementById("reference-player").paused');
 		await studio.tick(600);
 		await page.locator('#play-reference').click();
@@ -78,9 +77,9 @@ test.describe('server and storage faults', () => {
 			await route.fulfill({ response, json: detail });
 		});
 		await studio.open('/ja/');
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(idle);
+		await studio.until(app.idle);
 		for (const view of ['pitch', 'spectrogram', 'spectrum', 'waveform']) {
 			await studio.choose('signal-view', view);
 			await studio.tick(200);
@@ -107,9 +106,9 @@ test.describe('server and storage faults', () => {
 			const del = IDBObjectStore.prototype.delete;
 			IDBObjectStore.prototype.delete = function (key: IDBValidKey | IDBKeyRange) { if ((window as unknown as { __failDelete?: boolean }).__failDelete) throw new DOMException('gone', 'InvalidStateError'); return del.call(this, key); };
 		}));
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await page.evaluate('window.__failPlay = true');
 		await page.locator('#play-mine').click();
 		await studio.tick(300);
@@ -118,13 +117,13 @@ test.describe('server and storage faults', () => {
 		await studio.tick(300);
 		await studio.golden('ab-play-failed');
 		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
-		await studio.until('window.voiceApp.state.selected?.id === "common_voice_ja_36363165" && !!window.voiceApp.state.refFull');
+		await studio.until(app.selected('common_voice_ja_36363165'));
 		await studio.tick(300);
 		await studio.golden('reference-play-failed');
 		await page.evaluate('window.__failPlay = false; window.__failDelete = true');
 		await page.locator('#take-select button.trigger').click();
 		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('delete-failed');
 	});
@@ -135,11 +134,11 @@ test.describe('server and storage faults', () => {
 			const open = () => { const r: Record<string, unknown> = {}; Promise.resolve().then(() => { r.error = new DOMException('blocked', 'InvalidStateError'); (r.onerror as () => void)?.(); }); return r; };
 			Object.defineProperty(window, 'indexedDB', { value: { open, databases: async () => [] } });
 		}));
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await studio.tick(300);
 		await studio.golden('indexeddb-blocked');
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(1200);
 		await studio.golden('upload-without-storage');
 	});
@@ -152,9 +151,9 @@ test.describe('server and storage faults', () => {
 				return put.call(this, value, key);
 			};
 		}));
-		await studio.until(ready);
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
-		await studio.until(idle);
+		await studio.until(app.idle);
 		await studio.tick(1200);
 		await studio.golden('quota-exceeded');
 	});

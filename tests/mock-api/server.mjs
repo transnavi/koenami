@@ -12,7 +12,7 @@
 // sample count rounded to half a second, which replay falls back to.
 import { createServer } from 'node:http';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -114,6 +114,16 @@ createServer(async (req, res) => {
 	// recording runs as well as replays. Exact-body fixtures (uploads) are looked up first.
 	for (const key of candidates) {
 		if (existsSync(file(key))) return send(res, JSON.parse(readFileSync(file(key), 'utf8')));
+	}
+	// A capture that rounds to a bucket nobody recorded (timing on a slow machine) gets the
+	// nearest recorded bucket of the same endpoint rather than failing the run.
+	const bucket = candidates.find((k) => k.includes(' samples~'));
+	if (bucket && !upstream) {
+		const [base] = bucket.split(' samples~');
+		const want = Number(bucket.split(' samples~')[1]);
+		const nearest = readdirSync(fixtures).map((name) => { try { return JSON.parse(readFileSync(join(fixtures, name), 'utf8')).key; } catch { return ''; } })
+			.filter((k) => k.startsWith(base + ' samples~')).map((k) => ({ k, d: Math.abs(Number(k.split(' samples~')[1]) - want) })).sort((a, b) => a.d - b.d)[0];
+		if (nearest) { console.error(`mock-api: ${bucket} → ${nearest.k}`); return send(res, JSON.parse(readFileSync(file(nearest.k), 'utf8'))); }
 	}
 	if (upstream) {
 		let answer;

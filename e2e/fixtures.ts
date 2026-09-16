@@ -14,6 +14,7 @@ export const fixtureAudio = (name: string) => join(root, 'tests/fixtures/audio',
 const START = Date.UTC(2026, 0, 1, 3, 0, 0); // 2026-01-01 12:00 JST
 
 type NetEntry = { seq: number; method: string; path: string; query: string; body?: string; status?: number };
+const masked = '<audio>';
 type Studio = {
 	log: NetEntry[];
 	/** Golden a named observation of the page. `ignore` drops element ids whose state
@@ -87,24 +88,25 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		// Media elements fetch /samples in a variable number of range requests, so those
 		// are kept as the set of files touched rather than as log entries.
 		const media = new Set<string>();
+		const entries = new WeakMap<import('@playwright/test').Request, NetEntry>();
 		page.on('request', (request) => {
 			const url = new URL(request.url());
 			if (url.pathname.startsWith('/samples/')) { media.add(url.pathname); return; }
 			if (!/^\/(api|data)\//.test(url.pathname)) return;
 			const body = request.postDataBuffer();
-			log.push({ seq: ++seq, method: request.method(), path: url.pathname, query: [...url.searchParams].sort().map(([k, v]) => `${k}=${v}`).join('&'), body: body ? `${body.length}b ${sha(body)}` : undefined });
+			const entry = { seq: ++seq, method: request.method(), path: url.pathname, query: [...url.searchParams].sort().map(([k, v]) => `${k}=${v}`).join('&'), body: body ? `${body.length}b ${sha(body)}` : undefined };
+			entries.set(request, entry);
+			log.push(entry);
 		});
-		page.on('response', (response) => {
-			const url = new URL(response.url());
-			const entry = log.find((e) => e.status === undefined && e.path === url.pathname && e.method === response.request().method());
-			if (entry) entry.status = response.status();
-		});
+		page.on('response', (response) => { const entry = entries.get(response.request()); if (entry) entry.status = response.status(); });
 		const errors: string[] = [];
 		page.on('pageerror', (error) => errors.push(String(error)));
 
-		// Layout, font and media events arrive in real time; a short real pause before the
-		// fake frames lets them land in the same order whether the API answered quickly
-		// (replay) or slowly (recording against the analyzer).
+		// Layout, font and media events arrive in real time: ResizeObserver callbacks after
+		// a panel changes size, font loading that reflows text, media metadata after a
+		// source is set. A short real pause before the fake frames lets them land in the
+		// same order whether the API answered quickly (replay) or slowly (recording
+		// against the analyzer); the app exposes no hook for these events.
 		const settle = async () => { await page.waitForTimeout(60); await page.evaluate(() => document.fonts.ready).catch(() => {}); };
 		const tick = async (ms = 100) => { await settle(); await page.clock.runFor(ms); };
 		const until = async (expression: string, timeoutMs = 30_000) => {
@@ -134,13 +136,32 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				...extra
 			};
 			// Microphone audio differs between runs (the fake device loops its file from
-			// launch); hashes of captured samples and their analysis bodies are masked.
-			if (maskAudio) observation = JSON.parse(JSON.stringify(observation, (key, value) => ['sha256', 'body', 'waveform', 'duration', 'length'].includes(key) && value !== null ? '<audio>' : value));
+			// launch). Only what derives from the captured samples is masked: the bodies of
+			// analysis requests and the sample-dependent fields of stored recordings.
+			if (maskAudio) {
+				for (const entry of observation.network) if (entry.method === 'POST' && entry.path === '/api/analyze' && entry.body) entry.body = masked;
+				const strip = (value: unknown): unknown => {
+					if (Array.isArray(value)) return value.map(strip);
+					if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, k === 'waveform' || (['sha256', 'duration', 'length'].includes(k) && v !== null && typeof v !== 'object') ? masked : strip(v)]));
+					return value;
+				};
+				const storage = observation.storage as { idb: Record<string, unknown>; local: Record<string, unknown> };
+				for (const key of Object.keys(storage.idb)) if (key.startsWith('recording:') || key === 'takes') storage.idb[key] = strip(storage.idb[key]);
+				if (storage.local['koenami-session']) storage.local['koenami-session'] = strip(storage.local['koenami-session']);
+			}
 			const path = join(dir, `${name}.json`);
 			const text = JSON.stringify(observation, null, 1) + '\n';
 			if (record) { writeFileSync(path, text); return; }
 			if (!existsSync(path)) throw new Error(`missing golden ${file}/${name}; run with RECORD=1`);
-			expect(text, `golden ${file}/${name}`).toBe(readFileSync(path, 'utf8'));
+			const expected = readFileSync(path, 'utf8');
+			if (text !== expected) {
+				// Every later golden of the test is still compared; the actual observation is
+				// kept next to the test's output for diffing.
+				const out = info.outputPath(`${name}.actual.json`);
+				mkdirSync(info.outputPath(), { recursive: true });
+				writeFileSync(out, text);
+				expect.soft(JSON.parse(text), `golden ${file}/${name} (actual: ${out})`).toEqual(JSON.parse(expected));
+			}
 		};
 		const canvas = async (name: string, selector: string) => {
 			await settle();

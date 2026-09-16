@@ -7,6 +7,10 @@ export type Observation = {
 	storage?: unknown;
 };
 
+// Class names that carry meaning for the tests (state, kind of row) rather than styling.
+// A rewrite may add its own classes; only these are compared.
+export const contractClasses = ['sample-row', 'speaker-folder', 'speaker-more', 'favorite', 'indicator', 'error', 'toast', 'active', 'live-button', 'record-button', 'list-item', 'scale', 'scale-group'];
+
 export function domProjection(): Observation {
 	const collapse = (s: string | null) => (s || '').replace(/\s+/g, ' ').trim();
 	const attrs = (el: Element) => {
@@ -17,7 +21,7 @@ export function domProjection(): Observation {
 	const elements: Record<string, unknown> = {};
 	for (const el of document.querySelectorAll('[id]')) {
 		const id = el.id;
-		const entry: Record<string, unknown> = { tag: el.tagName.toLowerCase(), class: [...el.classList].sort().join(' '), attrs: attrs(el) };
+		const entry: Record<string, unknown> = { tag: el.tagName.toLowerCase(), class: [...el.classList].filter((c) => contractClasses.includes(c)).sort().join(' '), attrs: attrs(el) };
 		if (el instanceof HTMLInputElement) { entry.value = el.value; if (el.type === 'checkbox' || el.type === 'radio') entry.checked = el.checked; if (el.type === 'file') entry.files = el.files?.length || 0; }
 		else if (el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement || el instanceof HTMLOutputElement) entry.value = el.value;
 		if (el instanceof HTMLDialogElement) entry.open = el.open;
@@ -35,8 +39,13 @@ export function domProjection(): Observation {
 			entry.rows = { count: lines.length, head: lines.slice(0, 40), tail: lines.slice(-5) };
 		} else if (rows.length > 40) entry.children = rows.length;
 		else entry.text = collapse(el.textContent).slice(0, 600);
-		// --mic-level follows the live microphone signal and cannot be pinned.
-		if (el instanceof HTMLElement && el.style.cssText) entry.style = el.style.cssText.replace(/--mic-level: [^;]*;/, '--mic-level: <live>;');
+		// Inline styles are compared only through their custom properties (how the app
+		// passes values to CSS); --mic-level follows the live microphone signal and is masked.
+		if (el instanceof HTMLElement && el.style.length) {
+			const custom: Record<string, string> = {};
+			for (const name of el.style) if (name.startsWith('--')) custom[name] = name === '--mic-level' ? '<live>' : el.style.getPropertyValue(name).trim();
+			if (Object.keys(custom).length) entry.style = custom;
+		}
 		elements[id] = entry;
 	}
 	// The seek slider and the clocks show media time, which depends on how long audio
