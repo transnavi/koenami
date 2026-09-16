@@ -15,7 +15,7 @@ const STEPS=[
  {target:['#live-mode'],title:'リアルタイム測定',text:'話している声をそのまま地図に描きます。見本の点に近づく方向を確かめながら、声を変えてみてください。'},
  {target:['#info-button'],title:'詳しい説明',text:'使い方、声のしくみと練習の手引き、測定方法と出典は、このボタンから開けます。ガイドをもう一度見ることもできます。'},
 ];
-const phone=matchMedia('(max-width:800px)');
+const phone=matchMedia('(max-width:800px),(max-height:520px)');
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{};}catch{return {};}};
 const save=v=>{try{localStorage.setItem(KEY,JSON.stringify(v));}catch{}};
 
@@ -31,7 +31,7 @@ function build(){
  card.addEventListener('focusout',e=>{if(card.open&&e.relatedTarget&&!card.contains(e.relatedTarget))card.querySelector('[data-act=next]').focus();});
  document.body.append(shade,card);
 }
-const visible=el=>{if(!el)return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&!el.closest('dialog:not([open])');};
+const visible=el=>{if(!el||!el.checkVisibility())return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0;};
 const target=()=>(STEPS[step].target||[]).map(s=>document.querySelector(s)).find(visible)||null;
 function place(){
  const el=target(),pad=8;
@@ -47,7 +47,7 @@ function place(){
  card.style.left=`${left}px`;card.style.top=`${top}px`;
 }
 function show(n){
- step=Math.max(0,Math.min(STEPS.length-1,n));save({step});
+ step=Math.max(0,Math.min(STEPS.length-1,n));save({...load(),step});
  const s=STEPS[step];
  card.querySelector('#tour-count').textContent=`${step+1} / ${STEPS.length}`;
  card.querySelector('#tour-title').textContent=s.title;card.querySelector('#tour-text').textContent=s.text;
@@ -59,7 +59,7 @@ function show(n){
 }
 function next(){if(step>=STEPS.length-1)finish();else show(step+1);}
 function close(){shade.hidden=true;if(card.open)card.close();cancelAnimationFrame(raf);}
-function pause(){save({step});close();}
+function pause(){save({...load(),step});close();}
 function finish(){save({done:true});close();}
 function tick(){if(card?.open)place();raf=requestAnimationFrame(tick);}
 
