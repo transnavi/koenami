@@ -32,6 +32,10 @@ def main(url):
             assert page.locator('#anchors button').count() == 6
             assert page.evaluate('reviewApp.queue.every(q=>q.clips.length>0)')
             # Every tenth item is a blind repeat of a rated speaker on an unheard clip; it saves with mode "repeat".
+            # Pools interleave 5 : 2 : 1 — Common Voice, JVS on one parallel sentence, synthetic — before the repeats are mixed in.
+            pools = page.evaluate('reviewApp.queue.slice(0,8).map(q=>q.pool)'); assert pools == ['cv'] * 5 + ['jvs'] * 2 + ['synthetic'], pools
+            assert page.evaluate('reviewApp.queue.filter(q=>q.pool==="jvs").every(q=>q.first.endsWith("VOICEACTRESS100_025")&&q.clips.length===3)')
+            assert page.evaluate('reviewApp.queue.filter(q=>q.pool==="synthetic").every(q=>q.clips[0].display==="VOICEVOX")')
             repeats = page.evaluate('reviewApp.queue.map((q,i)=>[i,q.repeat]).filter(x=>x[1])')
             assert repeats[:2] == [[8, 'repeat'], [17, 'speaker_repeat']] or not repeats, repeats
             # Rows come from the server in groups; a digit rates the active row and moves to the next one.

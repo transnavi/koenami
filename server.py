@@ -191,6 +191,8 @@ def create_app():
 
     app.router.add_get('/api/import-index/jvs', import_index)
 
+    JVS_PARALLEL = ('VOICEACTRESS100_025', 'VOICEACTRESS100_033', 'VOICEACTRESS100_064')
+
     def review_queue(lang, mode='new', session=''):
         """One representative clip per human speaker, order shuffled with the session as seed.
 
@@ -198,14 +200,20 @@ def create_app():
         ratings miss a current scale.
         """
         verdicts = curation.Verdicts()
-        by_speaker = {}
+        # Three pools so the ratings gain range: Common Voice speakers, JVS professionals on one parallel sentence
+        # (the same text for all 100, so voice differences are not sentence differences), and VOICEVOX synthetic voices.
+        by_speaker, pool_of = {}, {}
         for c in libraries[lang]['clips']:
-            if c.get('synthetic') or c.get('dataset') == 'JVS': continue
-            by_speaker.setdefault(c['speaker'], []).append(c)
+            if c.get('dataset') == 'JVS':
+                if c.get('utterance') not in JVS_PARALLEL: continue
+                pool = 'jvs'
+            else: pool = 'synthetic' if c.get('synthetic') else 'cv'
+            by_speaker.setdefault(c['speaker'], []).append(c); pool_of[c['speaker']] = pool
         queue = []
         for sid, clips in by_speaker.items():
-            best = max(clips, key=lambda c: (bool(c.get('plotted')), c.get('duration', 0)))
-            queue.append({'speaker': sid, 'clips': [dict(id=c['id'], display=c.get('display_label'), text=c.get('text'),
+            if pool_of[sid] == 'jvs': best = next((c for c in clips if c.get('utterance') == JVS_PARALLEL[0]), clips[0])
+            else: best = max(clips, key=lambda c: (bool(c.get('plotted')), c.get('duration', 0)))
+            queue.append({'speaker': sid, 'pool': pool_of[sid], 'clips': [dict(id=c['id'], display='VOICEVOX' if c.get('synthetic') else (c.get('display_label') or c.get('name') or sid), text=c.get('text'),
                           audio=c['audio'], duration=c.get('duration'), plotted=bool(c.get('plotted'))) for c in sorted(clips, key=lambda c: c['id'])], 'first': best['id']})
         rng = random.Random(session or 'koenami')
         rng.shuffle(queue)
@@ -220,7 +228,13 @@ def create_app():
             # Speakers whose last listen flagged the audio get no impression ratings; they are curated, not rated.
             queue = [q for q in queue if q['missing'] and not q['previous']['flags']]
         else:
-            fresh = [q for q in queue if q['speaker'] not in reviewed]
+            # Unreviewed speakers interleaved 5 : 2 : 1 (Common Voice : JVS : synthetic) until a pool runs dry.
+            pools = {name: [q for q in queue if q['speaker'] not in reviewed and q['pool'] == name] for name in ('cv', 'jvs', 'synthetic')}
+            pattern = ['cv'] * 5 + ['jvs'] * 2 + ['synthetic']
+            fresh = []
+            while any(pools.values()):
+                for name in pattern:
+                    if pools[name]: fresh.append(pools[name].pop())
             # Blind repeats, empty form, no marker. Every eighth item alternates between the same clip rated in an
             # earlier session (rater reliability) and an unheard clip of a rated speaker (speaker consistency).
             heard = {r['clip'] for r in verdicts.reviews if r.get('clip')}
