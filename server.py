@@ -191,10 +191,11 @@ def create_app():
 
     app.router.add_get('/api/import-index/jvs', import_index)
 
-    def review_queue(lang, mode='new'):
-        """One representative clip per human speaker, female group first, longest plotted clip.
+    def review_queue(lang, mode='new', session=''):
+        """One representative clip per human speaker, order shuffled with the session as seed.
 
-        mode 'new' lists unreviewed speakers; 'update' lists reviewed speakers whose ratings miss a current scale.
+        mode 'new' lists unreviewed speakers with blind repeats mixed in; 'update' lists reviewed speakers whose
+        ratings miss a current scale.
         """
         verdicts = curation.Verdicts()
         by_speaker = {}
@@ -204,9 +205,10 @@ def create_app():
         queue = []
         for sid, clips in by_speaker.items():
             best = max(clips, key=lambda c: (bool(c.get('plotted')), c.get('duration', 0)))
-            queue.append({'speaker': sid, 'group': best['group'], 'clips': [dict(id=c['id'], display=c.get('display_label'), text=c.get('text'),
-                          audio=c['audio'], duration=c.get('duration')) for c in sorted(clips, key=lambda c: c['id'])], 'first': best['id']})
-        queue.sort(key=lambda q: (q['group'] != 'female', q['clips'][0]['display'] or ''))
+            queue.append({'speaker': sid, 'clips': [dict(id=c['id'], display=c.get('display_label'), text=c.get('text'),
+                          audio=c['audio'], duration=c.get('duration'), plotted=bool(c.get('plotted'))) for c in sorted(clips, key=lambda c: c['id'])], 'first': best['id']})
+        rng = random.Random(session or 'koenami')
+        rng.shuffle(queue)
         reviewed = {r['speaker'] for r in verdicts.reviews if r.get('language', 'ja') == lang}
         keys = [s['key'] for s in curation.SCALES if not s.get('only') or s['only'] == lang]
         if mode == 'update':
@@ -215,26 +217,47 @@ def create_app():
                 q['previous'] = verdicts.latest(q['speaker'])
                 q['missing'] = [k for k in keys if k not in q['previous']['ratings']]
                 if q['previous']['clip'] in {c['id'] for c in q['clips']}: q['first'] = q['previous']['clip']
-            queue = [q for q in queue if q['missing']]
+            # Speakers whose last listen flagged the audio get no impression ratings; they are curated, not rated.
+            queue = [q for q in queue if q['missing'] and not q['previous']['flags']]
         else:
             fresh = [q for q in queue if q['speaker'] not in reviewed]
-            # Blind repeats: every tenth item is an already-rated speaker on a clip not yet heard, with an
-            # empty form, so the log accumulates independent second judgements for test-retest reliability.
-            heard = {r['clip'] for r in verdicts.reviews}
-            repeats = [dict(q, first=next(c['id'] for c in q['clips'] if c['id'] not in heard), repeat=True)
-                       for q in queue if q['speaker'] in reviewed and any(c['id'] not in heard for c in q['clips'])]
-            random.Random(len(reviewed)).shuffle(repeats)
+            # Blind repeats, empty form, no marker. Every eighth item alternates between the same clip rated in an
+            # earlier session (rater reliability) and an unheard clip of a rated speaker (speaker consistency).
+            heard = {r['clip'] for r in verdicts.reviews if r.get('clip')}
+            earlier = [r for r in verdicts.reviews if r.get('clip') and r.get('mode', 'new') == 'new' and r['ratings'] and r.get('session') != session]
+            by_id = {c['id']: q for q in queue for c in q['clips']}
+            same = [dict(by_id[r['clip']], first=r['clip'], repeat='repeat') for r in earlier if r['clip'] in by_id and not r['flags']]
+            other = [dict(q, first=next(c['id'] for c in q['clips'] if c['id'] not in heard and c['plotted']), repeat='speaker_repeat')
+                     for q in queue if q['speaker'] in reviewed and any(c['id'] not in heard and c['plotted'] for c in q['clips'])]
+            rng.shuffle(same); rng.shuffle(other)
             queue = []
             for i, q in enumerate(fresh):
                 queue.append(q)
-                if i % 10 == 9 and repeats: queue.append(repeats.pop())
+                if i % 8 == 7:
+                    pool = same if (i // 8) % 2 == 0 else other
+                    if pool: queue.append(pool.pop())
         return {'language': lang, 'mode': mode, 'reviewed': len(reviewed), 'queue': queue}
+
+    def anchors(lang):
+        """Rated clips at the ends of three scales, replayable while rating so the scale points stay put."""
+        verdicts = curation.Verdicts()
+        clips = {c['id']: c for c in libraries[lang]['clips']}
+        rows = [r for r in verdicts.reviews if r.get('clip') in clips and r['ratings'] and not r['flags'] and r.get('language', 'ja') == lang]
+        out = []
+        for key in ['femininity', 'naturalness', 'thickness']:
+            rated = [r for r in rows if key in r['ratings']]
+            if len(rated) < 6: continue
+            low = min(rated, key=lambda r: (r['ratings'][key], -clips[r['clip']].get('duration', 0)))
+            high = max(rated, key=lambda r: (r['ratings'][key], clips[r['clip']].get('duration', 0)))
+            for r, end in ((low, 'low'), (high, 'high')):
+                out.append({'scale': key, 'end': end, 'value': r['ratings'][key], 'clip': r['clip'], 'audio': clips[r['clip']]['audio'], 'display': clips[r['clip']].get('display_label')})
+        return out
 
     async def review_get(request):
         if PUBLIC: raise web.HTTPNotFound()
-        lang, mode = request.query.get('lang', 'ja'), request.query.get('mode', 'new')
+        lang, mode, session = request.query.get('lang', 'ja'), request.query.get('mode', 'new'), request.query.get('session', '')[:40]
         if lang not in libraries or mode not in ('new', 'update'): raise web.HTTPNotFound()
-        return respond({**review_queue(lang, mode), 'flags': curation.PROBLEMS, 'offered': list(curation.QUALITY), 'scales': curation.SCALES, 'ageDecades': curation.AGE_DECADES, 'log': curation.load()[-200:]})
+        return respond({**review_queue(lang, mode, session), 'anchors': anchors(lang), 'flags': curation.PROBLEMS, 'offered': list(curation.QUALITY), 'scales': curation.SCALES, 'ageDecades': curation.AGE_DECADES, 'log': curation.load()[-200:]})
 
     async def review_post(request):
         if PUBLIC: raise web.HTTPNotFound()

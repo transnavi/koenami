@@ -9,7 +9,10 @@
 - flags: list of QUALITY keys (problems with this clip's audio)
 - ratings: optional 0-6 scores keyed by RATING_KEYS; `age` is the decade the voice sounds like (AGE_DECADES).
   `japanese` doubles as the pronunciation judgement (see NATIVE_MIN and friends).
-- mode: how the review was produced — 'new', 'update' (追加項目, prefilled) or 'repeat' (blind second listen)
+- mode: how the review was produced — 'new', 'update' (追加項目, prefilled), 'repeat' (blind second listen of the
+  same clip) or 'speaker_repeat' (blind listen of another clip of a rated speaker)
+- session: id of the rating session, so order effects and drift can be examined
+- pass: which scale group was rated when the form was split ('all' or a group name)
 - note: free text
 - reviewed: ISO timestamp
 
@@ -84,12 +87,15 @@ def append(review, path=LOG):
     speaker = review.get('speaker')
     if not isinstance(speaker, str) or not speaker: raise ValueError('speaker required')
     mode = review.get('mode') or 'new'
-    if mode not in ('new', 'update', 'repeat'): raise ValueError('mode must be new, update or repeat')
+    if mode not in ('new', 'update', 'repeat', 'speaker_repeat'): raise ValueError('unknown mode')
+    session = str(review.get('session') or '')[:40]
+    rating_pass = str(review.get('pass') or 'all')[:20]
     note = review.get('note') or ''
     if not isinstance(note, str) or len(note) > 1000: raise ValueError('note must be text under 1000 characters')
+    if flags: ratings = {}  # a clip with an audio problem gets no impression ratings
     if not flags and not ratings and not note.strip(): raise ValueError('empty review')
     record = {'speaker': speaker, 'clip': review.get('clip') or None, 'display': review.get('display'),
-              'language': review.get('language', 'ja'), 'flags': flags, 'ratings': ratings, 'mode': mode,
+              'language': review.get('language', 'ja'), 'flags': flags, 'ratings': ratings, 'mode': mode, 'session': session, 'pass': rating_pass,
               'note': note.strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a') as f: f.write(json.dumps(record, ensure_ascii=False) + '\n')

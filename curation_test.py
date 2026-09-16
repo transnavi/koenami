@@ -66,15 +66,17 @@ class ReviewLogTests(unittest.TestCase):
     def test_append_validates_and_persists(self):
         with tempfile.TemporaryDirectory() as folder:
             log = Path(folder) / 'reviews.jsonl'
-            record = append({'speaker': 'a', 'clip': 'x', 'flags': ['noise', 'noise'], 'ratings': {'age': 40, 'femininity': None}}, log)
-            self.assertEqual(record['flags'], ['noise']); self.assertNotIn('scope', record); self.assertEqual(record['ratings'], {'age': 40})
+            record = append({'speaker': 'a', 'clip': 'x', 'flags': [], 'ratings': {'age': 40, 'femininity': None}, 'session': 's1', 'pass': '声質'}, log)
+            self.assertEqual(record['ratings'], {'age': 40}); self.assertEqual((record['session'], record['pass'], record['mode']), ('s1', '声質', 'new'))
+            record = append({'speaker': 'a', 'clip': 'x', 'flags': ['noise', 'noise'], 'ratings': {'age': 40}}, log)
+            self.assertEqual(record['flags'], ['noise']); self.assertNotIn('scope', record); self.assertEqual(record['ratings'], {}, 'flagged audio carries no ratings')
             self.assertEqual(append({'speaker': 'a', 'clip': 'x', 'flags': ['noise']}, log)['flags'], ['noise'])
             self.assertEqual(json.loads(log.read_text().splitlines()[0])['speaker'], 'a')
             for bad in [{'speaker': 'a', 'ratings': {'femininity': 9}}, {'speaker': 'a'}, {'speaker': 'a', 'flags': ['bogus']},
                         {'speaker': 'a', 'flags': ['noise']}, {'speaker': 'a', 'flags': ['native_like']},
                         {'speaker': 'a', 'flags': 'noise'}, {'speaker': 'a', 'ratings': {'age': True}}, {'speaker': 'a', 'ratings': {'age': 25}}, {'speaker': 'a', 'note': 'x' * 1001}, 'text']:
                 with self.assertRaises(ValueError, msg=bad): append(bad, log)
-            self.assertEqual(len(log.read_text().splitlines()), 2)
+            self.assertEqual(len(log.read_text().splitlines()), 3)
 
     def test_migrated_log_matches_previous_exclusions(self):
         migrated = [r for r in Verdicts().reviews if r['reviewed'].startswith('2026-09-15')]

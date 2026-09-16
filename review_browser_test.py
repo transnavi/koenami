@@ -25,13 +25,15 @@ def main(url):
             page.route('**/api/review', intercept)
             page.goto(url + '/review.html')
             wait(page, 'window.reviewApp?.queue.length>0')
-            first = page.evaluate('({speaker:reviewApp.queue[0].speaker,clips:reviewApp.queue[0].clips.length,group:reviewApp.queue[0].group})')
-            assert first['group'] == 'female', first
-            assert page.locator('#display').inner_text().startswith('F'), page.locator('#display').inner_text()
+            first = page.evaluate('({speaker:reviewApp.queue[0].speaker,clips:reviewApp.queue[0].clips.length})')
+            # Blind: no gender letter or group text before rating; order is seeded by the session.
+            assert page.locator('#display').inner_text().startswith('№'), page.locator('#display').inner_text()
+            assert '女性' not in page.locator('#speaker-meta').inner_text() and page.evaluate('reviewApp.session.length>6')
+            assert page.locator('#anchors button').count() == 6
             assert page.evaluate('reviewApp.queue.every(q=>q.clips.length>0)')
             # Every tenth item is a blind repeat of a rated speaker on an unheard clip; it saves with mode "repeat".
-            repeats = page.evaluate('reviewApp.queue.map((q,i)=>[i,!!q.repeat]).filter(x=>x[1]).map(x=>x[0])')
-            assert repeats[:2] == [10, 21] or not repeats, repeats
+            repeats = page.evaluate('reviewApp.queue.map((q,i)=>[i,q.repeat]).filter(x=>x[1])')
+            assert repeats[:2] == [[8, 'repeat'], [17, 'speaker_repeat']] or not repeats, repeats
             # Rows come from the server in groups; a digit rates the active row and moves to the next one.
             assert page.evaluate('reviewApp.scales.map(s=>s.key)')[:5] == ['femininity', 'masculinity', 'japanese', 'naturalness', 'age']
             assert page.locator('.scale-group').all_inner_texts() == ['性別・発音', '声質', '話し方', '印象']
@@ -51,7 +53,7 @@ def main(url):
             # Flags: pronunciation flags are exclusive, clip flags accumulate.
             assert page.locator('#scope').count() == 0 and page.locator('#pronunciation-flags').count() == 0
             page.keyboard.press('z'); page.keyboard.press('e')
-            assert page.evaluate('[...reviewApp.chosen]') == ['noise', 'no_speech']
+            assert page.evaluate('[...reviewApp.chosen]') == ['noise', 'no_speech'] and page.locator('#scales').is_hidden()
             page.locator('#quality-flags > button[aria-pressed=true]').first.click()
             assert page.evaluate('[...reviewApp.chosen]') == ['noise']
             # Clip navigation stays within the speaker.
@@ -59,9 +61,9 @@ def main(url):
                 page.keyboard.press('ArrowRight'); assert page.evaluate('reviewApp.clip') == (page.evaluate('reviewApp.queue[0].clips.findIndex(c=>c.id===reviewApp.queue[0].first)') + 1) % first['clips']
             page.locator('#note').fill('テスト'); page.keyboard.press('Enter')
             wait(page, 'reviewApp.at===1')
-            assert saved[0]['speaker'] == first['speaker'] and saved[0]['flags'] == ['noise'] and 'scope' not in saved[0] and saved[0]['ratings'] == {'femininity': 5, 'masculinity': 1, 'japanese': 5, 'age': 60, 'nasality': 4, 'articulation': 2} and saved[0]['note'] == 'テスト'
-            assert saved[0]['language'] == 'ja' and saved[0]['clip'].startswith('common_voice_ja_') and saved[0]['mode'] == 'new'
-            assert 'テスト' in page.locator('#log').inner_text() and '雑音' in page.locator('#log').inner_text() and '聞こえる年代 60代以上' in page.locator('#log').inner_text()
+            assert saved[0]['speaker'] == first['speaker'] and saved[0]['flags'] == ['noise'] and saved[0]['ratings'] == {} and saved[0]['note'] == 'テスト'  # a flagged clip carries no ratings
+            assert saved[0]['language'] == 'ja' and saved[0]['clip'].startswith('common_voice_ja_') and saved[0]['mode'] == 'new' and saved[0]['pass'] == 'all' and saved[0]['session']
+            assert 'テスト' in page.locator('#log').inner_text() and '雑音' in page.locator('#log').inner_text()
             # Skipping moves the speaker to the end of the queue without a save; an empty save is refused.
             second = page.evaluate('reviewApp.queue[1].speaker'); length = page.evaluate('reviewApp.queue.length')
             page.keyboard.press('s'); assert page.evaluate('reviewApp.at') == 1 and len(saved) == 1
@@ -78,7 +80,7 @@ def main(url):
             assert page.evaluate('document.documentElement.dataset.theme') != before; page.locator('#theme-button').click()
             # Answers typed on one speaker survive a detour to another speaker and back.
             page.keyboard.press('2'); page.keyboard.press('z')
-            page.locator('#jump').click(); page.locator('#list-filter').fill(page.evaluate('reviewApp.queue[5].clips[0].display')); page.locator('#list-items .list-item').first.click()
+            page.locator('#jump').click(); page.locator('#list-filter').fill(page.evaluate('reviewApp.queue[5].clips[0].display.replace(/^[FM]\\s*/,"")')); page.locator('#list-items .list-item').first.click()
             assert page.evaluate('reviewApp.at') == 5 and page.evaluate('reviewApp.ratings') == {}
             page.keyboard.press('Backspace'); page.keyboard.press('Backspace')
             page.locator('#jump').click(); page.locator('#list-filter').fill(''); page.locator('#list-items .list-item[data-index="3"]').click()
@@ -98,6 +100,11 @@ def main(url):
             assert page.locator('#quality-flags > button').count() == 4 and 'O' not in page.locator('#quality-flags').inner_text()
             page.keyboard.press(' '); paused = page.evaluate('document.querySelector("#play").getAttribute("aria-pressed")')
             page.keyboard.press(' '); assert page.evaluate('document.querySelector("#play").getAttribute("aria-pressed")') != paused
+            # A pass shows one scale group; ratings from other groups are not sent.
+            page.locator('#pass button[data-pass="声質"]').click()
+            assert page.evaluate('reviewApp.scales.length') > page.locator('.scale').count() == 5 and page.locator('.scale-group').all_inner_texts() == ['声質', '話し方']
+            page.keyboard.press('3'); assert page.evaluate('reviewApp.ratings.clarity') == 3
+            page.locator('#pass button[data-pass="all"]').click(); assert page.locator('.scale').count() == 14
             # Playback loops; 追加項目 mode prefills a reviewed speaker and points at the first missing row.
             assert page.evaluate('document.querySelector("#play")&&true') and page.evaluate('new Audio().loop') is False
             assert page.evaluate('(()=>{for(const a of performance.getEntriesByType("resource"))if(a.name.includes("/samples/"))return true;return false})()')
@@ -111,13 +118,13 @@ def main(url):
             page.reload(); wait(page, 'window.reviewApp?.queue.length>=0'); assert page.evaluate('reviewApp.mode') == 'update'
             page.locator('#mode button[data-mode=new]').click(); wait(page, 'reviewApp.mode==="new"&&reviewApp.queue.length>0&&!reviewApp.queue[0].previous')
             # The main app no longer carries a rating panel or neural capability.
+            page.evaluate('localStorage.setItem("voice-tour", JSON.stringify({done:true}))')  # skip the first-visit guide
             page.goto(url + '/ja/'); wait(page, '!!window.voiceApp?.state.refFull')
             assert page.locator('#perception-button').count() == 0 and page.locator('#perception-dialog').count() == 0
             for query in ['JVS002', 'jvs 002']:
-                page.locator('#search').fill(query)
-                assert page.locator('.speaker-folder').count() == 1
+                page.locator('#search').click(); page.keyboard.press('Control+A'); page.keyboard.type(query); wait(page, 'document.querySelectorAll(".speaker-folder").length===1')
                 assert 'jvs002' in page.locator('.speaker-folder').get_attribute('data-speaker')
-            page.locator('#search').fill('F2804'); assert page.locator('.speaker-folder[data-speaker$="641429ff339d"]').count() == 1
+            page.locator('#search').click(); page.keyboard.press('Control+A'); page.keyboard.type('F2804'); wait(page, '[...document.querySelectorAll(".speaker-folder")].some(f=>f.dataset.speaker.endsWith("641429ff339d"))')
             assert not errors, errors
             print(json.dumps({'passed': ['Review queue orders unreviewed female speakers first', 'Grouped scales from the server, digit auto-advance, decade ages, per-clip quality flags', 'Save posts the review and advances; skip requeues, empty save refused', 'Position, skipped speakers and draft survive reload', 'Looped playback; 追加項目 mode prefills previous answers and targets missing scales', 'Main app has no rating panel; speaker search works']}, ensure_ascii=False))
         finally:
