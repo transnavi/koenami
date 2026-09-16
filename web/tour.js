@@ -52,7 +52,9 @@ function place(){
  const box=el?(r=>({l:r.left-pad,t:r.top-pad,w:r.width+2*pad,h:r.height+2*pad}))(el.getBoundingClientRect()):{l:innerWidth/2,t:innerHeight/2,w:0,h:0};
  Object.assign(spot.style,{left:`${box.l}px`,top:`${box.t}px`,width:`${box.w}px`,height:`${box.h}px`,opacity:el?1:0});
  const [bt,br,bb,bl]=blockers;Object.assign(bt.style,{left:0,top:0,width:'100%',height:`${Math.max(0,box.t)}px`});Object.assign(bb.style,{left:0,top:`${box.t+box.h}px`,width:'100%',bottom:0,height:'auto'});Object.assign(bl.style,{left:0,top:`${box.t}px`,width:`${Math.max(0,box.l)}px`,height:`${box.h}px`});Object.assign(br.style,{left:`${box.l+box.w}px`,top:`${box.t}px`,right:0,width:'auto',height:`${box.h}px`});
- if(phone.matches||!el){card.style.left=card.style.top='';card.classList.toggle('tour-card-center',!el&&!phone.matches);return;}
+ if(phone.matches||!el){card.style.left=card.style.top='';card.classList.toggle('tour-card-center',!el&&!phone.matches);
+  // On phones the card is a sheet at the bottom, or at the top when the lit area sits in the lower half.
+  card.classList.toggle('tour-card-top',phone.matches&&!!el&&box.t+box.h/2>innerHeight/2);return;}
  card.classList.remove('tour-card-center');
  const r=el.getBoundingClientRect(),w=card.offsetWidth,h=card.offsetHeight,gap=14,vw=innerWidth,vh=innerHeight;
  let top=r.bottom+gap,left=r.left;
