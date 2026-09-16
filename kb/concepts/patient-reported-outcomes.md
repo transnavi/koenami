@@ -1,0 +1,21 @@
+---
+type: concept
+title: "Patient-reported outcomes and voice-related quality of life"
+aliases: ["voice-related-quality-of-life", "TVQ", "TWVQ", "VHI"]
+---
+
+# Patient-reported outcomes and voice-related quality of life
+
+Questionnaires that capture how a person experiences their voice: the Trans Woman Voice Questionnaire (TVQ-MtF/TWVQ), its translations, the Voice Handicap Index, and generic quality of life. They track self-perception more than listener perception.
+
+## What is known
+- TVQ(MtF) was developed from interviews and validated with α = .964–.974 and ICC 0.979 [[dacakis2013]]; validated translations: German (α 0.97, r = 0.88 with VHI, two factors) [[salm2020]], Italian [[robotti2022]], Portuguese use data [[schwarz2017]], simplified Chinese TWVQ-SC (α 0.97, ICC 0.84, r = 0.85 with VHI-10; trans women 86 vs cis women 34) [[wang2022]]; Hebrew scores correlated with F0 and vocal range [[diamant2021]].
+- Quality of life relates more to self-rated voice than to listener ratings [[hancock2011]]; the main burdens are emotional reactions to activity and participation limits, not demographics [[hancock2017]]; self- and listener ratings correlate weakly [[quinn2021]].
+- Surgery and therapy both improve PROMs; Wendler + therapy gives the largest TWVQ change [[chowdhury2025]]; TVQMtF fell from 89.9 to 50.4 after glottoplasty [[zhang2023cn]].
+- In trans men, VHI fell after testosterone to control levels [[nimura2022]]; across 313 TGD adults, hormone therapy and counselling were associated with better TWVQ/TVQFtM scores [[shen2026]].
+
+## Open questions
+- No validated Japanese TVQ/TWVQ in this vault — a translation and validation would be a concrete project.
+
+## Related
+[[voice-feminization-therapy]] · [[voice-surgery]] · [[voice-masculinization]]
