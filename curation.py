@@ -49,9 +49,12 @@ QUALITY = {
     'murmur': 'つぶやきのみ',
     'noise': '雑音',
     'distorted': '歪み',
-    'other_speaker': '別の話者',
 }
+# No longer offered in the review page: a listener cannot tell from one clip whether another person
+# is speaking. Kept so earlier records still exclude; a speaker-embedding check will take this over.
+RETIRED = {'other_speaker': '別の話者'}
 FLAGS = QUALITY
+PROBLEMS = {**QUALITY, **RETIRED}
 SCOPES = ('clip', 'speaker')
 
 
@@ -113,9 +116,9 @@ class Verdicts:
             if r.get('scope') == 'speaker': latest_speaker[r['speaker']] = r
             if r.get('clip'): latest_clip[r['clip']] = r
         for r in latest_speaker.values():
-            if set(r.get('flags', [])) & QUALITY.keys(): self.excluded_speakers.add(r['speaker'])
+            if set(r.get('flags', [])) & PROBLEMS.keys(): self.excluded_speakers.add(r['speaker'])
         for clip, r in latest_clip.items():
-            if set(r.get('flags', [])) & QUALITY.keys() and r.get('scope') != 'speaker': self.excluded_clips.add(clip)
+            if set(r.get('flags', [])) & PROBLEMS.keys() and r.get('scope') != 'speaker': self.excluded_clips.add(clip)
         self.native_speakers = {s for s, flag in self.pronunciation.items() if flag == 'native_like'}
         self.excluded_speakers |= {s for s, flag in self.pronunciation.items() if flag in ('not_native_like', 'tentative')}
 

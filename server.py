@@ -223,7 +223,7 @@ def create_app():
         if PUBLIC: raise web.HTTPNotFound()
         lang, mode = request.query.get('lang', 'ja'), request.query.get('mode', 'new')
         if lang not in libraries or mode not in ('new', 'update'): raise web.HTTPNotFound()
-        return respond({**review_queue(lang, mode), 'flags': curation.QUALITY, 'scales': curation.SCALES, 'ageDecades': curation.AGE_DECADES, 'log': curation.load()[-200:]})
+        return respond({**review_queue(lang, mode), 'flags': curation.PROBLEMS, 'offered': list(curation.QUALITY), 'scales': curation.SCALES, 'ageDecades': curation.AGE_DECADES, 'log': curation.load()[-200:]})
 
     async def review_post(request):
         if PUBLIC: raise web.HTTPNotFound()
