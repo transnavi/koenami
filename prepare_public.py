@@ -101,13 +101,15 @@ def main():
         modified = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', *sources], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
         entries.append(f'<url><loc>https://koe.transnavi.jp{path}</loc>' + (f'<lastmod>{modified}</lastmod>' if modified else '') + '</url>')
     (OUT / 'assets' / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(entries) + '\n</urlset>\n')
+    # Cloudflare Web Analytics injects its beacon into HTML at the edge; the CSP
+    # admits that script and the endpoint it reports to.
     # No fallback SPA route may expose private baselines or local model files.
     assert not any('baseline' in p.name or p.name == 'x.wav' for p in OUT.rglob('*'))
     (OUT / 'assets' / '_headers').write_text("""/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: microphone=(self), camera=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 """)
