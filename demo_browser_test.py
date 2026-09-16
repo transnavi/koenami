@@ -70,7 +70,7 @@ def main(url):
             assert page.evaluate('voiceApp.state.takes.length') == 2
             hidden_difference=page.evaluate('''()=>{
               const space=voiceApp.map.space,keys=space.constructor.keys,a=voiceApp.state.ownFull.features;
-              const raw=space.constructor.raw(a).map((v,k)=>v+space.axes[4][k]*space.scale[k]);
+              const raw=space.constructor.raw(a).map((v,k)=>v+space.projections.variance.axes[4][k]*space.scale[k]);
               const b=Object.fromEntries(keys.map((k,i)=>[k,k==='f0'?2**(raw[i]/12):raw[i]]));
               return space.comparison(a,b,3);
             }''')
@@ -145,7 +145,7 @@ def main(url):
             page.locator('#live-mode').click()
             wait(page, 'voiceApp.state.recording')
             wait(page, 'voiceApp.state.liveTrack.length>20')
-            assert page.locator('#live-mode-label').inner_text() == 'ライブ中'
+            assert page.locator('#live-mode-label').inner_text() == '測定中'
             assert page.locator('#live-time').is_visible()
             assert not page.evaluate('voiceApp.captureDebug().monitoring')
             page.locator('#loopback').click()
@@ -163,7 +163,7 @@ def main(url):
             assert page.locator('#loopback').get_attribute('aria-pressed') == 'false'
             assert not page.evaluate('voiceApp.captureDebug().monitoring')
             assert page.locator('#loopback').is_disabled()
-            assert page.locator('#live-mode-label').inner_text() == 'ライブ'
+            assert page.locator('#live-mode-label').inner_text() == 'リアルタイム'
             results.append('Live label and timer persist; monitoring toggles and disconnects; live camera stays fixed')
             held=[]
             page.route('**/api/analyze', lambda route: held.append(route))
