@@ -46,9 +46,11 @@ class ReviewLogTests(unittest.TestCase):
         self.assertEqual(v.excluded_speakers, {'a', 'b', 'c'})
         self.assertEqual(v.pronunciation_labels(), {'c': 0, 'd': 1})
 
-    def test_later_firm_judgement_outranks_native_like(self):
+    def test_latest_pronunciation_judgement_wins(self):
         v = Verdicts([{'speaker': 'a', 'flags': ['native_like']}, {'speaker': 'a', 'flags': ['not_native_like']}])
-        self.assertEqual(v.native_speakers, set()); self.assertEqual(v.pronunciation_labels(), {'a': 0})
+        self.assertEqual(v.native_speakers, set()); self.assertEqual(v.pronunciation_labels(), {'a': 0}); self.assertEqual(v.excluded_speakers, {'a'})
+        v = Verdicts([{'speaker': 'a', 'flags': ['tentative']}, {'speaker': 'a', 'flags': ['native_like']}])
+        self.assertEqual(v.native_speakers, {'a'}); self.assertEqual(v.excluded_speakers, set()); self.assertEqual(v.pronunciation_labels(), {'a': 1})
 
     def test_ratings_alone_do_not_exclude(self):
         v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': [], 'ratings': {'femininity': 2}}])
@@ -57,11 +59,14 @@ class ReviewLogTests(unittest.TestCase):
     def test_append_validates_and_persists(self):
         with tempfile.TemporaryDirectory() as folder:
             log = Path(folder) / 'reviews.jsonl'
-            record = append({'speaker': 'a', 'clip': 'x', 'flags': ['noise', 'bogus'], 'ratings': {'age': 40, 'femininity': None}}, log)
+            record = append({'speaker': 'a', 'clip': 'x', 'flags': ['noise', 'noise'], 'ratings': {'age': 40, 'femininity': None}}, log)
             self.assertEqual(record['flags'], ['noise']); self.assertEqual(record['ratings'], {'age': 40.0})
             self.assertEqual(json.loads(log.read_text())['speaker'], 'a')
-            with self.assertRaises(ValueError): append({'speaker': 'a', 'ratings': {'femininity': 9}}, log)
-            with self.assertRaises(ValueError): append({'speaker': 'a'}, log)
+            for bad in [{'speaker': 'a', 'ratings': {'femininity': 9}}, {'speaker': 'a'}, {'speaker': 'a', 'flags': ['bogus']},
+                        {'speaker': 'a', 'flags': ['noise']}, {'speaker': 'a', 'flags': ['native_like', 'tentative']},
+                        {'speaker': 'a', 'flags': 'noise'}, {'speaker': 'a', 'ratings': {'age': True}}, {'speaker': 'a', 'note': 'x' * 1001}, 'text']:
+                with self.assertRaises(ValueError, msg=bad): append(bad, log)
+            self.assertEqual(len(log.read_text().splitlines()), 1)
 
     def test_migrated_log_matches_previous_exclusions(self):
         v = Verdicts()

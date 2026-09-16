@@ -7,6 +7,7 @@ const SCALES=[
  {key:'japanese',name:'母語話者らしさ',ends:['感じない','強く感じる'],only:'ja'},
  {key:'age',name:'聞こえる年齢',number:[10,90]},
 ];
+const PRONUNCIATION=['native_like','not_native_like','tentative'];
 const KEYS={speaker:{native_like:'M',not_native_like:'N',tentative:'T',distorted_audio:'D'},clip:{no_speech:'E',murmur:'U',noise:'Z',other_speaker:'O',distorted:'X'}};
 const state={lang:'ja',queue:[],flags:{},at:0,clip:0,ratings:{},chosen:new Set(),active:0,log:[]};
 const audio=new Audio();audio.onplay=audio.onpause=audio.onended=()=>$('play').setAttribute('aria-pressed',String(!audio.paused));
@@ -27,7 +28,7 @@ function show(){
 }
 function renderClip(){const item=current(),c=item.clips[state.clip];$('display').textContent=c.display||item.speaker;$('text').innerHTML='';const t=document.createElement('span');t.textContent=c.text||'';const s=document.createElement('small');s.textContent=`${state.clip+1}/${item.clips.length} · ${c.duration?.toFixed(1)} 秒`;$('text').append(t,s);audio.src=c.audio;}
 function play(){audio.currentTime=0;audio.play().catch(()=>{});}
-function step(d){const item=current();state.clip=(state.clip+d+item.clips.length)%item.clips.length;renderClip();play();}
+function step(d){const item=current();if(!item)return;state.clip=(state.clip+d+item.clips.length)%item.clips.length;renderClip();play();}
 function renderScales(){
  $('scales').replaceChildren();
  scales().forEach((s,i)=>{
@@ -45,18 +46,19 @@ function renderFlags(){
  for(const scope of ['speaker','clip']){const box=$(scope+'-flags');box.querySelectorAll('button').forEach(b=>b.remove());
   for(const [flag,label] of Object.entries(state.flags[scope]||{})){const b=document.createElement('button');b.type='button';b.textContent=label;const k=document.createElement('kbd');k.textContent=KEYS[scope][flag]||'';b.append(k);b.setAttribute('aria-pressed',String(state.chosen.has(flag)));b.onclick=()=>toggle(flag);box.append(b);}}
 }
-function toggle(flag){if(state.chosen.has(flag))state.chosen.delete(flag);else{state.chosen.add(flag);for(const other of ['native_like','not_native_like','tentative'])if(other!==flag&&['native_like','not_native_like','tentative'].includes(flag))state.chosen.delete(other);}renderFlags();}
+function toggle(flag){if(state.chosen.has(flag))state.chosen.delete(flag);else{if(PRONUNCIATION.includes(flag))for(const other of PRONUNCIATION)state.chosen.delete(other);state.chosen.add(flag);}renderFlags();}
+let inflight=false;
 async function save(){
- const item=current(),c=item.clips[state.clip];
+ const item=current();if(!item||inflight)return;const c=item.clips[state.clip];
  const body={speaker:item.speaker,clip:c.id,display:c.display,language:state.lang,flags:[...state.chosen],ratings:state.ratings,note:$('note').value};
  if(!body.flags.length&&!Object.keys(body.ratings).length&&!body.note.trim()){$('status').textContent='評価か判定を1つ以上つけてください';return;}
- $('save').disabled=true;
+ inflight=true;$('save').disabled=true;
  try{const r=await fetch('/api/review',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw Error(await r.text());
   state.log.push(await r.json());state.reviewed++;state.at++;show();}
  catch(e){$('status').textContent='保存できませんでした: '+e.message;}
- finally{$('save').disabled=false;}
+ finally{inflight=false;$('save').disabled=false;}
 }
-function skip(){state.at++;show();}
+function skip(){if(!current())return;state.at++;show();}
 function renderLog(){
  $('log').replaceChildren();
  for(const r of state.log.slice(-8).reverse()){const p=document.createElement('div');const s=document.createElement('strong');s.textContent=r.display||r.speaker;
@@ -65,9 +67,10 @@ function renderLog(){
 }
 document.addEventListener('keydown',e=>{
  if(e.target.matches('input,textarea')){if(e.key==='Enter'&&!e.isComposing){e.preventDefault();save();}else if(e.key==='Escape')e.target.blur();return;}
- if(e.ctrlKey||e.metaKey||e.altKey)return;
+ if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;
  const k=e.key;
- if(k===' '){e.preventDefault();audio.paused?play():audio.pause();}
+ if(k==='Enter'||k===' ')e.preventDefault();
+ if(k===' ')audio.paused?play():audio.pause();
  else if(k==='ArrowLeft')step(-1);else if(k==='ArrowRight')step(1);
  else if(k==='ArrowUp'){state.active=Math.max(0,state.active-1);renderScales();}else if(k==='ArrowDown'){state.active=Math.min(scales().length-1,state.active+1);renderScales();}
  else if(/^[0-6]$/.test(k))rate(Number(k));
@@ -75,6 +78,6 @@ document.addEventListener('keydown',e=>{
  else{const upper=k.toUpperCase();for(const scope of ['speaker','clip'])for(const [flag,key] of Object.entries(KEYS[scope]))if(key===upper)toggle(flag);}
 });
 $('play').onclick=()=>audio.paused?play():audio.pause();$('prev-clip').onclick=()=>step(-1);$('next-clip').onclick=()=>step(1);$('save').onclick=save;$('skip').onclick=skip;
-$('lang').onchange=()=>{state.lang=$('lang').value;load().catch(e=>{$('status').textContent=e.message;});};
+$('lang').onchange=()=>{const previous=state.lang;state.lang=$('lang').value;load().catch(e=>{state.lang=previous;$('lang').value=previous;$('status').textContent=e.message;});};
 window.reviewApp=state;
 load().catch(e=>{$('card').hidden=true;$('done').hidden=false;$('done').textContent='読み込めませんでした: '+e.message;});

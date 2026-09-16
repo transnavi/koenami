@@ -199,12 +199,12 @@ def create_app():
             by_speaker.setdefault(c['speaker'], []).append(c)
         queue = []
         for sid, clips in by_speaker.items():
-            if sid in verdicts.reviewed_speakers: continue
             best = max(clips, key=lambda c: (bool(c.get('plotted')), c.get('duration', 0)))
             queue.append({'speaker': sid, 'group': best['group'], 'clips': [dict(id=c['id'], display=c.get('display_label'), text=c.get('text'),
                           audio=c['audio'], duration=c.get('duration')) for c in sorted(clips, key=lambda c: c['id'])], 'first': best['id']})
         queue.sort(key=lambda q: (q['group'] != 'female', q['clips'][0]['display'] or ''))
         reviewed = {r['speaker'] for r in verdicts.reviews if r.get('language', 'ja') == lang}
+        queue = [q for q in queue if q['speaker'] not in reviewed]
         return {'language': lang, 'reviewed': len(reviewed), 'queue': queue}
 
     async def review_get(request):
@@ -216,8 +216,12 @@ def create_app():
 
     async def review_post(request):
         if PUBLIC: raise web.HTTPNotFound()
-        try: record = curation.append(await request.json())
-        except (ValueError, TypeError) as error: raise web.HTTPUnprocessableEntity(text=str(error))
+        try: body = await request.json()
+        except ValueError: raise web.HTTPBadRequest(text='JSON body required')
+        if isinstance(body, dict) and body.get('language') not in libraries: raise web.HTTPUnprocessableEntity(text='unknown language')
+        if isinstance(body, dict) and body.get('clip') and body['clip'] not in clips: raise web.HTTPUnprocessableEntity(text='unknown clip')
+        try: record = curation.append(body)
+        except ValueError as error: raise web.HTTPUnprocessableEntity(text=str(error))
         return respond(record)
 
     app.router.add_get('/api/review', review_get)

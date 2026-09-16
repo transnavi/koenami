@@ -35,7 +35,7 @@ CLIP_FLAGS = {
     'distorted': '音声が歪む（この音声のみ）',
 }
 FLAGS = {**SPEAKER_FLAGS, **CLIP_FLAGS}
-EXCLUDING_SPEAKER_FLAGS = {'not_native_like', 'tentative', 'distorted_audio'}
+PRONUNCIATION_FLAGS = ('native_like', 'not_native_like', 'tentative')
 
 
 def load(path=LOG):
@@ -45,19 +45,28 @@ def load(path=LOG):
 
 def append(review, path=LOG):
     """Validate and add one review; returns the stored record."""
-    flags = [f for f in review.get('flags', []) if f in FLAGS]
+    if not isinstance(review, dict) or not isinstance(review.get('flags', []), list) or not isinstance(review.get('ratings') or {}, dict):
+        raise ValueError('malformed review')
+    flags = list(dict.fromkeys(review.get('flags', [])))
+    unknown = [f for f in flags if f not in FLAGS]
+    if unknown: raise ValueError(f'unknown flags: {unknown}')
+    if len([f for f in flags if f in PRONUNCIATION_FLAGS]) > 1: raise ValueError('one pronunciation flag per review')
+    if not review.get('clip') and any(f in CLIP_FLAGS for f in flags): raise ValueError('clip flags need a clip')
     ratings = {}
     for key, value in (review.get('ratings') or {}).items():
         if key not in RATING_KEYS or value is None: continue
-        value = float(value)
+        if isinstance(value, bool) or not isinstance(value, (int, float)): raise ValueError(f'{key} must be a number')
         limit = (10, 90) if key == 'age' else (0, 6)
         if not limit[0] <= value <= limit[1]: raise ValueError(f'{key} out of range')
-        ratings[key] = value
-    if not review.get('speaker'): raise ValueError('speaker required')
-    if not flags and not ratings and not review.get('note'): raise ValueError('empty review')
-    record = {'speaker': review['speaker'], 'clip': review.get('clip'), 'display': review.get('display'),
+        ratings[key] = float(value)
+    speaker = review.get('speaker')
+    if not isinstance(speaker, str) or not speaker: raise ValueError('speaker required')
+    note = review.get('note') or ''
+    if not isinstance(note, str) or len(note) > 1000: raise ValueError('note must be text under 1000 characters')
+    if not flags and not ratings and not note.strip(): raise ValueError('empty review')
+    record = {'speaker': speaker, 'clip': review.get('clip') or None, 'display': review.get('display'),
               'language': review.get('language', 'ja'), 'flags': flags, 'ratings': ratings,
-              'note': (review.get('note') or '').strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
+              'note': note.strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a') as f: f.write(json.dumps(record, ensure_ascii=False) + '\n')
     return record
@@ -72,19 +81,20 @@ class Verdicts:
         self.excluded_speakers, self.excluded_clips, self.native_speakers = set(), set(), set()
         self.reviewed_speakers = {r['speaker'] for r in reviews}
         self.reviewed_clips = {r['clip'] for r in reviews if r.get('clip')}
+        # The latest pronunciation judgement per speaker wins, in log order.
+        self.pronunciation = {}
         for r in reviews:
             flags = set(r.get('flags', []))
-            if flags & EXCLUDING_SPEAKER_FLAGS: self.excluded_speakers.add(r['speaker'])
-            if 'native_like' in flags: self.native_speakers.add(r['speaker'])
+            for flag in PRONUNCIATION_FLAGS:
+                if flag in flags: self.pronunciation[r['speaker']] = flag
+            if 'distorted_audio' in flags: self.excluded_speakers.add(r['speaker'])
             if flags & CLIP_FLAGS.keys() and r.get('clip'): self.excluded_clips.add(r['clip'])
-        # A firm non-native judgement outranks an earlier native-like one.
-        self.native_speakers -= {r['speaker'] for r in reviews if 'not_native_like' in r.get('flags', [])}
+        self.native_speakers = {s for s, flag in self.pronunciation.items() if flag == 'native_like'}
+        self.excluded_speakers |= {s for s, flag in self.pronunciation.items() if flag != 'native_like'}
 
     def pronunciation_labels(self):
         """1 for native-like, 0 for firmly non-native; tentative and audio exclusions carry no label."""
-        labels = {s: 1 for s in self.native_speakers}
-        labels.update({r['speaker']: 0 for r in self.reviews if 'not_native_like' in r.get('flags', [])})
-        return labels
+        return {s: 1 if flag == 'native_like' else 0 for s, flag in self.pronunciation.items() if flag != 'tentative'}
 
     def ratings(self, key):
         """Latest rating per speaker for one RATING_KEYS entry."""
