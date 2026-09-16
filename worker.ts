@@ -3,7 +3,7 @@ import { initWasm, Resvg } from '@resvg/resvg-wasm';
 import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm';
 import fontRegular from './web/public/fonts/koenami-share-400.ttf';
 import fontBold from './web/public/fonts/koenami-share-700.ttf';
-import { Scorer, parseResultParams, resultParams, shareText, VERDICTS } from './web/score.js';
+import { Scorer, parseResultParams, resultParams, shareText, formatScore, VERDICTS, LEANINGS } from './web/score.js';
 import { cardSVG } from './web/card.js';
 
 export class VoiceAnalyzer extends Container<Env> {
@@ -48,7 +48,8 @@ async function resultPage(request: Request, env: Env, url: URL): Promise<Respons
   const page = await env.ASSETS.fetch(new Request(`${siteOrigin}/result.html`, request));
   const shared = await sharedResult(env, url).catch(() => null);
   if (!shared) return page;
-  const title = `Koenami · ${VERDICTS[shared.result.verdict as keyof typeof VERDICTS]}（女性度 ${shared.result.display}）`;
+  const verdict = shared.result.verdict as keyof typeof VERDICTS;
+  const title = `Koenami · ${VERDICTS[verdict]}（${LEANINGS[verdict]} ${formatScore(shared.result.display)}）`;
   const description = `${shareText(shared.result)}。女性的な声・男性的な声の見本の中で、この声がどこにあるか。`;
   const content: Record<string, string> = {
     'og:title': title, 'twitter:title': title, 'og:description': description, 'twitter:description': description,

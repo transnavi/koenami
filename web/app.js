@@ -6,7 +6,7 @@ import {SignalView} from './signals.js';
 import {TakeStore} from './storage.js';
 import {localize} from './locale.js';
 import {loadImported,importedAudio,importJVS} from './corpus-import.js';
-import {Scorer,VERDICTS,representatives,distance2} from './score.js';
+import {Scorer,VERDICTS,LEANINGS,formatScore,representatives,distance2} from './score.js';
 import {shareBundle,cardImage,systemShare,labelled} from './share.js';
 'use strict';
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -292,13 +292,13 @@ setInterval(saveView,1000);window.addEventListener('beforeunload',saveView);docu
 function restoreCamera(){if(!recordCamera)return;if(map.navigationVersion===recordCamera.navigationVersion){map.autoFit=recordCamera.autoFit;map.autoRotate=recordCamera.autoRotate;}recordCamera=null;map.fitDirty=true;map.invalidate();$('auto-rotate').setAttribute('aria-pressed',String(map.autoRotate));}
 /* The share dialog scores whatever the indicators show: the whole recording, or the selected range. */
 function shareResult(){return state.scorer?.available&&state.ownFull&&!state.ownFull.analysisPending?state.scorer.score(activeFeatures('own')):null;}
-const scalePos=s=>`${clamp((s+10)/120,0,1)*100}%`;
-function updateVerdict(){const result=shareResult(),scorer=state.scorer;const readout=$('verdict-readout');readout.disabled=!result;$('verdict-main').dataset.verdict=result?.verdict||'';$('verdict-word').textContent=result?VERDICTS[result.verdict]:scorer?.available?'録音すると表示':'この言語では計算できません';$('verdict-number').textContent=result?String(result.display):'';for(const g of ['male','female']){const band=scorer?.available?scorer.bands[g]:null,el=$('verdict-band-'+g);el.hidden=!band;if(band){el.style.left=scalePos(band[0]);el.style.width=`calc(${scalePos(band[1])} - ${scalePos(band[0])})`;}}if(result)$('verdict-dot').style.left=scalePos(result.score);}
+const scalePos=s=>`${clamp((s+60)/120,0,1)*100}%`;
+function updateVerdict(){const result=shareResult(),scorer=state.scorer;const readout=$('verdict-readout');readout.disabled=!result;$('verdict-main').dataset.verdict=result?.verdict||'';$('verdict-word').textContent=result?VERDICTS[result.verdict]:scorer?.available?'録音すると表示':'この言語では計算できません';$('verdict-number').textContent=result?formatScore(result.display):'';for(const g of ['male','female']){const band=scorer?.available?scorer.bands[g]:null,el=$('verdict-band-'+g);el.hidden=!band;if(band){el.style.left=scalePos(band[0]);el.style.width=`calc(${scalePos(band[1])} - ${scalePos(band[0])})`;}}if(result)$('verdict-dot').style.left=scalePos(result.score);}
 let shareImage=null;
 $('verdict-readout').onclick=()=>$('share-button').click();
 $('share-button').onclick=async()=>{
  const result=shareResult();if(!result)return;const scorer=state.scorer,lang=state.lang==='lab'?'en':state.lang,bundle=shareBundle(result,scorer,lang);
- $('share-verdict').textContent=VERDICTS[result.verdict];$('share-verdict').dataset.verdict=result.verdict;$('share-score').querySelector('strong').textContent=String(result.display);
+ $('share-verdict').textContent=VERDICTS[result.verdict];$('share-verdict').dataset.verdict=result.verdict;$('share-score').querySelector('strong').textContent=formatScore(result.display);$('share-score').querySelector('span').textContent=LEANINGS[result.verdict];
  $('share-intents').replaceChildren(...bundle.intents.map(i=>{const a=document.createElement('a');a.href=i.href;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=labelled(i.icon,i.label);a.title=`${i.label}に投稿`;return a;}));
  $('share-open').href=bundle.url;$('share-open').innerHTML=labelled('external','結果ページ');$('share-system').innerHTML=labelled('share','共有…');$('share-copy').innerHTML=labelled('link','リンクをコピー');$('share-save').innerHTML=labelled('image','画像を保存');$('share-status').textContent='';$('share-image').hidden=true;
  $('share-copy').onclick=async()=>{try{await navigator.clipboard.writeText(bundle.url);$('share-status').textContent='リンクをコピーしました。';}catch{$('share-status').textContent=bundle.url;}};
