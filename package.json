@@ -13,7 +13,7 @@
     "test:unit:coverage": "vitest run --config tests/vitest.config.ts --coverage",
     "checkout:old": "node tests/scripts/checkout-old.mjs",
     "coverage:check": "node tests/coverage/check.mjs",
-    "coverage:check:unit": "node tests/coverage/check.mjs --only=math,space,cloud,storage,corpus-import,capture",
+    "coverage:check:unit": "node tests/coverage/check.mjs --only=math,space,cloud,storage,corpus-import,capture,sw",
     "test:e2e": "playwright test --config playwright.config.ts",
     "test:e2e:record": "RECORD=1 playwright test --config playwright.config.ts --update-snapshots",
     "check:tests": "tsc -p tests/tsconfig.json",

@@ -18,7 +18,7 @@ export default defineConfig({
 		environment: 'node',
 		coverage: {
 			provider: 'istanbul',
-			include: tree === 'new' ? ['src/lib/**/*.{ts,js,svelte}'] : ['tests/old-tree/web/*.js'],
+			include: tree === 'new' ? ['src/lib/**/*.{ts,js,svelte}'] : ['tests/old-tree/web/**/*.js'],
 			reporter: ['json', 'text-summary'],
 			reportsDirectory: 'coverage/unit'
 		}
