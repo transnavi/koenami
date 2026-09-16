@@ -4,7 +4,7 @@ import json
 import tempfile
 from pathlib import Path
 from build_common_voice_ja import POLICY, selection, speaker_id
-from curation import RATING_KEYS, SCALES, Verdicts, append
+from curation import RATING_KEYS, SCALES, Verdicts, append, append_pair
 from screen_reference_speech import verdict
 
 
@@ -82,6 +82,16 @@ class ReviewLogTests(unittest.TestCase):
         migrated = [r for r in Verdicts().reviews if r['reviewed'].startswith('2026-09-15')]
         v = Verdicts(migrated)
         self.assertEqual(len(v.native_speakers), 3); self.assertEqual(len(v.excluded_speakers), 19); self.assertEqual(len(v.excluded_clips), 15)
+
+    def test_pair_log_validation(self):
+        with tempfile.TemporaryDirectory() as folder:
+            log = Path(folder) / 'pairs.jsonl'
+            record = append_pair({'a': 'x', 'b': 'y', 'answers': {'femininity': 'a', 'naturalness': None}, 'kind': 'far', 'distance': 3.14159, 'session': 's'}, log)
+            self.assertEqual((record['answers'], record['kind'], record['distance']), ({'femininity': 'a'}, 'far', 3.1416))
+            for bad in [{'a': 'x', 'b': 'x', 'answers': {'femininity': 'a'}}, {'a': 'x', 'b': 'y', 'answers': {}}, {'a': 'x', 'b': 'y', 'answers': {'femininity': 'c'}},
+                        {'a': 'x', 'b': 'y', 'answers': {'bogus': 'a'}}, {'a': 'x', 'b': 'y', 'answers': {'femininity': 'a'}, 'kind': 'mid'}, 'text']:
+                with self.assertRaises(ValueError, msg=bad): append_pair(bad, log)
+            self.assertEqual(len(log.read_text().splitlines()), 1)
 
     def test_every_scale_key_is_accepted(self):
         with tempfile.TemporaryDirectory() as folder:

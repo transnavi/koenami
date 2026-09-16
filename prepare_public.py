@@ -49,9 +49,10 @@ def main():
         shutil.rmtree(OUT)
     shutil.copytree(ROOT / 'dist', OUT / 'assets')
     # The listening-review page is a local curation tool; the public site never serves it.
-    (OUT / 'assets' / 'review.html').unlink()
-    for chunk in (OUT / 'assets' / 'assets').glob('review-*.js'):
-        chunk.unlink()
+    for name in ('review', 'pairs'):
+        (OUT / 'assets' / f'{name}.html').unlink()
+        for chunk in (OUT / 'assets' / 'assets').glob(f'{name}-*.js'):
+            chunk.unlink()
     write(OUT / 'assets' / 'public-api' / 'jvs-index.json', read('jvs-import-index.json'))
     write(OUT / 'data' / 'jvs-import-index.json', read('jvs-import-index.json'))
     libraries = {}

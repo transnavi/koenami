@@ -253,6 +253,51 @@ def create_app():
                 out.append({'scale': key, 'end': end, 'value': r['ratings'][key], 'clip': r['clip'], 'audio': clips[r['clip']]['audio'], 'display': clips[r['clip']].get('display_label')})
         return out
 
+    def pair_queue(lang, session=''):
+        """Pairs of plotted human clips: mostly near neighbours in the standardized five-feature space, some far ones."""
+        keys = ['f0', 'delta_f', 'hnr', 'balance', 'pitch_span']
+        pool = [c for c in libraries[lang]['clips'] if c.get('plotted') and not c.get('synthetic') and c.get('features')
+                and all(isinstance(c['features'].get(k), (int, float)) for k in keys) and c['features']['f0'] > 0]
+        if len(pool) < 8: return []
+        X = np.array([[12 * np.log2(c['features']['f0'])] + [c['features'][k] for k in keys[1:]] for c in pool], float)
+        X = (X - X.mean(0)) / (X.std(0) + 1e-9)
+        judged = {frozenset((r['a'], r['b'])) for r in curation.load_pairs()}
+        rng = random.Random(session or 'koenami')
+        order = list(range(len(pool))); rng.shuffle(order)
+        pairs, used = [], set()
+        def item(c): return dict(id=c['id'], display=c.get('display_label'), text=c.get('text'), audio=c['audio'], duration=c.get('duration'), speaker=c['speaker'])
+        for i in order:
+            if len(pairs) >= 60: break
+            d = np.sqrt(((X - X[i]) ** 2).sum(1))
+            others = [j for j in np.argsort(d) if pool[j]['speaker'] != pool[i]['speaker'] and j not in used]
+            if len(others) < 10: continue
+            far = len(pairs) % 4 == 3
+            j = rng.choice(others[len(others) // 2:]) if far else rng.choice(others[:5])
+            key = frozenset((pool[i]['id'], pool[j]['id']))
+            if key in judged or i in used: continue
+            used.update((i, j))
+            a, b = (pool[i], pool[j]) if rng.random() < .5 else (pool[j], pool[i])
+            pairs.append({'a': item(a), 'b': item(b), 'kind': 'far' if far else 'near', 'distance': round(float(d[j]), 4)})
+        return pairs
+
+    async def pairs_get(request):
+        if PUBLIC: raise web.HTTPNotFound()
+        lang, session = request.query.get('lang', 'ja'), request.query.get('session', '')[:40]
+        if lang not in libraries: raise web.HTTPNotFound()
+        return respond({'language': lang, 'questions': curation.PAIR_QUESTIONS, 'judged': len(curation.load_pairs()),
+                        'queue': pair_queue(lang, session), 'log': curation.load_pairs()[-50:]})
+
+    async def pairs_post(request):
+        if PUBLIC: raise web.HTTPNotFound()
+        try: body = await request.json()
+        except ValueError: raise web.HTTPBadRequest(text='JSON body required')
+        if isinstance(body, dict):
+            if body.get('language') not in libraries: raise web.HTTPUnprocessableEntity(text='unknown language')
+            if any(body.get(k) not in clips for k in ('a', 'b')): raise web.HTTPUnprocessableEntity(text='unknown clip')
+        try: record = curation.append_pair(body)
+        except ValueError as error: raise web.HTTPUnprocessableEntity(text=str(error))
+        return respond(record)
+
     async def review_get(request):
         if PUBLIC: raise web.HTTPNotFound()
         lang, mode, session = request.query.get('lang', 'ja'), request.query.get('mode', 'new'), request.query.get('session', '')[:40]
@@ -270,6 +315,8 @@ def create_app():
         return respond(record)
 
     app.router.add_get('/api/review', review_get)
+    app.router.add_get('/api/pairs', pairs_get)
+    app.router.add_post('/api/pairs', pairs_post)
     app.router.add_post('/api/review', review_post)
     async def health(request):
         return respond({'ok': True})
