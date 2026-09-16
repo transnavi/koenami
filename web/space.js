@@ -26,7 +26,7 @@ export class AcousticSpace{
  static keys=['f0','delta_f','hnr','balance','pitch_span'];
  static raw(f){return AcousticSpace.keys.map(k=>k==='f0'?(f?.[k]>0?12*Math.log2(f[k]):NaN):f?.[k]);}
  static mean(rows){return AcousticSpace.keys.map((_,k)=>rows.reduce((s,v)=>s+v[k],0)/Math.max(1,rows.length));}
- static covariance(rows){return AcousticSpace.keys.map((_,i)=>AcousticSpace.keys.map((_,j)=>rows.reduce((s,v)=>s+v[i]*v[j],0)/Math.max(1,rows.length-1)));}
+ static covariance(rows){const mean=AcousticSpace.mean(rows);return AcousticSpace.keys.map((_,i)=>AcousticSpace.keys.map((_,j)=>rows.reduce((s,v)=>s+(v[i]-mean[i])*(v[j]-mean[j]),0)/Math.max(1,rows.length-1)));}
  constructor(samples){
   const rows=[],labels=[];
   for(const s of samples){const raw=AcousticSpace.raw(s.features);if(raw.every(finite)){rows.push(raw);labels.push(s.group==='female'?1:s.group==='male'?0:-1);}}
@@ -40,16 +40,19 @@ export class AcousticSpace{
   const female=centered.filter((_,i)=>labels[i]===1),male=centered.filter((_,i)=>labels[i]===0);
   if(female.length>=16&&male.length>=16){
    const difference=AcousticSpace.mean(female).map((v,k)=>v-AcousticSpace.mean(male)[k]);
-   const covF=AcousticSpace.covariance(female),covM=AcousticSpace.covariance(male);
-   const within=covF.map((row,i)=>row.map((v,j)=>(v+covM[i][j])/2+(i===j?1e-6:0)));
-   let fisher=solve(within,difference);
-   const norm=Math.sqrt(fisher.reduce((s,x)=>s+x*x,0))||1;
-   fisher=fisher.map(x=>x/norm);
-   if(fisher.reduce((s,x,k)=>s+x*difference[k],0)<0)fisher=fisher.map(x=>-x);
-   const axes=[fisher];
-   for(const vector of eigen(within)){const o=orthogonalize(vector,axes);if(o)axes.push(o);if(axes.length===3)break;}
-   for(let k=0;axes.length<5;k++){const o=orthogonalize(AcousticSpace.keys.map((_,i)=>+(i===k)),axes);if(o)axes.push(o);}
-   this.projections.contrast={axes};
+   if(difference.reduce((s,x)=>s+x*x,0)>1e-12){
+    const covF=AcousticSpace.covariance(female),covM=AcousticSpace.covariance(male);
+    const within=covF.map((row,i)=>row.map((v,j)=>(v+covM[i][j])/2+(i===j?1e-6:0)));
+    let fisher=solve(within,difference);
+    const norm=Math.sqrt(fisher.reduce((s,x)=>s+x*x,0));
+    if(finite(norm)&&norm>0){
+     fisher=fisher.map(x=>x/norm);
+     if(fisher.reduce((s,x,k)=>s+x*difference[k],0)<0)fisher=fisher.map(x=>-x);
+     const axes=[fisher],candidates=eigen(within).concat(AcousticSpace.keys.map((_,i)=>AcousticSpace.keys.map((_,j)=>+(i===j))));
+     for(const vector of candidates){const o=orthogonalize(vector,axes);if(o)axes.push(o);if(axes.length===5)break;}
+     if(axes.length===5)this.projections.contrast={axes};
+    }
+   }
   }
   for(const p of Object.values(this.projections)){
    p.values=p.axes.map(axis=>axis.reduce((sum,x,i)=>sum+x*axis.reduce((s,y,j)=>s+y*covariance[i][j],0),0));
