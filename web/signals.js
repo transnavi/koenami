@@ -9,7 +9,7 @@ export class SignalView{
   canvas.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();const duration=this.data[this.source]?.duration||0,delta=e.key==='ArrowRight'?.1:-.1;if(e.shiftKey){const r=this.ranges[this.source]||[0,Math.min(1,duration)];this.onRange(this.source,[r[0],clamp(r[1]+delta,r[0]+.25,duration)]);}else this.onSeek(this.source,clamp((this.time?.[this.source]||0)+delta,0,duration));});
  }
  pitchY(hz,top,ph){return top+(1-Math.log2(hz/PITCH_LO)/Math.log2(PITCH_HI/PITCH_LO))*ph;}
- pitchTicks(top,ph){const semis=12*Math.log2(PITCH_HI/PITCH_LO),step=[1,2,3,4,6,12].find(n=>n*ph/semis>=14)||12,ticks=[];for(let m=36;m<=72;m+=step){const hz=440*Math.pow(2,(m-69)/12);ticks.push({hz,y:this.pitchY(hz,top,ph),note:NOTE_NAMES[m%12]+(Math.floor(m/12)-1),label:`${Math.round(hz)} Hz`});}if(step!==12&&ticks.at(-1).hz<PITCH_HI)ticks.push({hz:PITCH_HI,y:top,note:'C5',label:'523 Hz'});return ticks;}
+ pitchTicks(top,ph){const semis=12*Math.log2(PITCH_HI/PITCH_LO),step=[1,2,3,4,6,12].find(n=>n*ph/semis>=14)||12,ticks=[];for(let m=36;m<=72;m+=step){const hz=440*Math.pow(2,(m-69)/12);ticks.push({hz,y:this.pitchY(hz,top,ph),note:NOTE_NAMES[m%12]+(Math.floor(m/12)-1),label:`${Math.round(hz)} Hz`});}return ticks;}
  timeAt(x,full=false){const duration=this.data[this.source]?.duration||0,range=full?[0,duration]:this.ranges[this.source]||[0,duration];return range[0]+clamp((x-this.gutter)/(this.width-this.gutter-10),0,1)*(range[1]-range[0]);}
  set(side,detail){this.data[side]=detail;this.focus[side]=null;this.ranges[side]=null;this.dirty=true;}
  setRange(side,range,focus=null){this.ranges[side]=range;this.focus[side]=focus;this.dirty=true;}
