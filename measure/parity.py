@@ -12,7 +12,7 @@ is excluded.
 and resampler are in the comparison (the production path); the Python side
 still decodes with soundfile and resamples with SciPy.
 
-Keys are clip ids from `data/jvs-measurements.json`; without keys, N random
+Keys are file names from `data/jvs-measurements.json`; without keys, N random
 ones are drawn. Prints, per feature, the median, 90th percentile and maximum
 difference (relative for frequencies, absolute for decibels, semitones and
 percentages), then the top-level scalars and the track shape. Exits 1 when
@@ -57,7 +57,7 @@ def difference(name: str, a: float, b: float) -> float:
 
 
 def measure_both(binary: str, key: str, via_files: bool) -> tuple[dict, dict]:
-    path = ROOT / f"data/samples/{key}.flac"
+    path = ROOT / "data/samples" / key
     x, sr = sf.read(path, dtype="float32")
     x16 = mono16(x, sr).astype("<f4")
     py = measure(x16, 16000, True)
