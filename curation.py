@@ -9,6 +9,7 @@
 - flags: list of QUALITY keys (problems with this clip's audio)
 - ratings: optional 0-6 scores keyed by RATING_KEYS; `age` is the decade the voice sounds like (AGE_DECADES).
   `japanese` doubles as the pronunciation judgement (see NATIVE_MIN and friends).
+- mode: how the review was produced — 'new', 'update' (追加項目, prefilled) or 'repeat' (blind second listen)
 - note: free text
 - reviewed: ISO timestamp
 
@@ -82,11 +83,13 @@ def append(review, path=LOG):
             ratings[key] = float(value)
     speaker = review.get('speaker')
     if not isinstance(speaker, str) or not speaker: raise ValueError('speaker required')
+    mode = review.get('mode') or 'new'
+    if mode not in ('new', 'update', 'repeat'): raise ValueError('mode must be new, update or repeat')
     note = review.get('note') or ''
     if not isinstance(note, str) or len(note) > 1000: raise ValueError('note must be text under 1000 characters')
     if not flags and not ratings and not note.strip(): raise ValueError('empty review')
     record = {'speaker': speaker, 'clip': review.get('clip') or None, 'display': review.get('display'),
-              'language': review.get('language', 'ja'), 'flags': flags, 'ratings': ratings,
+              'language': review.get('language', 'ja'), 'flags': flags, 'ratings': ratings, 'mode': mode,
               'note': note.strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a') as f: f.write(json.dumps(record, ensure_ascii=False) + '\n')
