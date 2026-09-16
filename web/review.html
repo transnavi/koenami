@@ -10,6 +10,7 @@
 .scale .steps button{flex:1;height:30px;border:1px solid var(--line);background:transparent;border-radius:6px;color:var(--muted);font:inherit;font-size:12px;cursor:pointer}.scale .steps button[aria-pressed=true]{background:var(--accent);border-color:transparent;color:#fff}
 .scale .ends{grid-column:2;display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:-6px}.scale output{font-size:12px;color:var(--muted);text-align:right}
 .flags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.flags .group{font-size:11px;color:var(--muted);width:44px}
+.flags .scope{margin-left:auto;display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}.flags .scope button{border:0;border-radius:0;background:transparent;padding:5px 10px;font-size:11px;color:var(--muted)}.flags .scope button[aria-pressed=true]{background:var(--raised);color:var(--ink)}.flags .scope button kbd{color:inherit;opacity:.6}
 .flags button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:5px 11px;font:inherit;font-size:12px;cursor:pointer}.flags button kbd{font:inherit;color:var(--muted);margin-left:5px}.flags button[aria-pressed=true]{background:var(--pink);border-color:transparent;color:#fff}.flags button[aria-pressed=true] kbd{color:#ffffffb0}
 .note{width:100%;font:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
 .actions{display:flex;gap:10px;align-items:center}.actions .status{font-size:12px;color:var(--muted);flex:1}.actions button{font:inherit;font-size:13px;padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:var(--raised);color:var(--ink);cursor:pointer}.actions .primary{background:var(--accent);color:#fff;border-color:transparent}
@@ -23,8 +24,8 @@
  <div class="speaker"><strong id="display"></strong><span id="speaker-meta"></span></div>
  <div class="clip"><button class="play" id="play" aria-pressed="false" aria-label="再生">▶</button><div class="text" id="text"></div><nav><button id="prev-clip" aria-label="前の音声">‹</button><button id="next-clip" aria-label="次の音声">›</button></nav></div>
  <div id="scales"></div>
- <div class="flags" id="speaker-flags"><span class="group">話者</span></div>
- <div class="flags" id="clip-flags"><span class="group">音声</span></div>
+ <div class="flags" id="pronunciation-flags"><span class="group">発音</span></div>
+ <div class="flags" id="quality-flags"><span class="group">問題</span><span class="scope" id="scope" hidden><button type="button" id="scope-clip" aria-pressed="true">この音声だけ</button><button type="button" id="scope-speaker" aria-pressed="false">話者の全音声<kbd>A</kbd></button></span></div>
  <input class="note" id="note" placeholder="メモ">
  <div class="actions"><span class="status" id="status"></span><button id="skip">スキップ<kbd>S</kbd></button><button class="primary" id="save">保存して次へ<kbd>Enter</kbd></button></div>
 </section>

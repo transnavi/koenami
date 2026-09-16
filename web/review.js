@@ -8,11 +8,11 @@ const SCALES=[
  {key:'age',name:'聞こえる年齢',decades:true},
 ];
 const PRONUNCIATION=['native_like','not_native_like','tentative'];
-const KEYS={speaker:{native_like:'M',not_native_like:'N',tentative:'T',distorted_audio:'D'},clip:{no_speech:'E',murmur:'U',noise:'Z',other_speaker:'O',distorted:'X'}};
-const state={lang:'ja',queue:[],flags:{},at:0,clip:0,ratings:{},chosen:new Set(),active:0,log:[],skipped:[]};
+const KEYS={pronunciation:{native_like:'M',not_native_like:'N',tentative:'T'},quality:{no_speech:'E',murmur:'U',noise:'Z',distorted:'X',other_speaker:'O'}};
+const state={lang:'ja',queue:[],flags:{},at:0,clip:0,ratings:{},chosen:new Set(),scope:'clip',active:0,log:[],skipped:[]};
 /* Position, skipped speakers and the unsaved draft survive a reload; the review log itself lives on the server. */
 const STORAGE='koenami-review';
-function remember(){const item=current();try{localStorage.setItem(STORAGE,JSON.stringify({lang:state.lang,skipped:{...recall().skipped,[state.lang]:state.skipped},speaker:item?.speaker,clip:item?.clips[state.clip]?.id,ratings:state.ratings,chosen:[...state.chosen],note:$('note').value,active:state.active}));}catch{}}
+function remember(){const item=current();try{localStorage.setItem(STORAGE,JSON.stringify({lang:state.lang,skipped:{...recall().skipped,[state.lang]:state.skipped},speaker:item?.speaker,clip:item?.clips[state.clip]?.id,ratings:state.ratings,chosen:[...state.chosen],scope:state.scope,note:$('note').value,active:state.active}));}catch{}}
 function recall(){try{return JSON.parse(localStorage.getItem(STORAGE))||{};}catch{return {};}}
 const audio=new Audio();audio.onplay=audio.onpause=audio.onended=()=>$('play').setAttribute('aria-pressed',String(!audio.paused));
 
@@ -31,7 +31,7 @@ function show(draft=null){
  const item=current();$('card').hidden=!item;$('done').hidden=!!item;renderLog();
  $('progress').textContent=`済 ${state.reviewed}人 · 残り ${state.queue.length-state.at}人`;
  if(!item){remember();return;}
- state.clip=Math.max(0,item.clips.findIndex(c=>c.id===(draft?.clip||item.first)));state.ratings={...(draft?.ratings||{})};state.chosen=new Set(draft?.chosen||[]);state.active=draft?.active||0;$('note').value=draft?.note||'';$('note').blur();$('status').textContent='';
+ state.clip=Math.max(0,item.clips.findIndex(c=>c.id===(draft?.clip||item.first)));state.ratings={...(draft?.ratings||{})};state.chosen=new Set(draft?.chosen||[]);state.scope=draft?.scope||'clip';state.active=draft?.active||0;$('note').value=draft?.note||'';$('note').blur();$('status').textContent='';
  $('speaker-meta').textContent=(item.group==='female'?'女性的な声':'男性的な声')+' · '+item.clips.length+'音声';
  renderClip();renderScales();renderFlags();remember();if(!draft)play();
 }
@@ -53,14 +53,16 @@ function renderScales(){
 function key(d){const s=scales()[state.active];if(!s)return;if(!s.decades)return rate(d);const v=Object.keys(state.decades).map(Number)[d-1];if(v!==undefined)rate(v);}
 function rate(v){const s=scales()[state.active];if(!s)return;state.ratings[s.key]=state.ratings[s.key]===v?undefined:v;if(state.ratings[s.key]===undefined)delete state.ratings[s.key];renderScales();remember();}
 function renderFlags(){
- for(const scope of ['speaker','clip']){const box=$(scope+'-flags');box.querySelectorAll('button').forEach(b=>b.remove());
-  for(const [flag,label] of Object.entries(state.flags[scope]||{})){const b=document.createElement('button');b.type='button';b.textContent=label;const k=document.createElement('kbd');k.textContent=KEYS[scope][flag]||'';b.append(k);b.setAttribute('aria-pressed',String(state.chosen.has(flag)));b.onclick=()=>toggle(flag);box.append(b);}}
+ for(const kind of ['pronunciation','quality']){const box=$(kind+'-flags');box.querySelectorAll(':scope > button').forEach(b=>b.remove());const anchor=box.querySelector('.scope');
+  for(const [flag,label] of Object.entries(state.flags[kind]||{})){const b=document.createElement('button');b.type='button';b.textContent=label;const k=document.createElement('kbd');k.textContent=KEYS[kind][flag]||'';b.append(k);b.setAttribute('aria-pressed',String(state.chosen.has(flag)));b.onclick=()=>toggle(flag);anchor?box.insertBefore(b,anchor):box.append(b);}}
+ // The scope only matters once a quality problem is flagged.
+ $('scope').hidden=![...state.chosen].some(f=>state.flags.quality?.[f]);$('scope-clip').setAttribute('aria-pressed',String(state.scope==='clip'));$('scope-speaker').setAttribute('aria-pressed',String(state.scope==='speaker'));
 }
 function toggle(flag){if(state.chosen.has(flag))state.chosen.delete(flag);else{if(PRONUNCIATION.includes(flag))for(const other of PRONUNCIATION)state.chosen.delete(other);state.chosen.add(flag);}renderFlags();remember();}
 let inflight=false;
 async function save(){
  const item=current();if(!item||inflight)return;const c=item.clips[state.clip];
- const body={speaker:item.speaker,clip:c.id,display:c.display,language:state.lang,flags:[...state.chosen],ratings:state.ratings,note:$('note').value};
+ const body={speaker:item.speaker,clip:c.id,display:c.display,language:state.lang,flags:[...state.chosen],scope:state.scope,ratings:state.ratings,note:$('note').value};
  if(!body.flags.length&&!Object.keys(body.ratings).length&&!body.note.trim()){$('status').textContent='評価か判定を1つ以上つけてください';return;}
  inflight=true;$('save').disabled=true;
  try{const r=await fetch('/api/review',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw Error(await r.text());
@@ -72,7 +74,7 @@ function skip(){const item=current();if(!item)return;state.skipped.push(item.spe
 function renderLog(){
  $('log').replaceChildren();
  for(const r of state.log.slice(-8).reverse()){const p=document.createElement('div');const s=document.createElement('strong');s.textContent=r.display||r.speaker;
-  const parts=[...(r.flags||[]).map(f=>state.flags.speaker?.[f]||state.flags.clip?.[f]||f),...Object.entries(r.ratings||{}).map(([k,v])=>(SCALES.find(s=>s.key===k)?.name||k)+' '+(k==='age'?state.decades?.[v]??v:v))];
+  const parts=[...(r.flags||[]).map(f=>(state.flags.pronunciation?.[f]||state.flags.quality?.[f]||f)+(state.flags.quality?.[f]&&r.scope==='speaker'?'（話者全体）':'')),...Object.entries(r.ratings||{}).map(([k,v])=>(SCALES.find(s=>s.key===k)?.name||k)+' '+(k==='age'?state.decades?.[v]??v:v))];
   p.append(s,' '+parts.join(' · ')+(r.note?' · '+r.note:''));$('log').append(p);}
 }
 document.addEventListener('keydown',e=>{
@@ -85,8 +87,11 @@ document.addEventListener('keydown',e=>{
  else if(k==='ArrowUp'){state.active=Math.max(0,state.active-1);renderScales();remember();}else if(k==='ArrowDown'){state.active=Math.min(scales().length-1,state.active+1);renderScales();remember();}
  else if(/^[0-6]$/.test(k))key(Number(k));
  else if(k==='Enter')save();else if(k.toLowerCase()==='s')skip();
- else{const upper=k.toUpperCase();for(const scope of ['speaker','clip'])for(const [flag,key] of Object.entries(KEYS[scope]))if(key===upper)toggle(flag);}
+ else if(k.toUpperCase()==='A')setScope(state.scope==='clip'?'speaker':'clip');
+ else{const upper=k.toUpperCase();for(const kind of ['pronunciation','quality'])for(const [flag,key] of Object.entries(KEYS[kind]))if(key===upper)toggle(flag);}
 });
+function setScope(scope){state.scope=scope;renderFlags();remember();}
+$('scope-clip').onclick=()=>setScope('clip');$('scope-speaker').onclick=()=>setScope('speaker');
 $('play').onclick=()=>audio.paused?play():audio.pause();$('prev-clip').onclick=()=>step(-1);$('next-clip').onclick=()=>step(1);$('save').onclick=save;$('skip').onclick=skip;
 $('note').oninput=remember;
 $('lang').onchange=()=>{const previous=state.lang;state.lang=$('lang').value;load({skipped:recall().skipped}).catch(e=>{state.lang=previous;$('lang').value=previous;$('status').textContent=e.message;});};
