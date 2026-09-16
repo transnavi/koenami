@@ -6,7 +6,8 @@
 - clip: clip id the reviewer listened to (optional for speaker-level notes)
 - display: label shown in the app at review time, kept for readability
 - language: library language code
-- flags: list of FLAGS keys; SPEAKER_FLAGS apply to every clip of the speaker
+- flags: list of FLAGS keys — one PRONUNCIATION_FLAGS entry (always about the speaker) and any QUALITY_FLAGS
+- scope: 'clip' (default) or 'speaker'; with 'speaker', quality flags exclude every clip of the speaker
 - ratings: optional 0-6 scores keyed by RATING_KEYS; `age` is the decade the voice sounds like (AGE_DECADES)
 - note: free text
 - reviewed: ISO timestamp
@@ -23,21 +24,21 @@ LOG = ROOT / 'curation/reviews.jsonl'
 RATING_KEYS = ('femininity', 'masculinity', 'naturalness', 'japanese', 'age')
 # Perceived age as a decade: 10 covers teens and younger, 60 covers sixties and older.
 AGE_DECADES = {10: '10代以下', 20: '20代', 30: '30代', 40: '40代', 50: '50代', 60: '60代以上'}
-SPEAKER_FLAGS = {
-    'native_like': '母語話者らしい',
+PRONUNCIATION = {
+    'native_like': '母語らしい',
     'not_native_like': '非母語らしい',
-    'tentative': '非母語かもしれない',
-    'distorted_audio': '音声が歪む・雑音（話者全体）',
+    'tentative': 'たぶん非母語',
 }
-CLIP_FLAGS = {
+QUALITY = {
     'no_speech': '無音',
     'murmur': 'つぶやきのみ',
     'noise': '雑音',
-    'other_speaker': '別の話者が混入',
-    'distorted': '音声が歪む（この音声のみ）',
+    'distorted': '歪み',
+    'other_speaker': '別の話者',
 }
-FLAGS = {**SPEAKER_FLAGS, **CLIP_FLAGS}
-PRONUNCIATION_FLAGS = ('native_like', 'not_native_like', 'tentative')
+FLAGS = {**PRONUNCIATION, **QUALITY}
+PRONUNCIATION_FLAGS = tuple(PRONUNCIATION)
+SCOPES = ('clip', 'speaker')
 
 
 def load(path=LOG):
@@ -53,7 +54,9 @@ def append(review, path=LOG):
     unknown = [f for f in flags if f not in FLAGS]
     if unknown: raise ValueError(f'unknown flags: {unknown}')
     if len([f for f in flags if f in PRONUNCIATION_FLAGS]) > 1: raise ValueError('one pronunciation flag per review')
-    if not review.get('clip') and any(f in CLIP_FLAGS for f in flags): raise ValueError('clip flags need a clip')
+    scope = review.get('scope') or 'clip'
+    if scope not in SCOPES: raise ValueError('scope must be clip or speaker')
+    if scope == 'clip' and not review.get('clip') and any(f in QUALITY for f in flags): raise ValueError('clip-level quality flags need a clip')
     ratings = {}
     for key, value in (review.get('ratings') or {}).items():
         if key not in RATING_KEYS or value is None: continue
@@ -70,7 +73,7 @@ def append(review, path=LOG):
     if not isinstance(note, str) or len(note) > 1000: raise ValueError('note must be text under 1000 characters')
     if not flags and not ratings and not note.strip(): raise ValueError('empty review')
     record = {'speaker': speaker, 'clip': review.get('clip') or None, 'display': review.get('display'),
-              'language': review.get('language', 'ja'), 'flags': flags, 'ratings': ratings,
+              'language': review.get('language', 'ja'), 'flags': flags, 'scope': scope, 'ratings': ratings,
               'note': note.strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a') as f: f.write(json.dumps(record, ensure_ascii=False) + '\n')
@@ -92,13 +95,14 @@ class Verdicts:
             flags = set(r.get('flags', []))
             for flag in PRONUNCIATION_FLAGS:
                 if flag in flags: self.pronunciation[r['speaker']] = flag
-            if 'distorted_audio' in flags: self.excluded_speakers.add(r['speaker'])
-            if flags & CLIP_FLAGS.keys() and r.get('clip'): self.excluded_clips.add(r['clip'])
+            quality = flags & QUALITY.keys()
+            if quality and r.get('scope') == 'speaker': self.excluded_speakers.add(r['speaker'])
+            elif quality and r.get('clip'): self.excluded_clips.add(r['clip'])
         self.native_speakers = {s for s, flag in self.pronunciation.items() if flag == 'native_like'}
         self.excluded_speakers |= {s for s, flag in self.pronunciation.items() if flag != 'native_like'}
 
     def pronunciation_labels(self):
-        """1 for native-like, 0 for firmly non-native; tentative and audio exclusions carry no label."""
+        """1 for native-like, 0 for firmly non-native; tentative and quality exclusions carry no label."""
         return {s: 1 if flag == 'native_like' else 0 for s, flag in self.pronunciation.items() if flag != 'tentative'}
 
     def ratings(self, key):
