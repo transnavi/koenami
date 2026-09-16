@@ -28,7 +28,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     if (!languages.has(lang)) return text('Not found', 404);
     asset = `/public-api/${lang}.json`;
   } else if (get && (url.pathname === '/' || /^\/(ja|zh-CN|en|ko)\/?$/.test(url.pathname))) asset = '/index.html';
-  else if (get && (/^\/(assets|samples)\/[^/]+$/.test(url.pathname) || /^\/(method|guide)\.html$/.test(url.pathname) || siteFiles.test(url.pathname))) asset = url.pathname;
+  else if (get && (/^\/(assets|samples)\/[^/]+$/.test(url.pathname) || /^\/(method|guide|tutorial)\.html$/.test(url.pathname) || siteFiles.test(url.pathname))) asset = url.pathname;
   if (asset) {
     url.pathname = asset; url.search = '';
     return env.ASSETS.fetch(new Request(url, request));
