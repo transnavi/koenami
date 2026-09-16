@@ -13,7 +13,7 @@ const STEPS=[
  {target:['.graph-area'],title:'声の分布',text:'見本の声を点として並べた地図です。自分の声は紫、選んだ見本はその見本の色で囲まれます。2Dと3D、主成分と男女差の表示を切り替えられます。'},
  {target:['.signal-panel'],title:'波形と高さの推移',text:'高さの推移、スペクトログラム、波形を自分と見本で見比べます。波形をドラッグすると、その範囲だけを測り直せます。'},
  {target:['#live-mode'],title:'リアルタイム測定',text:'話している声をそのまま地図に描きます。見本の点に近づく方向を確かめながら、声を変えてみてください。'},
- {target:['#info-button'],title:'詳しい説明',text:'使い方、声のしくみと練習の手引き、測定方法と出典は、このボタンから開けます。ガイドをもう一度見ることもできます。'},
+ {target:['#info-button'],title:'詳しい説明',text:'使い方、声のしくみと練習の手引き、測定方法と出典は、このボタンから開けます。このガイドは、左隣の ? ボタンでいつでも見直せます。'},
 ];
 const phone=matchMedia('(max-width:800px),(max-height:520px)');
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{};}catch{return {};}};
