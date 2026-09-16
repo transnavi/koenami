@@ -1,0 +1,5 @@
+# Fetch the Phonia git dependencies with the git command rather than Cargo's
+# built-in client, so a `url.<alias>.insteadOf` rewrite for GitHub (an SSH
+# host alias) is honoured. Harmless where no such alias exists.
+[net]
+git-fetch-with-cli = true
