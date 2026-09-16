@@ -20,7 +20,7 @@ const icon=(id,cls='')=>`<span class="tour-key ${cls}"><svg aria-hidden="true"><
 const CHIPS={help:icon('help','tour-key-plain'),info:icon('info','tour-key-plain'),play:icon('play','tour-key-round'),mic:icon('mic','tour-key-round tour-key-record'),star:'<span class="tour-key tour-key-plain">☆</span>',R:'<kbd class="tour-key tour-key-kbd">R</kbd>'};
 const STEPS=[
  {art:'wave',title:'Koenamiへようこそ',text:'見本を真似して録音し、声の違いを目で確かめられるツールです。1分ほど、主な画面を順にご紹介します。スキップしても、画面右上の{help}からいつでも見直せます。'},
- {art:'pick',target:['.target'],title:'選んだ見本',text:'いま選んでいる見本です。{play}で聴き、{star}でお気に入りに入れます。'},
+ {art:'pick',target:['.target'],title:'選んだ見本',text:'今選択されている見本を{play}で再生でき、また{star}でお気に入りとして登録できます。'},
  {art:'list',target:['.samples-panel .sample-filters','#samples-toggle'],title:'見本の一覧',text:'声の種類で絞り込み、並べ替えて、近づきたい声を探します。'},
  {art:'mic',target:['#record'],title:'録音',text:'{mic}か{R}で録音を始め、もう一度押して止めます。'},
  {art:'radar',target:['#indicators'],title:'声の特徴',text:'高さ・響き・質感・明るさ・抑揚を、自分と見本で見比べます。'},
