@@ -8,5 +8,5 @@ export default defineConfig({
   '/samples':{target:'http://127.0.0.1:35511',changeOrigin:false},
   '/data':{target:'http://127.0.0.1:35511',changeOrigin:false}
  }},
- build:{assetsInlineLimit:0,outDir:'../dist',emptyOutDir:true,rollupOptions:{input:{app:'web/index.html',method:'web/method.html',guide:'web/guide.html',tutorial:'web/tutorial.html',result:'web/result.html',review:'web/review.html',pairs:'web/pairs.html'}}}
+ build:{assetsInlineLimit:0,outDir:'../dist',emptyOutDir:true,rollupOptions:{input:{app:'web/index.html',method:'web/method.html',guide:'web/guide.html',tutorial:'web/tutorial.html',references:'web/references.html',result:'web/result.html',review:'web/review.html',pairs:'web/pairs.html'}}}
 });
