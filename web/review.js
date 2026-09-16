@@ -1,6 +1,6 @@
 /* Keyboard-first listening review. Every decision is appended to curation/reviews.jsonl through the local API. */
 const $=id=>document.getElementById(id);
-const KEYS={no_speech:'E',murmur:'U',noise:'Z',distorted:'X',other_speaker:'O'};
+const KEYS={no_speech:'E',murmur:'U',noise:'Z',distorted:'X'};
 const state={lang:'ja',mode:'new',drafts:{},queue:[],flags:{},at:0,clip:0,ratings:{},chosen:new Set(),scope:'clip',active:0,log:[],skipped:[]};
 /* Position, skipped speakers and the unsaved draft survive a reload; the review log itself lives on the server. */
 const STORAGE='koenami-review';
@@ -11,11 +11,11 @@ function remember(){stash();try{localStorage.setItem(STORAGE,JSON.stringify({lan
 function recall(){try{const saved=JSON.parse(localStorage.getItem(STORAGE))||{};if(saved.ratings&&saved.speaker&&!saved.drafts)saved.drafts={[saved.speaker]:{clip:saved.clip,ratings:saved.ratings,chosen:saved.chosen,scope:saved.scope,note:saved.note,active:saved.active}};return saved;}catch{return {};}}
 const audio=new Audio();audio.loop=true;
 function setTheme(value){try{localStorage.setItem('voice-theme',value);}catch{}document.documentElement.dataset.theme=value;$('theme-button').querySelector('use').setAttribute('href',value==='dark'?'#i-sun':'#i-moon');}
-$('theme-button').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');$('theme-button').querySelector('use').setAttribute('href',document.documentElement.dataset.theme==='dark'?'#i-sun':'#i-moon');audio.onplay=audio.onpause=audio.onended=()=>$('play').setAttribute('aria-pressed',String(!audio.paused));
+$('theme-button').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');$('theme-button').querySelector('use').setAttribute('href',document.documentElement.dataset.theme==='dark'?'#i-sun':'#i-moon');audio.onplay=audio.onpause=audio.onended=()=>{$('play').setAttribute('aria-pressed',String(!audio.paused));$('play').textContent=audio.paused?'▶':'❚❚';$('play').setAttribute('aria-label',audio.paused?'再生':'一時停止');};
 
 async function load(saved={}){
  const r=await fetch('/api/review?lang='+encodeURIComponent(state.lang)+'&mode='+state.mode);if(!r.ok)throw Error(await r.text());
- const data=await r.json();state.flags=data.flags;state.scales=data.scales;state.decades=data.ageDecades;state.log=data.log;state.reviewed=data.reviewed;
+ const data=await r.json();state.flags=data.flags;state.offered=data.offered;state.scales=data.scales;state.decades=data.ageDecades;state.log=data.log;state.reviewed=data.reviewed;
  // Skipped speakers move to the end of the queue instead of disappearing.
  state.skipped=(saved.skipped?.[state.lang+':'+state.mode]||[]).filter(sid=>data.queue.some(q=>q.speaker===sid));
  state.queue=data.queue.filter(q=>!state.skipped.includes(q.speaker)).concat(state.skipped.map(sid=>data.queue.find(q=>q.speaker===sid)));
@@ -49,6 +49,7 @@ function openList(){renderJump();$('list-dialog').showModal();$('list-filter').f
 function go(i){if(i<0||i>=state.queue.length||i===state.at)return;stash();state.at=i;show();}
 function renderClip(){const item=current(),c=item.clips[state.clip];$('display').textContent=c.display||item.speaker;$('text').innerHTML='';const t=document.createElement('span');t.textContent=c.text||'';const s=document.createElement('small');s.textContent=`${state.clip+1}/${item.clips.length} · ${c.duration?.toFixed(1)} 秒`;$('text').append(t,s);audio.src=c.audio;}
 function play(){audio.currentTime=0;audio.play().catch(()=>{});}
+function toggle_play(){if(audio.paused)audio.play().catch(()=>{});else audio.pause();}
 function step(d){const item=current();if(!item)return;state.clip=(state.clip+d+item.clips.length)%item.clips.length;renderClip();remember();play();}
 function renderScales(){
  $('scales').replaceChildren();
@@ -68,7 +69,7 @@ function key(d){const s=scales()[state.active];if(!s)return;if(s.decades){const 
 function rate(v){const s=scales()[state.active];if(!s)return;state.ratings[s.key]=state.ratings[s.key]===v?undefined:v;if(state.ratings[s.key]===undefined)delete state.ratings[s.key];renderScales();remember();}
 function renderFlags(){
  const box=$('quality-flags');box.querySelectorAll(':scope > button').forEach(b=>b.remove());const anchor=box.querySelector('.scope');
- for(const [flag,label] of Object.entries(state.flags||{})){const b=document.createElement('button');b.type='button';b.textContent=label;const k=document.createElement('kbd');k.textContent=KEYS[flag]||'';b.append(k);b.setAttribute('aria-pressed',String(state.chosen.has(flag)));b.onclick=()=>toggle(flag);box.insertBefore(b,anchor);}
+ for(const flag of state.offered||[]){const label=state.flags[flag];const b=document.createElement('button');b.type='button';b.textContent=label;const k=document.createElement('kbd');k.textContent=KEYS[flag]||'';b.append(k);b.setAttribute('aria-pressed',String(state.chosen.has(flag)));b.onclick=()=>toggle(flag);box.insertBefore(b,anchor);}
  // The scope only matters once a quality problem is flagged.
  $('scope').hidden=!state.chosen.size;$('scope-clip').setAttribute('aria-pressed',String(state.scope==='clip'));$('scope-speaker').setAttribute('aria-pressed',String(state.scope==='speaker'));
 }
@@ -97,7 +98,7 @@ document.addEventListener('keydown',e=>{
  if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;
  const k=e.key;
  if(k==='Enter'||k===' ')e.preventDefault();
- if(k===' ')audio.paused?play():audio.pause();
+ if(k===' ')toggle_play();else if(k.toLowerCase()==='r')play();
  else if(k==='ArrowLeft')step(-1);else if(k==='ArrowRight')step(1);
  else if(k==='ArrowUp'){state.active=Math.max(0,state.active-1);renderScales();remember();}else if(k==='ArrowDown'){state.active=Math.min(scales().length-1,state.active+1);renderScales();remember();}
  else if(/^[0-6]$/.test(k))key(Number(k));
@@ -108,7 +109,7 @@ document.addEventListener('keydown',e=>{
 function setScope(scope){state.scope=scope;renderFlags();remember();}
 $('scope-clip').onclick=()=>setScope('clip');$('scope-speaker').onclick=()=>setScope('speaker');
 $('jump').onclick=openList;$('list-filter').oninput=renderJump;$('list-dialog').querySelector('[data-close]').onclick=()=>$('list-dialog').close();$('prev-speaker').onclick=()=>go(state.at-1);
-$('play').onclick=()=>audio.paused?play():audio.pause();$('prev-clip').onclick=()=>step(-1);$('next-clip').onclick=()=>step(1);$('save').onclick=save;$('skip').onclick=skip;
+$('play').onclick=toggle_play;$('prev-clip').onclick=()=>step(-1);$('next-clip').onclick=()=>step(1);$('save').onclick=save;$('skip').onclick=skip;
 $('note').oninput=remember;
 $('lang').onchange=()=>{stash();const previous=state.lang;state.lang=$('lang').value;load(recall()).catch(e=>{state.lang=previous;$('lang').value=previous;$('status').textContent=e.message;});};
 for(const b of document.querySelectorAll('#mode button'))b.onclick=()=>{if(state.mode===b.dataset.mode)return;stash();const previous=state.mode;state.mode=b.dataset.mode;load(recall()).catch(e=>{state.mode=previous;$('status').textContent=e.message;});};

@@ -95,6 +95,10 @@ def main(url):
             assert page.evaluate('reviewApp.queue[reviewApp.at].clips[reviewApp.clip].id') == clip
             assert page.evaluate('reviewApp.ratings') == {'femininity': 4} and page.evaluate('[...reviewApp.chosen]') == ['distorted'] and page.locator('#note').input_value() == '途中'
             assert page.evaluate('reviewApp.queue.at(-1).speaker') == second
+            # Space pauses and resumes without restarting; R restarts. 別の話者 is no longer offered.
+            assert page.locator('#quality-flags > button').count() == 4 and 'O' not in page.locator('#quality-flags').inner_text()
+            page.keyboard.press(' '); paused = page.evaluate('document.querySelector("#play").getAttribute("aria-pressed")')
+            page.keyboard.press(' '); assert page.evaluate('document.querySelector("#play").getAttribute("aria-pressed")') != paused
             # Playback loops; 追加項目 mode prefills a reviewed speaker and points at the first missing row.
             assert page.evaluate('document.querySelector("#play")&&true') and page.evaluate('new Audio().loop') is False
             assert page.evaluate('(()=>{for(const a of performance.getEntriesByType("resource"))if(a.name.includes("/samples/"))return true;return false})()')
