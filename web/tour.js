@@ -19,7 +19,7 @@ const ART={
 const icon=(id,cls='')=>`<span class="tour-key ${cls}"><svg aria-hidden="true"><use href="#i-${id}"/></svg></span>`;
 const CHIPS={help:icon('help','tour-key-plain'),info:icon('info','tour-key-plain'),play:icon('play','tour-key-round'),mic:icon('mic','tour-key-round tour-key-record'),star:'<span class="tour-key tour-key-plain">☆</span>',R:'<kbd class="tour-key tour-key-kbd">R</kbd>'};
 const STEPS=[
- {art:'wave',title:'Koenamiへようこそ',text:'見本を真似して録音し、声の違いを目で確かめられるツールです。1分ほど、主な画面を順にご紹介します。スキップしても、画面右上の{help}からいつでも見直せます。'},
+ {art:'wave',title:'Koenamiへようこそ',text:'見本を真似して録音し、声の違いを目で確かめられるツールです。\n1分ほど、主な画面を順にご紹介します。\nスキップしても、画面右上の{help}からいつでも見直せます。'},
  {art:'pick',target:['.target'],title:'選んだ見本',text:'今選択されている見本を{play}で再生でき、また{star}でお気に入りとして登録できます。'},
  {art:'list',target:['.samples-panel .sample-filters','#samples-toggle'],title:'見本の一覧',text:'声の種類で絞り込み、並べ替えて、近づきたい声を探します。'},
  {art:'mic',target:['#record'],title:'録音',text:'{mic}か{R}で録音を始め、もう一度押して止めます。'},
@@ -38,7 +38,7 @@ function build(){
  shade=document.createElement('div');shade.className='tour-shade';shade.hidden=true;
  spot=document.createElement('div');spot.className='tour-spot';blockers=['top','right','bottom','left'].map(()=>{const d=document.createElement('div');d.className='tour-block';return d;});shade.append(spot,...blockers);
  card=document.createElement('dialog');card.className='tour-card';card.setAttribute('aria-labelledby','tour-title');
- card.innerHTML='<div class="tour-head"><svg class="tour-art" viewBox="0 0 24 24" aria-hidden="true"></svg><div><p class="tour-count" id="tour-count"></p><h2 id="tour-title"></h2></div></div><p id="tour-text"></p><div class="tour-actions"><button type="button" class="text-button" data-act="later" title="中断して、次回に続きから">あとで</button><button type="button" class="text-button" data-act="skip" title="ガイドを終了">スキップ</button><span class="tour-spacer"></span><button type="button" class="text-button" data-act="back">戻る</button><button type="button" class="tour-next" data-act="next">次へ</button></div>';
+ card.innerHTML='<div class="tour-head"><svg class="tour-art" viewBox="0 0 24 24" aria-hidden="true"></svg><div><p class="tour-count" id="tour-count"></p><h2 id="tour-title"></h2></div></div><div id="tour-text"></div><div class="tour-actions"><button type="button" class="text-button" data-act="later" title="中断して、次回に続きから">あとで</button><button type="button" class="text-button" data-act="skip" title="ガイドを終了">スキップ</button><span class="tour-spacer"></span><button type="button" class="text-button" data-act="back">戻る</button><button type="button" class="tour-next" data-act="next">次へ</button></div>';
  card.addEventListener('click',e=>{const act=e.target.closest('[data-act]')?.dataset.act;if(act==='next')next();else if(act==='back')show(step-1);else if(act==='later')pause();else if(act==='skip')finish();});
  card.addEventListener('cancel',e=>{e.preventDefault();pause();});
  card.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();else if(e.key==='ArrowLeft')show(step-1);else if(e.key==='Escape')pause();});
@@ -65,7 +65,7 @@ function show(n){
  step=Math.max(0,Math.min(STEPS.length-1,n));save({...load(),step});
  const s=STEPS[step];
  card.querySelector('#tour-count').textContent=`${step+1} / ${STEPS.length}`;
- card.querySelector('#tour-title').textContent=s.title;card.querySelector('#tour-text').innerHTML=s.text.replace(/\{(\w+)\}/g,(_,id)=>CHIPS[id]);card.querySelector('.tour-art').innerHTML=ART[s.art];
+ card.querySelector('#tour-title').textContent=s.title;card.querySelector('#tour-text').innerHTML=s.text.split('\n').map(t=>`<p>${t.replace(/\{(\w+)\}/g,(_,id)=>CHIPS[id])}</p>`).join('');card.querySelector('.tour-art').innerHTML=ART[s.art];
  card.querySelector('[data-act=back]').hidden=step===0;
  card.querySelector('[data-act=next]').textContent=step===STEPS.length-1?'はじめる':'次へ';
  shade.hidden=false;if(!card.open)card.show();
