@@ -7,6 +7,7 @@ from pathlib import Path
 from urllib.request import urlopen
 
 from build_library import ADULT, BASE, REVISION, collect
+from screen_reference_speech import SCREEN
 
 ROOT = Path(__file__).parent
 POLICY = json.loads((ROOT / 'curation/common-voice-ja.json').read_text())
@@ -78,7 +79,7 @@ def main():
         features = measured['features']
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         speech = quality.get(path.stem, {})
-        if speech.get('sha256') == digest and speech.get('empty'):
+        if speech.get('sha256') == digest and speech.get('screen') == SCREEN and speech.get('empty'):
             empty.append({'id': path.stem, 'display_label': labels.get(path.stem), 'speaker': speaker_id(row), 'text': row['text'], 'speech': speech})
             continue
         reason = measured.get('reason')
@@ -122,7 +123,7 @@ def main():
                      'self-reported non-native accents. Native pronunciation is unverified for other speakers.',
     }
     cache_path.write_text(json.dumps(cache, ensure_ascii=False, allow_nan=False))
-    (ROOT / 'data/empty-reference-review.json').write_text(json.dumps(empty, indent=2))
+    (ROOT / 'data/empty-reference-review.json').write_text(json.dumps(empty, indent=2, ensure_ascii=False))
     (ROOT / 'data/common-voice-ja.json').write_text(json.dumps(manifest, ensure_ascii=False, allow_nan=False))
     # The local Japanese collection contains JVS plus these Common Voice references.
     path = ROOT / 'data/native-ja.json'

@@ -31,7 +31,7 @@ import onnxruntime as ort
 
 ROOT = Path(__file__).parent
 REVISION = '41f03a954b841327835dea1ddb7bb28ae23ddc2c'
-SCREEN = 'vad+whisper-v1'
+SCREEN = 'vad+whisper-v1'  # bump when the Whisper model, decoding settings, or VAD revision change
 # Stock phrases Whisper emits on silence or noise, as reading forms.
 HALLUCINATIONS = ('ごしちょう', 'ありがとうございました', 'おやすみなさい', 'おつかれさまでした', 'ちゃんねるとうろく', 'みてくれてありがとう', 'じかいよこく', 'おんがく')
 
@@ -50,17 +50,24 @@ def reading(text):
     return re.sub(r'[^ぁ-ゖa-z0-9]', '', joined.lower())
 
 
-def verdict(speech, level, transcript, prompt):
-    """Return the rejection reason, or None when the clip holds usable speech."""
+def verdict(speech, peak, level, transcript, prompt):
+    """Return the rejection reason, or None when the clip holds usable speech.
+
+    speech/peak are Silero's speech seconds and peak probability; level is dBFS RMS.
+    """
     heard, expected = reading(transcript), reading(prompt)
     similarity = difflib.SequenceMatcher(None, expected, heard).ratio() if heard and expected else 0.0
-    stock = any(p in heard for p in HALLUCINATIONS) and similarity < .5
+    # Hallucinations are short; a long transcript that merely contains one of the words is speech.
+    stock = len(heard) <= 20 and any(p in heard for p in HALLUCINATIONS) and similarity < .5
+    faint = level < -40 or peak < .2
     reason = None
-    if speech < 1 and (not heard or stock):
-        reason = 'Whisper heard nothing' if not heard else 'Whisper stock phrase'
+    if speech < 1 and stock:
+        reason = 'Whisper stock phrase'
+    elif speech < 1 and not heard and faint:
+        reason = 'Whisper heard nothing'
     elif speech < .5 and level < -45 and similarity < .3:
         reason = 'Faint, unintelligible'
-    elif speech < .16 and similarity < .3:
+    elif speech < .16 and similarity < .3 and faint:
         reason = 'No detected speech, unintelligible'
     return round(similarity, 3), reason
 
@@ -113,13 +120,18 @@ def whisper(cpu):
 
 def main(cpu=False):
     policy = json.loads((ROOT / 'curation/common-voice-ja.json').read_text())
+    import asyncio
     from build_common_voice_ja import metadata, selection
+    from build_library import collect
     # Every clip the selection rules admit, including ones an earlier screen dropped.
-    rows = sorted((r for r in metadata() if selection(r)), key=lambda r: r['file_name'])
+    all_rows = metadata()
+    rows = sorted((r for r in all_rows if selection(r)), key=lambda r: r['file_name'])
+    if asyncio.run(collect(rows)):
+        raise RuntimeError('Some reference audio could not be downloaded; screen aborted.')
     library = [{'id': Path(r['file_name']).stem, 'text': r['text']} for r in rows]
     prompts = {c['id']: c['text'] for c in library}
     # Reviewed empty clips stay in the run as controls even though the build excludes them.
-    texts = {Path(r.get('file_name', '')).stem: r.get('text', '') for r in metadata()}
+    texts = {Path(r.get('file_name', '')).stem: r.get('text', '') for r in all_rows}
     for row in policy.get('clip_reviews', []):
         if row['clip'] not in prompts:
             library.append({'id': row['clip'], 'text': texts.get(row['clip'], '')}); prompts[row['clip']] = texts.get(row['clip'], '')
@@ -132,10 +144,11 @@ def main(cpu=False):
         pending.append((clip, file, digest))
     if pending:
         session = vad_session(cpu); model = whisper(cpu)
+        print('VAD providers:', session.get_providers(), '| Whisper device:', 'cpu' if cpu else 'cuda', flush=True)
     for start in range(0, len(pending), 32):
         group = pending[start:start + 32]; loaded = [load(file) for _, file, _ in group]
         speech = vad(session, [x for x, _, _ in loaded])
-        for (clip, file, digest), (x, peak, level), (seconds, probability) in zip(group, loaded, speech):
+        for (clip, file, digest), (x, _, level), (seconds, probability) in zip(group, loaded, speech):
             segments, _ = model.transcribe(x, language='ja', beam_size=3, vad_filter=False, condition_on_previous_text=False)
             transcript = ''.join(s.text for s in segments).strip()
             cache[clip['id']] = {'sha256': digest, 'revision': REVISION, 'screen': SCREEN, 'speechSeconds': seconds, 'peakProbability': probability,
@@ -146,7 +159,7 @@ def main(cpu=False):
     cache = {c['id']: cache[c['id']] for c in library}
     for clip in library:
         entry = cache[clip['id']]
-        entry['similarity'], entry['reason'] = verdict(entry['speechSeconds'], entry['levelDbfs'], entry['transcript'], prompts[clip['id']])
+        entry['similarity'], entry['reason'] = verdict(entry['speechSeconds'], entry['peakProbability'], entry['levelDbfs'], entry['transcript'], prompts[clip['id']])
         entry['empty'] = entry['reason'] is not None
     path.write_text(json.dumps(cache, ensure_ascii=False, separators=(',', ':')))
     rejected = [c['id'] for c in library if cache[c['id']]['empty']]

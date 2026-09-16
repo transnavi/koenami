@@ -45,28 +45,33 @@ class SpeechScreenTests(unittest.TestCase):
     """Verdicts calibrated on the library: silence makes Whisper emit stock phrases."""
 
     def test_silence_with_stock_phrase_is_empty(self):
-        self.assertEqual(verdict(0.0, -68.1, 'ご視聴ありがとうございました', '昔は何のためにあるのか')[1], 'Whisper stock phrase')
-        self.assertEqual(verdict(0.768, -47.1, '次回予告', 'まだ消えちゃいないよ')[1], 'Whisper stock phrase')
+        self.assertEqual(verdict(0.0, .2, -68.1, 'ご視聴ありがとうございました', '昔は何のためにあるのか')[1], 'Whisper stock phrase')
+        self.assertEqual(verdict(0.768, .75, -47.1, '次回予告', 'まだ消えちゃいないよ')[1], 'Whisper stock phrase')
 
     def test_empty_transcript_is_empty(self):
-        self.assertEqual(verdict(0.448, -30.5, '', '手順')[1], 'Whisper heard nothing')
+        self.assertEqual(verdict(0.032, .1, -57.4, '', '画面から離れて楽しんでね。')[1], 'Whisper heard nothing')
+
+    def test_empty_transcript_at_normal_level_is_kept_for_listening(self):
+        self.assertIsNone(verdict(0.448, 1.0, -30.5, '', '手順')[1])
+        self.assertIsNone(verdict(0.128, .75, -27.3, 'こー', 'あああああ')[1])
 
     def test_quiet_but_intelligible_reading_is_kept(self):
-        similarity, reason = verdict(0.384, -51.3, 'これはお前が始めた物語だろ?', 'これはお前がはじめた物語だろ！')
+        similarity, reason = verdict(0.384, .77, -51.3, 'これはお前が始めた物語だろ?', 'これはお前がはじめた物語だろ！')
         self.assertIsNone(reason); self.assertGreater(similarity, .9)
 
     def test_reading_missed_by_vad_is_kept_when_whisper_matches(self):
-        self.assertIsNone(verdict(0.0, -17.1, 'お菓子食べちゃった!', 'お菓子たべちゃった')[1])
-        self.assertIsNone(verdict(0.512, -27.6, 'お財布', 'おさいふ')[1])
+        self.assertIsNone(verdict(0.0, .2, -17.1, 'お菓子食べちゃった!', 'お菓子たべちゃった')[1])
+        self.assertIsNone(verdict(0.512, 1.0, -27.6, 'お財布', 'おさいふ')[1])
 
     def test_faint_unintelligible_clip_is_empty(self):
-        self.assertEqual(verdict(0.288, -46.8, 'おはようございます。', '目に見える住宅の灯りは落ちている')[1], 'Faint, unintelligible')
+        self.assertEqual(verdict(0.288, .94, -46.8, 'おはようございます。', '目に見える住宅の灯りは落ちている')[1], 'Faint, unintelligible')
 
     def test_stock_phrase_in_the_prompt_itself_is_not_a_hallucination(self):
-        self.assertIsNone(verdict(0.6, -25.0, 'おやすみなさい', 'おやすみなさい。')[1])
+        self.assertIsNone(verdict(0.6, 1.0, -25.0, 'おやすみなさい', 'おやすみなさい。')[1])
+        self.assertIsNone(verdict(0.9, 1.0, -25.0, '音楽会は明日の夜に開かれると聞いた', '演奏会は今夜だと聞いた')[1])
 
     def test_short_word_with_low_similarity_is_kept_when_speech_was_detected(self):
-        self.assertIsNone(verdict(0.672, -26.8, 'GETS', 'ゲッツ')[1])
+        self.assertIsNone(verdict(0.672, 1.0, -26.8, 'GETS', 'ゲッツ')[1])
 
 
 if __name__ == '__main__':
