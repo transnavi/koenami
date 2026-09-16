@@ -73,12 +73,12 @@ async function resultImage(request: Request, env: Env, ctx: ExecutionContext, ur
   // Every distinct query renders anew, so uncached renders share the analysis rate limit.
   const { success } = await env.ANALYSIS_LIMIT.limit({ key: request.headers.get('CF-Connecting-IP') || 'unknown' });
   if (!success) return text('少し待ってからお試しください。', 429, { 'Retry-After': '10' });
-  resvgReady ??= initWasm(resvgWasm);
+  resvgReady ??= initWasm(resvgWasm).catch((e) => { resvgReady = undefined; throw e; });
   await resvgReady;
   const svg = cardSVG(shared.result, shared.scorer);
   const renderer = new Resvg(svg, { font: { fontBuffers: [new Uint8Array(fontRegular), new Uint8Array(fontBold)], loadSystemFonts: false, defaultFontFamily: 'Noto Sans JP' } });
-  const png = renderer.render().asPng();
-  renderer.free();
+  let png: Uint8Array;
+  try { png = renderer.render().asPng(); } finally { renderer.free(); }
   const response = new Response(png, { headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=604800, immutable' } });
   ctx.waitUntil(cache.put(key, response.clone()));
   return response;
@@ -100,8 +100,8 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
     if (!languages.has(lang)) return text('Not found', 404);
     asset = `/public-api/${lang}.json`;
   } else if (get && (url.pathname === '/' || /^\/(ja|zh-CN|en|ko)\/?$/.test(url.pathname))) asset = '/index.html';
-  else if (get && url.pathname === '/r') return resultPage(request, env, url);
-  else if (get && url.pathname === '/og.png') return resultImage(request, env, ctx, url);
+  else if (request.method === 'GET' && url.pathname === '/r') return resultPage(request, env, url);
+  else if (request.method === 'GET' && url.pathname === '/og.png') return resultImage(request, env, ctx, url);
   else if (get && (/^\/(assets|samples|fonts)\/[^/]+$/.test(url.pathname) || /^\/(method|guide|tutorial)\.html$/.test(url.pathname) || siteFiles.test(url.pathname))) asset = url.pathname;
   if (asset) {
     url.pathname = asset; url.search = '';

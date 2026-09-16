@@ -25,4 +25,5 @@ assert.equal(ko.score({f0:200,delta_f:1100,hnr:10,balance:-15,pitch_span:5}),nul
 assert.deepEqual([verdictOf(80),verdictOf(50),verdictOf(20)],['female','androgynous','male']);
 assert.equal(shareText({verdict:'male',display:22}),'私の声は男性的な声でした（女性度 22）');
 assert.equal(parseResultParams(new URLSearchParams('v=1&l=ja&f0=abc')),null);
+assert.equal(parseResultParams(new URLSearchParams('v=1&l=ja&f0=150')),null,'missing measurements are rejected, not read as 0');
 console.log('score_test: ok');

@@ -41,10 +41,11 @@ export class Scorer{
   const projected=this.space.projectRaw(raw,this.space.projections.contrast.axes),score=this.toScore(projected[0]);
   if(!finite(score))return null;
   const vector=this.space.vector(features,'contrast');
-  return {version:SCORE_VERSION,score,display:Math.round(clamp(score,0,100)),verdict:verdictOf(score),point:vector?[vector[0],vector[1]]:null,features:Object.fromEntries(METRIC_KEYS.map(k=>[k,features[k]]))};
+  const display=Math.round(clamp(score,0,100));
+  return {version:SCORE_VERSION,score,display,verdict:verdictOf(display),point:vector?[vector[0],vector[1]]:null,features:Object.fromEntries(METRIC_KEYS.map(k=>[k,features[k]]))};
  }
 }
 const PARAM={f0:'f0',delta_f:'df',hnr:'hnr',balance:'bal',pitch_span:'sp'};
 export function resultParams(features,lang){const p=new URLSearchParams({v:String(SCORE_VERSION),l:lang});for(const k of METRIC_KEYS)p.set(PARAM[k],Number(features[k]).toFixed(METRIC_DIGITS[k]+1));return p;}
-export function parseResultParams(params){const features={};for(const k of METRIC_KEYS){const v=Number(params.get(PARAM[k]));if(!finite(v))return null;features[k]=v;}return {features,lang:params.get('l')||'ja',version:Number(params.get('v'))||1};}
+export function parseResultParams(params){const features={};for(const k of METRIC_KEYS){if(!params.has(PARAM[k]))return null;const v=Number(params.get(PARAM[k]));if(!finite(v))return null;features[k]=v;}return {features,lang:params.get('l')||'ja',version:Number(params.get('v'))||1};}
 export function shareText(result){return `私の声は${VERDICTS[result.verdict]}でした（女性度 ${result.display}）`;}
