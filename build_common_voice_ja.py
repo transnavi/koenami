@@ -7,27 +7,29 @@ from pathlib import Path
 from urllib.request import urlopen
 
 from build_library import ADULT, BASE, REVISION, collect
+from curation import Verdicts
 from screen_reference_speech import SCREEN
 
 ROOT = Path(__file__).parent
 POLICY = json.loads((ROOT / 'curation/common-voice-ja.json').read_text())
+VERDICTS = Verdicts()
 
 
 def speaker_id(row):
     return hashlib.sha256(row['client_id'].encode()).hexdigest()[:12]
 
 
-def selection(row, policy=POLICY):
+def selection(row, policy=POLICY, verdicts=VERDICTS):
     speaker = speaker_id(row)
-    if Path(row.get('file_name', '')).stem in policy.get('excluded_clips', []):
+    if Path(row.get('file_name', '')).stem in verdicts.excluded_clips:
         return None
-    if speaker in policy['excluded_speakers'] or row.get('accent') in policy['excluded_accents']:
+    if speaker in verdicts.excluded_speakers or row.get('accent') in policy['excluded_accents']:
         return None
     if row.get('age') not in ADULT or row.get('gender') not in {'female_feminine', 'male_masculine'}:
         return None
     if row.get('up_votes', 0) < 2 or row.get('down_votes', 0) != 0:
         return None
-    if speaker in policy['reviewed_speakers']:
+    if speaker in verdicts.native_speakers:
         return 'reviewed_speaker'
     if row.get('accent') in policy['accepted_accents']:
         return 'declared_japanese_accent'
@@ -95,7 +97,7 @@ def main():
         basis = selection(row)
         clip = {
             'id': path.stem, 'speaker': sid,
-            'name': POLICY['reviewed_speakers'].get(sid, 'CV ' + sid[:6].upper()),
+            'name': 'CV ' + sid[:6].upper(),
             'group': 'female' if row['gender'] == 'female_feminine' else 'male',
             'group_source': row['gender'], 'language': 'ja', 'dataset': 'Common Voice',
             'selection_basis': basis, 'text': row['text'], 'audio': '/samples/' + path.name,

@@ -10,7 +10,8 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 from scipy.signal import resample_poly
-from build_common_voice_ja import metadata, speaker_id, POLICY
+from build_common_voice_ja import metadata, speaker_id
+from curation import Verdicts
 from build_library import collect
 import perception
 
@@ -31,14 +32,12 @@ def main():
         import torch
         import onnxruntime as ort
         ort.preload_dlls()
-    labels = {s: 1 for s in POLICY['reviewed_speakers']}
-    # Only firm pronunciation judgements train the negative class; speakers excluded for
-    # audio problems or tentative impressions carry no pronunciation label.
-    labels.update({r['speaker']: 0 for r in POLICY.get('listening_reviews', []) if r['judgement'] == 'not_native_like'})
+    verdicts = Verdicts()
+    labels = verdicts.pronunciation_labels()
     groups = {}
     for row in sorted(metadata(), key=lambda r: r['file_name']):
         sid = speaker_id(row)
-        if sid in labels and row['up_votes'] >= 2 and row['down_votes'] == 0 and Path(row['file_name']).stem not in POLICY.get('excluded_clips', []):
+        if sid in labels and row['up_votes'] >= 2 and row['down_votes'] == 0 and Path(row['file_name']).stem not in verdicts.excluded_clips:
             groups.setdefault(sid, []).append(row)
     rows = [r for group in groups.values() for r in group[:3]]
     failures = asyncio.run(collect(rows))

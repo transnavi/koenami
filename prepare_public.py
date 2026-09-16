@@ -6,6 +6,8 @@ import subprocess
 from pathlib import Path
 from statistics import median
 
+from curation import Verdicts
+
 ROOT = Path(__file__).parent
 OUT = ROOT / '.deploy'
 LANGUAGES = {'ja': '日本語', 'zh-CN': '普通话', 'en': 'English', 'ko': '한국어'}
@@ -46,23 +48,20 @@ def main():
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(ROOT / 'dist', OUT / 'assets')
-    models = ROOT / '.models/perception'
-    if not all((models / (name + '.int8.onnx')).exists() for name in ['wavlm', 'age']):
-        raise RuntimeError('Run prepare_voice_models.py before building the public demo.')
-    (OUT / 'models').mkdir()
-    for filename in ['wavlm.int8.onnx', 'age.int8.onnx', 'manifest.json', 'wavlm-README.md', 'wavlm-LICENSE', 'age-README.md', 'age-LICENSE', 'wavlm-preprocessor_config.json', 'age-preprocessor_config.json']:
-        shutil.copy2(models / filename, OUT / 'models' / filename)
+    # The listening-review page is a local curation tool; the public site never serves it.
+    (OUT / 'assets' / 'review.html').unlink()
+    for chunk in (OUT / 'assets' / 'assets').glob('review-*.js'):
+        chunk.unlink()
     write(OUT / 'assets' / 'public-api' / 'jvs-index.json', read('jvs-import-index.json'))
     write(OUT / 'data' / 'jvs-import-index.json', read('jvs-import-index.json'))
     libraries = {}
     native = read('native-ja.json')['clips']
     common_voice = read('common-voice-ja.json')['clips']
-    excluded = set(json.loads((ROOT / 'curation/common-voice-ja.json').read_text())['excluded_speakers'])
+    verdicts = Verdicts()
     assert all(c['dataset'] == 'Common Voice' and c['license'] == 'CC0-1.0'
                and c.get('selection_basis') in {'reviewed_speaker', 'declared_japanese_accent', 'common_voice_validated'}
-               and c['speaker'] not in excluded for c in common_voice)
-    excluded_clips = set(json.loads((ROOT / 'curation/common-voice-ja.json').read_text()).get('excluded_clips', []))
-    assert not any(c['id'] in excluded_clips for c in common_voice)
+               and c['speaker'] not in verdicts.excluded_speakers for c in common_voice)
+    assert not any(c['id'] in verdicts.excluded_clips for c in common_voice)
     native = jvs_excerpt(native) + common_voice
     assert len(native) == len({c['id'] for c in native})
     for lang in LANGUAGES:
@@ -86,7 +85,7 @@ def main():
                 folder.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source, folder / name)
             manifest.append({'file': name, 'sha256': digest, 'dataset': clip.get('dataset', 'VOICEVOX' if clip.get('synthetic') else 'Common Voice')})
-    catalog = {'capabilities': {'words': False, 'maxSeconds': 60, 'perception': True}, 'languages': [
+    catalog = {'capabilities': {'words': False, 'maxSeconds': 60, 'review': False}, 'languages': [
         {'id': lang, 'label': label,
          'clips': sum(not c.get('synthetic') for c in libraries[lang]['clips']),
          'speakers': len({c['speaker'] for c in libraries[lang]['clips'] if not c.get('synthetic')}),
