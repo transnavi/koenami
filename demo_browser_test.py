@@ -141,7 +141,7 @@ def main(url):
             page.locator('#live-shape-window').fill('2')
             assert page.locator('#live-shape-duration').inner_text()=='2 秒'
             page.locator('#settings-dialog [data-close]').click()
-            page.evaluate('''()=>{const shape=voiceApp.map.shape;voiceApp.map.shape=function(track,color,own){if(own)window.liveShapeTimes=track.map(p=>p.t);return shape.call(this,track,color,own);};}''')
+            page.evaluate('''()=>{const shape=voiceApp.map.shape;voiceApp.map.shape=function(track,color,own,...rest){if(own)window.liveShapeTimes=track.map(p=>p.t);return shape.call(this,track,color,own,...rest);};}''')
             page.locator('#live-mode').click()
             wait(page, 'voiceApp.state.recording')
             wait(page, 'voiceApp.state.liveTrack.length>20')
