@@ -36,7 +36,7 @@ def main():
             levels=config.split('-')
             text={'key':'The blue spot is on the key again.','hit':'How hard did he hit him?',
                   'sent_1':'This was easy for us.','sent_2':'Is this seesaw safe?','aa':'Sustained /a/'}.get(utterance,utterance)
-            plotted=m['voiced_seconds']>=.15 and m.get('formant_seconds',0)>=.1 and 'delta_f' in m['features']
+            plotted=m['voiced_seconds']>=.2 and m.get('formant_seconds',0)>=.1 and 'delta_f' in m['features']
             reason=None if plotted else 'Too little stable resonance in this demonstration.'
             if m.get('resonance_sensitivity_pct',0)>12:plotted=False;reason='Unstable resonance tracking.'
             if m.get('clipping_fraction',0)>.005:plotted=False;reason='Clipping in this recording.'

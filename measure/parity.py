@@ -45,7 +45,7 @@ FEATURES = [
     "quiet_pct", "quiet_mean",
 ]
 SCALARS = [
-    "duration", "voiced_seconds", "clipping_fraction", "level_dbfs", "formant_seconds",
+    "duration", "voiced_seconds", "active_seconds", "clipping_fraction", "level_dbfs", "formant_seconds",
     "pitch_p10", "pitch_p90", "formant_sensitivity_pct", "resonance_sensitivity_pct", "peak",
 ]
 
