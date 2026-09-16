@@ -180,18 +180,24 @@
      "text": "한국어",
      "disabled": false,
      "data": {}
+    },
+    {
+     "value": "lab",
+     "text": "発声の見本",
+     "disabled": false,
+     "data": {}
     }
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어",
+   "text": "日本語普通话English한국어発声の見本",
    "style": "display: inline-flex;"
   },
   "corpus-count": {
    "tag": "span",
    "class": "toolbar-count",
    "attrs": {},
-   "text": "57音声 · 20人"
+   "text": "142音声 · 50人"
   },
   "settings-button": {
    "tag": "button",
@@ -479,13 +485,13 @@
     "aria-label": "見本を選ぶ"
    },
    "open": false,
-   "text": "見本の声10女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むM 24781M 24601M 24561M 24573M 24672M 24792M 24654M 24704M 24833M 24554もっと見る"
+   "text": "見本の声25女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むM 24781M 24601M 25062M 24561M 25293M 24963M 24573M 24672M 25002M 24792M 24843M 24922M 25103M 25251M 25241M 24703M 24633M 24833M 25211M 25143M 25041M 25111M 24513M 25122M 25031もっと見る"
   },
   "library-count": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "10"
+   "text": "25"
   },
   "add-reference": {
    "tag": "button",
@@ -779,7 +785,7 @@
    "tag": "div",
    "class": "sample-scroll",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むM 24781M 24601M 24561M 24573M 24672M 24792M 24654M 24704M 24833M 24554もっと見る"
+   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むM 24781M 24601M 25062M 24561M 25293M 24963M 24573M 24672M 25002M 24792M 24843M 24922M 25103M 25251M 25241M 24703M 24633M 24833M 25211M 25143M 25041M 25111M 24513M 25122M 25031もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
@@ -809,35 +815,55 @@
    "class": "",
    "attrs": {},
    "rows": {
-    "count": 20,
+    "count": 50,
     "head": [
      "details#ja:Common Voice:c78fc31d53b5|speaker-folder||false|M 24781",
      "summary#||||M 24781",
      "details#ja:Common Voice:f504d98b0f67|speaker-folder||false|M 24601",
      "summary#||||M 24601",
+     "details#ja:Common Voice:4c6431bfa9ba|speaker-folder||false|M 25062",
+     "summary#||||M 25062",
      "details#ja:Common Voice:61211de94190|speaker-folder||false|M 24561",
      "summary#||||M 24561",
+     "details#ja:Common Voice:e02995a92bc3|speaker-folder||false|M 25293",
+     "summary#||||M 25293",
+     "details#ja:Common Voice:93a5f4970c07|speaker-folder||false|M 24963",
+     "summary#||||M 24963",
      "details#ja:Common Voice:9f0ef06d2f3d|speaker-folder||false|M 24573",
      "summary#||||M 24573",
      "details#ja:Common Voice:4abf7ed6198d|speaker-folder||false|M 24672",
      "summary#||||M 24672",
+     "details#ja:Common Voice:29d7198b11ad|speaker-folder||false|M 25002",
+     "summary#||||M 25002",
      "details#ja:Common Voice:4cb5a0ee54a3|speaker-folder||false|M 24792",
      "summary#||||M 24792",
-     "details#ja:Common Voice:9453b56bfa15|speaker-folder||false|M 24654",
-     "summary#||||M 24654",
-     "details#ja:Common Voice:e3fddd3b40d8|speaker-folder||false|M 24704",
-     "summary#||||M 24704",
+     "details#ja:Common Voice:bd75a0bddb41|speaker-folder||false|M 24843",
+     "summary#||||M 24843",
+     "details#ja:Common Voice:e1d11471a395|speaker-folder||false|M 24922",
+     "summary#||||M 24922",
+     "details#ja:Common Voice:e7b1d03d92dc|speaker-folder||false|M 25103",
+     "summary#||||M 25103",
+     "details#ja:Common Voice:ad0ea38b0841|speaker-folder||false|M 25251",
+     "summary#||||M 25251",
+     "details#ja:Common Voice:caf13a4ef43c|speaker-folder||false|M 25241",
+     "summary#||||M 25241",
+     "details#ja:Common Voice:e3fddd3b40d8|speaker-folder||false|M 24703",
+     "summary#||||M 24703",
+     "details#ja:Common Voice:9453b56bfa15|speaker-folder||false|M 24633",
+     "summary#||||M 24633",
      "details#ja:Common Voice:272a97745942|speaker-folder||false|M 24833",
      "summary#||||M 24833",
-     "details#ja:Common Voice:23bbcff6f628|speaker-folder||false|M 24554",
-     "summary#||||M 24554"
+     "details#ja:Common Voice:08830d2a352a|speaker-folder||false|M 25211",
+     "summary#||||M 25211",
+     "details#ja:Common Voice:c970de23cfcc|speaker-folder||false|M 25143",
+     "summary#||||M 25143"
     ],
     "tail": [
-     "summary#||||M 24704",
-     "details#ja:Common Voice:272a97745942|speaker-folder||false|M 24833",
-     "summary#||||M 24833",
-     "details#ja:Common Voice:23bbcff6f628|speaker-folder||false|M 24554",
-     "summary#||||M 24554"
+     "summary#||||M 24513",
+     "details#ja:Common Voice:1111031013c7|speaker-folder||false|M 25122",
+     "summary#||||M 25122",
+     "details#ja:Common Voice:d3c1642346cc|speaker-folder||false|M 25031",
+     "summary#||||M 25031"
     ]
    }
   },

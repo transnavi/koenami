@@ -180,18 +180,24 @@
      "text": "한국어",
      "disabled": false,
      "data": {}
+    },
+    {
+     "value": "lab",
+     "text": "発声の見本",
+     "disabled": false,
+     "data": {}
     }
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어",
+   "text": "日本語普通话English한국어発声の見本",
    "style": "display: inline-flex;"
   },
   "corpus-count": {
    "tag": "span",
    "class": "toolbar-count",
    "attrs": {},
-   "text": "57音声 · 20人"
+   "text": "142音声 · 50人"
   },
   "settings-button": {
    "tag": "button",

@@ -39,7 +39,7 @@ test.describe('own audio', () => {
 			await page.locator('#metric-dialog [data-close]').click();
 		}
 
-		for (const view of ['spectrogram', 'spectrum', 'waveform', 'pitch']) {
+		for (const view of ['spectrogram', 'spectrum', 'waveform', 'spectrogram', 'pitch']) {
 			await studio.choose('signal-view', view);
 			await studio.tick(300);
 			await studio.golden(`view-${view}`);
@@ -66,7 +66,23 @@ test.describe('own audio', () => {
 		await studio.until(analysed);
 		await studio.tick(300);
 
-		await dragSignal(page, 200, 500);
+		// Shift+arrow without a selection starts one from the first second.
+		await page.locator('#signal-canvas').focus();
+		await page.keyboard.press('Shift+ArrowRight');
+		await studio.until('!!window.voiceApp.state.ranges.own && ' + idle);
+		await studio.tick(300);
+		await studio.golden('own-range-from-keyboard');
+		await page.locator('#range-reset').click();
+		await studio.until('!window.voiceApp.state.ranges.own');
+		// A frame drawn mid-drag shows the pending selection.
+		const box = (await page.locator('#signal-canvas').boundingBox())!;
+		await page.mouse.move(box.x + 200, box.y + 80);
+		await page.mouse.down();
+		await page.mouse.move(box.x + 350, box.y + 80, { steps: 3 });
+		await studio.tick(100);
+		await studio.canvas('own-drag-pending', '#signal-canvas');
+		await page.mouse.move(box.x + 500, box.y + 80, { steps: 3 });
+		await page.mouse.up();
 		await studio.until('!!window.voiceApp.state.ranges.own && ' + idle);
 		await studio.tick(300);
 		await studio.golden('own-range');
@@ -123,6 +139,10 @@ test.describe('own audio', () => {
 		await studio.until('!!window.voiceApp.state.words.own');
 		await studio.tick(300);
 		await studio.golden('own-words');
+		await page.locator('#report-button').click();
+		await studio.tick(100);
+		await studio.golden('report-with-pace');
+		await page.locator('#report-dialog [data-close]').click();
 		await page.locator('#word-list button').nth(1).click();
 		await studio.tick(100);
 		await studio.golden('own-word-seek');
@@ -145,6 +165,12 @@ test.describe('own audio', () => {
 		await studio.until('!document.getElementById("player").paused');
 		await studio.tick(300);
 		await studio.golden('own-playing');
+		// Frames after the first voiced second draw the playback cursor and trail.
+		await studio.until('document.getElementById("player").currentTime > 2.5');
+		await studio.tick(200);
+		await page.locator('[data-dimension="2"]').click();
+		await studio.tick(200);
+		await page.locator('[data-dimension="3"]').click();
 		await page.keyboard.press('Space');
 		await studio.until('document.getElementById("player").paused');
 		await studio.tick(100);
@@ -166,6 +192,28 @@ test.describe('own audio', () => {
 		await studio.until('document.getElementById("reference-player").paused && document.getElementById("player").paused');
 		await studio.tick(100);
 		await studio.golden('ab-cancelled');
+		// A full comparison: the reference phase hands over to the own phase and ends.
+		await page.locator('#compare-ab').click();
+		await studio.untilTicking('!document.getElementById("player").paused');
+		await studio.untilTicking('document.getElementById("player").paused && document.getElementById("reference-player").paused');
+		await studio.tick(5000);
+		await studio.golden('ab-complete');
+		// Reference playback with a range stops at the range end.
+		await page.locator('#signal-ref').click();
+		const box = (await page.locator('#signal-canvas').boundingBox())!;
+		await page.mouse.move(box.x + 100, box.y + 80);
+		await page.mouse.down();
+		await page.mouse.move(box.x + 220, box.y + 80, { steps: 4 });
+		await page.mouse.up();
+		await studio.until('!!window.voiceApp.state.ranges.ref && !window.voiceApp.state.busy');
+		await page.locator('#play-reference').click();
+		await studio.untilTicking('document.getElementById("reference-player").paused');
+		await studio.tick(5000);
+		await studio.golden('range-playback-ended');
+		await page.locator('#play-reference').click();
+		await studio.untilTicking('document.getElementById("reference-player").paused');
+		await studio.tick(5000);
+		await studio.golden('range-playback-restarted-from-start');
 	});
 
 	test('takes: second upload, history, download, restore and delete', async ({ page, studio }) => {
@@ -177,6 +225,11 @@ test.describe('own audio', () => {
 		await studio.until('window.voiceApp.state.ownName === "own-b.wav" && ' + analysed);
 		await studio.tick(1200);
 		await studio.golden('two-takes');
+		// The current take comes back after a reload.
+		await studio.open('/ja/');
+		await studio.until(analysed);
+		await studio.tick(300);
+		await studio.golden('reloaded-with-take');
 		await studio.choose('sort', 'near');
 		await studio.tick(300);
 		await studio.golden('sorted-near');

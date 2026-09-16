@@ -33,6 +33,10 @@ test.describe('phone layout', () => {
 		await page.setViewportSize({ width: 1440, height: 960 });
 		await studio.tick(300);
 		await studio.golden('sheet-closed-by-widening');
+		// Canvases too small to draw stay blank.
+		await page.setViewportSize({ width: 240, height: 200 });
+		await studio.tick(300);
+		await studio.golden('tiny-viewport');
 	});
 });
 

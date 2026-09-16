@@ -18,7 +18,7 @@ const manualStop = 1.4;
 const audio = { maskAudio: true } as const;
 // Live readouts summarise the pitch track over a time window measured in captured
 // samples, so their numbers shift with real capture timing.
-const live = { maskAudio: true, ignore: ['indicators', 'fit-value', 'report-button', 'quality-state'] } as const;
+const live = { maskAudio: true, ignore: ['indicators', 'fit-value', 'report-button', 'quality-state', 'live-mode', 'live-time'] } as const;
 
 test.describe('recording', () => {
 	test('record with R, stop, analyse in the background, and the take menu', async ({ page, studio }) => {
@@ -124,12 +124,19 @@ test.describe('recording', () => {
 		await page.locator('#settings-dialog [data-close]').click();
 		await studio.tick(500);
 		await studio.golden('live-shape-window', live);
+		// Measurements that stop arriving leave the live head to fade out.
+		await page.route('**/api/analyze?live=1', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: 'busy' }));
+		await studio.tick(4000);
+		await studio.golden('live-silent', live);
 		await page.keyboard.press('r');
 		await studio.until('window.voiceApp.state.recording === false && ' + idle);
 		await studio.tick(300);
 		await studio.golden('live-stopped', live);
+		await page.unroute('**/api/analyze?live=1');
 		await page.locator('#live-mode').click();
 		await studio.until(recording);
+		await studio.tick(600);
+		await studio.golden('live-restarted', live);
 		await page.locator('#live-mode').click();
 		await studio.until('window.voiceApp.state.recording === false && ' + idle);
 		await studio.tick(300);

@@ -34,9 +34,26 @@ function subset(clips, speakersPerGroup, clipsPerSpeaker) {
 }
 const audio = new Set();
 const ja = read('native-ja.json');
-const jaClips = subset(ja.clips, 10, 4);
+const jaClips = subset(ja.clips, 25, 3);
+// One speaker folder longer than the thirty rows shown at first: the busiest
+// speaker's clips repeated under new ids, so the folder's もっと見る button exists.
+const busiest = jaClips.filter((c) => c.speaker === jaClips.map((c) => c.speaker).sort((a, b) => jaClips.filter((c) => c.speaker === b).length - jaClips.filter((c) => c.speaker === a).length)[0]);
+for (let i = 0; jaClips.filter((c) => c.speaker === busiest[0].speaker).length < 33; i++) {
+	const c = busiest[i % busiest.length];
+	jaClips.push({ ...c, id: `${c.id}-repeat${i}`, text: `${c.text}（${i + 1}）` });
+}
 jaClips.forEach((c) => audio.add(basename(c.audio)));
 writeFileSync(join(out, 'native-ja.json'), JSON.stringify({ ...ja, clips: jaClips }));
+
+// A small research library so the lab mode (teacher filters) can be exercised; the
+// clips borrow features and audio from Common Voice clips and carry synthetic
+// teacher configurations, as the private research set does.
+const lab = jaClips.slice(0, 8).map((c, i) => ({
+	id: `lab-${i + 1}`, speaker: ['001', '002', '003', 'DSFD'][i % 4], group: 'research', language: 'lab', dataset: 'lab', plotted: true,
+	audio: c.audio, duration: c.duration, features: c.features, text: `lab ${i + 1}`, utterance: `u${(i % 3) + 1}`, revision: 1,
+	configuration: { pitch: ['low', 'med', 'high'][i % 3], resonance: ['low', 'med', 'high'][(i + 1) % 3], weight: ['low', 'med', 'high'][(i + 2) % 3] }
+}));
+writeFileSync(join(out, 'research-demos.json'), JSON.stringify({ language: 'lab', clips: lab }));
 
 for (const lang of ['zh-CN', 'en', 'ko']) {
 	const lib = read(`libraries/${lang}.json`);

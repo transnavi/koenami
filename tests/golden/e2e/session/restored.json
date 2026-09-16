@@ -180,18 +180,24 @@
      "text": "한국어",
      "disabled": false,
      "data": {}
+    },
+    {
+     "value": "lab",
+     "text": "発声の見本",
+     "disabled": false,
+     "data": {}
     }
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어",
+   "text": "日本語普通话English한국어発声の見本",
    "style": "display: inline-flex;"
   },
   "corpus-count": {
    "tag": "span",
    "class": "toolbar-count",
    "attrs": {},
-   "text": "57音声 · 20人"
+   "text": "142音声 · 50人"
   },
   "settings-button": {
    "tag": "button",
@@ -271,7 +277,7 @@
    "tag": "span",
    "class": "",
    "attrs": {
-    "title": "5つの指標から計算した主成分空間"
+    "title": "5つの指標から計算。横軸は女性的な声と男性的な声が最も離れる方向です。"
    },
    "text": "声の分布"
   },
@@ -1338,7 +1344,7 @@
      "ja:Common Voice:50a288fb7fb3"
     ],
     "dimension": 2,
-    "projection": "variance",
+    "projection": "contrast",
     "yaw": 0.4,
     "tilt": 0.2,
     "zoom": 1.3,

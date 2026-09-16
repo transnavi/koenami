@@ -182,18 +182,24 @@
      "text": "한국어",
      "disabled": false,
      "data": {}
+    },
+    {
+     "value": "lab",
+     "text": "発声の見本",
+     "disabled": false,
+     "data": {}
     }
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어",
+   "text": "日本語普通话English한국어発声の見本",
    "style": "display: inline-flex;"
   },
   "corpus-count": {
    "tag": "span",
    "class": "toolbar-count",
    "attrs": {},
-   "text": "60音声 · 22人"
+   "text": "145音声 · 52人"
   },
   "settings-button": {
    "tag": "button",
@@ -481,13 +487,13 @@
     "aria-label": "見本を選ぶ"
    },
    "open": false,
-   "text": "見本の声12女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 26324F 26003F 25564F 26572F 25944F 26404F 26282JVS 0021F 25874もっと見る"
+   "text": "見本の声27女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641JVS 0021F 25873F 26732F 26581もっと見る"
   },
   "library-count": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "12"
+   "text": "27"
   },
   "add-reference": {
    "tag": "button",
@@ -781,7 +787,7 @@
    "tag": "div",
    "class": "sample-scroll",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 26324F 26003F 25564F 26572F 25944F 26404F 26282JVS 0021F 25874もっと見る"
+   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641JVS 0021F 25873F 26732F 26581もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
@@ -811,7 +817,7 @@
    "class": "",
    "attrs": {},
    "rows": {
-    "count": 30,
+    "count": 60,
     "head": [
      "details#ja:Common Voice:50a288fb7fb3|speaker-folder||true|F 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:1",
      "summary#||||F 26243",
@@ -825,31 +831,41 @@
      "summary#||||VOICEVOX:四国めたんAI4",
      "details#ja:Common Voice:6c36d39f08db|speaker-folder||false|F 26232",
      "summary#||||F 26232",
-     "details#ja:Common Voice:f3b15d7bf076|speaker-folder||false|F 26324",
-     "summary#||||F 26324",
+     "details#ja:Common Voice:fd9de2d213a9|speaker-folder||false|F 27053",
+     "summary#||||F 27053",
+     "details#ja:Common Voice:f3b15d7bf076|speaker-folder||false|F 26323",
+     "summary#||||F 26323",
+     "details#ja:Common Voice:f89d530d282e|speaker-folder||false|F 27081",
+     "summary#||||F 27081",
      "details#ja:Common Voice:b2a35bfe1379|speaker-folder||false|F 26003",
      "summary#||||F 26003",
-     "details#ja:Common Voice:b675726edbb3|speaker-folder||false|F 25564",
-     "summary#||||F 25564",
+     "details#ja:Common Voice:97738c057dab|speaker-folder||false|F 26603",
+     "summary#||||F 26603",
+     "details#ja:Common Voice:bafc7f7f1e0d|speaker-folder||false|F 27002",
+     "summary#||||F 27002",
+     "details#ja:Common Voice:b675726edbb3|speaker-folder||false|F 255633",
+     "summary#||||F 255633",
      "details#ja:Common Voice:1eab7adfaeee|speaker-folder||false|F 26572",
      "summary#||||F 26572",
-     "details#ja:Common Voice:1ed8dc009e30|speaker-folder||false|F 25944",
-     "summary#||||F 25944",
-     "details#ja:Common Voice:04d17e414d18|speaker-folder||false|F 26404",
-     "summary#||||F 26404",
-     "details#ja:Common Voice:3d5c33514fc7|speaker-folder||false|F 26282",
-     "summary#||||F 26282",
-     "details#ja:JVS:jvs002|speaker-folder||false|JVS 0021",
-     "summary#||||JVS 0021",
-     "details#ja:Common Voice:2ff3e0b01ed5|speaker-folder||false|F 25874",
-     "summary#||||F 25874"
+     "details#ja:Common Voice:b66c552c4205|speaker-folder||false|F 26962",
+     "summary#||||F 26962",
+     "details#ja:Common Voice:6bceea6338fa|speaker-folder||false|F 26983",
+     "summary#||||F 26983",
+     "details#ja:Common Voice:5d48646ba95e|speaker-folder||false|F 26913",
+     "summary#||||F 26913",
+     "details#ja:Common Voice:fcb7fdc1e2b0|speaker-folder||false|F 26882",
+     "summary#||||F 26882",
+     "details#ja:Common Voice:2e66c2d9230b|speaker-folder||false|F 26673",
+     "summary#||||F 26673",
+     "details#ja:Common Voice:940de57d1a26|speaker-folder||false|F 26792",
+     "summary#||||F 26792"
     ],
     "tail": [
-     "summary#||||F 26282",
-     "details#ja:JVS:jvs002|speaker-folder||false|JVS 0021",
-     "summary#||||JVS 0021",
-     "details#ja:Common Voice:2ff3e0b01ed5|speaker-folder||false|F 25874",
-     "summary#||||F 25874"
+     "summary#||||F 25873",
+     "details#ja:Common Voice:1c9ebb4a04a7|speaker-folder||false|F 26732",
+     "summary#||||F 26732",
+     "details#ja:Common Voice:a590a36d0deb|speaker-folder||false|F 26581",
+     "summary#||||F 26581"
     ]
    }
   },
@@ -1366,11 +1382,11 @@
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.7745100166002288,
+    "zoom": 0.8284070403859072,
     "camera": [
-     0.4332896234277744,
-     0.7409585885147835,
-     0.6141646739240851
+     0.42429289514719637,
+     0.687762381620256,
+     0.7568161161072884
     ],
     "center": [
      0.5,

@@ -182,18 +182,24 @@
      "text": "한국어",
      "disabled": false,
      "data": {}
+    },
+    {
+     "value": "lab",
+     "text": "発声の見本",
+     "disabled": false,
+     "data": {}
     }
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어",
+   "text": "日本語普通话English한국어発声の見本",
    "style": "display: inline-flex;"
   },
   "corpus-count": {
    "tag": "span",
    "class": "toolbar-count",
    "attrs": {},
-   "text": "57音声 · 20人"
+   "text": "142音声 · 50人"
   },
   "settings-button": {
    "tag": "button",
@@ -481,13 +487,13 @@
     "aria-label": "見本を選ぶ"
    },
    "open": false,
-   "text": "見本の声2女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むVOICEVOX:四国めたんAI4F 25871もっと見る"
+   "text": "見本の声3女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むVOICEVOX:四国めたんAI4F 255633F 25871もっと見る"
   },
   "library-count": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "2"
+   "text": "3"
   },
   "add-reference": {
    "tag": "button",
@@ -781,7 +787,7 @@
    "tag": "div",
    "class": "sample-scroll",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むVOICEVOX:四国めたんAI4F 25871もっと見る"
+   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むVOICEVOX:四国めたんAI4F 255633F 25871もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
@@ -811,16 +817,19 @@
    "class": "",
    "attrs": {},
    "rows": {
-    "count": 4,
+    "count": 6,
     "head": [
      "details#ja:female:voicevox-四国めたん|speaker-folder||false|VOICEVOX:四国めたんAI4",
      "summary#||||VOICEVOX:四国めたんAI4",
+     "details#ja:Common Voice:b675726edbb3|speaker-folder||false|F 255633",
+     "summary#||||F 255633",
      "details#ja:Common Voice:2ff3e0b01ed5|speaker-folder||false|F 25871",
      "summary#||||F 25871"
     ],
     "tail": [
-     "details#ja:female:voicevox-四国めたん|speaker-folder||false|VOICEVOX:四国めたんAI4",
      "summary#||||VOICEVOX:四国めたんAI4",
+     "details#ja:Common Voice:b675726edbb3|speaker-folder||false|F 255633",
+     "summary#||||F 255633",
      "details#ja:Common Voice:2ff3e0b01ed5|speaker-folder||false|F 25871",
      "summary#||||F 25871"
     ]

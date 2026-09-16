@@ -44,6 +44,30 @@ test.describe('sample library', () => {
 		await page.mouse.click(2, 2);
 		await studio.tick(200);
 		await studio.golden('sort-light-dismiss');
+		// Opening from the keyboard: ArrowUp focuses the last option, Space the current
+		// one; a typed character jumps to the next option starting with it, wrapping round.
+		await page.locator('#sort button.trigger').focus();
+		await page.keyboard.press('ArrowUp');
+		await page.keyboard.press('Enter');
+		await studio.tick(200);
+		await studio.golden('sort-arrow-up-open');
+		await page.keyboard.press(' ');
+		await page.keyboard.press('Escape');
+		await studio.tick(100);
+		// Type-ahead needs option labels in the typed script: the language list has English.
+		await page.locator('#language button.trigger').focus();
+		await page.keyboard.press('Enter');
+		await page.keyboard.press('e');
+		await page.keyboard.press('e');
+		await page.keyboard.press('x');
+		await page.keyboard.press('Escape');
+		await studio.tick(200);
+		await studio.golden('sort-type-ahead');
+		// A second trigger click closes an open list.
+		await page.locator('#sort button.trigger').click();
+		await page.locator('#sort button.trigger').click();
+		await studio.tick(200);
+		await studio.golden('sort-toggle-closed');
 
 		for (const query of ['F 2624', 'F2624', '26', 'nothing here', '']) {
 			await page.fill('#search', query);
@@ -60,15 +84,29 @@ test.describe('sample library', () => {
 		await studio.golden('folder-closed');
 	});
 
-	test('load more inside a large folder', async ({ page, studio }) => {
-		// Only speaker folders with more than thirty clips get a button; none of the
-		// fixture speakers has that many, so the control is expected absent here.
+	test('load more: speaker folders beyond thirty, and rows beyond thirty inside a folder', async ({ page, studio }) => {
 		await studio.open('/ja/');
 		await studio.until(ready);
 		await studio.choose('library-group', 'all');
 		await studio.tick(200);
-		await expect(page.locator('#load-more')).toBeHidden();
-		await studio.golden('no-load-more');
+		await expect(page.locator('#load-more')).toBeVisible();
+		await studio.golden('load-more-available');
+		await page.locator('#load-more').click();
+		await studio.tick(200);
+		await studio.golden('load-more-clicked');
+		// Folders fill lazily; open them until one shows its もっと見る row.
+		const folders = page.locator('#sample-list details.speaker-folder');
+		for (let i = 0; i < await folders.count(); i++) {
+			const folder = folders.nth(i);
+			if (await folder.getAttribute('open') === null) await folder.locator('summary').click();
+			if (await folder.locator('.speaker-more').count()) break;
+		}
+		const big = folders.filter({ has: page.locator('.speaker-more') }).first();
+		await studio.tick(100);
+		await studio.golden('big-folder-open');
+		await big.locator('.speaker-more').click();
+		await studio.tick(100);
+		await studio.golden('big-folder-more');
 	});
 
 	test('selecting, playing, seeking and favouriting a reference', async ({ page, studio }) => {
@@ -127,6 +165,8 @@ test.describe('sample library', () => {
 
 		// A synthetic VOICEVOX clip has a different source and no analysis audio locally.
 		await studio.choose('library-group', 'all');
+		await page.fill('#search', 'VOICEVOX');
+		await studio.tick(300);
 		await page.locator('#sample-list details.speaker-folder[data-speaker*="voicevox"] summary').first().click();
 		await page.locator('#sample-list details.speaker-folder[data-speaker*="voicevox"] .sample-row').first().click();
 		await studio.until('window.voiceApp.state.selected.synthetic === true && !window.voiceApp.state.busy');
@@ -140,7 +180,10 @@ test.describe('sample library', () => {
 		await page.locator('#add-reference').click();
 		await studio.tick(100);
 		await studio.golden('import-dialog');
-		await page.locator('#import-dialog [data-close]').click();
+		// 音声ファイルを選ぶ closes the dialog and opens the file picker.
+		await page.locator('#import-audio').click();
+		await studio.tick(100);
+		await studio.golden('import-audio-chosen');
 		await page.locator('#reference-upload').setInputFiles(studio.audio('own-b.wav'));
 		await studio.until('window.voiceApp.state.selected?.group === "custom" && !window.voiceApp.state.busy');
 		await studio.tick(300);
@@ -149,5 +192,18 @@ test.describe('sample library', () => {
 		await studio.choose('library-group', 'custom');
 		await studio.tick(200);
 		await studio.golden('custom-group');
+		// A range on a custom reference is analysed from its own samples.
+		const box = (await page.locator('#signal-canvas').boundingBox())!;
+		await page.mouse.move(box.x + 200, box.y + 80);
+		await page.mouse.down();
+		await page.mouse.move(box.x + 500, box.y + 80, { steps: 4 });
+		await page.mouse.up();
+		await studio.until('!!window.voiceApp.state.ranges.ref && !window.voiceApp.state.busy');
+		await studio.tick(300);
+		await studio.golden('custom-range');
+		await page.locator('#words-button').click();
+		await studio.until('!!window.voiceApp.state.words.ref');
+		await studio.tick(300);
+		await studio.golden('custom-words');
 	});
 });

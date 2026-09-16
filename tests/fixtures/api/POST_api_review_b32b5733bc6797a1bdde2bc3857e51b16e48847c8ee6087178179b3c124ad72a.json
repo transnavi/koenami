@@ -1,7 +1,0 @@
-{
- "key": "POST /api/review b32b5733bc6797a1bdde2bc3857e51b16e48847c8ee6087178179b3c124ad72a",
- "status": 200,
- "contentType": "application/json; charset=utf-8",
- "body": "{\"speaker\": \"f504d98b0f67\", \"clip\": \"common_voice_ja_19792532\", \"display\": \"M 2460\", \"language\": \"ja\", \"flags\": [], \"scope\": \"clip\", \"ratings\": {}, \"note\": \"memo\", \"reviewed\": \"2026-09-16T10:16:50+00:00\"}",
- "base64": false
-}

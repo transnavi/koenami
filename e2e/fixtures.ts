@@ -25,6 +25,10 @@ type Studio = {
 	 *  so page time advances only through tick(); that keeps timer-driven state identical
 	 *  between runs. */
 	until: (expression: string, timeoutMs?: number) => Promise<void>;
+	/** Like until(), but advances the fake clock 50 ms per poll for flows driven by
+	 *  timers and real audio together (A/B comparison). The number of ticks depends on
+	 *  timing, so a fixed tick should follow before any golden. */
+	untilTicking: (expression: string, timeoutMs?: number) => Promise<void>;
 	/** Pixel-exact screenshot golden of one element. */
 	canvas: (name: string, selector: string) => Promise<void>;
 	/** Download triggered by `action`, recorded as name + SHA-256. */
@@ -97,12 +101,24 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const errors: string[] = [];
 		page.on('pageerror', (error) => errors.push(String(error)));
 
-		const tick = async (ms = 100) => { await page.clock.runFor(ms); };
+		// Layout, font and media events arrive in real time; a short real pause before the
+		// fake frames lets them land in the same order whether the API answered quickly
+		// (replay) or slowly (recording against the analyzer).
+		const settle = async () => { await page.waitForTimeout(60); await page.evaluate(() => document.fonts.ready).catch(() => {}); };
+		const tick = async (ms = 100) => { await settle(); await page.clock.runFor(ms); };
 		const until = async (expression: string, timeoutMs = 30_000) => {
 			const started = Date.now();
 			while (!(await page.evaluate(expression))) {
 				if (Date.now() - started > timeoutMs) throw new Error(`timed out waiting for ${expression}; notice: ${await page.locator('#notice').innerText({ timeout: 500 }).catch(() => '')}`);
 				await page.waitForTimeout(25);
+			}
+		};
+		const untilTicking = async (expression: string, timeoutMs = 30_000) => {
+			const started = Date.now();
+			while (!(await page.evaluate(expression))) {
+				if (Date.now() - started > timeoutMs) throw new Error(`timed out waiting for ${expression}`);
+				await page.clock.runFor(50);
+				await page.waitForTimeout(20);
 			}
 		};
 		const golden = async (name: string, { ignore = [], maskAudio = false, extra = {} }: { ignore?: readonly string[]; maskAudio?: boolean; extra?: Record<string, unknown> } = {}) => {
@@ -126,6 +142,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			expect(text, `golden ${file}/${name}`).toBe(readFileSync(path, 'utf8'));
 		};
 		const canvas = async (name: string, selector: string) => {
+			await settle();
 			await expect(page.locator(selector)).toHaveScreenshot(`${name}.png`, { animations: 'disabled', caret: 'hide' });
 		};
 		const download = async (action: () => Promise<void>) => {
@@ -158,7 +175,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			}
 			await page.goto(path);
 		};
-		await use({ log, golden, tick, until, canvas, download, choose, open, back, forward, audio: fixtureAudio });
+		await use({ log, golden, tick, until, untilTicking, canvas, download, choose, open, back, forward, audio: fixtureAudio });
 	}
 });
 

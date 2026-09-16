@@ -47,6 +47,38 @@ test.describe('server and storage faults', () => {
 		await studio.golden('detail-503');
 	});
 
+	test('analysis responses without visuals or tracks still render', async ({ page, studio }) => {
+		await page.route('**/api/analyze', async (route) => {
+			const response = await route.fetch();
+			const detail = await response.json();
+			delete detail.visuals; delete detail.track;
+			await route.fulfill({ response, json: detail });
+		});
+		await page.route('**/api/detail/**', async (route) => {
+			const response = await route.fetch();
+			const detail = await response.json();
+			detail.visuals = {};
+			await route.fulfill({ response, json: detail });
+		});
+		await studio.open('/ja/');
+		await studio.until(ready);
+		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+		await studio.until(idle);
+		for (const view of ['pitch', 'spectrogram', 'spectrum', 'waveform']) {
+			await studio.choose('signal-view', view);
+			await studio.tick(200);
+			await studio.golden(`bare-${view}`);
+		}
+		await page.locator('#play-mine').click();
+		await studio.until('!document.getElementById("player").paused');
+		await studio.until('document.getElementById("player").currentTime > 1');
+		await studio.tick(200);
+		await page.keyboard.press('Space');
+		await studio.until('document.getElementById("player").paused');
+		await studio.tick(200);
+		await studio.golden('bare-playback');
+	});
+
 	test('storage that cannot open', async ({ page, studio }) => {
 		await studio.open('/ja/', async (p) => p.addInitScript(() => {
 			// A microtask, since timers are under the test clock.

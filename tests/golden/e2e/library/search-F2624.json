@@ -180,18 +180,24 @@
      "text": "한국어",
      "disabled": false,
      "data": {}
+    },
+    {
+     "value": "lab",
+     "text": "発声の見本",
+     "disabled": false,
+     "data": {}
     }
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어",
+   "text": "日本語普通话English한국어発声の見本",
    "style": "display: inline-flex;"
   },
   "corpus-count": {
    "tag": "span",
    "class": "toolbar-count",
    "attrs": {},
-   "text": "57音声 · 20人"
+   "text": "142音声 · 50人"
   },
   "settings-button": {
    "tag": "button",
@@ -594,7 +600,7 @@
     }
    ],
    "trigger": "高さが高い順",
-   "expanded": "false",
+   "expanded": "true",
    "text": "話者名順自分の声に近い順高さが低い順高さが高い順",
    "style": "display: inline-flex;"
   },
@@ -1330,7 +1336,7 @@
     "lang": "ja",
     "group": "all",
     "sort": "high",
-    "search": "",
+    "search": "F 2624",
     "reference": "common_voice_ja_36363162",
     "referenceRange": null,
     "openSpeakers": [
@@ -1340,11 +1346,11 @@
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 0.801464474306227,
+    "zoom": 0.914281430867266,
     "camera": [
-     0.4378284090095006,
-     0.7397146134849503,
-     0.5875554267810748
+     0.48432510759557895,
+     0.6283765936675773,
+     0.7587527919899949
     ],
     "center": [
      0.5,

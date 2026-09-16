@@ -117,6 +117,21 @@ test.describe('JVS import', () => {
 		await studio.until(idle);
 		await studio.tick(300);
 		await studio.golden('unrelated-archive');
+		// An imported clip whose stored audio has been lost.
+		await page.locator('#jvs-zip').setInputFiles(await archive(info.outputPath()));
+		await studio.until('document.getElementById("jvs-status").textContent.includes("追加済み")');
+		await studio.until(idle);
+		await page.locator('#import-dialog [data-close]').click();
+		await page.evaluate((id) => new Promise<void>((resolve) => {
+			const open = indexedDB.open('koe-takes');
+			open.onsuccess = () => { const tx = open.result.transaction('session', 'readwrite'); tx.objectStore('session').delete('jvs-audio:' + id); tx.oncomplete = () => resolve(); };
+		}), index.clips[0].id);
+		await studio.choose('library-group', 'all');
+		await page.locator(`#sample-list details.speaker-folder[data-speaker*="${speakerOf(index.clips[0].id)}"] summary`).first().click();
+		await page.locator(`.sample-row[data-id="${index.clips[0].id}"]`).click();
+		await studio.until(idle);
+		await studio.tick(300);
+		await studio.golden('imported-audio-missing');
 
 	});
 

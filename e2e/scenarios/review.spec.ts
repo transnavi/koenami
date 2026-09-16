@@ -33,8 +33,26 @@ test.describe('listening review page', () => {
 		await studio.until('document.querySelector("#play[aria-pressed=true]") !== null');
 		await page.keyboard.press(' ');
 		await studio.until(paused);
+		await page.keyboard.press(' ');
+		await studio.until('document.querySelector("#play[aria-pressed=true]") !== null');
+		await page.keyboard.press(' ');
+		await studio.until(paused);
 		await studio.tick(100);
 		await studio.golden('replayed-then-paused');
+		// Modifier chords are left to the browser; A toggles the scope; L opens the list;
+		// a decade key outside the table does nothing.
+		await page.keyboard.press('Control+s');
+		await page.keyboard.press('a');
+		await page.keyboard.press('A');
+		await page.keyboard.press('l');
+		await studio.tick(100);
+		await studio.golden('list-by-key');
+		await page.keyboard.press('Escape');
+		await page.locator('#scales .scale .name').nth(4).click();
+		await page.keyboard.press('0');
+		await page.keyboard.press('7');
+		await studio.tick(100);
+		await studio.golden('decade-key-out-of-range');
 
 		await page.keyboard.press('Enter');
 		await studio.tick(100);
@@ -82,6 +100,17 @@ test.describe('listening review page', () => {
 		await page.locator('#prev-speaker').click();
 		await settle(page, studio);
 		await studio.golden('previous-speaker-at-start');
+		await page.keyboard.press('Backspace');
+		await settle(page, studio);
+		await page.locator('#jump').click();
+		await studio.tick(100);
+		await studio.golden('list-marks');
+		await page.keyboard.press('Escape');
+		// The skipped speaker stays at the end after a reload.
+		await studio.open('/review.html');
+		await studio.until(loaded);
+		await settle(page, studio);
+		await studio.golden('skipped-restored');
 	});
 
 	test('jump list, filter, theme and language', async ({ page, studio }) => {
@@ -164,13 +193,27 @@ test.describe('listening review page', () => {
 
 	test('a legacy single draft is migrated and an unreachable log shows the error', async ({ page, studio }) => {
 		await page.route('**/api/review?lang=ja*', (route) => route.fulfill({ status: 500, contentType: 'text/plain', body: 'broken' }));
-		await studio.open('/review.html', async (p) => p.addInitScript(() => localStorage.setItem('koenami-review', JSON.stringify({ lang: 'ja', speaker: '23bbcff6f628', clip: 'common_voice_ja_19580185', ratings: { femininity: 2 }, chosen: ['noise'], scope: 'clip', note: 'old', active: 1 }))));
+		await studio.open('/review.html', async (p) => p.addInitScript(() => { localStorage.setItem('voice-theme', 'dark'); localStorage.setItem('koenami-review', JSON.stringify({ lang: 'ja', speaker: '23bbcff6f628', clip: 'common_voice_ja_19580185', ratings: { femininity: 2 }, chosen: ['noise'], scope: 'clip', note: 'old', active: 1 })); }));
 		await studio.tick(300);
 		await studio.golden('unreachable');
+		// Keys on the empty screen do nothing.
+		await page.keyboard.press('5');
+		await page.keyboard.press('s');
+		await page.keyboard.press('ArrowRight');
+		await page.keyboard.press('Enter');
+		await studio.tick(100);
+		await studio.golden('keys-without-queue');
 		await page.unroute('**/api/review?lang=ja*');
 		await studio.open('/review.html');
 		await studio.until(loaded);
 		await settle(page, studio);
 		await studio.golden('legacy-draft-migrated');
+	});
+
+	test('a corrupt saved state is ignored', async ({ page, studio }) => {
+		await studio.open('/review.html', async (p) => p.addInitScript(() => localStorage.setItem('koenami-review', '{broken')));
+		await studio.until(loaded);
+		await settle(page, studio);
+		await studio.golden('corrupt-state');
 	});
 });
