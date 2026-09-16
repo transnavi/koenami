@@ -47,9 +47,10 @@ fn matches_the_python_engine_on_the_excerpt() {
     assert_eq!(m.duration, snapshot["duration"].as_f64().unwrap());
     assert!((m.voiced_seconds - snapshot["voiced_seconds"].as_f64().unwrap()).abs() <= 0.04);
     let f = &m.features;
-    // Recorded on 2026-09-16: f0 −5·10⁻⁴, f0_mean −6·10⁻³, pitch_sd_hz
-    // −3·10⁻², hnr −0.03 dB, balance −0.01 dB, delta_f −4·10⁻³, f1 −8·10⁻⁵,
-    // f2 −2·10⁻², f3 −4·10⁻³.
+    // Recorded on 2026-09-17 with Phonia at d87a7ab (Praat's resampler in
+    // front of the formant analysis): f0 −5·10⁻⁴, f0_mean −6·10⁻³,
+    // pitch_sd_hz −3·10⁻², hnr −0.03 dB, balance −0.01 dB, delta_f −2·10⁻³,
+    // f1 +7·10⁻⁵, f2 −9·10⁻³, f3 −2·10⁻³.
     relative("f0", f.f0.unwrap(), 2e-3);
     relative("f0_mean", f.f0_mean.unwrap(), 1e-2);
     relative("pitch_sd_hz", f.pitch_sd_hz.unwrap(), 5e-2);
@@ -59,7 +60,7 @@ fn matches_the_python_engine_on_the_excerpt() {
     absolute("quiet_pct", f.quiet_pct.unwrap(), 0.5);
     relative("delta_f", f.delta_f.unwrap(), 0.01);
     relative("f1", f.f1.unwrap(), 0.01);
-    relative("f2", f.f2.unwrap(), 0.03);
+    relative("f2", f.f2.unwrap(), 0.02);
     relative("f3", f.f3.unwrap(), 0.01);
     let level = snapshot["level_dbfs"].as_f64().unwrap();
     assert!(
