@@ -78,11 +78,8 @@ def main():
         features = measured['features']
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         speech = quality.get(path.stem, {})
-        if (speech.get('sha256') == digest and speech.get('empty')
-                and measured.get('voiced_seconds', 0) < .1
-                and measured.get('level_dbfs', 0) < -45):
-            empty.append({'id': path.stem, 'sha256': digest, 'speech': speech,
-                          'voiced_seconds': measured.get('voiced_seconds'), 'level_dbfs': measured.get('level_dbfs')})
+        if speech.get('sha256') == digest and speech.get('empty'):
+            empty.append({'id': path.stem, 'display_label': labels.get(path.stem), 'speaker': speaker_id(row), 'text': row['text'], 'speech': speech})
             continue
         reason = measured.get('reason')
         if measured.get('voiced_seconds', 0) < 1 or measured.get('formant_seconds', 0) < .35:
