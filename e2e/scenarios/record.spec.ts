@@ -22,6 +22,12 @@ const live = { maskAudio: true, ignore: ['indicators', 'fit-value', 'report-butt
 
 test.describe('recording', () => {
 	test('record with R, stop, analyse in the background, and the take menu', async ({ page, studio }) => {
+		// The first analysis is held back so the saved-but-unanalysed state can be observed.
+		let release: (() => void) | null = null;
+		await page.route('**/api/analyze', async (route) => {
+			if (!release) await new Promise<void>((resolve) => { release = resolve; });
+			await route.continue();
+		}, { times: 1 });
 		await studio.open('/ja/', shortCap);
 		await studio.until(ready);
 		await page.keyboard.press('r');
@@ -30,9 +36,10 @@ test.describe('recording', () => {
 		await studio.golden('recording', audio);
 		await studio.until(buffered(manualStop));
 		await page.keyboard.press('r');
-		await studio.until('window.voiceApp.state.recording === false && !!window.voiceApp.state.ownPCM');
+		await studio.until('window.voiceApp.state.recording === false && !!window.voiceApp.state.ownPCM && window.voiceApp.state.analyzing.size === 1');
 		await studio.tick(100);
 		await studio.golden('stopped', audio);
+		release!();
 		await studio.until(idle);
 		await studio.tick(1200);
 		await studio.golden('analysed', audio);

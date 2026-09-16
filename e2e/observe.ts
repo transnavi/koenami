@@ -69,7 +69,12 @@ export async function storageDump() {
 		}
 	} catch { local.$error = 'unavailable'; }
 	const hex = (buffer: ArrayBuffer) => [...new Uint8Array(buffer)].map((n) => n.toString(16).padStart(2, '0')).join('');
+	// Long strings (spectrogram images) and long numeric arrays (tracks, waveforms) are
+	// kept as a hash plus length: exact, but small enough to review.
+	const digest = async (text: string) => hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)));
 	const describe = async (value: unknown): Promise<unknown> => {
+		if (typeof value === 'string' && value.length > 256) return { $string: value.length, sha256: await digest(value) };
+		if (Array.isArray(value) && value.length > 64 && value.every((v) => typeof v === 'number' || (Array.isArray(v) && v.every((n) => typeof n === 'number')))) return { $numbers: value.length, sha256: await digest(JSON.stringify(value)) };
 		if (value instanceof Blob) return { $blob: value.type, bytes: value.size, sha256: hex(await crypto.subtle.digest('SHA-256', await value.arrayBuffer())) };
 		if (ArrayBuffer.isView(value)) return { $typed: value.constructor.name, length: (value as unknown as ArrayLike<number>).length, sha256: hex(await crypto.subtle.digest('SHA-256', value as BufferSource)) };
 		if (Array.isArray(value)) return Promise.all(value.map(describe));
