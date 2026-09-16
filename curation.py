@@ -7,7 +7,7 @@
 - display: label shown in the app at review time, kept for readability
 - language: library language code
 - flags: list of FLAGS keys; SPEAKER_FLAGS apply to every clip of the speaker
-- ratings: optional 0-6 scores (age in years) keyed by RATING_KEYS
+- ratings: optional 0-6 scores keyed by RATING_KEYS; `age` is the decade the voice sounds like (AGE_DECADES)
 - note: free text
 - reviewed: ISO timestamp
 
@@ -21,6 +21,8 @@ ROOT = Path(__file__).parent
 LOG = ROOT / 'curation/reviews.jsonl'
 
 RATING_KEYS = ('femininity', 'masculinity', 'naturalness', 'japanese', 'age')
+# Perceived age as a decade: 10 covers teens and younger, 60 covers sixties and older.
+AGE_DECADES = {10: '10代以下', 20: '20代', 30: '30代', 40: '40代', 50: '50代', 60: '60代以上'}
 SPEAKER_FLAGS = {
     'native_like': '母語話者らしい',
     'not_native_like': '非母語らしい',
@@ -56,9 +58,12 @@ def append(review, path=LOG):
     for key, value in (review.get('ratings') or {}).items():
         if key not in RATING_KEYS or value is None: continue
         if isinstance(value, bool) or not isinstance(value, (int, float)): raise ValueError(f'{key} must be a number')
-        limit = (10, 90) if key == 'age' else (0, 6)
-        if not limit[0] <= value <= limit[1]: raise ValueError(f'{key} out of range')
-        ratings[key] = float(value)
+        if key == 'age':
+            if value not in AGE_DECADES: raise ValueError('age must be one of ' + ', '.join(map(str, AGE_DECADES)))
+            ratings[key] = int(value)
+        else:
+            if not 0 <= value <= 6: raise ValueError(f'{key} out of range')
+            ratings[key] = float(value)
     speaker = review.get('speaker')
     if not isinstance(speaker, str) or not speaker: raise ValueError('speaker required')
     note = review.get('note') or ''
