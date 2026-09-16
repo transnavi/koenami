@@ -112,6 +112,8 @@ def main():
   Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+/sw.js
+  Cache-Control: no-cache
 """)
     print(json.dumps({'public_samples': len(manifest), 'jvs_excerpt': 10, 'languages': catalog['languages'],
                       'audio_mb': round(sum((OUT / 'data' / 'samples' / c['file']).stat().st_size for c in manifest) / 1e6, 1)}, ensure_ascii=False))

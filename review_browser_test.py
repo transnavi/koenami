@@ -29,6 +29,9 @@ def main(url):
             assert first['group'] == 'female', first
             assert page.locator('#display').inner_text().startswith('F'), page.locator('#display').inner_text()
             assert page.evaluate('reviewApp.queue.every(q=>q.clips.length>0)')
+            # Every tenth item is a blind repeat of a rated speaker on an unheard clip; it saves with mode "repeat".
+            repeats = page.evaluate('reviewApp.queue.map((q,i)=>[i,!!q.repeat]).filter(x=>x[1]).map(x=>x[0])')
+            assert repeats[:2] == [10, 21] or not repeats, repeats
             # Rows come from the server in groups; a digit rates the active row and moves to the next one.
             assert page.evaluate('reviewApp.scales.map(s=>s.key)')[:5] == ['femininity', 'masculinity', 'japanese', 'naturalness', 'age']
             assert page.locator('.scale-group').all_inner_texts() == ['性別・発音', '声質', '話し方', '印象']
@@ -57,7 +60,7 @@ def main(url):
             page.locator('#note').fill('テスト'); page.keyboard.press('Enter')
             wait(page, 'reviewApp.at===1')
             assert saved[0]['speaker'] == first['speaker'] and saved[0]['flags'] == ['noise'] and 'scope' not in saved[0] and saved[0]['ratings'] == {'femininity': 5, 'masculinity': 1, 'japanese': 5, 'age': 60, 'nasality': 4, 'articulation': 2} and saved[0]['note'] == 'テスト'
-            assert saved[0]['language'] == 'ja' and saved[0]['clip'].startswith('common_voice_ja_')
+            assert saved[0]['language'] == 'ja' and saved[0]['clip'].startswith('common_voice_ja_') and saved[0]['mode'] == 'new'
             assert 'テスト' in page.locator('#log').inner_text() and '雑音' in page.locator('#log').inner_text() and '聞こえる年代 60代以上' in page.locator('#log').inner_text()
             # Skipping moves the speaker to the end of the queue without a save; an empty save is refused.
             second = page.evaluate('reviewApp.queue[1].speaker'); length = page.evaluate('reviewApp.queue.length')
@@ -104,7 +107,7 @@ def main(url):
             assert page.evaluate('reviewApp.scales[reviewApp.active].key') == item['missing'][0]
             assert page.locator('.scale[data-missing=true]').count() == len(item['missing'])
             page.keyboard.press('3'); page.keyboard.press('Enter'); wait(page, 'reviewApp.at===1||reviewApp.queue.length===0')
-            assert saved[-1]['ratings'][item['missing'][0]] == (30 if item['missing'][0] == 'age' else 3) and all(saved[-1]['ratings'][k] == v for k, v in item['prev'].items())
+            assert saved[-1]['mode'] == 'update' and saved[-1]['ratings'][item['missing'][0]] == (30 if item['missing'][0] == 'age' else 3) and all(saved[-1]['ratings'][k] == v for k, v in item['prev'].items())
             page.reload(); wait(page, 'window.reviewApp?.queue.length>=0'); assert page.evaluate('reviewApp.mode') == 'update'
             page.locator('#mode button[data-mode=new]').click(); wait(page, 'reviewApp.mode==="new"&&reviewApp.queue.length>0&&!reviewApp.queue[0].previous')
             # The main app no longer carries a rating panel or neural capability.
