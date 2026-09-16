@@ -52,10 +52,21 @@ def main(url):
             assert saved[0]['speaker'] == first['speaker'] and saved[0]['flags'] == ['native_like', 'noise'] and saved[0]['ratings'] == {'femininity': 5, 'masculinity': 1, 'japanese': 5, 'age': 60} and saved[0]['note'] == 'テスト'
             assert saved[0]['language'] == 'ja' and saved[0]['clip'].startswith('common_voice_ja_')
             assert 'テスト' in page.locator('#log').inner_text() and '聞こえる年齢 60代以上' in page.locator('#log').inner_text()
-            # Skipping advances without a save; an empty save is refused.
-            page.keyboard.press('s'); assert page.evaluate('reviewApp.at') == 2 and len(saved) == 1
+            # Skipping moves the speaker to the end of the queue without a save; an empty save is refused.
+            second = page.evaluate('reviewApp.queue[1].speaker'); length = page.evaluate('reviewApp.queue.length')
+            page.keyboard.press('s'); assert page.evaluate('reviewApp.at') == 1 and len(saved) == 1
+            assert page.evaluate('reviewApp.queue.at(-1).speaker') == second and page.evaluate('reviewApp.queue.length') == length
             page.keyboard.press('Enter'); assert len(saved) == 1 and page.locator('#status').inner_text() != ''
             assert page.evaluate('reviewApp.ratings') == {} and page.evaluate('reviewApp.chosen.size') == 0
+            # Position, skipped speakers and the unsaved draft survive a reload.
+            third = page.evaluate('reviewApp.queue[reviewApp.at].speaker')
+            page.keyboard.press('4'); page.keyboard.press('t'); page.keyboard.press('ArrowRight'); page.locator('#note').fill('途中')
+            clip = page.evaluate('reviewApp.queue[reviewApp.at].clips[reviewApp.clip].id')
+            page.reload(); wait(page, 'window.reviewApp?.queue.length>0')
+            assert page.evaluate('reviewApp.queue[reviewApp.at].speaker') == third
+            assert page.evaluate('reviewApp.queue[reviewApp.at].clips[reviewApp.clip].id') == clip
+            assert page.evaluate('reviewApp.ratings') == {'femininity': 4} and page.evaluate('[...reviewApp.chosen]') == ['tentative'] and page.locator('#note').input_value() == '途中'
+            assert page.evaluate('reviewApp.queue.at(-1).speaker') == second
             # The main app no longer carries a rating panel or neural capability.
             page.goto(url + '/ja/'); wait(page, '!!window.voiceApp?.state.refFull')
             assert page.locator('#perception-button').count() == 0 and page.locator('#perception-dialog').count() == 0
@@ -65,7 +76,7 @@ def main(url):
                 assert 'jvs002' in page.locator('.speaker-folder').get_attribute('data-speaker')
             page.locator('#search').fill('F263'); assert page.locator('.speaker-folder').count() == 1
             assert not errors, errors
-            print(json.dumps({'passed': ['Review queue orders unreviewed female speakers first', 'Keyboard ratings, exclusive pronunciation flags, clip flags', 'Save posts the review and advances; skip and empty save do not', 'Main app has no rating panel; speaker search works']}, ensure_ascii=False))
+            print(json.dumps({'passed': ['Review queue orders unreviewed female speakers first', 'Keyboard ratings, exclusive pronunciation flags, clip flags', 'Save posts the review and advances; skip requeues, empty save refused', 'Position, skipped speakers and draft survive reload', 'Main app has no rating panel; speaker search works']}, ensure_ascii=False))
         finally:
             browser.close()
 
