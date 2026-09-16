@@ -1,0 +1,16 @@
+{
+  "name": "Koenami · 声の練習",
+  "short_name": "Koenami",
+  "description": "見本の声を聴いて録音し、5つの音響指標で自分の声と見比べる声の練習サイト。",
+  "lang": "ja",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9fbff",
+  "theme_color": "#f9fbff",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
