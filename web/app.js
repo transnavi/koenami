@@ -291,5 +291,6 @@ setInterval(saveView,1000);window.addEventListener('beforeunload',saveView);docu
 
 function restoreCamera(){if(!recordCamera)return;if(map.navigationVersion===recordCamera.navigationVersion){map.autoFit=recordCamera.autoFit;map.autoRotate=recordCamera.autoRotate;}recordCamera=null;map.fitDirty=true;map.invalidate();$('auto-rotate').setAttribute('aria-pressed',String(map.autoRotate));}
 init().catch(e=>notify('読み込めませんでした: '+e.message,true));
+if(import.meta.env.PROD&&'serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
 
 

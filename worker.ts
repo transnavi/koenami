@@ -9,7 +9,7 @@ export class VoiceAnalyzer extends Container<Env> {
 
 const languages = new Set(['ja', 'zh-CN', 'en', 'ko']);
 // Crawler and browser-chrome files at the site root (see web/public and prepare_public.py).
-const siteFiles = /^\/(robots\.txt|sitemap\.xml|site\.webmanifest|og-image\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
+const siteFiles = /^\/(robots\.txt|sitemap\.xml|site\.webmanifest|sw\.js|og-image\.png|screenshot-(wide|narrow)\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
 const maxBytes = 16000 * 4 * 60;
 function text(message: string, status: number, headers: Record<string, string> = {}) {
   return new Response(message, { status, headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store', ...headers } });
