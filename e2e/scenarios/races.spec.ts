@@ -51,6 +51,7 @@ test.describe('superseded requests', () => {
 		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.analysed);
+		await studio.tick(300);
 		const range = holdOnce(page, '**/api/analyze');
 		await range.installed;
 		const box = (await page.locator('#signal-canvas').boundingBox())!;

@@ -90,7 +90,8 @@ test.describe('own audio', () => {
 		// Shift+arrow without a selection starts one from the first second.
 		await page.locator('#signal-canvas').focus();
 		await page.keyboard.press('Shift+ArrowRight');
-		await studio.until(app.range('own') + ' && ' + app.idle);
+		await studio.until(app.rangeApplied('own'));
+		await studio.settled();
 		await studio.tick(300);
 		await studio.golden('own-range-from-keyboard');
 		await page.locator('#range-reset').click();
@@ -104,7 +105,8 @@ test.describe('own audio', () => {
 		await studio.canvas('own-drag-pending', '#signal-canvas');
 		await page.mouse.move(box.x + 500, box.y + 80, { steps: 3 });
 		await page.mouse.up();
-		await studio.until(app.range('own') + ' && ' + app.idle);
+		await studio.until(app.rangeApplied('own'));
+		await studio.settled();
 		await studio.tick(300);
 		await studio.golden('own-range');
 		await studio.canvas('own-range-signal', '#signal-canvas');
@@ -119,11 +121,13 @@ test.describe('own audio', () => {
 		await studio.tick(100);
 		await studio.golden('own-arrow-seek');
 		await page.keyboard.press('Shift+ArrowRight');
-		await studio.until(app.idle);
+		await studio.until(app.rangeApplied('own'));
+		await studio.settled();
 		await studio.tick(300);
 		await studio.golden('own-range-grown');
 		await page.keyboard.press('Shift+ArrowLeft');
-		await studio.until(app.idle);
+		await studio.until(app.rangeApplied('own'));
+		await studio.settled();
 		await studio.tick(300);
 		await studio.golden('own-range-shrunk');
 		await page.locator('#range-reset').click();
@@ -139,12 +143,14 @@ test.describe('own audio', () => {
 
 		// Timeline drags select on the full duration; a too-narrow drag is ignored.
 		await dragSignal(page, 100, 400, 6);
-		await studio.until(app.range('own') + ' && ' + app.idle);
+		await studio.until(app.rangeApplied('own'));
+		await studio.settled();
 		await studio.tick(300);
 		await studio.golden('own-timeline-range');
 		await page.locator('#signal-ref').click();
 		await dragSignal(page, 150, 450);
-		await studio.until(app.range('ref') + ' && ' + app.idle);
+		await studio.until(app.rangeApplied('ref'));
+		await studio.settled();
 		await studio.tick(300);
 		await studio.golden('ref-range');
 		await dragSignal(page, 100, 110);
@@ -195,6 +201,7 @@ test.describe('own audio', () => {
 	});
 
 	test('playback: own, A/B, speed and normalisation', async ({ page, studio }) => {
+		test.slow();
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
@@ -243,7 +250,8 @@ test.describe('own audio', () => {
 		await page.mouse.down();
 		await page.mouse.move(box.x + 220, box.y + 80, { steps: 4 });
 		await page.mouse.up();
-		await studio.until(app.range('ref') + ' && ' + app.notBusy);
+		await studio.until(app.rangeApplied('ref'));
+		await studio.settled();
 		await page.locator('#play-reference').click();
 		await studio.untilTicking('document.getElementById("reference-player").paused');
 		await studio.tick(5000);
@@ -272,8 +280,7 @@ test.describe('own audio', () => {
 		await studio.tick(300);
 		await studio.golden('sorted-near');
 		const wav = await studio.download(async () => {
-			await page.locator('#take-select button.trigger').click();
-			await page.locator('#take-select button.row-action[data-value="1"][data-action="download"]').click();
+			await studio.rowAction('take-select', '1', 'download');
 		});
 		await studio.golden('downloaded-previous', { extra: { wav } });
 		await page.keyboard.press('Escape');
@@ -281,13 +288,11 @@ test.describe('own audio', () => {
 		await studio.until(app.ownName('own-a.wav') + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('restored-first');
-		await page.locator('#take-select button.trigger').click();
-		await page.locator('#take-select button.row-action[data-value="1"][data-action="delete"]').click();
+		await studio.rowAction('take-select', '1', 'delete');
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('deleted-other');
-		await page.locator('#take-select button.trigger').click();
-		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
+		await studio.rowAction('take-select', '0', 'delete');
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('deleted-current');

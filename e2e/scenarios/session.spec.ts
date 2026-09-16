@@ -81,7 +81,8 @@ test.describe('session and settings', () => {
 			}
 		}));
 		await studio.until(app.ready);
-		await studio.until(app.range('ref'));
+		await studio.until(app.rangeApplied('ref'));
+		await studio.settled();
 		await studio.tick(1200);
 		await studio.golden('restored');
 		await studio.canvas('restored-map', '#voice-map');

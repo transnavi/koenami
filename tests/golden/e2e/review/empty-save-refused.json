@@ -70,24 +70,23 @@
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어",
-   "style": "display: inline-flex;"
+   "text": "日本語普通话English한국어"
   },
   "mode": {
    "tag": "span",
-   "class": "mode segment",
+   "class": "",
    "attrs": {},
    "text": "新規追加項目"
   },
   "progress": {
    "tag": "span",
-   "class": "progress",
+   "class": "",
    "attrs": {},
    "text": "済 51人 · 残り 33人"
   },
   "theme-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "明暗を切り替え",
     "aria-label": "明暗を切り替え"
@@ -96,13 +95,13 @@
   },
   "card": {
    "tag": "section",
-   "class": "card",
+   "class": "",
    "attrs": {},
    "text": "F 2678女性的な声 · 2音声一覧L ▶何とか身構えするため、Ｋはスタンドのうしろへ飛びこんだが、スタンドの下だけが身を隠すことのできるただ一つの場所だった。1/2 · 8.7 秒‹› 性別・発音女性らしさ0123456—感じない強く感じる男性らしさ0123456—感じない強く感じる母語話者らしさ0123456—非母語母語自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる 問題無音EつぶやきのみU雑音Z歪みXこの音声だけ話者の全音声A 評価か判定を1つ以上つけてくださいスキップS保存して次へEnter"
   },
   "prev-speaker": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "前の話者",
     "aria-label": "前の話者"
@@ -123,7 +122,7 @@
   },
   "jump": {
    "tag": "button",
-   "class": "list-button",
+   "class": "",
    "attrs": {
     "type": "button"
    },
@@ -131,7 +130,7 @@
   },
   "play": {
    "tag": "button",
-   "class": "play",
+   "class": "",
    "attrs": {
     "aria-pressed": "false",
     "aria-label": "再生",
@@ -141,7 +140,7 @@
   },
   "text": {
    "tag": "div",
-   "class": "text",
+   "class": "",
    "attrs": {},
    "text": "何とか身構えするため、Ｋはスタンドのうしろへ飛びこんだが、スタンドの下だけが身を隠すことのできるただ一つの場所だった。1/2 · 8.7 秒"
   },
@@ -169,13 +168,13 @@
   },
   "quality-flags": {
    "tag": "div",
-   "class": "flags",
+   "class": "",
    "attrs": {},
    "text": "問題無音EつぶやきのみU雑音Z歪みXこの音声だけ話者の全音声A"
   },
   "scope": {
    "tag": "span",
-   "class": "scope",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -201,7 +200,7 @@
   },
   "note": {
    "tag": "input",
-   "class": "note",
+   "class": "",
    "attrs": {
     "placeholder": "メモ"
    },
@@ -210,7 +209,7 @@
   },
   "status": {
    "tag": "span",
-   "class": "status",
+   "class": "",
    "attrs": {},
    "text": "評価か判定を1つ以上つけてください"
   },
@@ -222,13 +221,13 @@
   },
   "save": {
    "tag": "button",
-   "class": "primary",
+   "class": "",
    "attrs": {},
    "text": "保存して次へEnter"
   },
   "done": {
    "tag": "p",
-   "class": "done",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -236,7 +235,7 @@
   },
   "log": {
    "tag": "div",
-   "class": "log",
+   "class": "",
    "attrs": {},
    "text": "M 1 女性らしさ 1 · 男性らしさ 5F 2674 女性らしさ 3 · 男性らしさ 1 · 母語話者らしさ 6 · 自然さ 4 · 聞こえる年代 20代 · 澄み 1 · 張り 2 · 太さ 4 · 鼻声 2 · 滑舌 2 · 明るさ 1 · 上品さ 0 · 温かさ 0 · 甘さ 2F 2672 雑音 · 甘さ 3 · 女性らしさ 5 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 5 · 聞こえる年代 20代 · 澄み 3 · 張り 3 · 太さ 2 · 鼻声 1 · 滑舌 2 · 明るさ 4 · 上品さ 4 · 温かさ 2F 2668 女性らしさ 5 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 5 · 聞こえる年代 30代 · 澄み 2 · 張り 2 · 太さ 3 · 鼻声 1 · 滑舌 5 · 明るさ 1 · 上品さ 2 · 温かさ 3 · 甘さ 1F 2664 甘さ 3 · 女性らしさ 4 · 男性らしさ 1 · 母語話者らしさ 6 · 自然さ 5 · 聞こえる年代 20代 · 澄み 2 · 張り 2 · 太さ 1 · 鼻声 0 · 滑舌 1 · 明るさ 3 · 上品さ 3 · 温かさ 1F 2662 女性らしさ 4 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 3 · 聞こえる年代 20代 · 澄み 1 · 張り 2 · 太さ 1 · 鼻"
   },
@@ -249,13 +248,13 @@
   },
   "list-count": {
    "tag": "span",
-   "class": "small",
+   "class": "",
    "attrs": {},
    "text": "33人"
   },
   "list-filter": {
    "tag": "input",
-   "class": "note",
+   "class": "",
    "attrs": {
     "placeholder": "番号や文で絞り込む"
    },

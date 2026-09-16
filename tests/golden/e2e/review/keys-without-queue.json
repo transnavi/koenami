@@ -70,24 +70,23 @@
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어",
-   "style": "display: inline-flex;"
+   "text": "日本語普通话English한국어"
   },
   "mode": {
    "tag": "span",
-   "class": "mode segment",
+   "class": "",
    "attrs": {},
    "text": "新規追加項目"
   },
   "progress": {
    "tag": "span",
-   "class": "progress",
+   "class": "",
    "attrs": {},
    "text": ""
   },
   "theme-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "明暗を切り替え",
     "aria-label": "明暗を切り替え"
@@ -96,7 +95,7 @@
   },
   "card": {
    "tag": "section",
-   "class": "card",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -104,7 +103,7 @@
   },
   "prev-speaker": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "前の話者",
     "aria-label": "前の話者"
@@ -125,7 +124,7 @@
   },
   "jump": {
    "tag": "button",
-   "class": "list-button",
+   "class": "",
    "attrs": {
     "type": "button"
    },
@@ -133,7 +132,7 @@
   },
   "play": {
    "tag": "button",
-   "class": "play",
+   "class": "",
    "attrs": {
     "aria-pressed": "false",
     "aria-label": "再生",
@@ -143,7 +142,7 @@
   },
   "text": {
    "tag": "div",
-   "class": "text",
+   "class": "",
    "attrs": {},
    "text": ""
   },
@@ -171,13 +170,13 @@
   },
   "quality-flags": {
    "tag": "div",
-   "class": "flags",
+   "class": "",
    "attrs": {},
    "text": "問題この音声だけ話者の全音声A"
   },
   "scope": {
    "tag": "span",
-   "class": "scope",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -203,7 +202,7 @@
   },
   "note": {
    "tag": "input",
-   "class": "note",
+   "class": "",
    "attrs": {
     "placeholder": "メモ"
    },
@@ -212,7 +211,7 @@
   },
   "status": {
    "tag": "span",
-   "class": "status",
+   "class": "",
    "attrs": {},
    "text": ""
   },
@@ -224,19 +223,19 @@
   },
   "save": {
    "tag": "button",
-   "class": "primary",
+   "class": "",
    "attrs": {},
    "text": "保存して次へEnter"
   },
   "done": {
    "tag": "p",
-   "class": "done",
+   "class": "",
    "attrs": {},
    "text": "読み込めませんでした: broken"
   },
   "log": {
    "tag": "div",
-   "class": "log",
+   "class": "",
    "attrs": {},
    "text": ""
   },
@@ -249,13 +248,13 @@
   },
   "list-count": {
    "tag": "span",
-   "class": "small",
+   "class": "",
    "attrs": {},
    "text": ""
   },
   "list-filter": {
    "tag": "input",
-   "class": "note",
+   "class": "",
    "attrs": {
     "placeholder": "番号や文で絞り込む"
    },

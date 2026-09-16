@@ -197,7 +197,8 @@ test.describe('sample library', () => {
 		await page.mouse.down();
 		await page.mouse.move(box.x + 500, box.y + 80, { steps: 4 });
 		await page.mouse.up();
-		await studio.until(app.range('ref') + ' && ' + app.notBusy);
+		await studio.until(app.rangeApplied('ref'));
+		await studio.settled();
 		await studio.tick(300);
 		await studio.golden('custom-range');
 		await page.locator('#words-button').click();

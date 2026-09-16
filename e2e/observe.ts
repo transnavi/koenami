@@ -7,11 +7,11 @@ export type Observation = {
 	storage?: unknown;
 };
 
-// Class names that carry meaning for the tests (state, kind of row) rather than styling.
-// A rewrite may add its own classes; only these are compared.
-export const contractClasses = ['sample-row', 'speaker-folder', 'speaker-more', 'favorite', 'indicator', 'error', 'toast', 'active', 'live-button', 'record-button', 'list-item', 'scale', 'scale-group'];
-
 export function domProjection(): Observation {
+	// Class names that carry meaning for the tests (state, kind of row) rather than
+	// styling; a rewrite may add its own classes, only these are compared. The list lives
+	// inside the function because the function is serialised into the page.
+	const contractClasses = ['sample-row', 'speaker-folder', 'speaker-more', 'favorite', 'indicator', 'error', 'toast', 'active', 'live-button', 'record-button', 'list-item', 'scale', 'scale-group'];
 	const collapse = (s: string | null) => (s || '').replace(/\s+/g, ' ').trim();
 	const attrs = (el: Element) => {
 		const out: Record<string, string> = {};
@@ -51,7 +51,9 @@ export function domProjection(): Observation {
 	// The seek slider and the clocks show media time, which depends on how long audio
 	// really played before a pause; they are replaced by a marker, and scenarios assert
 	// them directly after a deterministic seek.
-	for (const id of ['reference-seek', 'reference-time', 'timer']) if (elements[id]) elements[id] = { followsPlayback: true };
+	for (const id of ['reference-seek', 'reference-time', 'timer', 'live-time']) if (elements[id]) elements[id] = { followsPlayback: true };
+	// The live button embeds the elapsed capture time in its text.
+	if (elements['live-mode']) (elements['live-mode'] as Record<string, unknown>).text = String((elements['live-mode'] as Record<string, unknown>).text).replace(/\d+:\d\d$/, '<time>');
 	const cs = getComputedStyle(document.documentElement);
 	const vars: Record<string, string> = {};
 	for (const name of ['--reference', '--self', '--accent']) vars[name] = cs.getPropertyValue(name).trim();

@@ -79,7 +79,7 @@
 			"line": 81,
 			"column": 103,
 			"code": "return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "web/app.js",
@@ -95,23 +95,7 @@
 			"line": 86,
 			"column": 785,
 			"code": "return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "statement",
-			"line": 86,
-			"column": 973,
-			"code": "return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "statement",
-			"line": 86,
-			"column": 1744,
-			"code": "return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "web/app.js",
@@ -180,14 +164,6 @@
 		{
 			"file": "web/app.js",
 			"kind": "statement",
-			"line": 116,
-			"column": 919,
-			"code": "return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "statement",
 			"line": 121,
 			"column": 560,
 			"code": "throw new Error('先に音声を読み込んでください。');",
@@ -247,22 +223,6 @@
 			"line": 153,
 			"column": 77,
 			"code": "return;",
-			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "statement",
-			"line": 156,
-			"column": 44,
-			"code": "for(const t of stream?.getTracks()||[])t.stop();",
-			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "statement",
-			"line": 156,
-			"column": 83,
-			"code": "t.stop();",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
 		},
 		{
@@ -428,14 +388,6 @@
 		{
 			"file": "web/app.js",
 			"kind": "function",
-			"line": 156,
-			"column": 39,
-			"code": "()=>{for(const t of stream?.getTracks()||[])t.stop();});",
-			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "function",
 			"line": 284,
 			"column": 934,
 			"code": "()=>state.imported);if(state.lang==='ja')await changeLanguag",
@@ -551,7 +503,7 @@
 			"line": 81,
 			"column": 72,
 			"code": "if(token!==state.languageToken)return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "web/app.js",
@@ -575,7 +527,7 @@
 			"line": 83,
 			"column": 10,
 			"code": "if(token===state.languageToken){state.loadingLanguage=false;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "web/app.js",
@@ -599,23 +551,7 @@
 			"line": 86,
 			"column": 756,
 			"code": "if(token!==state.detailToken)return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "branch",
-			"line": 86,
-			"column": 944,
-			"code": "if(token!==state.detailToken)return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "branch",
-			"line": 86,
-			"column": 1715,
-			"code": "if(token!==state.detailToken)return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "web/app.js",
@@ -623,7 +559,7 @@
 			"line": 86,
 			"column": 1933,
 			"code": "if(token===state.detailToken)notify('見本の解析：'+e.message,true)",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "web/app.js",
@@ -741,17 +677,9 @@
 			"file": "web/app.js",
 			"kind": "branch",
 			"line": 116,
-			"column": 885,
-			"code": "if(token!==state.rangeToken[side])return;",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "branch",
-			"line": 116,
 			"column": 1057,
 			"code": "if(token===state.rangeToken[side])notify(e.message,true);",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "web/app.js",
@@ -768,14 +696,6 @@
 			"column": 552,
 			"code": "if(!pcm)throw new Error('先に音声を読み込んでください。');",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "branch",
-			"line": 121,
-			"column": 663,
-			"code": "if(token===state.wordToken[side]){state.words[side]=result;r",
-			"reason": "token race: the request would have to be superseded by another action between two awaits, and no ordering the test harness can impose reproduces it"
 		},
 		{
 			"file": "web/app.js",
@@ -1357,14 +1277,6 @@
 		{
 			"file": "web/map.js",
 			"kind": "statement",
-			"line": 54,
-			"column": 126,
-			"code": "values=held.map(p=>p[k]).filter(finite).slice(0,4);",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "statement",
 			"line": 60,
 			"column": 46,
 			"code": "return null;",
@@ -1518,15 +1430,7 @@
 			"line": 125,
 			"column": 39,
 			"code": "break;",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "statement",
-			"line": 126,
-			"column": 18,
-			"code": "return;",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
 		},
 		{
 			"file": "web/map.js",
@@ -1534,7 +1438,7 @@
 			"line": 136,
 			"column": 50,
 			"code": "this.headPos=this.headTarget=null;",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
 		},
 		{
 			"file": "web/map.js",
@@ -1542,23 +1446,7 @@
 			"line": 136,
 			"column": 84,
 			"code": "this.headSeen=undefined;",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "statement",
-			"line": 139,
-			"column": 102,
-			"code": "this.lastCursor=null;",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "statement",
-			"line": 139,
-			"column": 123,
-			"code": "return;",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
 		},
 		{
 			"file": "web/map.js",
@@ -1593,14 +1481,6 @@
 			"code": "p=>!range||(p.t>=range[0]&&p.t<=range[1]));}",
 			"reason": "no caller anywhere in the tree",
 			"dead": true
-		},
-		{
-			"file": "web/map.js",
-			"kind": "function",
-			"line": 54,
-			"column": 142,
-			"code": "p=>p[k]).filter(finite).slice(0,4);f[k]=values.length>=(hold",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
 		},
 		{
 			"file": "web/map.js",
@@ -1685,14 +1565,6 @@
 			"code": "!range||(p.t>=range[0]&&p.t<=range[1])",
 			"reason": "no caller anywhere in the tree",
 			"dead": true
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 54,
-			"column": 101,
-			"code": "if(hold&&values.length<4)values=held.map(p=>p[k]).filter(fin",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
 		},
 		{
 			"file": "web/map.js",
@@ -1782,39 +1654,7 @@
 			"line": 125,
 			"column": 25,
 			"code": "if(row.t>time)break;",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 126,
-			"column": 2,
-			"code": "if(!path.length)return;",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 130,
-			"column": 92,
-			"code": "pause?[2,5]:[]",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 130,
-			"column": 123,
-			"code": "pause?.3:1",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 130,
-			"column": 168,
-			"code": "pause?1:.5+3.5*b.age**1.5",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
 		},
 		{
 			"file": "web/map.js",
@@ -1822,39 +1662,7 @@
 			"line": 136,
 			"column": 2,
 			"code": "if(finite(this.headSeen)&&time<this.headSeen-1){this.headPos",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 138,
-			"column": 2,
-			"code": "if(target){this.headSeen=time;this.headTarget=target;}",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 139,
-			"column": 15,
-			"code": "finite(this.headSeen)?time-this.headSeen:Infinity",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 139,
-			"column": 65,
-			"code": "if(!this.headTarget||silent>seconds){this.lastCursor=null;re",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 142,
-			"column": 163,
-			"code": "if(fade>.5)this.label(p,'自分',color);",
-			"reason": "needs a live track whose measurements arrive with fewer than four voiced frames in the window, gaps longer than 0.3 s, or none for longer than the shape window; the fixture microphone is continuously voiced and the mock answers every request"
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
 		},
 		{
 			"file": "web/map.js",
@@ -1879,14 +1687,6 @@
 			"column": 54,
 			"code": "return;",
 			"reason": "rate() is only reached through key() and the scale buttons, both of which already have a scale"
-		},
-		{
-			"file": "web/review.js",
-			"kind": "function",
-			"line": 52,
-			"column": 58,
-			"code": "()=>{});else audio.pause();}",
-			"reason": "audio.play() rejects only when the browser blocks playback; the review page has no injected failure because its player is a bare Audio element without user-facing error handling"
 		},
 		{
 			"file": "web/review.js",

@@ -2,6 +2,6 @@
  "key": "POST /api/review 96a5f3023d22c0aa8b68dcfc55e9f3a3543c5081b1a8600d77eb60fb9d782c0c",
  "status": 200,
  "contentType": "application/json; charset=utf-8",
- "body": "{\"speaker\": \"940de57d1a26\", \"clip\": \"common_voice_ja_38929759\", \"display\": \"F 2678\", \"language\": \"ja\", \"flags\": [\"noise\"], \"scope\": \"speaker\", \"ratings\": {\"clarity\": 1.0, \"thickness\": 3.0, \"nasality\": 2.0, \"articulation\": 6.0, \"brightness\": 0.0, \"age\": 30}, \"note\": \"\\u30c6\\u30b9\\u30c8\", \"reviewed\": \"2026-09-16T11:33:47+00:00\"}",
+ "body": "{\"speaker\": \"940de57d1a26\", \"clip\": \"common_voice_ja_38929759\", \"display\": \"F 2678\", \"language\": \"ja\", \"flags\": [\"noise\"], \"scope\": \"speaker\", \"ratings\": {\"clarity\": 1.0, \"thickness\": 3.0, \"nasality\": 2.0, \"articulation\": 6.0, \"brightness\": 0.0, \"age\": 30}, \"note\": \"\\u30c6\\u30b9\\u30c8\", \"reviewed\": \"2026-09-16T15:17:59+00:00\"}",
  "base64": false
 }

@@ -190,18 +190,17 @@
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어発声の見本",
-   "style": "display: inline-flex;"
+   "text": "日本語普通话English한국어発声の見本"
   },
   "corpus-count": {
    "tag": "span",
-   "class": "toolbar-count",
+   "class": "",
    "attrs": {},
    "text": "142音声 · 50人"
   },
   "settings-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "設定",
     "aria-label": "設定"
@@ -210,7 +209,7 @@
   },
   "info-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "出典と関連ツール",
     "aria-label": "出典と関連ツール"
@@ -219,7 +218,7 @@
   },
   "theme-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "明暗を切り替え",
     "aria-label": "明暗を切り替え"
@@ -236,7 +235,7 @@
   },
   "indicators": {
    "tag": "div",
-   "class": "indicators",
+   "class": "",
    "attrs": {
     "role": "group",
     "aria-label": "声の指標"
@@ -245,7 +244,7 @@
   },
   "report-button": {
    "tag": "button",
-   "class": "fit-readout",
+   "class": "",
    "attrs": {
     "title": "見本との5指標の標準化距離。0が一致。比較レポートを開く。"
    },
@@ -259,7 +258,7 @@
   },
   "projection-controls": {
    "tag": "div",
-   "class": "segment",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -267,7 +266,7 @@
   },
   "auto-rotate": {
    "tag": "button",
-   "class": "rotate-button",
+   "class": "",
    "attrs": {
     "aria-pressed": "false",
     "title": "3Dの自動回転を切り替え"
@@ -284,7 +283,7 @@
   },
   "group-legend": {
    "tag": "div",
-   "class": "legend",
+   "class": "",
    "attrs": {},
    "text": "女性的な声男性的な声"
   },
@@ -321,7 +320,7 @@
   },
   "map-tooltip": {
    "tag": "div",
-   "class": "tooltip",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -329,7 +328,7 @@
   },
   "zoom-in": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "拡大",
     "aria-label": "拡大"
@@ -338,7 +337,7 @@
   },
   "zoom-out": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "縮小",
     "aria-label": "縮小"
@@ -347,7 +346,7 @@
   },
   "find-me": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "声の広がりに表示を合わせる",
     "aria-label": "声の広がりに表示を合わせる"
@@ -356,7 +355,7 @@
   },
   "reset-view": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "表示をリセット",
     "aria-label": "表示をリセット"
@@ -365,7 +364,7 @@
   },
   "quality-state": {
    "tag": "span",
-   "class": "quality-state",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -406,8 +405,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さスペクトログラムスペクトル波形",
-   "style": "display: inline-flex;"
+   "text": "高さスペクトログラムスペクトル波形"
   },
   "signal-own": {
    "tag": "button",
@@ -438,7 +436,7 @@
   },
   "words-button": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {
     "title": "文字起こしと単語分割"
    },
@@ -452,7 +450,7 @@
   },
   "range-reset": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "選択範囲を解除（Esc）",
     "aria-label": "選択範囲を解除",
@@ -471,7 +469,7 @@
   },
   "word-list": {
    "tag": "div",
-   "class": "word-list",
+   "class": "",
    "attrs": {
     "role": "group",
     "aria-label": "推定した単語の位置"
@@ -480,7 +478,7 @@
   },
   "sample-browser": {
    "tag": "dialog",
-   "class": "sample-browser",
+   "class": "",
    "attrs": {
     "aria-label": "見本を選ぶ"
    },
@@ -495,7 +493,7 @@
   },
   "add-reference": {
    "tag": "button",
-   "class": "icon-button reference-import",
+   "class": "",
    "attrs": {
     "title": "見本の音声を読み込む",
     "aria-label": "見本の音声を読み込む"
@@ -551,8 +549,7 @@
    ],
    "trigger": "女性的な声",
    "expanded": "false",
-   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声",
-   "style": "display: inline-flex;"
+   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声"
   },
   "reference-upload": {
    "tag": "input",
@@ -601,8 +598,7 @@
    ],
    "trigger": "高さが高い順",
    "expanded": "false",
-   "text": "話者名順自分の声に近い順高さが低い順高さが高い順",
-   "style": "display: inline-flex;"
+   "text": "話者名順自分の声に近い順高さが低い順高さが高い順"
   },
   "search": {
    "tag": "input",
@@ -617,7 +613,7 @@
   },
   "research-controls": {
    "tag": "div",
-   "class": "research-controls",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -664,8 +660,7 @@
    ],
    "trigger": "講師",
    "expanded": "false",
-   "text": "講師001002003DSFD",
-   "style": "display: inline-flex;"
+   "text": "講師001002003DSFD"
   },
   "teacher-pitch": {
    "tag": "koe-select",
@@ -702,8 +697,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さ低い中間高い",
-   "style": "display: inline-flex;"
+   "text": "高さ低い中間高い"
   },
   "teacher-resonance": {
    "tag": "koe-select",
@@ -740,8 +734,7 @@
    ],
    "trigger": "響き",
    "expanded": "false",
-   "text": "響き低い中間高い",
-   "style": "display: inline-flex;"
+   "text": "響き低い中間高い"
   },
   "teacher-weight": {
    "tag": "koe-select",
@@ -778,18 +771,17 @@
    ],
    "trigger": "重さ",
    "expanded": "false",
-   "text": "重さ軽い中間重い",
-   "style": "display: inline-flex;"
+   "text": "重さ軽い中間重い"
   },
   "sample-scroll": {
    "tag": "div",
-   "class": "sample-scroll",
+   "class": "",
    "attrs": {},
    "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641F 25873F 26732F 26581もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
-   "class": "jvs-banner",
+   "class": "",
    "attrs": {},
    "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込む"
   },
@@ -869,7 +861,7 @@
   },
   "load-more": {
    "tag": "button",
-   "class": "load-more",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -877,7 +869,7 @@
   },
   "play-reference": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "見本を再生",
     "aria-label": "見本を再生"
@@ -886,7 +878,7 @@
   },
   "samples-toggle": {
    "tag": "button",
-   "class": "samples-toggle",
+   "class": "",
    "attrs": {
     "title": "見本を選ぶ"
    },
@@ -916,7 +908,7 @@
   },
   "source-link": {
    "tag": "a",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "出典",
     "aria-label": "出典",
@@ -952,7 +944,7 @@
   },
   "play-mine": {
    "tag": "button",
-   "class": "play-button",
+   "class": "",
    "attrs": {
     "title": "自分の声を再生（Space）",
     "aria-label": "自分の声を再生"
@@ -990,8 +982,7 @@
    ],
    "trigger": "own-b.wav",
    "expanded": "false",
-   "text": "own-b.wavown-a.wav",
-   "style": "display: inline-flex;"
+   "text": "own-b.wavown-a.wav"
   },
   "timer": {
    "followsPlayback": true
@@ -1013,7 +1004,7 @@
     "title": "マイクの声をリアルタイムに表示",
     "aria-label": "リアルタイム測定を開始"
    },
-   "text": "リアルタイム0:00"
+   "text": "リアルタイム<time>"
   },
   "live-mode-label": {
    "tag": "span",
@@ -1022,16 +1013,11 @@
    "text": "リアルタイム"
   },
   "live-time": {
-   "tag": "time",
-   "class": "",
-   "attrs": {
-    "hidden": ""
-   },
-   "text": "0:00"
+   "followsPlayback": true
   },
   "loopback": {
    "tag": "button",
-   "class": "loopback-button",
+   "class": "",
    "attrs": {
     "aria-pressed": "false",
     "aria-label": "自分の声を聴く",
@@ -1064,7 +1050,7 @@
   },
   "compare-ab": {
    "tag": "button",
-   "class": "ab-button icon-button",
+   "class": "",
    "attrs": {
     "title": "見本、自分の順に再生",
     "aria-label": "見本、自分の順に再生",
@@ -1125,7 +1111,7 @@
   },
   "live-status": {
    "tag": "div",
-   "class": "sr-only",
+   "class": "",
    "attrs": {
     "role": "status",
     "aria-live": "polite"
@@ -1134,7 +1120,7 @@
   },
   "live-alert": {
    "tag": "div",
-   "class": "sr-only",
+   "class": "",
    "attrs": {
     "role": "alert"
    },
@@ -1149,7 +1135,7 @@
   },
   "import-audio": {
    "tag": "button",
-   "class": "import-choice",
+   "class": "",
    "attrs": {},
    "text": "音声ファイルを選ぶ ↗"
   },
@@ -1210,7 +1196,7 @@
   },
   "cancel-jvs": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -1250,8 +1236,7 @@
    ],
    "trigger": "端末に合わせる",
    "expanded": "false",
-   "text": "ライトダーク端末に合わせる",
-   "style": "display: inline-flex;"
+   "text": "ライトダーク端末に合わせる"
   },
   "live-window": {
    "tag": "koe-select",
@@ -1286,8 +1271,7 @@
    ],
    "trigger": "3 s",
    "expanded": "false",
-   "text": "1.5 s3 s6 s12 s",
-   "style": "display: inline-flex;"
+   "text": "1.5 s3 s6 s12 s"
   },
   "live-shape-window": {
    "tag": "input",
@@ -1324,7 +1308,7 @@
   },
   "export": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {},
    "text": "測定値を書き出す"
   },
@@ -1350,7 +1334,7 @@
   },
   "report-save": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {},
    "text": "レポートを保存"
   },
@@ -13618,95 +13602,215 @@
      "language": "ja",
      "measurement": {
       "clipping_fraction": 0,
-      "duration": 0.25,
+      "duration": 0.64,
       "features": {
-       "balance": -7.285891033479579,
-       "delta_f": 1159.76903866692,
-       "delta_f_alternative": 1154.3186448651336,
-       "f0": 191.2276570685263,
-       "f0_mean": 259.0704440565112,
-       "f1": 671.0273359733582,
-       "f2": 1753.1756305341896,
-       "f3": 2463.0540170162444,
-       "f3_alternative": 2457.852157900953,
-       "f4": 4249.368634474951,
-       "hnr": 3.46010224379345,
-       "pitch_sd_hz": 103.444522585484,
-       "pitch_sd_st": 6.346795491305425,
-       "pitch_span": 13.869942706137273,
+       "balance": -17.70385959713799,
+       "delta_f": 1115.2026768158657,
+       "delta_f_alternative": 1115.9346816325615,
+       "f0": 218.06316238804754,
+       "f0_mean": 187.3413407706115,
+       "f1": 571.0668047037802,
+       "f2": 1035.112726624354,
+       "f3": 3095.589374243621,
+       "f3_alternative": 3081.95094719963,
+       "f4": 4866.28168976443,
+       "hnr": 10.167923335919959,
+       "pitch_sd_hz": 60.55464561695287,
+       "pitch_sd_st": 7.902960841084069,
+       "pitch_span": 17.76382236192753,
        "quiet_mean": 0,
        "quiet_pct": 0
       },
-      "formant_seconds": 0.1,
-      "formant_sensitivity_pct": 0.2,
-      "level_dbfs": -12.22193254142015,
+      "formant_seconds": 0.04,
+      "formant_sensitivity_pct": 0.4,
+      "level_dbfs": -24.297133852632605,
       "offset": 1.69,
-      "peak": 0.8453194499015808,
-      "pitch_p10": 181.52460862713002,
-      "pitch_p90": 404.4590664738772,
+      "peak": 0.3078831434249878,
+      "pitch_p10": 80.47703142455573,
+      "pitch_p90": 224.53922989068718,
       "quiet_intervals": [],
       "reason": null,
-      "resonance_sensitivity_pct": 0.5,
+      "resonance_sensitivity_pct": 0.1,
       "track": [
        {
-        "balance": -16.90196598466042,
-        "delta_f": 1155.675863628314,
-        "f0": 422.9135805669523,
-        "f1": 417.85591386263144,
-        "f2": 2229.718818031532,
-        "f3": 2716.0177265781767,
-        "f4": 4249.368634474951,
-        "hnr": 7.132760008249711,
-        "pitch_span": null,
-        "t": 0.055
-       },
-       {
-        "balance": -15.046679667114127,
+        "balance": null,
         "delta_f": null,
-        "f0": 386.0045523808022,
+        "f0": null,
         "f1": null,
         "f2": null,
         "f3": null,
         "f4": null,
-        "hnr": 4.044857658780494,
+        "hnr": null,
         "pitch_span": null,
-        "t": 0.095
+        "t": 0.05
        },
        {
-        "balance": -7.364354484764681,
-        "delta_f": 1126.5242781321438,
-        "f0": 193.01255131465837,
-        "f1": 515.2579859496288,
-        "f2": 1947.9146780755173,
-        "f3": 2370.397383371694,
-        "f4": 4300.843406639365,
-        "hnr": 3.038812355112271,
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
         "pitch_span": null,
-        "t": 0.135
+        "t": 0.09
        },
        {
-        "balance": -6.120718002378155,
-        "delta_f": 1183.7536734039904,
-        "f0": 183.69277692722878,
-        "f1": 744.4731914231695,
-        "f2": 1606.5424564005264,
-        "f3": 2463.0540170162444,
-        "f4": 4164.364398936376,
-        "hnr": 1.8345827422844898,
-        "pitch_span": 13.60623357006875,
-        "t": 0.175
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.13
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.17
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.21
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.25
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.29
+       },
+       {
+        "balance": -10.294969320619176,
+        "delta_f": null,
+        "f0": 64.94346943248514,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.33
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.37
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.41
+       },
+       {
+        "balance": null,
+        "delta_f": null,
+        "f0": null,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": null,
+        "pitch_span": null,
+        "t": 0.45
+       },
+       {
+        "balance": -11.599499406342382,
+        "delta_f": null,
+        "f0": 212.81369021945054,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 8.398712688071308,
+        "pitch_span": null,
+        "t": 0.49
+       },
+       {
+        "balance": -17.70385959713799,
+        "delta_f": 1066.5049648910226,
+        "f0": 220.65937128158612,
+        "f1": 495.3713429761954,
+        "f2": 962.3584809533621,
+        "f3": 3125.640518035867,
+        "f4": 4842.0702601662215,
+        "hnr": 9.751085862291703,
+        "pitch_span": 18.660684487051796,
+        "t": 0.53
+       },
+       {
+        "balance": -23.60110393675374,
+        "delta_f": null,
+        "f0": 224.3080827445591,
+        "f1": null,
+        "f2": null,
+        "f3": null,
+        "f4": null,
+        "hnr": 12.136258203502436,
+        "pitch_span": 18.071995197043105,
+        "t": 0.57
        }
       ],
       "version": "3.0.0",
       "visuals": {
-       "duration": 0.25,
+       "duration": 0.64,
        "spectrogram": {
         "bins": 321,
         "data": {
-         "$string": 8132,
-         "sha256": "fab52f86c1aa6a2e832811a088c07401e7eb7a476b36397bd0327e2dc54eace9"
+         "$string": 24824,
+         "sha256": "46fdcde50f32e51231a5cd325624bcd9ce5d94eb0cb37fb7692e3d726ca70418"
         },
-        "frames": 19,
+        "frames": 58,
         "hop_seconds": 0.01,
         "max_hz": 5000,
         "range_db": 80,
@@ -13715,16 +13819,16 @@
        "spectrum": {
         "db": {
          "$numbers": 321,
-         "sha256": "ffdbaf65a6d5c24a806695bde1e7e3cc8ab05a2f099c68864076bc31839f9318"
+         "sha256": "6baf1f1971af0bfd331baf03f810f193e7b5e26a3f08013368d1604c33087582"
         },
         "hz_step": 15.625
        },
        "waveform": {
         "$numbers": 1600,
-        "sha256": "5f7b988ebaac4172f38cbb1e79ab26ac2ceac3f8c53bfd399c184238c2298e00"
+        "sha256": "e0c389c44647be2473a63c3535388bf240d2a40384cfe6d16a13ca6c7bd040ec"
        }
       },
-      "voiced_seconds": 0.12
+      "voiced_seconds": 0.18
      },
      "name": "own-a.wav",
      "pcm": {

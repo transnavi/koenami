@@ -30,6 +30,8 @@ export const app = {
 	languageLoaded: (id: string) => `window.voiceApp?.state.lang === ${JSON.stringify(id)} && !window.voiceApp.state.loadingLanguage && !!window.voiceApp.state.refFull`,
 	libraryLoaded: '!window.voiceApp.state.loadingLanguage',
 	range: (side: 'own' | 'ref') => `!!window.voiceApp.state.ranges.${side}`,
+	/** A selection exists and its analysis has replaced the displayed measurement. */
+	rangeApplied: (side: 'own' | 'ref') => `!!window.voiceApp.state.ranges.${side} && window.voiceApp.state.${side}?.offset === window.voiceApp.state.ranges.${side}[0]`,
 	noRange: (side: 'own' | 'ref') => `!window.voiceApp.state.ranges.${side}`,
 	noRanges: '!window.voiceApp.state.ranges.own && !window.voiceApp.state.ranges.ref',
 	words: (side: 'own' | 'ref') => `!!window.voiceApp.state.words.${side}`,

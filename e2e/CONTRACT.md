@@ -12,7 +12,7 @@ stay evidence when the SvelteKit tree replaces `web/`.
   `tabindex`, `checked`/`selected`, `for`, `src`, `download`, `target`, `rel`), form
   values, dialog open state, media element state, and text. Keep the ids and these
   attributes; a rewrite may wrap them in any markup.
-- **Contract classes** (`contractClasses` in `e2e/observe.ts`): `sample-row`,
+- **Contract classes** (the `contractClasses` list in `e2e/observe.ts`): `sample-row`,
   `speaker-folder`, `speaker-more`, `favorite`, `indicator`, `error`, `toast`,
   `active`, `live-button`, `record-button`, `list-item`, `scale`, `scale-group`.
   Other classes (including framework-scoped ones) are ignored.

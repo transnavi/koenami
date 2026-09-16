@@ -190,18 +190,17 @@
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어発声の見本",
-   "style": "display: inline-flex;"
+   "text": "日本語普通话English한국어発声の見本"
   },
   "corpus-count": {
    "tag": "span",
-   "class": "toolbar-count",
+   "class": "",
    "attrs": {},
    "text": "142音声 · 50人"
   },
   "settings-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "設定",
     "aria-label": "設定"
@@ -210,7 +209,7 @@
   },
   "info-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "出典と関連ツール",
     "aria-label": "出典と関連ツール"
@@ -219,7 +218,7 @@
   },
   "theme-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "明暗を切り替え",
     "aria-label": "明暗を切り替え"
@@ -245,7 +244,7 @@
   },
   "projection-controls": {
    "tag": "div",
-   "class": "segment",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -253,7 +252,7 @@
   },
   "auto-rotate": {
    "tag": "button",
-   "class": "rotate-button",
+   "class": "",
    "attrs": {
     "aria-pressed": "false",
     "title": "3Dの自動回転を切り替え"
@@ -270,7 +269,7 @@
   },
   "group-legend": {
    "tag": "div",
-   "class": "legend",
+   "class": "",
    "attrs": {},
    "text": "女性的な声男性的な声"
   },
@@ -307,7 +306,7 @@
   },
   "map-tooltip": {
    "tag": "div",
-   "class": "tooltip",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -315,7 +314,7 @@
   },
   "zoom-in": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "拡大",
     "aria-label": "拡大"
@@ -324,7 +323,7 @@
   },
   "zoom-out": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "縮小",
     "aria-label": "縮小"
@@ -333,7 +332,7 @@
   },
   "find-me": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "声の広がりに表示を合わせる",
     "aria-label": "声の広がりに表示を合わせる"
@@ -342,7 +341,7 @@
   },
   "reset-view": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "表示をリセット",
     "aria-label": "表示をリセット"
@@ -387,8 +386,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さスペクトログラムスペクトル波形",
-   "style": "display: inline-flex;"
+   "text": "高さスペクトログラムスペクトル波形"
   },
   "signal-own": {
    "tag": "button",
@@ -419,7 +417,7 @@
   },
   "words-button": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {
     "title": "文字起こしと単語分割",
     "disabled": ""
@@ -434,7 +432,7 @@
   },
   "range-reset": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "選択範囲を解除（Esc）",
     "aria-label": "選択範囲を解除",
@@ -454,7 +452,7 @@
   },
   "word-list": {
    "tag": "div",
-   "class": "word-list",
+   "class": "",
    "attrs": {
     "role": "group",
     "aria-label": "推定した単語の位置"
@@ -463,7 +461,7 @@
   },
   "sample-browser": {
    "tag": "dialog",
-   "class": "sample-browser",
+   "class": "",
    "attrs": {
     "aria-label": "見本を選ぶ"
    },
@@ -478,7 +476,7 @@
   },
   "add-reference": {
    "tag": "button",
-   "class": "icon-button reference-import",
+   "class": "",
    "attrs": {
     "title": "見本の音声を読み込む",
     "aria-label": "見本の音声を読み込む",
@@ -535,8 +533,7 @@
    ],
    "trigger": "女性的な声",
    "expanded": "false",
-   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声",
-   "style": "display: inline-flex;"
+   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声"
   },
   "reference-upload": {
    "tag": "input",
@@ -586,8 +583,7 @@
    ],
    "trigger": "高さが高い順",
    "expanded": "false",
-   "text": "話者名順自分の声に近い順高さが低い順高さが高い順",
-   "style": "display: inline-flex;"
+   "text": "話者名順自分の声に近い順高さが低い順高さが高い順"
   },
   "search": {
    "tag": "input",
@@ -602,7 +598,7 @@
   },
   "research-controls": {
    "tag": "div",
-   "class": "research-controls",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -649,8 +645,7 @@
    ],
    "trigger": "講師",
    "expanded": "false",
-   "text": "講師001002003DSFD",
-   "style": "display: inline-flex;"
+   "text": "講師001002003DSFD"
   },
   "teacher-pitch": {
    "tag": "koe-select",
@@ -687,8 +682,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さ低い中間高い",
-   "style": "display: inline-flex;"
+   "text": "高さ低い中間高い"
   },
   "teacher-resonance": {
    "tag": "koe-select",
@@ -725,8 +719,7 @@
    ],
    "trigger": "響き",
    "expanded": "false",
-   "text": "響き低い中間高い",
-   "style": "display: inline-flex;"
+   "text": "響き低い中間高い"
   },
   "teacher-weight": {
    "tag": "koe-select",
@@ -763,18 +756,17 @@
    ],
    "trigger": "重さ",
    "expanded": "false",
-   "text": "重さ軽い中間重い",
-   "style": "display: inline-flex;"
+   "text": "重さ軽い中間重い"
   },
   "sample-scroll": {
    "tag": "div",
-   "class": "sample-scroll",
+   "class": "",
    "attrs": {},
    "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641F 25873F 26732F 26581もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
-   "class": "jvs-banner",
+   "class": "",
    "attrs": {},
    "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込む"
   },
@@ -854,7 +846,7 @@
   },
   "load-more": {
    "tag": "button",
-   "class": "load-more",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -862,7 +854,7 @@
   },
   "play-reference": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "見本を再生",
     "aria-label": "見本を再生",
@@ -872,7 +864,7 @@
   },
   "samples-toggle": {
    "tag": "button",
-   "class": "samples-toggle",
+   "class": "",
    "attrs": {
     "title": "見本を選ぶ"
    },
@@ -902,7 +894,7 @@
   },
   "source-link": {
    "tag": "a",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "出典",
     "aria-label": "出典",
@@ -939,7 +931,7 @@
   },
   "play-mine": {
    "tag": "button",
-   "class": "play-button",
+   "class": "",
    "attrs": {
     "title": "自分の声を再生（Space）",
     "aria-label": "自分の声を再生",
@@ -959,8 +951,7 @@
    "options": [],
    "trigger": "録音履歴",
    "expanded": "false",
-   "text": "",
-   "style": "display: inline-flex;"
+   "text": ""
   },
   "timer": {
    "followsPlayback": true
@@ -985,7 +976,7 @@
   },
   "loopback": {
    "tag": "button",
-   "class": "loopback-button",
+   "class": "",
    "attrs": {
     "aria-pressed": "false",
     "aria-label": "自分の声を聴く",
@@ -1017,7 +1008,7 @@
   },
   "compare-ab": {
    "tag": "button",
-   "class": "ab-button icon-button",
+   "class": "",
    "attrs": {
     "title": "見本、自分の順に再生",
     "aria-label": "見本、自分の順に再生",
@@ -1079,7 +1070,7 @@
   },
   "live-status": {
    "tag": "div",
-   "class": "sr-only",
+   "class": "",
    "attrs": {
     "role": "status",
     "aria-live": "polite"
@@ -1088,7 +1079,7 @@
   },
   "live-alert": {
    "tag": "div",
-   "class": "sr-only",
+   "class": "",
    "attrs": {
     "role": "alert"
    },
@@ -1103,7 +1094,7 @@
   },
   "import-audio": {
    "tag": "button",
-   "class": "import-choice",
+   "class": "",
    "attrs": {},
    "text": "音声ファイルを選ぶ ↗"
   },
@@ -1164,7 +1155,7 @@
   },
   "cancel-jvs": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -1204,8 +1195,7 @@
    ],
    "trigger": "端末に合わせる",
    "expanded": "false",
-   "text": "ライトダーク端末に合わせる",
-   "style": "display: inline-flex;"
+   "text": "ライトダーク端末に合わせる"
   },
   "live-window": {
    "tag": "koe-select",
@@ -1240,8 +1230,7 @@
    ],
    "trigger": "3 s",
    "expanded": "false",
-   "text": "1.5 s3 s6 s12 s",
-   "style": "display: inline-flex;"
+   "text": "1.5 s3 s6 s12 s"
   },
   "live-shape-window": {
    "tag": "input",
@@ -1278,7 +1267,7 @@
   },
   "export": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {},
    "text": "測定値を書き出す"
   },
@@ -1304,7 +1293,7 @@
   },
   "report-save": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {},
    "text": "レポートを保存"
   },
@@ -1346,7 +1335,6 @@
    "method": "GET",
    "path": "/api/catalog",
    "query": "",
-   "body": "<audio>",
    "status": 200
   },
   {
@@ -1354,7 +1342,6 @@
    "method": "GET",
    "path": "/api/library",
    "query": "lang=ja",
-   "body": "<audio>",
    "status": 200
   },
   {
@@ -1362,7 +1349,6 @@
    "method": "GET",
    "path": "/api/detail/common_voice_ja_36363162",
    "query": "",
-   "body": "<audio>",
    "status": 200
   },
   {

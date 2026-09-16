@@ -190,18 +190,17 @@
    ],
    "trigger": "普通话",
    "expanded": "false",
-   "text": "日本語普通话English한국어発声の見本",
-   "style": "display: inline-flex;"
+   "text": "日本語普通话English한국어発声の見本"
   },
   "corpus-count": {
    "tag": "span",
-   "class": "toolbar-count",
+   "class": "",
    "attrs": {},
    "text": "20音声 · 20人"
   },
   "settings-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "設定",
     "aria-label": "設定"
@@ -210,7 +209,7 @@
   },
   "info-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "出典と関連ツール",
     "aria-label": "出典と関連ツール"
@@ -219,7 +218,7 @@
   },
   "theme-button": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "明暗を切り替え",
     "aria-label": "明暗を切り替え"
@@ -236,7 +235,7 @@
   },
   "indicators": {
    "tag": "div",
-   "class": "indicators",
+   "class": "",
    "attrs": {
     "role": "group",
     "aria-label": "声の指標"
@@ -245,7 +244,7 @@
   },
   "report-button": {
    "tag": "button",
-   "class": "fit-readout",
+   "class": "",
    "attrs": {
     "title": "比較レポートを開く"
    },
@@ -259,13 +258,13 @@
   },
   "projection-controls": {
    "tag": "div",
-   "class": "segment",
+   "class": "",
    "attrs": {},
    "text": "主成分男女差"
   },
   "auto-rotate": {
    "tag": "button",
-   "class": "rotate-button",
+   "class": "",
    "attrs": {
     "aria-pressed": "false",
     "title": "3Dの自動回転を切り替え",
@@ -283,7 +282,7 @@
   },
   "group-legend": {
    "tag": "div",
-   "class": "legend",
+   "class": "",
    "attrs": {},
    "text": "女性的な声男性的な声"
   },
@@ -320,7 +319,7 @@
   },
   "map-tooltip": {
    "tag": "div",
-   "class": "tooltip",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -328,7 +327,7 @@
   },
   "zoom-in": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "拡大",
     "aria-label": "拡大"
@@ -337,7 +336,7 @@
   },
   "zoom-out": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "縮小",
     "aria-label": "縮小"
@@ -346,7 +345,7 @@
   },
   "find-me": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "声の広がりに表示を合わせる",
     "aria-label": "声の広がりに表示を合わせる"
@@ -355,7 +354,7 @@
   },
   "reset-view": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "表示をリセット",
     "aria-label": "表示をリセット"
@@ -364,7 +363,7 @@
   },
   "quality-state": {
    "tag": "span",
-   "class": "quality-state",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -405,8 +404,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さスペクトログラムスペクトル波形",
-   "style": "display: inline-flex;"
+   "text": "高さスペクトログラムスペクトル波形"
   },
   "signal-own": {
    "tag": "button",
@@ -437,7 +435,7 @@
   },
   "words-button": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {
     "title": "文字起こしと単語分割"
    },
@@ -451,7 +449,7 @@
   },
   "range-reset": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "選択範囲を解除（Esc）",
     "aria-label": "選択範囲を解除",
@@ -470,7 +468,7 @@
   },
   "word-list": {
    "tag": "div",
-   "class": "word-list",
+   "class": "",
    "attrs": {
     "role": "group",
     "aria-label": "推定した単語の位置"
@@ -479,7 +477,7 @@
   },
   "sample-browser": {
    "tag": "dialog",
-   "class": "sample-browser",
+   "class": "",
    "attrs": {
     "aria-label": "見本を選ぶ"
    },
@@ -494,7 +492,7 @@
   },
   "add-reference": {
    "tag": "button",
-   "class": "icon-button reference-import",
+   "class": "",
    "attrs": {
     "title": "見本の音声を読み込む",
     "aria-label": "見本の音声を読み込む"
@@ -550,8 +548,7 @@
    ],
    "trigger": "女性的な声",
    "expanded": "false",
-   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声",
-   "style": "display: inline-flex;"
+   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声"
   },
   "reference-upload": {
    "tag": "input",
@@ -600,8 +597,7 @@
    ],
    "trigger": "高さが高い順",
    "expanded": "false",
-   "text": "話者名順自分の声に近い順高さが低い順高さが高い順",
-   "style": "display: inline-flex;"
+   "text": "話者名順自分の声に近い順高さが低い順高さが高い順"
   },
   "search": {
    "tag": "input",
@@ -616,7 +612,7 @@
   },
   "research-controls": {
    "tag": "div",
-   "class": "research-controls",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -663,8 +659,7 @@
    ],
    "trigger": "講師",
    "expanded": "false",
-   "text": "講師001002003DSFD",
-   "style": "display: inline-flex;"
+   "text": "講師001002003DSFD"
   },
   "teacher-pitch": {
    "tag": "koe-select",
@@ -701,8 +696,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さ低い中間高い",
-   "style": "display: inline-flex;"
+   "text": "高さ低い中間高い"
   },
   "teacher-resonance": {
    "tag": "koe-select",
@@ -739,8 +733,7 @@
    ],
    "trigger": "響き",
    "expanded": "false",
-   "text": "響き低い中間高い",
-   "style": "display: inline-flex;"
+   "text": "響き低い中間高い"
   },
   "teacher-weight": {
    "tag": "koe-select",
@@ -777,18 +770,17 @@
    ],
    "trigger": "重さ",
    "expanded": "false",
-   "text": "重さ軽い中間重い",
-   "style": "display: inline-flex;"
+   "text": "重さ軽い中間重い"
   },
   "sample-scroll": {
    "tag": "div",
-   "class": "sample-scroll",
+   "class": "",
    "attrs": {},
    "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 0091阿拉波朗是巴西米纳斯吉拉斯州的一个市镇。273 Hz · 0:08☆F 0011F 0041F 0021F 0071F 0081F 0031F 0101F 0051F 0061もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
-   "class": "jvs-banner",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -852,7 +844,7 @@
   },
   "load-more": {
    "tag": "button",
-   "class": "load-more",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -860,7 +852,7 @@
   },
   "play-reference": {
    "tag": "button",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "見本を再生",
     "aria-label": "見本を再生"
@@ -869,7 +861,7 @@
   },
   "samples-toggle": {
    "tag": "button",
-   "class": "samples-toggle",
+   "class": "",
    "attrs": {
     "title": "見本を選ぶ"
    },
@@ -899,7 +891,7 @@
   },
   "source-link": {
    "tag": "a",
-   "class": "icon-button",
+   "class": "",
    "attrs": {
     "title": "出典",
     "aria-label": "出典",
@@ -935,7 +927,7 @@
   },
   "play-mine": {
    "tag": "button",
-   "class": "play-button",
+   "class": "",
    "attrs": {
     "title": "自分の声を再生（Space）",
     "aria-label": "自分の声を再生",
@@ -955,8 +947,7 @@
    "options": [],
    "trigger": "録音履歴",
    "expanded": "false",
-   "text": "",
-   "style": "display: inline-flex;"
+   "text": ""
   },
   "timer": {
    "followsPlayback": true
@@ -978,7 +969,7 @@
     "title": "マイクの声をリアルタイムに表示",
     "aria-label": "リアルタイム測定を開始"
    },
-   "text": "リアルタイム0:00"
+   "text": "リアルタイム<time>"
   },
   "live-mode-label": {
    "tag": "span",
@@ -987,16 +978,11 @@
    "text": "リアルタイム"
   },
   "live-time": {
-   "tag": "time",
-   "class": "",
-   "attrs": {
-    "hidden": ""
-   },
-   "text": "0:00"
+   "followsPlayback": true
   },
   "loopback": {
    "tag": "button",
-   "class": "loopback-button",
+   "class": "",
    "attrs": {
     "aria-pressed": "false",
     "aria-label": "自分の声を聴く",
@@ -1029,7 +1015,7 @@
   },
   "compare-ab": {
    "tag": "button",
-   "class": "ab-button icon-button",
+   "class": "",
    "attrs": {
     "title": "見本、自分の順に再生",
     "aria-label": "見本、自分の順に再生",
@@ -1089,7 +1075,7 @@
   },
   "live-status": {
    "tag": "div",
-   "class": "sr-only",
+   "class": "",
    "attrs": {
     "role": "status",
     "aria-live": "polite"
@@ -1098,7 +1084,7 @@
   },
   "live-alert": {
    "tag": "div",
-   "class": "sr-only",
+   "class": "",
    "attrs": {
     "role": "alert"
    },
@@ -1113,7 +1099,7 @@
   },
   "import-audio": {
    "tag": "button",
-   "class": "import-choice",
+   "class": "",
    "attrs": {},
    "text": "音声ファイルを選ぶ ↗"
   },
@@ -1174,7 +1160,7 @@
   },
   "cancel-jvs": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {
     "hidden": ""
    },
@@ -1214,8 +1200,7 @@
    ],
    "trigger": "端末に合わせる",
    "expanded": "false",
-   "text": "ライトダーク端末に合わせる",
-   "style": "display: inline-flex;"
+   "text": "ライトダーク端末に合わせる"
   },
   "live-window": {
    "tag": "koe-select",
@@ -1250,8 +1235,7 @@
    ],
    "trigger": "3 s",
    "expanded": "false",
-   "text": "1.5 s3 s6 s12 s",
-   "style": "display: inline-flex;"
+   "text": "1.5 s3 s6 s12 s"
   },
   "live-shape-window": {
    "tag": "input",
@@ -1288,7 +1272,7 @@
   },
   "export": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {},
    "text": "測定値を書き出す"
   },
@@ -1314,7 +1298,7 @@
   },
   "report-save": {
    "tag": "button",
-   "class": "text-button",
+   "class": "",
    "attrs": {},
    "text": "レポートを保存"
   },

@@ -139,8 +139,7 @@ test.describe('busy and recording guards', () => {
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('take-unreadable');
-		await page.locator('#take-select button.trigger').click();
-		await page.locator('#take-select button.row-action[data-value="2"][data-action="download"]').click();
+		await studio.rowAction('take-select', '2', 'download');
 		await studio.tick(300);
 		await studio.golden('download-unreadable');
 		await page.keyboard.press('Escape');
@@ -152,11 +151,11 @@ test.describe('busy and recording guards', () => {
 		await studio.tick(300);
 		await studio.golden('stored-take-restored');
 		const wav = await studio.download(async () => {
-			await page.locator('#take-select button.trigger').click();
-			await page.locator('#take-select button.row-action[data-value="2"][data-action="download"]').click();
+			await studio.rowAction('take-select', '2', 'download');
 		});
 		await studio.golden('stored-take-downloaded', { extra: { wav } });
 		await page.keyboard.press('Escape');
+		await page.locator('#take-select button.trigger[aria-expanded="false"]').waitFor();
 		// A history point on the map restores its take.
 		await page.locator('[data-dimension="2"]').click();
 		await studio.tick(300);
@@ -168,16 +167,13 @@ test.describe('busy and recording guards', () => {
 		await studio.golden('history-point-restored');
 		// Deleting the current take falls back to the previous one; with no previous take
 		// left, the newest stored take is applied instead.
-		await page.locator('#take-select button.trigger').click();
-		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
+		await studio.rowAction('take-select', '0', 'delete');
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('current-deleted-previous-applied');
-		await page.locator('#take-select button.trigger').click();
-		await page.locator('#take-select button.row-action[data-value="1"][data-action="delete"]').click();
+		await studio.rowAction('take-select', '1', 'delete');
 		await studio.until(app.idle);
-		await page.locator('#take-select button.trigger').click();
-		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
+		await studio.rowAction('take-select', '0', 'delete');
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('current-deleted-stored-applied');

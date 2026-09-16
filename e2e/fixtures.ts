@@ -26,6 +26,8 @@ type Studio = {
 	 *  so page time advances only through tick(); that keeps timer-driven state identical
 	 *  between runs. */
 	until: (expression: string, timeoutMs?: number) => Promise<void>;
+	/** Wait until every logged API request has been answered. */
+	settled: () => Promise<void>;
 	/** Like until(), but advances the fake clock 50 ms per poll for flows driven by
 	 *  timers and real audio together (A/B comparison). The number of ticks depends on
 	 *  timing, so a fixed tick should follow before any golden. */
@@ -36,6 +38,8 @@ type Studio = {
 	download: (action: () => Promise<void>) => Promise<{ name: string; sha256: string; bytes: number }>;
 	/** Choose a value in a koe-select by clicking its popover item. */
 	choose: (id: string, value: string) => Promise<void>;
+	/** Click a row action (download, delete) of a koe-select menu entry. */
+	rowAction: (id: string, value: string, action: string) => Promise<void>;
 	/** Full page navigation to the studio with the harness installed. */
 	open: (path?: string, before?: (page: Page) => Promise<unknown>) => Promise<void>;
 	/** History navigation with coverage preserved. */
@@ -116,6 +120,14 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				await page.waitForTimeout(25);
 			}
 		};
+		const settled = async () => {
+			const started = Date.now();
+			while (log.some((e) => e.status === undefined)) {
+				if (Date.now() - started > 30_000) throw new Error('timed out waiting for pending requests');
+				await page.waitForTimeout(25);
+			}
+			await page.waitForTimeout(25);
+		};
 		const untilTicking = async (expression: string, timeoutMs = 30_000) => {
 			const started = Date.now();
 			while (!(await page.evaluate(expression))) {
@@ -180,6 +192,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const choose = async (id: string, value: string) => {
 			await page.locator(`#${id} button.trigger`).click();
 			await page.locator(`#${id} button.item[data-value="${value}"]`).click();
+			await page.locator(`#${id} button.trigger`).and(page.locator('[aria-expanded="false"]')).waitFor();
 		};
 		// Init scripts stay attached to the page, so a test may install them once; a second
 		// `before` would silently stack on the first.
@@ -187,6 +200,11 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const flush = async () => { await flushers.get(page)?.(); };
 		const back = async () => { await flush(); await page.goBack(); };
 		const forward = async () => { await flush(); await page.goForward(); };
+		const rowAction = async (id: string, value: string, action: string) => {
+			await page.locator(`#${id} button.trigger`).click();
+			await page.locator(`#${id} button.row-action[data-value="${value}"][data-action="${action}"]`).click();
+			await page.locator(`#${id} button.trigger[aria-expanded="false"]`).waitFor();
+		};
 		const open = async (path = '/ja/', before?: (page: Page) => Promise<unknown>) => {
 			await flush();
 			await install(page);
@@ -197,7 +215,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			}
 			await page.goto(path);
 		};
-		await use({ log, golden, tick, until, untilTicking, canvas, download, choose, open, back, forward, audio: fixtureAudio });
+		await use({ log, golden, tick, until, untilTicking, settled, canvas, download, choose, rowAction, open, back, forward, audio: fixtureAudio });
 	}
 });
 

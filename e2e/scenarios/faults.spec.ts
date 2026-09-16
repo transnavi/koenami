@@ -121,8 +121,7 @@ test.describe('server and storage faults', () => {
 		await studio.tick(300);
 		await studio.golden('reference-play-failed');
 		await page.evaluate('window.__failPlay = false; window.__failDelete = true');
-		await page.locator('#take-select button.trigger').click();
-		await page.locator('#take-select button.row-action[data-value="0"][data-action="delete"]').click();
+		await studio.rowAction('take-select', '0', 'delete');
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('delete-failed');

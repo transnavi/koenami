@@ -1,4 +1,6 @@
 {
 	"commit": "14d11b1f0673d98f365925eca8db8f979d910701",
-	"recorded": "2026-09-16"
+	"recorded": "2026-09-17",
+	"playwright": "1.63.0",
+	"chromium": "chromium-1243"
 }
