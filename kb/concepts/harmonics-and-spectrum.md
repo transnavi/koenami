@@ -7,18 +7,18 @@ wikipedia: ["Harmonic", "Spectrogram", "Formant", "Overtone"]
 
 # Harmonics, formants and the spectrogram (スペクトル)
 
-A voiced sound is a stack of harmonics — energy at F0, 2×F0, 3×F0 and so on — shaped by the vocal tract, which boosts some frequencies and weakens others. The boosted regions are formants. On a spectrogram the harmonics are the fine horizontal stripes that rise and fall with pitch; the formants are the broader dark bands that stay put when pitch moves and jump when the mouth changes shape.
+A voiced sound is a stack of harmonics — energy at F0, 2×F0, 3×F0 and so on — shaped by the vocal tract, which boosts some frequencies and weakens others. The boosted regions are formants. A spectrogram is read with time left to right, frequency bottom to top and energy as darkness; on it the harmonics are the fine horizontal stripes that rise and fall with pitch; the formants are the broader dark bands that stay put when pitch moves and jump when the mouth changes shape.
 
 ## What is known
 - "A harmonic is a sinusoidal wave with a frequency that is a positive integer multiple of the fundamental frequency of a periodic signal. The fundamental frequency is also called the 1st harmonic" [[wikipedia-harmonic]].
 - Worked example: if F0 is 50 Hz, the next harmonics are 100, 150 and 200 Hz [[wikipedia-harmonic]].
 - An overtone is "any resonant frequency above the fundamental"; "an overtone may or may not be a harmonic" [[wikipedia-overtone]]. In a modal vowel the two lists coincide; Japanese 倍音 names overtones, 高調波 names harmonics.
-- "A spectrogram is a visual representation of the spectrum of frequencies of a signal as it varies with time" [[wikipedia-spectrogram]]. Time runs left to right, frequency bottom to top, energy as darkness.
+- "A spectrogram is a visual representation of the spectrum of frequencies of a signal as it varies with time" [[wikipedia-spectrogram]].
 - "In speech science and phonetics, a formant is the broad spectral maximum that results from an acoustic resonance of the human vocal tract." A second, acoustic definition takes a formant as "a broad peak, or local maximum, in the spectrum" [[wikipedia-formant]].
 - Those two definitions come apart: "the frequency of a spectral peak differs slightly from the associated resonance frequency, except when, by luck, harmonics are aligned with the resonance frequency, or when the sound source is mostly non-harmonic, as in whispering and vocal fry" [[wikipedia-formant]].
 - Fant's source–filter theory is the reason the two can move separately: the glottal source spectrum is shaped by a tract transfer function whose resonances depend on tract shape and length, not on F0 [[fant1960]].
 - Stevens' acoustic-phonetics textbook is the later full statement of how each class of speech sound is generated under that split [[stevens1998]].
-- Men, women and children occupy overlapping but displaced F1–F2 regions; Hillenbrand's replication of Peterson and Barney is the modern reference table, and it already warns that a single steady-state formant pair does not define a vowel [[peterson1952]] [[hillenbrand1995]].
+- Vowel formants were tabulated separately for men, women and children by Peterson and Barney; Hillenbrand's replication is the modern reference table, and it warns that a single steady-state formant pair does not define a vowel [[peterson1952]] [[hillenbrand1995]].
 - "Vocal folds generate a fundamental frequency by rapidly oscillating as they contact each other, separate and come in contact again" — the source of the harmonic series [[titze2008]].
 - On one pedagogical account the source contributes only F0 and spectral slope (how fast harmonic energy falls with frequency); a shallow slope (stronger higher harmonics) is more characteristic of modal/chest, a steep slope of falsetto/head [[bozeman2022]].
 - The longer closed phase of chest register "typically corresponds with the strength of noteworthy harmonics": during the open phase higher harmonics are damped in the trachea, so a longer closed phase yields stronger overtones [[herbst2020]].
