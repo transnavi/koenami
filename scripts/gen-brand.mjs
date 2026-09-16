@@ -49,7 +49,7 @@ const card = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" h
   </g>
   <g font-family="Noto Sans CJK JP" fill="#27374c">
     <text x="72" y="266" font-size="92" font-weight="700" letter-spacing="-3">Koenami</text>
-    <text x="72" y="330" font-size="36" font-weight="700">女声・男声のボイトレツール</text>
+    <text x="72" y="330" font-size="33" font-weight="700">声を見える化するボイトレツール</text>
     <text x="72" y="410" font-size="27" fill="#3f4a62">見本の声を真似して録音し、</text>
     <text x="72" y="452" font-size="27" fill="#3f4a62">近づきたい声との距離を見る</text>
     <text x="72" y="562" font-size="26" font-weight="500" fill="#1a78c2">koe.transnavi.jp</text>
