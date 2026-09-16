@@ -1,0 +1,67 @@
+{
+ "balance": {
+  "label": "Balance",
+  "max": 5,
+  "min": -40,
+  "ticks": [
+   -40,
+   -30,
+   -20,
+   -10,
+   0
+  ],
+  "unit": "dB"
+ },
+ "delta_f": {
+  "label": "Resonance",
+  "max": 1500,
+  "min": 650,
+  "ticks": [
+   700,
+   900,
+   1100,
+   1300,
+   1500
+  ],
+  "unit": "Hz ΔF"
+ },
+ "f0": {
+  "label": "Pitch",
+  "log": true,
+  "max": 500,
+  "min": 65,
+  "ticks": [
+   80,
+   120,
+   180,
+   260,
+   380
+  ],
+  "unit": "Hz"
+ },
+ "hnr": {
+  "label": "Texture",
+  "max": 30,
+  "min": -5,
+  "ticks": [
+   0,
+   10,
+   20,
+   30
+  ],
+  "unit": "dB HNR"
+ },
+ "pitch_span": {
+  "label": "Variation",
+  "max": 22,
+  "min": 0,
+  "ticks": [
+   0,
+   5,
+   10,
+   15,
+   20
+  ],
+  "unit": "st"
+ }
+}

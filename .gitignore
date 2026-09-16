@@ -16,3 +16,5 @@ data/
 .wrangler/
 .dev.vars*
 ui-v3/
+tests/old-tree/
+/coverage/

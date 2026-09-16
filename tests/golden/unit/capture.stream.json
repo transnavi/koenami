@@ -1,0 +1,56 @@
+{
+ "posted": [
+  {
+   "distinctBuffers": 1,
+   "head": [
+    0,
+    0.0010000000474974513,
+    0.0020000000949949026
+   ],
+   "length": 4096,
+   "tail": [
+    0.12600000202655792,
+    0.12700000405311584
+   ],
+   "transferred": true
+  },
+  {
+   "distinctBuffers": 2,
+   "head": [
+    0,
+    0.0010000000474974513,
+    0.0020000000949949026
+   ],
+   "length": 256,
+   "tail": [
+    0.12600000202655792,
+    0.12700000405311584
+   ],
+   "transferred": false
+  },
+  "flushed",
+  "flushed",
+  {
+   "distinctBuffers": 3,
+   "head": [
+    0,
+    0.0010000000474974513,
+    0.0020000000949949026
+   ],
+   "length": 4096,
+   "tail": [
+    4.093999862670898,
+    4.09499979019165
+   ],
+   "transferred": true
+  },
+  "flushed"
+ ],
+ "results": [
+  true,
+  true,
+  true,
+  true,
+  true
+ ]
+}

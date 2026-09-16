@@ -1,0 +1,54 @@
+{
+	"$comment": "Code the characterization suite cannot reach. Each entry names a file, an istanbul kind (statement, branch, function) and the source text at the uncovered location, plus why no input can execute it. check.mjs treats a matching location as covered and fails when an entry matches nothing, so the list cannot go stale.",
+	"old": [
+		{
+			"file": "tests/old-tree/web/space.js",
+			"kind": "branch",
+			"code": "a[c][c]||1e-12",
+			"reason": "solve(): the pivot fallback needs an exact zero pivot; the within-class covariance carries a 1e-6 ridge on its diagonal, so elimination never cancels to exactly zero."
+		},
+		{
+			"file": "tests/old-tree/web/space.js",
+			"kind": "branch",
+			"code": "r[i]||1e-12",
+			"reason": "solve(): the back-substitution fallback needs an exact zero diagonal after elimination; same ridge argument."
+		},
+		{
+			"file": "tests/old-tree/web/space.js",
+			"kind": "branch",
+			"code": "if(finite(norm)&&norm>0)",
+			"reason": "Cannot be false: rows are filtered to finite features, the difference vector is non-zero (checked one line above) and the ridged covariance is positive definite, so the solved Fisher vector is finite and non-zero."
+		},
+		{
+			"file": "tests/old-tree/web/space.js",
+			"kind": "branch",
+			"code": "if(fisher.reduce((s,x,k)=>s+x*difference[k],0)<0)",
+			"reason": "The sign flip needs fisher·difference < 0, i.e. dᵀW⁻¹d < 0, impossible for a positive-definite W."
+		},
+		{
+			"file": "tests/old-tree/web/space.js",
+			"kind": "statement",
+			"code": "fisher=fisher.map(x=>-x)",
+			"reason": "Body of the unreachable sign flip above."
+		},
+		{
+			"file": "tests/old-tree/web/space.js",
+			"kind": "function",
+			"code": "x=>-x",
+			"reason": "Arrow inside the unreachable sign flip above."
+		},
+		{
+			"file": "tests/old-tree/web/space.js",
+			"kind": "statement",
+			"code": "-x",
+			"reason": "Body of that arrow."
+		},
+		{
+			"file": "tests/old-tree/web/space.js",
+			"kind": "branch",
+			"code": "if(axes.length===5)this.projections.contrast",
+			"reason": "In practice never false: after the eigenvectors, the five unit vectors are appended as candidates and at least four of them are independent of any single Fisher axis, so orthogonalize (norm > 1e-6) always completes the basis."
+		}
+	],
+	"new": []
+}

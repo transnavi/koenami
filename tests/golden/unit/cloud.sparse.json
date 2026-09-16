@@ -1,0 +1,116 @@
+{
+ "badColour": {
+  "calls": [
+   {
+    "call": "putImageData",
+    "height": 92,
+    "painted": 1963,
+    "peak": 72,
+    "sample": [
+     237,
+     0,
+     0,
+     28,
+     237,
+     0,
+     0,
+     28
+    ],
+    "sha256": "e2bb3f6403780b0f7a63d11fc99f4c6fb0719124e617e18b32453a864592acd3",
+    "width": 106,
+    "x": 0,
+    "y": 0
+   },
+   {
+    "call": "putImageData",
+    "height": 92,
+    "painted": 1825,
+    "peak": 64,
+    "sample": [
+     180,
+     150,
+     200,
+     11,
+     180,
+     150,
+     200,
+     11
+    ],
+    "sha256": "1836ea6eece306b737281d7d1a6f14a1077d921273bf031203d36e9ba52094f7",
+    "width": 106,
+    "x": 0,
+    "y": 0
+   }
+  ],
+  "drawImage": [
+   [
+    -156,
+    -156,
+    636,
+    552
+   ],
+   [
+    -156,
+    -156,
+    636,
+    552
+   ]
+  ],
+  "size": [
+   106,
+   92
+  ]
+ },
+ "femaleOnly": {
+  "calls": [
+   {
+    "call": "putImageData",
+    "height": 92,
+    "painted": 2067,
+    "peak": 40,
+    "sample": [
+     217,
+     104,
+     154,
+     9,
+     217,
+     104,
+     154,
+     8
+    ],
+    "sha256": "0fe37d3891192167f6ce2f6f17db527744e97c892932290bf2bb21eca1db3cda",
+    "width": 106,
+    "x": 0,
+    "y": 0
+   }
+  ],
+  "drawImage": [
+   [
+    -156,
+    -156,
+    636,
+    552
+   ]
+  ],
+  "size": [
+   106,
+   92
+  ]
+ },
+ "outOfRange": {
+  "calls": [],
+  "drawImage": [],
+  "size": [
+   106,
+   92
+  ]
+ },
+ "synthetic": {
+  "calls": [],
+  "drawImage": [],
+  "size": [
+   106,
+   92
+  ]
+ }
+}

@@ -85,9 +85,12 @@ Microphone audio and selected imported samples are sent to the analysis service 
 bun run build:public
 bun run check:worker
 node score_test.mjs
+bun run checkout:old && bun run test:unit:coverage && bun run coverage:check:unit
 .venv/bin/python demo_browser_test.py
 .venv/bin/python review_browser_test.py
 ```
+
+`tests/unit` holds characterization tests for the pure browser modules (`math`, `space`, `cloud`, `storage`, `corpus-import`, `capture`). Each test compares its output with a recorded golden under `tests/golden/unit`. The goldens were written with `RECORD=1` against the commit named in `tests/golden/META.json`, which the test setup extracts to `tests/old-tree` (`git archive` needs that commit locally, so a shallow clone must fetch it). `KOENAMI_TREE=new` runs the same tests against `src/lib`; recording is refused there. Comparison is byte-exact: floating-point results, error message text and the order of stored records are all part of the contract, so a port must keep the arithmetic and the messages as they are. `coverage:check` requires every statement, branch, function and line of the tested modules to run, except the locations listed with a reason in `tests/coverage/exclusions.json`. `tests/fixtures/library-ja.json` is every fourth clip of the local Japanese library (`data/library.json`, features only) at the pinned commit.
 
 The browser suite checks live monitoring, persistence, plotted recording history, recording limits, analysis failure recovery, JVS import and playback, selected-range analysis, and desktop/mobile layouts. It requires the official JVS archive for its small import fixture and a locally installed Playwright Chromium. `tests.py` contains additional acoustic regression checks against local controlled audio fixtures; those fixtures are not published.
 

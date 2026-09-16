@@ -1,0 +1,45 @@
+{
+ "progress": [
+  [
+   0,
+   3
+  ],
+  [
+   1,
+   3
+  ],
+  [
+   2,
+   3
+  ],
+  [
+   3,
+   3
+  ]
+ ],
+ "result": {
+  "added": 3,
+  "total": 3
+ },
+ "stored": {
+  "audio": [
+   [
+    "jvs001-parallel100-VOICEACTRESS100_001",
+    "36c14a43636abedc566c86cbf70bc09ddeb4c1dd4004a8f4c70bbadb35a73247"
+   ],
+   [
+    "jvs001-parallel100-VOICEACTRESS100_002",
+    "a033b35e21215cf78f489488bcb4f3a9e69c3f57aa434ae6e6287dc30dfded72"
+   ],
+   [
+    "jvs002-nonpara30-BASIC5000_0001",
+    "4744bc429b973543a1f6f11eafb3de7239c2ad798160e8e6a64fc0611aaad7a6"
+   ]
+  ],
+  "ids": [
+   "jvs001-parallel100-VOICEACTRESS100_001",
+   "jvs001-parallel100-VOICEACTRESS100_002",
+   "jvs002-nonpara30-BASIC5000_0001"
+  ]
+ }
+}

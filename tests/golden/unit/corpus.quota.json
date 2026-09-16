@@ -1,0 +1,38 @@
+{
+ "failed": "JVSの一覧を取得できませんでした。",
+ "noEstimate": {
+  "progress": [
+   [
+    0,
+    1
+   ],
+   [
+    1,
+    1
+   ]
+  ],
+  "result": {
+   "added": 1,
+   "total": 1
+  }
+ },
+ "recovered": {
+  "added": 1,
+  "total": 1
+ },
+ "stored": {
+  "audio": [
+   [
+    "jvs003-parallel100-VOICEACTRESS100_003",
+    "e697ad8d0ef6e264189f29c9ad760272421936385b27ac746b880995ef67a0a6"
+   ]
+  ],
+  "ids": [
+   "jvs003-parallel100-VOICEACTRESS100_003"
+  ]
+ },
+ "tight": {
+  "error": "保存容量が足りません。話者ごとのフォルダーを選ぶと、一部だけ追加できます。",
+  "progress": []
+ }
+}
