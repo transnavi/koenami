@@ -34,6 +34,12 @@ class SelectionTests(unittest.TestCase):
         self.assertIsNone(selection({**self.row, 'file_name': 'empty.mp3'}, policy))
         self.assertEqual(selection({**self.row, 'file_name': 'other.mp3'}, policy), 'common_voice_validated')
 
+    def test_audio_exclusions_carry_no_pronunciation_label(self):
+        firm = {r['speaker'] for r in POLICY['listening_reviews'] if r['judgement'] == 'not_native_like'}
+        other = {r['speaker'] for r in POLICY['listening_reviews'] if r['judgement'] != 'not_native_like'}
+        self.assertTrue(firm <= set(POLICY['excluded_speakers']))
+        self.assertTrue(other.isdisjoint(firm))
+
 
 class SpeechScreenTests(unittest.TestCase):
     """Verdicts calibrated on the library: silence makes Whisper emit stock phrases."""
