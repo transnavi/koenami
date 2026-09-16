@@ -69,6 +69,23 @@ def main(url):
             assert page.evaluate('reviewApp.queue.at(-1).speaker') == second and page.evaluate('reviewApp.queue.length') == length
             page.keyboard.press('Enter'); assert len(saved) == 1 and page.locator('#status').inner_text() != ''
             assert page.evaluate('reviewApp.ratings') == {} and page.evaluate('reviewApp.chosen.size') == 0
+            # Backspace returns to the previous speaker (a saved one stays reachable); the list jumps anywhere; the theme toggles.
+            page.keyboard.press('Backspace'); assert page.evaluate('reviewApp.at') == 0 and page.evaluate('reviewApp.queue[0].speaker') == first['speaker']
+            page.keyboard.press('Enter'); assert len(saved) == 1  # nothing entered anew: empty save refused, no duplicate
+            page.keyboard.press('l'); wait(page, 'document.getElementById("list-dialog").open')
+            assert page.locator('#list-items .list-item').count() == page.evaluate('reviewApp.queue.length')
+            page.locator('#list-items .list-item[data-index="3"]').click(); assert page.evaluate('reviewApp.at') == 3 and not page.evaluate('document.getElementById("list-dialog").open')
+            before = page.evaluate('document.documentElement.dataset.theme'); page.locator('#theme-button').click()
+            assert page.evaluate('document.documentElement.dataset.theme') != before; page.locator('#theme-button').click()
+            # Answers typed on one speaker survive a detour to another speaker and back.
+            page.keyboard.press('2'); page.keyboard.press('z')
+            page.locator('#jump').click(); page.locator('#list-filter').fill(page.evaluate('reviewApp.queue[5].clips[0].display')); page.locator('#list-items .list-item').first.click()
+            assert page.evaluate('reviewApp.at') == 5 and page.evaluate('reviewApp.ratings') == {}
+            page.keyboard.press('Backspace'); page.keyboard.press('Backspace')
+            page.locator('#jump').click(); page.locator('#list-filter').fill(''); page.locator('#list-items .list-item[data-index="3"]').click()
+            assert page.evaluate('reviewApp.ratings') == {'femininity': 2} and page.evaluate('[...reviewApp.chosen]') == ['noise']
+            page.keyboard.press('2'); page.keyboard.press('ArrowUp'); page.keyboard.press('z')
+            page.locator('#jump').click(); page.locator('#list-items .list-item[data-index="2"]').click(); assert page.evaluate('reviewApp.at') == 2
             # Position, skipped speakers and the unsaved draft survive a reload.
             third = page.evaluate('reviewApp.queue[reviewApp.at].speaker')
             page.keyboard.press('4'); page.keyboard.press('x'); page.keyboard.press('ArrowRight'); page.locator('#note').fill('途中')
