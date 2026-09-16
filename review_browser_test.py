@@ -114,7 +114,7 @@ def main(url):
                 page.locator('#search').fill(query)
                 assert page.locator('.speaker-folder').count() == 1
                 assert 'jvs002' in page.locator('.speaker-folder').get_attribute('data-speaker')
-            page.locator('#search').fill('F263'); assert page.locator('.speaker-folder').count() == 1
+            page.locator('#search').fill('F2804'); assert page.locator('.speaker-folder[data-speaker$="641429ff339d"]').count() == 1
             assert not errors, errors
             print(json.dumps({'passed': ['Review queue orders unreviewed female speakers first', 'Grouped scales from the server, digit auto-advance, decade ages, per-clip quality flags', 'Save posts the review and advances; skip requeues, empty save refused', 'Position, skipped speakers and draft survive reload', 'Looped playback; 追加項目 mode prefills previous answers and targets missing scales', 'Main app has no rating panel; speaker search works']}, ensure_ascii=False))
         finally:
