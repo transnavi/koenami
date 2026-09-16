@@ -4,7 +4,7 @@ import json
 import tempfile
 from pathlib import Path
 from build_common_voice_ja import POLICY, selection, speaker_id
-from curation import Verdicts, append
+from curation import RATING_KEYS, SCALES, Verdicts, append
 from screen_reference_speech import verdict
 
 
@@ -17,7 +17,7 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(selection(self.row), 'common_voice_validated')
 
     def test_excluded_speaker_cannot_return_with_standard_accent(self):
-        verdicts = Verdicts([{'speaker': speaker_id(self.row), 'flags': ['not_native_like']}])
+        verdicts = Verdicts([{'speaker': speaker_id(self.row), 'ratings': {'japanese': 1}}])
         self.assertIsNone(selection({**self.row, 'accent': '標準語'}, POLICY, verdicts))
 
     def test_explicit_non_native_accents_are_excluded(self):
@@ -26,7 +26,7 @@ class SelectionTests(unittest.TestCase):
 
     def test_declared_dialect_is_distinct_from_listening_review(self):
         self.assertEqual(selection({**self.row, 'accent': 'Hakata-ben'}), 'declared_japanese_accent')
-        verdicts = Verdicts([{'speaker': speaker_id(self.row), 'flags': ['native_like']}])
+        verdicts = Verdicts([{'speaker': speaker_id(self.row), 'ratings': {'japanese': 6}}])
         self.assertEqual(selection(self.row, POLICY, verdicts), 'reviewed_speaker')
 
     def test_validation_and_adult_reference_requirements(self):
@@ -41,20 +41,28 @@ class SelectionTests(unittest.TestCase):
 
 class ReviewLogTests(unittest.TestCase):
     def test_audio_exclusions_carry_no_pronunciation_label(self):
-        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['distorted'], 'scope': 'speaker'}, {'speaker': 'b', 'flags': ['tentative']},
-                      {'speaker': 'c', 'flags': ['not_native_like']}, {'speaker': 'd', 'flags': ['native_like']}])
+        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['distorted'], 'scope': 'speaker'}, {'speaker': 'b', 'ratings': {'japanese': 3}},
+                      {'speaker': 'c', 'ratings': {'japanese': 2}}, {'speaker': 'd', 'ratings': {'japanese': 5}}, {'speaker': 'e', 'ratings': {'japanese': 4}}])
         self.assertEqual(v.excluded_speakers, {'a', 'b', 'c'})
         self.assertEqual(v.pronunciation_labels(), {'c': 0, 'd': 1})
+        self.assertEqual(v.pronunciation['e'], 'unlabelled')
 
     def test_latest_pronunciation_judgement_wins(self):
-        v = Verdicts([{'speaker': 'a', 'flags': ['native_like']}, {'speaker': 'a', 'flags': ['not_native_like']}])
+        v = Verdicts([{'speaker': 'a', 'ratings': {'japanese': 6}}, {'speaker': 'a', 'ratings': {'japanese': 1}}])
         self.assertEqual(v.native_speakers, set()); self.assertEqual(v.pronunciation_labels(), {'a': 0}); self.assertEqual(v.excluded_speakers, {'a'})
-        v = Verdicts([{'speaker': 'a', 'flags': ['tentative']}, {'speaker': 'a', 'flags': ['native_like']}])
+        v = Verdicts([{'speaker': 'a', 'ratings': {'japanese': 3}}, {'speaker': 'a', 'ratings': {'japanese': 6}}])
         self.assertEqual(v.native_speakers, {'a'}); self.assertEqual(v.excluded_speakers, set()); self.assertEqual(v.pronunciation_labels(), {'a': 1})
 
     def test_quality_scope_decides_clip_or_speaker_exclusion(self):
         v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['noise'], 'scope': 'clip'}, {'speaker': 'b', 'clip': 'y', 'flags': ['noise'], 'scope': 'speaker'}])
         self.assertEqual(v.excluded_clips, {'x'}); self.assertEqual(v.excluded_speakers, {'b'})
+
+    def test_later_reviews_correct_quality_flags(self):
+        v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': ['noise'], 'scope': 'clip'}, {'speaker': 'a', 'clip': 'x', 'flags': [], 'scope': 'clip'},
+                      {'speaker': 'b', 'clip': 'y', 'flags': ['distorted'], 'scope': 'speaker'}, {'speaker': 'b', 'clip': 'z', 'flags': [], 'scope': 'clip'},
+                      {'speaker': 'c', 'clip': 'w', 'flags': ['distorted'], 'scope': 'speaker'}, {'speaker': 'c', 'clip': 'w', 'flags': [], 'scope': 'speaker'}])
+        self.assertEqual(v.excluded_clips, set()); self.assertEqual(v.excluded_speakers, {'b'})
+        self.assertEqual(v.latest('b')['flags'], []); self.assertEqual(v.latest('b')['clip'], 'z')
 
     def test_ratings_alone_do_not_exclude(self):
         v = Verdicts([{'speaker': 'a', 'clip': 'x', 'flags': [], 'ratings': {'femininity': 2}}])
@@ -68,7 +76,7 @@ class ReviewLogTests(unittest.TestCase):
             self.assertEqual(append({'speaker': 'a', 'flags': ['noise'], 'scope': 'speaker'}, log)['scope'], 'speaker')
             self.assertEqual(json.loads(log.read_text().splitlines()[0])['speaker'], 'a')
             for bad in [{'speaker': 'a', 'ratings': {'femininity': 9}}, {'speaker': 'a'}, {'speaker': 'a', 'flags': ['bogus']},
-                        {'speaker': 'a', 'flags': ['noise']}, {'speaker': 'a', 'flags': ['noise'], 'scope': 'all'}, {'speaker': 'a', 'flags': ['native_like', 'tentative']},
+                        {'speaker': 'a', 'flags': ['noise']}, {'speaker': 'a', 'flags': ['noise'], 'scope': 'all'}, {'speaker': 'a', 'flags': ['native_like']},
                         {'speaker': 'a', 'flags': 'noise'}, {'speaker': 'a', 'ratings': {'age': True}}, {'speaker': 'a', 'ratings': {'age': 25}}, {'speaker': 'a', 'note': 'x' * 1001}, 'text']:
                 with self.assertRaises(ValueError, msg=bad): append(bad, log)
             self.assertEqual(len(log.read_text().splitlines()), 2)
@@ -77,6 +85,11 @@ class ReviewLogTests(unittest.TestCase):
         migrated = [r for r in Verdicts().reviews if r['reviewed'].startswith('2026-09-15')]
         v = Verdicts(migrated)
         self.assertEqual(len(v.native_speakers), 3); self.assertEqual(len(v.excluded_speakers), 20); self.assertEqual(len(v.excluded_clips), 8)
+
+    def test_every_scale_key_is_accepted(self):
+        with tempfile.TemporaryDirectory() as folder:
+            record = append({'speaker': 'a', 'ratings': {s['key']: (20 if s['key'] == 'age' else 3) for s in SCALES}}, Path(folder) / 'r.jsonl')
+            self.assertEqual(set(record['ratings']), set(RATING_KEYS))
 
 
 class SpeechScreenTests(unittest.TestCase):
