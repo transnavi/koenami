@@ -6,9 +6,10 @@
 - clip: clip id the reviewer listened to (optional for speaker-level notes)
 - display: label shown in the app at review time, kept for readability
 - language: library language code
-- flags: list of FLAGS keys — one PRONUNCIATION_FLAGS entry (always about the speaker) and any QUALITY_FLAGS
+- flags: list of QUALITY keys (problems with the audio)
 - scope: 'clip' (default) or 'speaker'; with 'speaker', quality flags exclude every clip of the speaker
-- ratings: optional 0-6 scores keyed by RATING_KEYS; `age` is the decade the voice sounds like (AGE_DECADES)
+- ratings: optional 0-6 scores keyed by RATING_KEYS; `age` is the decade the voice sounds like (AGE_DECADES).
+  `japanese` doubles as the pronunciation judgement (see NATIVE_MIN and friends).
 - note: free text
 - reviewed: ISO timestamp
 
@@ -21,14 +22,27 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 LOG = ROOT / 'curation/reviews.jsonl'
 
-RATING_KEYS = ('femininity', 'masculinity', 'naturalness', 'japanese', 'age')
+# Every rating is 0-6 except `age`. Groups and anchor words follow the literature cited in web/method.html#review.
+SCALES = [
+    {'key': 'femininity', 'name': '女性らしさ', 'ends': ['感じない', '強く感じる'], 'group': '性別・発音'},
+    {'key': 'masculinity', 'name': '男性らしさ', 'ends': ['感じない', '強く感じる'], 'group': '性別・発音'},
+    {'key': 'japanese', 'name': '母語話者らしさ', 'ends': ['非母語', '母語'], 'group': '性別・発音', 'only': 'ja'},
+    {'key': 'naturalness', 'name': '自然さ', 'ends': ['不自然', '自然'], 'group': '性別・発音'},
+    {'key': 'age', 'name': '聞こえる年代', 'group': '性別・発音', 'decades': True},
+    {'key': 'clarity', 'name': '澄み', 'ends': ['かすれた', '澄んだ'], 'group': '声質'},
+    {'key': 'firmness', 'name': '張り', 'ends': ['弱々しい', '張りのある'], 'group': '声質'},
+    {'key': 'thickness', 'name': '太さ', 'ends': ['細い', '太い'], 'group': '声質'},
+    {'key': 'nasality', 'name': '鼻声', 'ends': ['感じない', '強い'], 'group': '声質'},
+    {'key': 'brightness', 'name': '明るさ', 'ends': ['暗い', '明るい'], 'group': '印象'},
+    {'key': 'refinement', 'name': '上品さ', 'ends': ['雑', '上品'], 'group': '印象'},
+    {'key': 'warmth', 'name': '温かさ', 'ends': ['冷たい', '温かい'], 'group': '印象'},
+    {'key': 'sweetness', 'name': '甘さ', 'ends': ['感じない', '強く感じる'], 'group': '印象'},
+]
+RATING_KEYS = tuple(s['key'] for s in SCALES)
 # Perceived age as a decade: 10 covers teens and younger, 60 covers sixties and older.
 AGE_DECADES = {10: '10代以下', 20: '20代', 30: '30代', 40: '40代', 50: '50代', 60: '60代以上'}
-PRONUNCIATION = {
-    'native_like': '母語らしい',
-    'not_native_like': '非母語らしい',
-    'tentative': 'たぶん非母語',
-}
+# 母語話者らしさ is the only pronunciation judgement: 0-2 firmly non-native, 3 doubtful, 5-6 native-like.
+NATIVE_MIN, NON_NATIVE_MAX, DOUBTFUL_MAX = 5, 2, 3
 QUALITY = {
     'no_speech': '無音',
     'murmur': 'つぶやきのみ',
@@ -36,8 +50,7 @@ QUALITY = {
     'distorted': '歪み',
     'other_speaker': '別の話者',
 }
-FLAGS = {**PRONUNCIATION, **QUALITY}
-PRONUNCIATION_FLAGS = tuple(PRONUNCIATION)
+FLAGS = QUALITY
 SCOPES = ('clip', 'speaker')
 
 
@@ -53,7 +66,6 @@ def append(review, path=LOG):
     flags = list(dict.fromkeys(review.get('flags', [])))
     unknown = [f for f in flags if f not in FLAGS]
     if unknown: raise ValueError(f'unknown flags: {unknown}')
-    if len([f for f in flags if f in PRONUNCIATION_FLAGS]) > 1: raise ValueError('one pronunciation flag per review')
     scope = review.get('scope') or 'clip'
     if scope not in SCOPES: raise ValueError('scope must be clip or speaker')
     if scope == 'clip' and not review.get('clip') and any(f in QUALITY for f in flags): raise ValueError('clip-level quality flags need a clip')
@@ -89,21 +101,21 @@ class Verdicts:
         self.excluded_speakers, self.excluded_clips, self.native_speakers = set(), set(), set()
         self.reviewed_speakers = {r['speaker'] for r in reviews}
         self.reviewed_clips = {r['clip'] for r in reviews if r.get('clip')}
-        # The latest pronunciation judgement per speaker wins, in log order.
-        self.pronunciation = {}
+        # The latest 母語話者らしさ rating per speaker is the pronunciation judgement.
+        japanese = self.ratings('japanese')
+        self.pronunciation = {s: 'native_like' if v >= NATIVE_MIN else 'not_native_like' if v <= NON_NATIVE_MAX else 'tentative' if v <= DOUBTFUL_MAX else 'unlabelled'
+                              for s, v in japanese.items()}
         for r in reviews:
             flags = set(r.get('flags', []))
-            for flag in PRONUNCIATION_FLAGS:
-                if flag in flags: self.pronunciation[r['speaker']] = flag
             quality = flags & QUALITY.keys()
             if quality and r.get('scope') == 'speaker': self.excluded_speakers.add(r['speaker'])
             elif quality and r.get('clip'): self.excluded_clips.add(r['clip'])
         self.native_speakers = {s for s, flag in self.pronunciation.items() if flag == 'native_like'}
-        self.excluded_speakers |= {s for s, flag in self.pronunciation.items() if flag != 'native_like'}
+        self.excluded_speakers |= {s for s, flag in self.pronunciation.items() if flag in ('not_native_like', 'tentative')}
 
     def pronunciation_labels(self):
-        """1 for native-like, 0 for firmly non-native; tentative and quality exclusions carry no label."""
-        return {s: 1 if flag == 'native_like' else 0 for s, flag in self.pronunciation.items() if flag != 'tentative'}
+        """1 for native-like, 0 for firmly non-native; doubtful ratings and quality exclusions carry no label."""
+        return {s: 1 if flag == 'native_like' else 0 for s, flag in self.pronunciation.items() if flag in ('native_like', 'not_native_like')}
 
     def ratings(self, key):
         """Latest rating per speaker for one RATING_KEYS entry."""

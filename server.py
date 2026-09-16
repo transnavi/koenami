@@ -211,8 +211,7 @@ def create_app():
         if PUBLIC: raise web.HTTPNotFound()
         lang = request.query.get('lang', 'ja')
         if lang not in libraries: raise web.HTTPNotFound()
-        return respond({**review_queue(lang), 'flags': {'pronunciation': curation.PRONUNCIATION, 'quality': curation.QUALITY},
-                        'ratings': list(curation.RATING_KEYS), 'ageDecades': curation.AGE_DECADES, 'log': curation.load()[-200:]})
+        return respond({**review_queue(lang), 'flags': curation.QUALITY, 'scales': curation.SCALES, 'ageDecades': curation.AGE_DECADES, 'log': curation.load()[-200:]})
 
     async def review_post(request):
         if PUBLIC: raise web.HTTPNotFound()

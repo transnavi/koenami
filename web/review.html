@@ -1,11 +1,13 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Koenami · 聴取レビュー</title><meta name="robots" content="noindex"><script src="./theme.js"></script><link rel="stylesheet" href="./style.css">
 <style>
+html,body{height:auto;overflow:visible}
 .review{max-width:720px;margin:0 auto;padding:28px 16px 60px;display:flex;flex-direction:column;gap:18px}
 .review-head{display:flex;align-items:center;gap:14px}.review-head h1{font-size:15px;margin:0;color:var(--heading)}.review-head .progress{font-size:12px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:16px}
 .speaker{display:flex;align-items:baseline;gap:12px}.speaker strong{font-size:26px;color:var(--heading);letter-spacing:.02em}.speaker span{font-size:12px;color:var(--muted)}
 .clip{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}.clip .text{font-size:15px;line-height:1.6;color:var(--ink)}.clip .text small{display:block;color:var(--muted);font-size:11px}
 .clip nav{display:flex;gap:4px}.clip nav button,.play{border:1px solid var(--line);background:var(--raised);color:var(--ink);border-radius:8px;min-width:34px;height:34px;font:inherit;cursor:pointer}.play{width:44px;height:44px;border-radius:50%;font-size:16px}.play[aria-pressed=true]{background:var(--accent);color:#fff;border-color:transparent}
+.scale-group{font-size:11px;color:var(--muted);padding:10px 8px 2px;letter-spacing:.06em}
 .scale{display:grid;grid-template-columns:130px 1fr 40px;align-items:center;gap:10px;padding:6px 8px;border-radius:8px}.scale[data-active=true]{background:var(--selected)}.scale .name{font-size:13px}.scale .steps{display:flex;gap:4px}
 .scale .steps button{flex:1;height:30px;border:1px solid var(--line);background:transparent;border-radius:6px;color:var(--muted);font:inherit;font-size:12px;cursor:pointer}.scale .steps button[aria-pressed=true]{background:var(--accent);border-color:transparent;color:#fff}
 .scale .ends{grid-column:2;display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:-6px}.scale output{font-size:12px;color:var(--muted);text-align:right}
@@ -24,7 +26,6 @@
  <div class="speaker"><strong id="display"></strong><span id="speaker-meta"></span></div>
  <div class="clip"><button class="play" id="play" aria-pressed="false" aria-label="再生">▶</button><div class="text" id="text"></div><nav><button id="prev-clip" aria-label="前の音声">‹</button><button id="next-clip" aria-label="次の音声">›</button></nav></div>
  <div id="scales"></div>
- <div class="flags" id="pronunciation-flags"><span class="group">発音</span></div>
  <div class="flags" id="quality-flags"><span class="group">問題</span><span class="scope" id="scope" hidden><button type="button" id="scope-clip" aria-pressed="true">この音声だけ</button><button type="button" id="scope-speaker" aria-pressed="false">話者の全音声<kbd>A</kbd></button></span></div>
  <input class="note" id="note" placeholder="メモ">
  <div class="actions"><span class="status" id="status"></span><button id="skip">スキップ<kbd>S</kbd></button><button class="primary" id="save">保存して次へ<kbd>Enter</kbd></button></div>
