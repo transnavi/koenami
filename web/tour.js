@@ -6,18 +6,18 @@
 const KEY='voice-tour';
 const ART={
  wave:'<use href="#i-wave"/>',
- pick:'<path d="M7 5l9 7-9 7Z" fill="currentColor" stroke="none"/><path d="M17 3l1.2 2.4 2.6.4-1.9 1.8.5 2.6L17 9l-2.4 1.2.5-2.6-1.9-1.8 2.6-.4Z"/>',
+ pick:'<use href="#i-play"/>',
  list:'<path d="M4 6h16M4 12h16M4 18h10"/>',
  mic:'<use href="#i-mic"/>',
- radar:'<path d="M12 3l8.6 6.2-3.3 10.1H6.7L3.4 9.2Z"/><path d="M12 8l4.3 3.1-1.6 5H9.3l-1.6-5Z" opacity=".5"/>',
- map:'<circle cx="7" cy="9" r="1.2" fill="currentColor" stroke="none"/><circle cx="10" cy="14" r="1.2" fill="currentColor" stroke="none"/><circle cx="8" cy="17" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="7" r="1.2" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r="2.4"/><path d="M12 11l5 1" stroke-dasharray="1.5 1.5"/>',
+ radar:'<path d="M12 3l8.6 6.2-3.3 10.1H6.7L3.4 9.2Z"/>',
+ map:'<circle cx="8" cy="14" r="1.5" fill="currentColor" stroke="none"/><circle cx="15" cy="8" r="1.5" fill="currentColor" stroke="none"/><circle cx="17" cy="15" r="1.5" fill="currentColor" stroke="none"/><circle cx="11" cy="10" r="3"/>',
  signal:'<path d="M3 12c2-6 3-6 4 0s2 6 3 0 2-6 3 0 2 6 3 0 2-6 3 0 2 6 3 0"/>',
- live:'<use href="#i-mic"/><path d="M18 5c2 0 3 1 3 3s-1 3-3 3" opacity=".6"/>',
+ live:'<use href="#i-wave"/>',
  info:'<use href="#i-info"/>',
 };
 // Inline stand-ins for the real controls mentioned in the text.
-const icon=id=>`<span class="tour-key"><svg aria-hidden="true"><use href="#i-${id}"/></svg></span>`;
-const CHIPS={help:icon('help'),info:icon('info'),play:icon('play'),mic:icon('mic'),star:'<span class="tour-key">☆</span>',R:'<kbd class="tour-key">R</kbd>'};
+const icon=(id,cls='')=>`<span class="tour-key ${cls}"><svg aria-hidden="true"><use href="#i-${id}"/></svg></span>`;
+const CHIPS={help:icon('help','tour-key-plain'),info:icon('info','tour-key-plain'),play:icon('play','tour-key-round'),mic:icon('mic','tour-key-round tour-key-record'),star:'<span class="tour-key tour-key-plain">☆</span>',R:'<kbd class="tour-key tour-key-kbd">R</kbd>'};
 const STEPS=[
  {art:'wave',title:'Koenamiへようこそ',text:'見本を真似して録音し、声の違いを目で確かめられるツールです。1分ほど、主な画面を順にご紹介します。スキップしても、画面右上の{help}からいつでも見直せます。'},
  {art:'pick',target:['.target'],title:'選んだ見本',text:'いま選んでいる見本です。{play}で聴き、{star}でお気に入りに入れます。'},
