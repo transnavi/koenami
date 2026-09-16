@@ -15,16 +15,19 @@ const ART={
  live:'<use href="#i-mic"/><path d="M18 5c2 0 3 1 3 3s-1 3-3 3" opacity=".6"/>',
  info:'<use href="#i-info"/>',
 };
+// Inline stand-ins for the real controls mentioned in the text.
+const icon=id=>`<span class="tour-key"><svg aria-hidden="true"><use href="#i-${id}"/></svg></span>`;
+const CHIPS={help:icon('help'),info:icon('info'),play:icon('play'),mic:icon('mic'),star:'<span class="tour-key">☆</span>',R:'<kbd class="tour-key">R</kbd>'};
 const STEPS=[
- {art:'wave',title:'Koenamiへようこそ',text:'見本を真似して録音し、声の違いを目で確かめるツールです。主な画面を紹介します。右上の ? からいつでも見直せます。'},
- {art:'pick',target:['.target'],title:'選んだ見本',text:'いま選んでいる見本です。▶で聴き、★でお気に入りに入れます。'},
+ {art:'wave',title:'Koenamiへようこそ',text:'見本を真似して録音し、声の違いを目で確かめられるツールです。1分ほど、主な画面を順にご紹介します。スキップしても、画面右上の{help}からいつでも見直せます。'},
+ {art:'pick',target:['.target'],title:'選んだ見本',text:'いま選んでいる見本です。{play}で聴き、{star}でお気に入りに入れます。'},
  {art:'list',target:['.samples-panel .sample-filters','#samples-toggle'],title:'見本の一覧',text:'声の種類で絞り込み、並べ替えて、近づきたい声を探します。'},
- {art:'mic',target:['#record'],title:'録音',text:'マイクか R キーで録音を始め、もう一度押して止めます。'},
+ {art:'mic',target:['#record'],title:'録音',text:'{mic}か{R}で録音を始め、もう一度押して止めます。'},
  {art:'radar',target:['#indicators'],title:'声の特徴',text:'高さ・響き・質感・明るさ・抑揚を、自分と見本で見比べます。'},
  {art:'map',target:['.graph-area'],title:'声の分布',text:'見本の声の地図です。自分の声が見本にどれだけ近いかが分かります。'},
  {art:'signal',target:['.signal-panel'],title:'波形',text:'高さの推移やスペクトログラムを見比べます。ドラッグで範囲を選べます。'},
  {art:'live',target:['#live-mode'],title:'リアルタイム',text:'話しながら、声の位置が動くのを見て調整します。'},
- {art:'info',target:['#info-button'],title:'詳しい説明',text:'使い方や声のしくみの解説は ⓘ から開けます。'},
+ {art:'info',target:['#info-button'],title:'詳しい説明',text:'使い方や声のしくみの解説は{info}から開けます。'},
 ];
 const phone=matchMedia('(max-width:800px),(max-height:520px)');
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{};}catch{return {};}};
@@ -62,7 +65,7 @@ function show(n){
  step=Math.max(0,Math.min(STEPS.length-1,n));save({...load(),step});
  const s=STEPS[step];
  card.querySelector('#tour-count').textContent=`${step+1} / ${STEPS.length}`;
- card.querySelector('#tour-title').textContent=s.title;card.querySelector('#tour-text').textContent=s.text;card.querySelector('.tour-art').innerHTML=ART[s.art];
+ card.querySelector('#tour-title').textContent=s.title;card.querySelector('#tour-text').innerHTML=s.text.replace(/\{(\w+)\}/g,(_,id)=>CHIPS[id]);card.querySelector('.tour-art').innerHTML=ART[s.art];
  card.querySelector('[data-act=back]').hidden=step===0;
  card.querySelector('[data-act=next]').textContent=step===STEPS.length-1?'はじめる':'次へ';
  shade.hidden=false;if(!card.open)card.show();
