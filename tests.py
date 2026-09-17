@@ -8,7 +8,11 @@ import numpy as np
 import soundfile as sf
 from aiohttp.test_utils import TestClient, TestServer
 from acoustics import measure, RATE
-from server import create_app
+from server import create_app, load_timbre_index, rank_similar
+import server
+import perception
+from unittest.mock import patch
+import tempfile
 from signals import visualise
 
 ROOT=Path(__file__).parent
@@ -257,3 +261,47 @@ class APITests(unittest.IsolatedAsyncioTestCase):
         r=await self.client.get('/data/library-measurements.json');self.assertEqual(r.status,404)
 
 if __name__=='__main__':unittest.main(verbosity=2)
+
+
+class SimilarTests(unittest.IsolatedAsyncioTestCase):
+    """Reference ranking over a small synthetic index; the timbre model itself is patched out."""
+    def fake_index(self):
+        rng=np.random.default_rng(2);base=rng.normal(size=(4,768))
+        ids,lang,spk,grp,syn,vec=[],[],[],[],[],[]
+        for k,(speaker,group,language) in enumerate([('spkA','female','ja'),('spkB','female','ja'),('spkC','male','ja'),('spkD','female','en')]):
+            for c in range(2):ids.append(f'{speaker}-clip{c}');lang.append(language);spk.append(speaker);grp.append(group);syn.append(False);vec.append(base[k]+rng.normal(scale=.05,size=768))
+        path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz'
+        np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(ids),language=np.array(lang),speaker=np.array(spk),group=np.array(grp),synthetic=np.array(syn),vectors=np.array(vec,'float16'))
+        self.base=base;return path
+
+    async def asyncSetUp(self):
+        self.tmp=tempfile.TemporaryDirectory();self.fake_index()
+        self.patches=[patch.object(server,'DATA',Path(self.tmp.name)),patch.object(perception,'available',return_value=True)]
+        for p in self.patches:p.start()
+        # The libraries are read from DATA too; point the app at the real ones for everything but the index.
+        real=Path(__file__).parent/'data'
+        for name in ['native-ja.json','libraries','synthetic.json','voicevox.json','samples']:
+            if (real/name).exists():(Path(self.tmp.name)/name).symlink_to(real/name)
+        self.client=TestClient(TestServer(create_app()));await self.client.start_server()
+
+    async def asyncTearDown(self):
+        await self.client.close()
+        for p in self.patches:p.stop()
+        self.tmp.cleanup()
+
+    async def test_similar_ranks_speakers_by_centroid_and_names_the_nearest_clip(self):
+        r=await self.client.get('/api/catalog');self.assertEqual((await r.json())['capabilities']['similar'],['en','ja'])
+        query=(self.base[1]+.5*self.base[0]).astype('float32')  # closest to spkB, then spkA
+        with patch.object(perception,'timbre',return_value=query):
+            r=await self.client.post('/api/similar?lang=ja&limit=2',data=np.zeros(RATE*3,dtype='<f4').tobytes())
+        self.assertEqual(r.status,200);m=await r.json()
+        self.assertEqual([s['speaker'] for s in m['speakers']],['spkB','spkA']);self.assertTrue(m['speakers'][0]['clip'].startswith('spkB-clip'))
+        self.assertLess(m['speakers'][0]['distance'],m['speakers'][1]['distance']);self.assertEqual(m['indexed'],{'clips':6,'speakers':3})
+        r=await self.client.post('/api/similar?lang=ko',data=np.zeros(RATE*3,dtype='<f4').tobytes());self.assertEqual(r.status,404)
+        with patch.object(perception,'timbre',side_effect=ValueError('2秒以上の音声を選んでください。')):
+            r=await self.client.post('/api/similar?lang=ja',data=np.zeros(RATE,dtype='<f4').tobytes());self.assertEqual(r.status,422)
+
+    def test_index_loader_rejects_another_version(self):
+        path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz';raw=dict(np.load(path));raw['version']='other'
+        np.savez(path,**raw);self.assertIsNone(load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION))
+
