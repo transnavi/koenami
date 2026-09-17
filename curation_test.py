@@ -90,8 +90,8 @@ class ReviewLogTests(unittest.TestCase):
                                                                                   PRIVATE_LOG=Path(folder) / 'own/r.jsonl', PRIVATE_PAIRS=Path(folder) / 'own/p.jsonl'):
             append({'speaker': 'own-abc', 'clip': 'own-abc', 'ratings': {'femininity': 4}}, curation.LOG)
             append({'speaker': 'x', 'clip': 'cv1', 'ratings': {'femininity': 2}}, curation.LOG)
-            append_pair({'a': 'own-abc', 'b': 'cv1', 'answers': {'femininity': 'a'}}, curation.PAIRS)
-            append_pair({'a': 'cv2', 'b': 'cv1', 'answers': {'femininity': 'b'}}, curation.PAIRS)
+            append_pair({'a': 'own-abc', 'b': 'cv1', 'answers': {'femininity': 'a'}, 'space': 'acoustic-five'}, curation.PAIRS)
+            append_pair({'a': 'cv2', 'b': 'cv1', 'answers': {'femininity': 'b'}, 'space': 'acoustic-five'}, curation.PAIRS)
             self.assertEqual([r['clip'] for r in curation._lines(curation.LOG)], ['cv1']); self.assertEqual([r['clip'] for r in curation._lines(curation.PRIVATE_LOG)], ['own-abc'])
             self.assertEqual(len(curation.load()), 2); self.assertEqual(len(curation.load_pairs()), 2)
             self.assertEqual([r['a'] for r in curation._lines(curation.PRIVATE_PAIRS)], ['own-abc'])
@@ -99,7 +99,7 @@ class ReviewLogTests(unittest.TestCase):
     def test_pair_log_validation(self):
         with tempfile.TemporaryDirectory() as folder:
             log = Path(folder) / 'pairs.jsonl'
-            record = append_pair({'a': 'x', 'b': 'y', 'answers': {'femininity': 'a', 'naturalness': None}, 'kind': 'far', 'distance': 3.14159, 'session': 's'}, log)
+            record = append_pair({'a': 'x', 'b': 'y', 'answers': {'femininity': 'a', 'naturalness': None}, 'kind': 'far', 'distance': 3.14159, 'space': 'acoustic-five', 'session': 's'}, log)
             self.assertEqual((record['answers'], record['kind'], record['distance']), ({'femininity': 'a'}, 'far', 3.1416))
             for bad in [{'a': 'x', 'b': 'x', 'answers': {'femininity': 'a'}}, {'a': 'x', 'b': 'y', 'answers': {}}, {'a': 'x', 'b': 'y', 'answers': {'femininity': 'c'}},
                         {'a': 'x', 'b': 'y', 'answers': {'bogus': 'a'}}, {'a': 'x', 'b': 'y', 'answers': {'femininity': 'a'}, 'kind': 'mid'}, 'text']:

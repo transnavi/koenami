@@ -16,6 +16,8 @@ from acoustics import measure, mono16, RATE
 from signals import visualise
 import curation
 import own_voice
+try: import perception
+except ImportError: perception = None  # the public container ships no model runtime
 
 ROOT = Path(__file__).parent
 PUBLIC = os.environ.get('KOENAMI_PUBLIC') == '1'
@@ -53,6 +55,50 @@ def analyze(x):
     return result
 
 
+def indexable(clip):
+    """A reference clip the timbre index covers: plotted, and served from the sample store."""
+    return bool(clip.get('plotted')) and str(clip.get('audio', '')).startswith('/samples/')
+
+
+def load_timbre_index(data, version, known=None):
+    """The timbre vectors build_timbre_index.py wrote for this descriptor version, arranged per language:
+    unit vectors per clip, one centroid per speaker (the mean of the raw vectors, as in the benchmark,
+    normalised once), and the clip rows of each speaker. Rows whose clip the app no longer serves are
+    dropped. None when the file is absent, for another version, or empty."""
+    path = data / f'timbre-index-{version}.npz'
+    if not path.is_file(): return None
+    try:
+        raw = np.load(path, allow_pickle=False)
+        if str(raw['version']) != version:
+            print(f'{path.name} was built for {raw["version"]}, not {version}; rebuild it', flush=True); return None
+        ids, language, speaker, group, synthetic = (raw[k] for k in ['ids', 'language', 'speaker', 'group', 'synthetic'])
+        keep = np.isin(ids, list(known)) if known is not None else np.ones(len(ids), bool)
+        if raw['vectors'].ndim != 2 or len(raw['vectors']) != len(ids) or not keep.any(): raise ValueError('empty or misshapen index')
+        raw_vectors = raw['vectors'][keep].astype('float32'); ids, language, speaker, group, synthetic = ids[keep], language[keep], speaker[keep], group[keep], synthetic[keep]
+    except (KeyError, ValueError, OSError) as error:
+        print(f'{path.name} could not be loaded: {type(error).__name__}: {error}', flush=True); return None
+    vectors = raw_vectors / np.maximum(np.linalg.norm(raw_vectors, axis=1, keepdims=True), 1e-8)
+    index = {}
+    for lang in np.unique(language):
+        rows = np.flatnonzero(language == lang); speakers = sorted(set(speaker[rows].tolist()))
+        by_speaker = {s: rows[speaker[rows] == s] for s in speakers}
+        centroids = np.array([raw_vectors[by_speaker[s]].mean(axis=0) for s in speakers]); centroids /= np.maximum(np.linalg.norm(centroids, axis=1, keepdims=True), 1e-8)
+        index[str(lang)] = {'ids': ids, 'vectors': vectors, 'group': group, 'synthetic': synthetic,
+                            'speakers': speakers, 'centroids': centroids, 'rows': by_speaker, 'clips': len(rows)}
+    return index
+
+
+def rank_similar(index, vector, limit):
+    """Speakers nearest to a timbre vector by cosine distance to their centroid, each with its nearest clip."""
+    v = vector / max(float(np.linalg.norm(vector)), 1e-8)
+    order = np.argsort(1 - index['centroids'] @ v)[:limit]; out = []
+    for i in order:
+        speaker = index['speakers'][i]; rows = index['rows'][speaker]; clip_distance = 1 - index['vectors'][rows] @ v; j = int(np.argmin(clip_distance)); row = rows[j]
+        out.append({'speaker': speaker, 'group': str(index['group'][row]), 'synthetic': bool(index['synthetic'][row]),
+                    'distance': round(float(1 - index['centroids'][i] @ v), 4), 'clip': str(index['ids'][row]), 'clip_distance': round(float(clip_distance[j]), 4)})
+    return out
+
+
 def create_app():
     libraries = {}
     for lang in LANGUAGES:
@@ -71,6 +117,11 @@ def create_app():
     clips.update({c['id']: c for c in own_clips})
     gate, asr_gate = asyncio.Semaphore(1), asyncio.Semaphore(1)
     neural_gate = asyncio.Semaphore(1)
+    # Reference ranking needs an index built for this descriptor version and a prepared WavLM graph that
+    # carries the timbre output; the graph is opened here so the first request does not pay for it.
+    timbre_index = load_timbre_index(DATA, perception.TIMBRE_VERSION, known={i for i, c in clips.items() if indexable(c)}) if perception else None
+    if timbre_index and not perception.timbre_ready():
+        print('Reference ranking is off: the prepared WavLM graph lacks the timbre output; run prepare_voice_models.py', flush=True); timbre_index = None
     cache = OrderedDict()
     pcm_cache = OrderedDict()
 
@@ -84,7 +135,7 @@ def create_app():
         response = await handler(request)
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['Cache-Control'] = 'no-store'
-        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self'; frame-ancestors 'none'"
+        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self'; frame-ancestors 'none'"
         return response
 
     def respond(value, **kwargs):
@@ -161,6 +212,24 @@ def create_app():
             try: return respond(await asyncio.to_thread(perception.age, x))
             except ValueError as error: raise web.HTTPUnprocessableEntity(text=message(request, str(error)) if str(error) in MESSAGES else str(error))
 
+    async def similar(request):
+        """Reference speakers whose voices sit closest to the recording, by the layer-3 timbre descriptor."""
+        lang = request.query.get('lang', 'ja')
+        if not timbre_index or lang not in timbre_index: raise web.HTTPNotFound(text='この言語の参照声のインデックスがありません。')
+        try: limit = max(1, min(int(request.query.get('limit', '12')), 50))
+        except (ValueError, TypeError): raise web.HTTPBadRequest(text='limit must be a number.')
+        if PUBLIC and neural_gate.locked(): raise web.HTTPServiceUnavailable(text='解析が混み合っています。少し待ってからお試しください。', headers={'Retry-After': '2'})
+        x = await read_audio(request)
+        async with neural_gate:
+            try: vector = await asyncio.to_thread(perception.timbre, x)
+            except ValueError as e: raise web.HTTPUnprocessableEntity(text=str(e))
+            except Exception as error:  # ONNX Runtime raises its own classes, none of them RuntimeError
+                print(f'Timbre inference failed: {type(error).__name__}', flush=True)
+                raise web.HTTPServiceUnavailable(text='声の比較に失敗しました。もう一度お試しください。')
+        index = timbre_index[lang]
+        return respond({'version': perception.TIMBRE_VERSION, 'language': lang, 'speakers': rank_similar(index, vector, limit),
+                        'indexed': {'clips': index['clips'], 'speakers': len(index['speakers'])}})
+
     async def detail(request):
         name = request.match_info['name']
         start, end = request.query.get('start'), request.query.get('end')
@@ -199,7 +268,7 @@ def create_app():
                 raise web.HTTPServiceUnavailable(text='Word timing is unavailable. Select a range on the waveform.')
 
     async def catalog(request):
-        return respond({'capabilities': {'words': not PUBLIC, 'maxSeconds': LIMIT, 'review': not PUBLIC}, 'languages': [dict(id=k, label=v,
+        return respond({'capabilities': {'words': not PUBLIC, 'maxSeconds': LIMIT, 'review': not PUBLIC, 'similar': sorted(timbre_index) if timbre_index else []}, 'languages': [dict(id=k, label=v,
             clips=sum(not s.get('synthetic') for s in libraries[k]['clips']),
             speakers=len({s['speaker'] for s in libraries[k]['clips'] if not s.get('synthetic')}),
             synthetic=sum(bool(s.get('synthetic')) for s in libraries[k]['clips']))
@@ -311,44 +380,105 @@ def create_app():
                 out.append({'scale': key, 'end': end, 'value': r['ratings'][key], 'clip': r['clip'], 'audio': clips[r['clip']]['audio'], 'display': clips[r['clip']].get('display_label')})
         return out
 
-    def pair_queue(lang, session=''):
-        """Pairs of plotted human clips: mostly near neighbours in the standardized five-feature space, some far ones."""
+    async def own_timbre_vectors():
+        """Timbre vectors of the listener's own takes, cached beside the measurements under the descriptor version.
+        Missing ones are computed off the loop under the neural gate; only successes are kept, so a take that
+        failed once is tried again next time."""
+        if not timbre_index or not own_clips: return {}
+        cache_path = DATA / 'own' / f'timbre-{perception.TIMBRE_VERSION}.json'
+        cache = json.loads(cache_path.read_text()) if cache_path.exists() else {}
+        missing = [c for c in own_clips if c.get('plotted') and c['id'] not in cache]
+        if missing:
+            async with neural_gate:
+                for c in missing:
+                    try:
+                        audio, rate = sf.read(own_paths[Path(c['audio']).name], dtype='float32')
+                        vector = await asyncio.to_thread(perception.timbre, mono16(audio, rate).astype('float32'))
+                        cache[c['id']] = [round(float(v), 5) for v in vector]
+                    except Exception as error: print(f'Own take {c["id"]} not embedded: {type(error).__name__}', flush=True)
+            cache_path.write_text(json.dumps(cache))
+        return {k: np.array(v, 'float32') for k, v in cache.items()}
+
+    def pair_queue(lang, session='', own_vectors=None):
+        """Pairs of plotted human clips for listening judgements: mostly near neighbours, some far ones, a few
+        same-speaker pairs, and repeats of judged pairs for test–retest. Distances come from the timbre index
+        when it is loaded (the space the app ranks references by), else from the standardized five features."""
         keys = ['f0', 'delta_f', 'hnr', 'balance', 'pitch_span']
-        pool = [c for c in libraries[lang]['clips'] if c.get('plotted') and not c.get('synthetic') and c.get('features')
-                and all(isinstance(c['features'].get(k), (int, float)) for k in keys) and c['features']['f0'] > 0]
+        def measured(c): return c.get('features') and all(isinstance(c['features'].get(k), (int, float)) for k in keys) and c['features']['f0'] > 0
+        index = timbre_index.get(lang) if timbre_index else None
+        human = [c for c in libraries[lang]['clips'] if c.get('plotted') and not c.get('synthetic')]
+        if index:
+            position = {str(i): n for n, i in enumerate(index['ids'])}
+            pool = [c for c in human if c['id'] in position]; X = index['vectors'][[position[c['id']] for c in pool]]
+            space = f'timbre:{perception.TIMBRE_VERSION}'
+            def unit(v): return v / max(float(np.linalg.norm(v)), 1e-8)
+            def dist(v): return 1 - X @ unit(v)
+            def between(u, v): return float(1 - unit(u) @ unit(v))
+            def own_vector(c): return (own_vectors or {}).get(c['id'])
+        else:
+            pool = [c for c in human if measured(c)]
+            if len(pool) < 8: return []
+            X = np.array([[12 * np.log2(c['features']['f0'])] + [c['features'][k] for k in keys[1:]] for c in pool], float)
+            mean, std = X.mean(0), X.std(0) + 1e-9; X = (X - mean) / std; space = 'acoustic-five'
+            def dist(v): return np.sqrt(((X - v) ** 2).sum(1))
+            def between(u, v): return float(np.sqrt(((u - v) ** 2).sum()))
+            def own_vector(c): return (np.array([12 * np.log2(c['features']['f0'])] + [c['features'][k] for k in keys[1:]], float) - mean) / std if measured(c) else None
         if len(pool) < 8: return []
-        X = np.array([[12 * np.log2(c['features']['f0'])] + [c['features'][k] for k in keys[1:]] for c in pool], float)
-        judged = {frozenset((r['a'], r['b'])) for r in curation.load_pairs()}
+        judged = {}
+        for r in curation.load_pairs(): judged.setdefault(frozenset((r['a'], r['b'])), []).append(r)
         rng = random.Random(session or 'koenami')
         order = list(range(len(pool))); rng.shuffle(order)
         pairs, used = [], set()
         def item(c): return dict(id=c['id'], display='自分' if c.get('private') else c.get('display_label'), text=c.get('text') or ('（自分の録音）' if c.get('private') else ''),
                                  audio=c['audio'], duration=c.get('duration'), speaker=c['speaker'])
-        def vector(c): return (np.array([12 * np.log2(c['features']['f0'])] + [c['features'][k] for k in keys[1:]], float) - mean) / std
-        mean, std = X.mean(0), X.std(0) + 1e-9; X = (X - mean) / std
-        # Own takes with usable measurements: each becomes one side of a pair against a near library neighbour.
+        def add(a, b, kind, distance):
+            if rng.random() < .5: a, b = b, a
+            pairs.append({'a': item(a), 'b': item(b), 'kind': kind, 'distance': round(float(distance), 4), 'space': space})
+        # Repeats: judged pairs from earlier sessions asked again once, oldest first, in their original order so a
+        # changed answer is a changed judgement rather than a position effect. They keep the space they were drawn in.
+        candidates = [rs[0] for key, rs in judged.items() if len(rs) == 1 and all(i in clips for i in key)
+                      and rs[0].get('language', 'ja') == lang and (not session or rs[0].get('session') != session)]
+        for r in candidates[:6]:
+            pairs.append({'a': item(clips[r['a']]), 'b': item(clips[r['b']]), 'kind': 'repeat', 'distance': r.get('distance'), 'space': r.get('space') or 'acoustic-five'})
+        # Own takes: each against a near library neighbour, and consecutive own takes against each other.
         own = [c for c in own_clips if lang == 'ja' and c.get('plotted')]
         rng.shuffle(own)
         for c in own:
-            if len(pairs) >= 15: break
-            d = np.sqrt(((X - vector(c)) ** 2).sum(1))
-            candidates = [j for j in np.argsort(d) if frozenset((c['id'], pool[j]['id'])) not in judged][:5]
-            if not candidates: continue
-            j = rng.choice(candidates); used.add(j)
-            a, b = (c, pool[j]) if rng.random() < .5 else (pool[j], c)
-            pairs.append({'a': item(a), 'b': item(b), 'kind': 'near', 'distance': round(float(d[j]), 4), 'own': True})
+            if len(pairs) >= 21: break
+            v = own_vector(c)
+            if v is None: continue
+            d = dist(v); near = [j for j in np.argsort(d) if frozenset((c['id'], pool[j]['id'])) not in judged][:5]
+            if not near: continue
+            j = rng.choice(near); used.add(j); add(c, pool[j], 'near', d[j])
+        own_pairs = 0
+        for a, b in zip(own, own[1:]):
+            if own_pairs >= 4: break
+            va, vb = own_vector(a), own_vector(b)
+            if va is None or vb is None or frozenset((a['id'], b['id'])) in judged: continue
+            add(a, b, 'same-speaker', between(va, vb)); own_pairs += 1
+        # Same speaker, the two library clips farthest apart in the space: always that speaker's most extreme
+        # takes, a proxy for a deliberate change of delivery.
+        by_speaker = {}
+        for i, c in enumerate(pool): by_speaker.setdefault(c['speaker'], []).append(i)
+        speakers = [s_ for s_, rows in by_speaker.items() if len(rows) >= 2]; rng.shuffle(speakers); library_pairs = 0
+        for s_ in speakers:
+            if library_pairs >= 6: break
+            rows = by_speaker[s_]; block = X[rows]
+            D = 1 - block @ block.T if index else np.sqrt(((block[:, None, :] - block[None, :, :]) ** 2).sum(-1))
+            for flat in np.argsort(D, axis=None)[::-1]:
+                a, b = divmod(int(flat), len(rows))
+                if a == b: continue
+                if frozenset((pool[rows[a]]['id'], pool[rows[b]]['id'])) in judged: continue
+                used.update((rows[a], rows[b])); add(pool[rows[a]], pool[rows[b]], 'same-speaker', D[a, b]); library_pairs += 1; break
         for i in order:
             if len(pairs) >= 60: break
-            d = np.sqrt(((X - X[i]) ** 2).sum(1))
+            d = dist(X[i])
             others = [j for j in np.argsort(d) if pool[j]['speaker'] != pool[i]['speaker'] and j not in used]
             if len(others) < 10: continue
             far = len(pairs) % 4 == 3
             j = rng.choice(others[len(others) // 2:]) if far else rng.choice(others[:5])
-            key = frozenset((pool[i]['id'], pool[j]['id']))
-            if key in judged or i in used: continue
-            used.update((i, j))
-            a, b = (pool[i], pool[j]) if rng.random() < .5 else (pool[j], pool[i])
-            pairs.append({'a': item(a), 'b': item(b), 'kind': 'far' if far else 'near', 'distance': round(float(d[j]), 4)})
+            if frozenset((pool[i]['id'], pool[j]['id'])) in judged or i in used: continue
+            used.update((i, j)); add(pool[i], pool[j], 'far' if far else 'near', d[j])
         rng.shuffle(pairs)
         return pairs
 
@@ -361,8 +491,9 @@ def create_app():
         if PUBLIC: raise web.HTTPNotFound()
         lang, session = request.query.get('lang', 'ja'), request.query.get('session', '')[:40]
         if lang not in libraries: raise web.HTTPNotFound()
+        own_vectors = await own_timbre_vectors()
         return respond({'language': lang, 'questions': curation.PAIR_QUESTIONS, 'rubric': curation.PAIR_RUBRIC, 'judged': len(curation.load_pairs()),
-                        'queue': pair_queue(lang, session), 'log': [dict(r, labels=[label(r['a']), label(r['b'])]) for r in curation.load_pairs()[-50:]]})
+                        'queue': pair_queue(lang, session, own_vectors), 'log': [dict(r, labels=[label(r['a']), label(r['b'])]) for r in curation.load_pairs()[-50:]]})
 
     async def pairs_post(request):
         if PUBLIC: raise web.HTTPNotFound()
@@ -401,6 +532,7 @@ def create_app():
     app.router.add_get('/api/health', health)
     app.router.add_post('/api/analyze', measurement)
     app.router.add_post('/api/age', age)
+    app.router.add_post('/api/similar', similar)
     app.router.add_get('/api/catalog', catalog)
     app.router.add_get('/api/library', metadata)
     app.router.add_get('/api/detail/{name}', detail)

@@ -19,12 +19,16 @@ const config = {
 		prerender: { entries: ['*'], crawl: false },
 		// The headers prepare_public.py writes for the static site today; Kit nonces its own
 		// bootstrap and the theme script. Cloudflare Web Analytics injects its beacon at the
-		// edge, so its script and endpoint are admitted.
+		// edge, so its script and endpoint are admitted. 'wasm-unsafe-eval' lets the
+		// measurement worker compile its module: the narrow permission for WebAssembly,
+		// which does not admit eval or inline script. 'wasm-unsafe-eval' lets the
+		// measurement worker compile its module: the narrow permission for WebAssembly,
+		// which does not admit eval or inline script.
 		csp: {
 			mode: 'auto',
 			directives: {
 				'default-src': ['self'],
-				'script-src': ['self', 'https://static.cloudflareinsights.com'],
+				'script-src': ['self', 'wasm-unsafe-eval', 'https://static.cloudflareinsights.com'],
 				'worker-src': ['self'],
 				'style-src': ['self', 'unsafe-inline'],
 				'img-src': ['self', 'data:', 'blob:'],

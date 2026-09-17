@@ -1,5 +1,7 @@
 import base64
 import asyncio
+import tempfile
+from unittest.mock import patch
 import hashlib
 import json
 import unittest
@@ -8,7 +10,11 @@ import numpy as np
 import soundfile as sf
 from aiohttp.test_utils import TestClient, TestServer
 from acoustics import measure, RATE
-from server import create_app
+from server import create_app, load_timbre_index
+import server
+import perception
+import build_timbre_index
+import curation
 from signals import visualise
 
 ROOT=Path(__file__).parent
@@ -153,12 +159,24 @@ class EngineTests(unittest.TestCase):
             self.assertNotIn('quiet_intervals',saved['data/baseline.wav'])
 
 class CollectionTests(unittest.TestCase):
+    def test_every_library_carries_the_current_engine_version(self):
+        """A library measured by an older engine has to be rebuilt."""
+        import engine
+        if not engine.BINARY.exists():self.skipTest('build measure/ first (cargo build --release)')
+        for name in ['native-ja','common-voice-ja','synthetic','voicevox','research-demos','libraries/en','libraries/ko','libraries/zh-CN']:
+            path=ROOT/f'data/{name}.json'
+            if not path.exists():continue
+            with self.subTest(library=name):
+                self.assertEqual(json.loads(path.read_text())['version'],engine.version(),f'rebuild {name}: run its build_*.py')
+
     def test_all_collected_audio_decodes_and_matches_manifest(self):
         library=json.loads((ROOT/'data/native-ja.json').read_text());clips=library['clips']
-        self.assertEqual(library['version'],'4.0.0')
         self.assertGreater(len(clips),6500)
         self.assertEqual(len({p['id'] for p in clips}),len(clips))
-        self.assertGreater(len({p['speaker'] for p in clips}),550)
+        # 100 JVS speakers and every Common Voice speaker the listening
+        # reviews still admit — 448 of them as of batch 8, and falling as
+        # reviews exclude more.
+        self.assertGreater(len({p['speaker'] for p in clips}),500)
         self.assertGreaterEqual(sum(p['plotted'] for p in clips),2900)
         self.assertTrue(all(p.get('native') for p in clips if p.get('dataset')=='JVS'))
         self.assertGreater(sum(p.get('dataset')=='Common Voice' for p in clips),1500)
@@ -243,5 +261,171 @@ class APITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(r.status,206);self.assertEqual(len(await r.read()),512)
         self.assertIn('audio/',r.headers['Content-Type']);self.assertIn("frame-ancestors 'none'",r.headers['Content-Security-Policy'])
         r=await self.client.get('/data/library-measurements.json');self.assertEqual(r.status,404)
+
+class IndexFixture:
+    """A synthetic timbre index with minimal libraries in a temp data dir; the timbre model itself is patched out."""
+    async def asyncSetUp(self):
+        self.tmp=tempfile.TemporaryDirectory();self.fake_index()
+        self.patches=[patch.object(server,'DATA',Path(self.tmp.name)),patch.object(perception,'timbre_ready',return_value=True)]
+        for p in self.patches:p.start()
+        self.client=TestClient(TestServer(create_app()));await self.client.start_server()
+
+    async def asyncTearDown(self):
+        await self.client.close()
+        for p in self.patches:p.stop()
+        self.tmp.cleanup()
+
+
+class SimilarTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
+    """Reference ranking over a small synthetic index."""
+    def fake_index(self):
+        rng=np.random.default_rng(2);base=rng.normal(size=(4,768))
+        ids,lang,spk,grp,syn,vec=[],[],[],[],[],[]
+        for k,(speaker,group,language) in enumerate([('spkA','female','ja'),('spkB','female','ja'),('spkC','male','ja'),('spkD','female','en')]):
+            for c in range(2):ids.append(f'{speaker}-clip{c}');lang.append(language);spk.append(speaker);grp.append(group);syn.append(False);vec.append((base[k]+rng.normal(scale=.05,size=768))*(10 if (speaker,c)==('spkC',1) else 1))  # spkC's clips differ tenfold in norm
+        path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz'
+        np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(ids),language=np.array(lang),speaker=np.array(spk),group=np.array(grp),synthetic=np.array(syn),vectors=np.array(vec,'float16'))
+        # The app only serves index rows whose clips its libraries know, so give it minimal libraries.
+        (Path(self.tmp.name)/'libraries').mkdir()
+        for language,name in [('ja','native-ja.json'),('en','libraries/en.json')]:
+            clips=[{'id':i,'audio':f'/samples/{i}.flac','speaker':s,'group':g,'plotted':True,'language':language} for i,s,g,l in zip(ids,spk,grp,lang) if l==language]
+            (Path(self.tmp.name)/name).write_text(json.dumps({'version':'test','clips':clips}))
+        self.base=base;return path
+
+    async def test_similar_ranks_speakers_by_centroid_and_names_the_nearest_clip(self):
+        r=await self.client.get('/api/catalog');self.assertEqual((await r.json())['capabilities']['similar'],['en','ja'])
+        query=(self.base[1]+.5*self.base[0]).astype('float32')  # closest to spkB, then spkA
+        with patch.object(perception,'timbre',return_value=query):
+            r=await self.client.post('/api/similar?lang=ja&limit=2',data=np.zeros(RATE*3,dtype='<f4').tobytes())
+        self.assertEqual(r.status,200);m=await r.json()
+        self.assertEqual([s['speaker'] for s in m['speakers']],['spkB','spkA']);self.assertTrue(m['speakers'][0]['clip'].startswith('spkB-clip'))
+        self.assertLess(m['speakers'][0]['distance'],m['speakers'][1]['distance']);self.assertEqual(m['indexed'],{'clips':6,'speakers':3})
+        r=await self.client.post('/api/similar?lang=ko',data=np.zeros(RATE*3,dtype='<f4').tobytes());self.assertEqual(r.status,404)
+        r=await self.client.post('/api/similar?lang=ja&limit=abc',data=np.zeros(RATE*3,dtype='<f4').tobytes());self.assertEqual(r.status,400)
+        with patch.object(perception,'timbre',side_effect=ValueError('2秒以上の音声を選んでください。')):
+            r=await self.client.post('/api/similar?lang=ja',data=np.zeros(RATE,dtype='<f4').tobytes());self.assertEqual(r.status,422)
+
+    def test_index_loader_rejects_another_version_and_drops_unknown_clips(self):
+        path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz'
+        idx=load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION,known={'spkA-clip0','spkA-clip1','spkD-clip0'})
+        self.assertEqual(sorted(idx),['en','ja']);self.assertEqual(idx['ja']['speakers'],['spkA']);self.assertEqual(idx['en']['clips'],1)
+        # The centroid is the normalised mean of the raw vectors, so spkC's tenfold clip dominates it.
+        full=load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION);rows=full['ja']['rows']['spkC'];raw=np.load(path)['vectors'].astype('float32')
+        expected=raw[rows].mean(axis=0);expected/=np.linalg.norm(expected)
+        self.assertTrue(np.allclose(full['ja']['centroids'][full['ja']['speakers'].index('spkC')],expected,atol=1e-5))
+        raw=dict(np.load(path));raw['version']='other';np.savez(path,**raw)
+        self.assertIsNone(load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION))
+        np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(['x']),vectors=np.zeros((2,768),'float16'))  # misshapen: no crash, no index
+        self.assertIsNone(load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION))
+
+    async def test_similar_is_off_without_the_timbre_output_and_503_on_inference_failure(self):
+        await self.client.close()
+        with patch.object(perception,'timbre_ready',return_value=False):
+            client=TestClient(TestServer(create_app()));await client.start_server()
+            r=await client.get('/api/catalog');self.assertEqual((await r.json())['capabilities']['similar'],[])
+            r=await client.post('/api/similar?lang=ja',data=np.zeros(RATE*3,dtype='<f4').tobytes());self.assertEqual(r.status,404);await client.close()
+        self.client=TestClient(TestServer(create_app()));await self.client.start_server()
+        class Boom(Exception):pass
+        with patch.object(perception,'timbre',side_effect=Boom('onnx')):
+            r=await self.client.post('/api/similar?lang=ja',data=np.zeros(RATE*3,dtype='<f4').tobytes());self.assertEqual(r.status,503)
+
+    def test_index_build_resumes_and_skips_unreadable_clips(self):
+        data=Path(self.tmp.name)/'build';(data/'samples').mkdir(parents=True)
+        tone=(.3*np.sin(np.arange(RATE*3)*.1)).astype('float32')
+        sf.write(data/'samples'/'a.flac',tone,RATE);sf.write(data/'samples'/'b.flac',tone,RATE);(data/'samples'/'c.flac').write_bytes(b'not audio')
+        lib={'clips':[{'id':'a','audio':'/samples/a.flac','speaker':'s1','group':'female','plotted':True,'language':'ja'},
+                      {'id':'b','audio':'/samples/b.flac','speaker':'s2','group':'male','plotted':True,'language':'ja'},
+                      {'id':'c','audio':'/samples/c.flac','speaker':'s3','group':'male','plotted':True,'language':'ja'},
+                      {'id':'d','audio':'/samples/a.flac','speaker':'s4','group':'male','plotted':False,'language':'ja'}]}
+        (data/'native-ja.json').write_text(json.dumps(lib));out=data/'index.npz';calls=[]
+        def fake_timbre(x):calls.append(len(x));return np.full(768,len(calls),np.float32)
+        with patch.object(build_timbre_index,'DATA',data),patch.object(perception,'timbre',side_effect=fake_timbre),patch.object(perception,'timbre_ready',return_value=True):
+            rows,skipped=build_timbre_index.main(out=out,checkpoint=1)
+            self.assertEqual([r['id'] for r in rows],['a','b']);self.assertEqual([s[0] for s in skipped],['c'])  # d is not plotted, c is unreadable
+            first=np.load(out)['vectors'].copy()
+            lib['clips'].append({'id':'e','audio':'/samples/b.flac','speaker':'s5','group':'female','plotted':True,'language':'ja'});(data/'native-ja.json').write_text(json.dumps(lib))
+            rows,_=build_timbre_index.main(out=out,checkpoint=1)
+        self.assertEqual([r['id'] for r in rows],['a','b','e']);self.assertEqual(len(calls),3)  # a and b were kept, only e was encoded
+        self.assertTrue(np.array_equal(np.load(out)['vectors'][:2],first));self.assertFalse(out.with_suffix('.tmp.npz').exists())
+
+
+class PairsTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
+    """The listening-pair queue over a synthetic index and libraries, with judgements logged to a temp file."""
+    def fake_index(self):
+        # Twelve Japanese speakers with three clips each (the same-speaker draw takes one pair per speaker, so near/far
+        # pairs still find partners), plus one English speaker; features for the five-feature fallback.
+        rng=np.random.default_rng(2);speakers=[(f'spk{ch}','female' if i%2==0 else 'male','ja') for i,ch in enumerate('ABCDEFGHIJKL')]+[('spkX','female','en')]
+        base=rng.normal(size=(len(speakers),768));ids,lang,spk,grp,syn,vec=[],[],[],[],[],[]
+        for k,(speaker,group,language) in enumerate(speakers):
+            for c in range(3):ids.append(f'{speaker}-clip{c}');lang.append(language);spk.append(speaker);grp.append(group);syn.append(False);vec.append(base[k]+rng.normal(scale=.05,size=768))
+        path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz'
+        np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(ids),language=np.array(lang),speaker=np.array(spk),group=np.array(grp),synthetic=np.array(syn),vectors=np.array(vec,'float16'))
+        (Path(self.tmp.name)/'libraries').mkdir()
+        for language,name in [('ja','native-ja.json'),('en','libraries/en.json')]:
+            clips=[{'id':i,'audio':f'/samples/{i}.flac','speaker':s,'group':g,'plotted':True,'language':language,
+                    'features':{'f0':float(rng.uniform(120,260)),'delta_f':float(rng.uniform(900,1100)),'hnr':float(rng.uniform(8,16)),'balance':float(rng.uniform(-30,-10)),'pitch_span':float(rng.uniform(2,8))}}
+                   for i,s,g,l in zip(ids,spk,grp,lang) if l==language]
+            (Path(self.tmp.name)/name).write_text(json.dumps({'version':'test','clips':clips}))
+        self.base=base;self.speakers=[sp for sp,_,_ in speakers];self.pairs_log=Path(self.tmp.name)/'pairs.jsonl';return path
+
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
+        self.log_patches=[patch.object(curation,'PAIRS',self.pairs_log),patch.object(curation,'PRIVATE_PAIRS',Path(self.tmp.name)/'private-pairs.jsonl')]
+        for p in self.log_patches:p.start()
+
+    async def asyncTearDown(self):
+        for p in self.log_patches:p.stop()
+        await super().asyncTearDown()
+
+    async def queue(self,client=None,**query):
+        r=await (client or self.client).get('/api/pairs?'+'&'.join(f'{k}={v}' for k,v in {'lang':'ja','session':'t',**query}.items()));self.assertEqual(r.status,200);return (await r.json())['queue']
+
+    async def test_queue_draws_in_the_timbre_space_with_same_speaker_pairs_and_repeats(self):
+        judged=[{'a':'spkA-clip0','b':'spkB-clip0','language':'ja','answers':{'femininity':'a'},'kind':'near','distance':.12,'space':'acoustic-five','session':'earlier'},
+                {'a':'spkC-clip0','b':'spkD-clip0','language':'ja','answers':{'femininity':'b'},'kind':'near','distance':.2,'space':'acoustic-five','session':'t'}]
+        with patch.object(curation,'load_pairs',return_value=judged):q=await self.queue()
+        kinds={p['kind'] for p in q};self.assertTrue({'near','far','same-speaker','repeat'}<=kinds,kinds)
+        repeats=[p for p in q if p['kind']=='repeat'];self.assertEqual([(p['a']['id'],p['b']['id'],p['space']) for p in repeats],[('spkA-clip0','spkB-clip0','acoustic-five')])  # the current session's pair is not re-asked
+        unit=self.base/np.linalg.norm(self.base,axis=1,keepdims=True);cosine=1-unit@unit.T
+        for p in q:
+            self.assertNotEqual(p['a']['id'],p['b']['id'])
+            if p['kind']=='repeat':continue
+            self.assertEqual(p['space'],'timbre:'+perception.TIMBRE_VERSION);self.assertNotIn({p['a']['id'],p['b']['id']},[{'spkA-clip0','spkB-clip0'},{'spkC-clip0','spkD-clip0'}])
+            if p['kind']=='same-speaker':self.assertEqual(p['a']['speaker'],p['b']['speaker'])
+            else:
+                self.assertNotEqual(p['a']['speaker'],p['b']['speaker'])
+                if p['kind']=='near':  # a near partner is among the query speaker's five nearest speakers by base cosine
+                    i,j=self.speakers.index(p['a']['speaker']),self.speakers.index(p['b']['speaker']);self.assertLessEqual(min(np.argsort(cosine[i]).tolist().index(j),np.argsort(cosine[j]).tolist().index(i)),5)
+        near=[p['distance'] for p in q if p['kind']=='near'];far=[p['distance'] for p in q if p['kind']=='far']
+        self.assertLess(np.median(near),np.median(far))
+
+    async def test_own_takes_join_the_queue_and_their_judgements_stay_private(self):
+        own=Path(self.tmp.name)/'own';own.mkdir();x,r=sf.read(ROOT/'data/original-excerpt.wav',dtype='float32')  # real speech: a tone has no formants and would not be plotted
+        for name,start in [('take1.wav',0),('take2.wav',r*3)]:sf.write(own/name,x[start:start+r*3],r)
+        await self.client.close()
+        with patch.object(perception,'timbre',return_value=(self.base[0]*.9+self.base[1]*.1).astype('float32')):
+            self.client=TestClient(TestServer(create_app()));await self.client.start_server();q=await self.queue()
+        own_ids={p['a']['id'] for p in q if p['a']['id'].startswith('own-')}|{p['b']['id'] for p in q if p['b']['id'].startswith('own-')};self.assertEqual(len(own_ids),2)
+        self.assertTrue(any(p['kind']=='same-speaker' and p['a']['id'].startswith('own-') and p['b']['id'].startswith('own-') for p in q))
+        self.assertTrue(any(p['kind']=='near' and (p['a']['id'].startswith('own-')!=p['b']['id'].startswith('own-')) for p in q))
+        cache=json.loads((own/f'timbre-{perception.TIMBRE_VERSION}.json').read_text());self.assertEqual(len(cache),2)  # vectors cached on disk
+        own_pair=next(p for p in q if p['kind']=='same-speaker' and p['a']['id'].startswith('own-'))
+        r=await self.client.post('/api/pairs',json={'a':own_pair['a']['id'],'b':own_pair['b']['id'],'language':'ja','answers':{'naturalness':'a'},'kind':'same-speaker','distance':own_pair['distance'],'space':own_pair['space'],'session':'t'})
+        self.assertEqual(r.status,200);self.assertFalse(self.pairs_log.exists());self.assertEqual(len((Path(self.tmp.name)/'private-pairs.jsonl').read_text().splitlines()),1)
+
+    async def test_queue_falls_back_to_the_five_features_without_an_index(self):
+        await self.client.close()
+        with patch.object(server,'load_timbre_index',return_value=None):
+            self.client=TestClient(TestServer(create_app()));await self.client.start_server();q=await self.queue()
+        self.assertTrue(q);self.assertTrue(all(p['space']=='acoustic-five' for p in q));self.assertTrue({'near','far','same-speaker'}<={p['kind'] for p in q})
+
+    async def test_judgements_record_kind_and_space(self):
+        body={'a':'spkA-clip0','b':'spkA-clip1','language':'ja','answers':{'naturalness':'same'},'kind':'same-speaker','distance':.2,'space':'timbre:'+perception.TIMBRE_VERSION,'session':'t'}
+        r=await self.client.post('/api/pairs',json=body);self.assertEqual(r.status,200);saved=await r.json()
+        self.assertEqual((saved['kind'],saved['space']),('same-speaker','timbre:'+perception.TIMBRE_VERSION))
+        r=await self.client.post('/api/pairs',json=dict(body,kind='sideways'));self.assertEqual(r.status,422)
+        r=await self.client.post('/api/pairs',json={k:v for k,v in body.items() if k!='space'});self.assertEqual(r.status,422)  # the space is never guessed on write
+        self.assertEqual(len(self.pairs_log.read_text().splitlines()),1)
+
 
 if __name__=='__main__':unittest.main(verbosity=2)
