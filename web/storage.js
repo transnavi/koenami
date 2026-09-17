@@ -24,7 +24,7 @@ export const TakeStore={
   const quality=Object.fromEntries(['voiced_seconds','formant_seconds','clipping_fraction','resonance_sensitivity_pct'].map(k=>[k,detail[k]]));
   return {snapshot:{...snapshot,detail,measurement:snapshot.range?snapshot.measurement:detail},metadata:{...metadata,features:detail.features,duration:detail.duration,quality}};
  });},
- updateRecording(id,change){return this.recordingTransaction(id,change);},
+ updateRecording(id,change){return this.recordingTransaction(id,(snapshot,metadata)=>snapshot?change(snapshot,metadata):null);},
  recordingTransaction(id,change){
   const operation=this.queue.catch(()=>{}).then(async()=>{
    const db=await this.open();return new Promise((resolve,reject)=>{
