@@ -11,7 +11,7 @@ Everything the tutorial and the method page say should trace back to a note here
 - `glossary.md` — terms in English, Japanese, Chinese, Korean, Spanish and other languages as the sources use them, each pointing at its concept note; community jargon is marked as such and attributed.
 - `wikipedia:` in a concept's frontmatter names the English Wikipedia article(s) that cover it; `node scripts/kb-wiki.mjs` fills the `## Wikipedia` block below the note with the article's first sentence and the interlanguage links Wikipedia holds (Japanese, Chinese, Korean, Spanish and a dozen more). Wikipedia is a `community`-grade source: it orients the reader, and the sourced statements come from the notes.
 - Grades: `evidence: high | medium | low | community` in source frontmatter — high for meta-analyses and reviews, medium for controlled studies, low for theses, single-speaker or unvalidated work, community for practice guides and forums. A grade describes the source, never the claim's importance.
-- `node scripts/kb-check.mjs` validates frontmatter, wikilinks and aliases; run it before committing.
+- `node scripts/kb-check.mjs` validates frontmatter, wikilinks and aliases; `node scripts/kb-index.mjs` regenerates the lists below the marker in `index.md` (tutorials, concepts, tools, communities, sources by grade and by language) from the notes' frontmatter. Run both before committing.
 - Every source is verified before it is cited: `verified:` names the check (`doi.org content negotiation`, `pubmed abstract`, `openalex`, `page fetched <date>`). If a work could not be verified it does not get a note.
 - Japanese and Chinese sources keep their titles in the original script; add a romanised or translated title in `title_en`.
 
