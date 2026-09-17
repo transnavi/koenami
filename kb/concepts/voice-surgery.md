@@ -1,0 +1,27 @@
+---
+type: concept
+title: "Voice surgery: glottoplasty, cricothyroid approximation, thyroplasty"
+aliases: ["glottoplasty", "cricothyroid-approximation", "wendler-glottoplasty", "type-iv-thyroplasty", "声帯短縮術", "甲状軟骨形成術"]
+---
+
+# Voice surgery: glottoplasty, cricothyroid approximation, thyroplasty
+
+Procedures that raise pitch by shortening the vibrating folds (Wendler glottoplasty, vocal-fold shortening with anterior commissure retrodisplacement), tensing them (cricothyroid approximation, type IV thyroplasty) or reducing their mass (laser reduction). Outcomes are larger F0 gains than training, with trade-offs in roughness and loudness.
+
+## What is known
+- Shortening techniques give the largest F0 increases in meta-analysis [[song2017]]; weighted gains: VFSRAC +73.3 Hz, Wendler +54.1 Hz, CTA +30.3 Hz, LAVA +26 Hz, therapy +39.9 Hz; Wendler + therapy gives the best TWVQ improvement; adverse events (granuloma, fatigue) are commoner with surgical combinations [[chowdhury2025]].
+- Glottoplasty versus CTA (n = 53): glottoplasty +27 Hz more, stable over time, but roughness rose and one severe dysphonia occurred; CTA gains decayed [[mora2018]]; CTA alone leaves voices rated between male and female groups [[vanborsel2008]]; after CTA the intraoperative pitch settles about 112 Hz lower by six months [[maeda2025]].
+- Laser reduction glottoplasty: F0 132→198 Hz, VHI and TVQ improved, but jitter, shimmer and NHR increased and 32% wanted revision [[yilmaz2021]]; simulation shows anterior fixation raises F0 while loudness falls beyond ¼ fixation [[titze2020]].
+- Wendler glottoplasty F0 gains range 20–112 Hz; postoperative therapy and voice rest are stressed [[catani2024]]; Beijing series: F0 152.7→207.7 Hz, TVQMtF 89.9→50.4 [[zhang2023cn]]; Nanjing series (n = 296): +57.4 Hz, 94.3% satisfied [[sun2025]].
+- Japan: type IV thyroplasty has been the dominant procedure, tuned intraoperatively under local anaesthesia; SFF 133.8→237.8 Hz in 32 patients [[nakamura2007]] [[sanuki2007]]; paired with therapy [[kobayashi2022]]; anterior glottoplasty now compared with it, both exceeding 200 Hz [[hiroshiba2024]].
+- Masculinizing surgery is uncommon and thinly evidenced [[kalra2026]].
+- Guidance on indications sits in [[coleman2022]] and [[davies2015]]; Japanese providers are listed on transnavi.jp/voice/.
+
+## Contested or unclear
+- Whether the extra F0 from glottoplasty is worth the roughness risk is a patient decision; the trials are retrospective (level 4) [[mora2018]].
+
+## Open questions
+- Long-term (>4 years) outcomes and Japanese PROM data.
+
+## Related
+[[fundamental-frequency]] · [[voice-feminization-therapy]] · [[patient-reported-outcomes]] · [[vocal-fatigue]]
