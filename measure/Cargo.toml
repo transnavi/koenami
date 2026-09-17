@@ -18,6 +18,8 @@ required-features = ["cli"]
 [features]
 default = ["cli"]
 cli = ["dep:rayon"]
+# The browser build: wasm-bindgen entry points over the same measurement.
+wasm = ["dep:wasm-bindgen"]
 
 [dependencies]
 phx-audio = { git = "https://github.com/mkpoli/phonia", rev = "25a7a5fb16d627c3a21da623364bf7782838094f" }
@@ -29,6 +31,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 base64 = "0.22"
 rayon = { version = "1", optional = true }
+wasm-bindgen = { version = "0.2", optional = true }
 
 [profile.release]
 opt-level = 3
