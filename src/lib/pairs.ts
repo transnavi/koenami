@@ -3,7 +3,7 @@
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const STORAGE = 'koenami-pairs';
 type PairSide = { id: string; text?: string; duration?: number; audio: string; display?: string; speaker?: string };
-type Pair = { a: PairSide; b: PairSide; kind: string; distance: number };
+type Pair = { a: PairSide; b: PairSide; kind: string; distance: number | null; space: string };
 type Draft = { answers: Record<string, string>; note: string; active: number };
 type LogEntry = { a?: string; b?: string; answers?: Record<string, string>; note?: string; labels?: string[] };
 type State = { lang: string; session: string; queue: Pair[]; at: number; questions: Record<string, string>; answers: Record<string, string>; active: number; log: LogEntry[]; judged: number; drafts: Record<string, Draft> };
@@ -71,7 +71,7 @@ export function mountPairs() {
 	async function save() {
 		const p = current(); if (!p || inflight) return;
 		if (!Object.keys(state.answers).length) { $('status').textContent = '少なくとも1問に答えてください'; return; }
-		const body = { a: p.a.id, b: p.b.id, language: state.lang, answers: state.answers, kind: p.kind, distance: p.distance, session: state.session, note: $<HTMLTextAreaElement>('note').value };
+		const body = { a: p.a.id, b: p.b.id, language: state.lang, answers: state.answers, kind: p.kind, distance: p.distance, space: p.space, session: state.session, note: $<HTMLTextAreaElement>('note').value };
 		inflight = true; $<HTMLButtonElement>('save').disabled = true;
 		try { const r = await fetch('/api/pairs', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); if (!r.ok) throw Error(await r.text());
 			state.log.push({ ...(await r.json()), labels: [p.a.display || p.a.speaker, p.b.display || p.b.speaker] }); state.judged++; delete state.drafts[pairKey(p)]; state.at++; show(); }

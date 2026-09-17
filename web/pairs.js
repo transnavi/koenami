@@ -47,7 +47,7 @@ let inflight=false;
 async function save(){
  const p=current();if(!p||inflight)return;
  if(!Object.keys(state.answers).length){$('status').textContent='少なくとも1問に答えてください';return;}
- const body={a:p.a.id,b:p.b.id,language:state.lang,answers:state.answers,kind:p.kind,distance:p.distance,session:state.session,note:$('note').value};
+ const body={a:p.a.id,b:p.b.id,language:state.lang,answers:state.answers,kind:p.kind,distance:p.distance,space:p.space,session:state.session,note:$('note').value};
  inflight=true;$('save').disabled=true;
  try{const r=await fetch('/api/pairs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw Error(await r.text());
   state.log.push({...(await r.json()),labels:[p.a.display||p.a.speaker,p.b.display||p.b.speaker]});state.judged++;delete state.drafts[pairKey(p)];state.at++;show();}
