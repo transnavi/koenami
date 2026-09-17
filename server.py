@@ -32,6 +32,11 @@ def analyze(x):
     return result
 
 
+def indexable(clip):
+    """A reference clip the timbre index covers: plotted, and served from the sample store."""
+    return bool(clip.get('plotted')) and str(clip.get('audio', '')).startswith('/samples/')
+
+
 def load_timbre_index(data, version, known=None):
     """The timbre vectors build_timbre_index.py wrote for this descriptor version, arranged per language:
     unit vectors per clip, one centroid per speaker (the mean of the raw vectors, as in the benchmark,
@@ -39,12 +44,16 @@ def load_timbre_index(data, version, known=None):
     dropped. None when the file is absent, for another version, or empty."""
     path = data / f'timbre-index-{version}.npz'
     if not path.is_file(): return None
-    raw = np.load(path, allow_pickle=False)
-    if str(raw['version']) != version: return None
-    ids, language, speaker, group, synthetic = (raw[k] for k in ['ids', 'language', 'speaker', 'group', 'synthetic'])
-    keep = np.isin(ids, list(known)) if known is not None else np.ones(len(ids), bool)
-    if raw['vectors'].ndim != 2 or not keep.any(): return None
-    raw_vectors = raw['vectors'][keep].astype('float32'); ids, language, speaker, group, synthetic = ids[keep], language[keep], speaker[keep], group[keep], synthetic[keep]
+    try:
+        raw = np.load(path, allow_pickle=False)
+        if str(raw['version']) != version:
+            print(f'{path.name} was built for {raw["version"]}, not {version}; rebuild it', flush=True); return None
+        ids, language, speaker, group, synthetic = (raw[k] for k in ['ids', 'language', 'speaker', 'group', 'synthetic'])
+        keep = np.isin(ids, list(known)) if known is not None else np.ones(len(ids), bool)
+        if raw['vectors'].ndim != 2 or len(raw['vectors']) != len(ids) or not keep.any(): raise ValueError('empty or misshapen index')
+        raw_vectors = raw['vectors'][keep].astype('float32'); ids, language, speaker, group, synthetic = ids[keep], language[keep], speaker[keep], group[keep], synthetic[keep]
+    except (KeyError, ValueError, OSError) as error:
+        print(f'{path.name} could not be loaded: {type(error).__name__}: {error}', flush=True); return None
     vectors = raw_vectors / np.maximum(np.linalg.norm(raw_vectors, axis=1, keepdims=True), 1e-8)
     index = {}
     for lang in np.unique(language):
@@ -85,11 +94,11 @@ def create_app():
     clips.update({c['id']: c for c in own_clips})
     gate, asr_gate = asyncio.Semaphore(1), asyncio.Semaphore(1)
     neural_gate = asyncio.Semaphore(1)
-    # Reference ranking needs a prepared WavLM graph that carries the timbre output, opened here so the
-    # first request does not pay for it, and an index built for the same descriptor version.
-    timbre_index = None
-    if perception and perception.available(['wavlm']) and 'timbre_frames' in [o.name for o in perception.session('wavlm').get_outputs()]:
-        timbre_index = load_timbre_index(DATA, perception.TIMBRE_VERSION, known=clips)
+    # Reference ranking needs an index built for this descriptor version and a prepared WavLM graph that
+    # carries the timbre output; the graph is opened here so the first request does not pay for it.
+    timbre_index = load_timbre_index(DATA, perception.TIMBRE_VERSION, known={i for i, c in clips.items() if indexable(c)}) if perception else None
+    if timbre_index and not perception.timbre_ready():
+        print('Reference ranking is off: the prepared WavLM graph lacks the timbre output; run prepare_voice_models.py', flush=True); timbre_index = None
     cache = OrderedDict()
     pcm_cache = OrderedDict()
 
@@ -191,8 +200,9 @@ def create_app():
         async with neural_gate:
             try: vector = await asyncio.to_thread(perception.timbre, x)
             except ValueError as e: raise web.HTTPUnprocessableEntity(text=str(e))
-            except RuntimeError:
-                logging.exception('timbre inference failed'); raise web.HTTPServiceUnavailable(text='声の比較に失敗しました。もう一度お試しください。')
+            except Exception as error:  # ONNX Runtime raises its own classes, none of them RuntimeError
+                print(f'Timbre inference failed: {type(error).__name__}', flush=True)
+                raise web.HTTPServiceUnavailable(text='声の比較に失敗しました。もう一度お試しください。')
         index = timbre_index[lang]
         return respond({'version': perception.TIMBRE_VERSION, 'language': lang, 'speakers': rank_similar(index, vector, limit),
                         'indexed': {'clips': index['clips'], 'speakers': len(index['speakers'])}})

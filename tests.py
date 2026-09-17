@@ -267,7 +267,7 @@ class SimilarTests(unittest.IsolatedAsyncioTestCase):
         rng=np.random.default_rng(2);base=rng.normal(size=(4,768))
         ids,lang,spk,grp,syn,vec=[],[],[],[],[],[]
         for k,(speaker,group,language) in enumerate([('spkA','female','ja'),('spkB','female','ja'),('spkC','male','ja'),('spkD','female','en')]):
-            for c in range(2):ids.append(f'{speaker}-clip{c}');lang.append(language);spk.append(speaker);grp.append(group);syn.append(False);vec.append(base[k]+rng.normal(scale=.05,size=768))
+            for c in range(2):ids.append(f'{speaker}-clip{c}');lang.append(language);spk.append(speaker);grp.append(group);syn.append(False);vec.append((base[k]+rng.normal(scale=.05,size=768))*(10 if (speaker,c)==('spkC',1) else 1))  # spkC's clips differ tenfold in norm
         path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz'
         np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(ids),language=np.array(lang),speaker=np.array(spk),group=np.array(grp),synthetic=np.array(syn),vectors=np.array(vec,'float16'))
         # The app only serves index rows whose clips its libraries know, so give it minimal libraries.
@@ -279,10 +279,7 @@ class SimilarTests(unittest.IsolatedAsyncioTestCase):
 
     async def asyncSetUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.fake_index()
-        class Output:name='timbre_frames'
-        class Session:
-            def get_outputs(self):return [Output()]
-        self.patches=[patch.object(server,'DATA',Path(self.tmp.name)),patch.object(perception,'available',return_value=True),patch.object(perception,'session',return_value=Session())]
+        self.patches=[patch.object(server,'DATA',Path(self.tmp.name)),patch.object(perception,'timbre_ready',return_value=True)]
         for p in self.patches:p.start()
         self.client=TestClient(TestServer(create_app()));await self.client.start_server()
 
@@ -308,8 +305,25 @@ class SimilarTests(unittest.IsolatedAsyncioTestCase):
         path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz'
         idx=load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION,known={'spkA-clip0','spkA-clip1','spkD-clip0'})
         self.assertEqual(sorted(idx),['en','ja']);self.assertEqual(idx['ja']['speakers'],['spkA']);self.assertEqual(idx['en']['clips'],1)
+        # The centroid is the normalised mean of the raw vectors, so spkC's tenfold clip dominates it.
+        full=load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION);rows=full['ja']['rows']['spkC'];raw=np.load(path)['vectors'].astype('float32')
+        expected=raw[rows].mean(axis=0);expected/=np.linalg.norm(expected)
+        self.assertTrue(np.allclose(full['ja']['centroids'][full['ja']['speakers'].index('spkC')],expected,atol=1e-5))
         raw=dict(np.load(path));raw['version']='other';np.savez(path,**raw)
         self.assertIsNone(load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION))
+        np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(['x']),vectors=np.zeros((2,768),'float16'))  # misshapen: no crash, no index
+        self.assertIsNone(load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION))
+
+    async def test_similar_is_off_without_the_timbre_output_and_503_on_inference_failure(self):
+        await self.client.close()
+        with patch.object(perception,'timbre_ready',return_value=False):
+            client=TestClient(TestServer(create_app()));await client.start_server()
+            r=await client.get('/api/catalog');self.assertEqual((await r.json())['capabilities']['similar'],[])
+            r=await client.post('/api/similar?lang=ja',data=np.zeros(RATE*3,dtype='<f4').tobytes());self.assertEqual(r.status,404);await client.close()
+        self.client=TestClient(TestServer(create_app()));await self.client.start_server()
+        class Boom(Exception):pass
+        with patch.object(perception,'timbre',side_effect=Boom('onnx')):
+            r=await self.client.post('/api/similar?lang=ja',data=np.zeros(RATE*3,dtype='<f4').tobytes());self.assertEqual(r.status,503)
 
     def test_index_build_resumes_and_skips_unreadable_clips(self):
         data=Path(self.tmp.name)/'build';(data/'samples').mkdir(parents=True)
@@ -321,7 +335,7 @@ class SimilarTests(unittest.IsolatedAsyncioTestCase):
                       {'id':'d','audio':'/samples/a.flac','speaker':'s4','group':'male','plotted':False,'language':'ja'}]}
         (data/'native-ja.json').write_text(json.dumps(lib));out=data/'index.npz';calls=[]
         def fake_timbre(x):calls.append(len(x));return np.full(768,len(calls),np.float32)
-        with patch.object(build_timbre_index,'DATA',data),patch.object(perception,'timbre',side_effect=fake_timbre):
+        with patch.object(build_timbre_index,'DATA',data),patch.object(perception,'timbre',side_effect=fake_timbre),patch.object(perception,'timbre_ready',return_value=True):
             rows,skipped=build_timbre_index.main(out=out,checkpoint=1)
             self.assertEqual([r['id'] for r in rows],['a','b']);self.assertEqual([s[0] for s in skipped],['c'])  # d is not plotted, c is unreadable
             first=np.load(out)['vectors'].copy()

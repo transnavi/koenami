@@ -25,7 +25,7 @@ if os.environ.get('KOENAMI_CUDA') == '1':
     import onnxruntime as ort; ort.preload_dlls(directory='')
 import perception
 from acoustics import mono16, RATE
-from server import DATA, LANGUAGES
+from server import DATA, LANGUAGES, indexable
 
 OUT = DATA / f'timbre-index-{perception.TIMBRE_VERSION}.npz'
 
@@ -38,7 +38,7 @@ def reference_clips():
         if path.exists(): clips += [dict(c, language=lang) for c in json.loads(path.read_text())['clips']]
     for filename in ['synthetic.json', 'voicevox.json']:
         if (DATA / filename).exists(): clips += json.loads((DATA / filename).read_text())['clips']
-    return [c for c in clips if c.get('plotted') and c['language'] in LANGUAGES and c['audio'].startswith('/samples/')]
+    return [c for c in clips if indexable(c) and c['language'] in LANGUAGES]
 
 
 def pcm(clip):
@@ -48,7 +48,6 @@ def pcm(clip):
 
 def save(rows, vectors, out=OUT):
     """Write the index atomically: the server may restart while a build is running."""
-    if not rows: raise SystemExit('nothing to index: every clip was skipped')
     tmp = out.with_suffix('.tmp.npz')
     np.savez(tmp, version=perception.TIMBRE_VERSION, ids=np.array([c['id'] for c in rows]), language=np.array([c['language'] for c in rows]),
              speaker=np.array([c['speaker'] for c in rows]), group=np.array([c.get('group', '') for c in rows]),
@@ -58,24 +57,25 @@ def save(rows, vectors, out=OUT):
 
 def main(clips=None, out=OUT, checkpoint=500):
     clips = reference_clips() if clips is None else clips; done = {}
-    if 'timbre_frames' not in [o.name for o in perception.session('wavlm').get_outputs()]:
-        raise SystemExit('the prepared WavLM graph predates the timbre output; run prepare_voice_models.py')
+    if not perception.timbre_ready(): raise SystemExit('the prepared WavLM graph predates the timbre output; run prepare_voice_models.py')
     if out.is_file():
         old = np.load(out, allow_pickle=False)
         if str(old['version']) == perception.TIMBRE_VERSION: done = dict(zip(old['ids'].tolist(), old['vectors']))
-    rows, vectors, skipped, start = [], [], [], time.monotonic()
+    rows, vectors, skipped, encoded, start = [], [], [], 0, time.monotonic()
     for i, c in enumerate(clips):
         if c['id'] in done: v = done[c['id']]
         else:
+            # Unreadable or too short: skip and say so. An inference failure aborts; the checkpoints keep the work.
             try: v = perception.timbre(pcm(c)).astype('float16')
-            except (ValueError, RuntimeError, sf.LibsndfileError, FileNotFoundError) as e: skipped.append((c['id'], str(e))); continue
+            except (ValueError, sf.LibsndfileError, FileNotFoundError) as e: skipped.append((c['id'], str(e))); continue
+            encoded += 1
+            if encoded % checkpoint == 0:
+                print(f'{i} / {len(clips)}  {round(time.monotonic() - start)} s', flush=True); save(rows + [c], vectors + [v], out)
         rows.append(c); vectors.append(v)
-        if i % checkpoint == 0:
-            print(f'{i} / {len(clips)}  {round(time.monotonic() - start)} s', flush=True)
-            if rows and i: save(rows, vectors, out)
-    save(rows, vectors, out)
+    if rows: save(rows, vectors, out)
     print(f'{out.name}: {len(rows)} clips, {len(skipped)} skipped, {round(time.monotonic() - start)} s', flush=True)
     for cid, why in skipped[:10]: print('  skipped', cid, why)
+    if not rows: raise SystemExit('nothing to index: every clip was skipped')
     return rows, skipped
 
 
