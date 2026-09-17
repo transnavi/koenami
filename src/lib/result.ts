@@ -3,10 +3,11 @@
 import { finite } from './math';
 import { Scorer, parseResultParams, shareText, formatScore, METRIC_KEYS, METRIC_LABELS, METRIC_UNITS, METRIC_DIGITS, VERDICTS, LEANINGS, type Clip } from './score';
 import { cardImage, intents, resultURL, systemShare, labelled } from './share';
+import { LANGUAGES as languages } from './languages';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const fmt = (v: unknown, n = 0) => (finite(v) ? v.toFixed(n) : '—');
-const LANGUAGES = new Set(['ja', 'zh-CN', 'en', 'ko']);
+const LANGUAGES = new Set<string>(languages);
 function fail(message: string) {
 	$('result-verdict').textContent = 'この結果は表示できません';
 	$('result-status').textContent = message;

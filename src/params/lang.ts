@@ -1,4 +1,4 @@
 import type { ParamMatcher } from '@sveltejs/kit';
+import { LANGUAGES } from '$lib/languages';
 
-// The languages the studio serves as pages; the catalog decides which one loads.
-export const match: ParamMatcher = (param) => ['ja', 'zh-CN', 'en', 'ko'].includes(param);
+export const match: ParamMatcher = (param) => (LANGUAGES as readonly string[]).includes(param);

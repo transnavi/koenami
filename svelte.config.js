@@ -13,25 +13,10 @@ const config = {
 		}),
 		// The studio lives at / and /<lang>/ (it pushes the trailing slash itself); the other
 		// pages keep their file-like paths.
-		// Every page, listed: crawling would also follow the sitemap link, which prepare_public.py
-		// writes at deploy time.
-		prerender: {
-			entries: [
-				'/',
-				'/ja/',
-				'/zh-CN/',
-				'/en/',
-				'/ko/',
-				'/r',
-				'/method.html',
-				'/guide.html',
-				'/tutorial.html',
-				'/references.html',
-				'/review.html',
-				'/pairs.html'
-			],
-			crawl: false
-		},
+		// Every route with a prerender flag, plus the language pages the studio route lists
+		// itself; crawling is off because it would also follow the sitemap link, which
+		// prepare_public.py writes at deploy time.
+		prerender: { entries: ['*'], crawl: false },
 		// The headers prepare_public.py writes for the static site today; Kit nonces its own
 		// bootstrap and the theme script. Cloudflare Web Analytics injects its beacon at the
 		// edge, so its script and endpoint are admitted.

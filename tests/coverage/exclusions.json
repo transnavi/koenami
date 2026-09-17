@@ -2509,7 +2509,23 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 35,
+			"line": 18,
+			"column": 1,
+			"code": "if (customElements.get('koe-select')) return;",
+			"reason": "a second registration happens only when a page mounts twice in one document (HMR in vite dev); every route is its own document, and the suite loads each page afresh"
+		},
+		{
+			"file": "src/lib/koe-select.ts",
+			"kind": "statement",
+			"line": 18,
+			"column": 39,
+			"code": "return;",
+			"reason": "a second registration happens only when a page mounts twice in one document (HMR in vite dev); every route is its own document, and the suite loads each page afresh"
+		},
+		{
+			"file": "src/lib/koe-select.ts",
+			"kind": "branch",
+			"line": 36,
 			"column": 504,
 			"code": "this.list.matches(':popover-open')?this.close():this.open()",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -2517,7 +2533,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "function",
-			"line": 39,
+			"line": 40,
 			"column": 21,
 			"code": "(){this.observer?.disconnect();}",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -2525,7 +2541,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 39,
+			"line": 40,
 			"column": 24,
 			"code": "this.observer?.disconnect();}",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -2533,7 +2549,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 41,
+			"line": 42,
 			"column": 28,
 			"code": "this._value??this.options.find(o=>o.hasAttribute('selected')",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -2541,7 +2557,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 46,
+			"line": 47,
 			"column": 10,
 			"code": "if(!this.trigger)return;const options=this.options;let selec",
 			"reason": "render() runs after the shadow root is built"
@@ -2549,7 +2565,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 46,
+			"line": 47,
 			"column": 27,
 			"code": "return;const options=this.options;let selected=options.find(",
 			"reason": "render() runs after the shadow root is built"
@@ -2557,7 +2573,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 47,
+			"line": 48,
 			"column": 222,
 			"code": "this.getAttribute('aria-label')||this.getAttribute('title')|",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -2565,7 +2581,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 57,
+			"line": 58,
 			"column": 30,
 			"code": "if(!spec)continue;",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -2573,7 +2589,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 57,
+			"line": 58,
 			"column": 39,
 			"code": "continue;",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -2581,7 +2597,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 65,
+			"line": 66,
 			"column": 19,
 			"code": "if(this.disabled)return;this.render();const rect=this.getBou",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -2589,7 +2605,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 65,
+			"line": 66,
 			"column": 36,
 			"code": "return;this.render();const rect=this.getBoundingClientRect()",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -2869,7 +2885,7 @@
 		{
 			"file": "src/lib/result.ts",
 			"kind": "branch",
-			"line": 8,
+			"line": 9,
 			"column": 36,
 			"code": "finite(v) ? v.toFixed(n) : '—')",
 			"reason": "the result page scores finite parameters only and the library's bands are finite"
@@ -3351,7 +3367,7 @@
 			"kind": "function",
 			"line": 57,
 			"column": 132,
-			"code": "(e) => notify(e.message, true)) : selectSample(p as unknown ",
+			"code": "(e) => notify(e.message, true)) : selectSample(p as Clip, tr",
 			"reason": "restoring a history point fails only when its stored take is gone; the take menu covers that path and the map point cannot be targeted for a missing take because such takes leave the map"
 		},
 		{
@@ -4014,16 +4030,16 @@
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
 			"line": 195,
-			"column": 73,
-			"code": "if (!updated) return; state.takes = updated.index as Take[];",
+			"column": 70,
+			"code": "if (!updated) return; state.takes = updated.index;",
 			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
 			"line": 195,
-			"column": 87,
-			"code": "return; state.takes = updated.index as Take[];",
+			"column": 84,
+			"code": "return; state.takes = updated.index;",
 			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
 		},
 		{
@@ -4398,8 +4414,8 @@
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
 			"line": 337,
-			"column": 1097,
-			"code": "() => state.imported)) as unknown as Clip[]; if (state.lang ",
+			"column": 1115,
+			"code": "() => state.imported); if (state.lang === 'ja') await change",
 			"reason": "loadImported fails only when the index fetch fails, which then also stops the import before this point"
 		},
 		{
@@ -4561,6 +4577,22 @@
 			"column": 35,
 			"code": "if(card.open)card.close();cancelAnimationFrame(raf);}",
 			"reason": "close() runs only from pause and finish, which the open card triggers"
+		},
+		{
+			"file": "src/routes/[[lang=lang]]/+page.ts",
+			"kind": "function",
+			"line": 8,
+			"column": 39,
+			"code": "() => [{}, ...LANGUAGES.map((lang) => ({ lang }))];",
+			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
+		},
+		{
+			"file": "src/routes/[[lang=lang]]/+page.ts",
+			"kind": "function",
+			"line": 8,
+			"column": 67,
+			"code": "(lang) => ({ lang }))];",
+			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
 		}
 	]
 }

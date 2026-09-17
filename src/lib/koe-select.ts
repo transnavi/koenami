@@ -12,9 +12,10 @@ export interface KoeSelectElement extends HTMLElement {
 	close(): void;
 }
 /* Registers the element. A page that uses it calls this once it runs in the browser, before it
-   wires the elements; every route is its own document (see app.html), so the element is
-   registered once. */
+   wires the elements. Every route is its own document (see app.html), so the guard only
+   matters when a page mounts twice in one document, as under HMR in vite dev. */
 export function defineKoeSelect() {
+	if (customElements.get('koe-select')) return;
 class KoeSelect extends HTMLElement {
 	_value: string | null;
 	_disabled: boolean;
