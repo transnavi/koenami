@@ -9,6 +9,20 @@
     },
     "id": "r3",
     "name": "take 4",
+    "quality": {
+     "clipping_fraction": {
+      "$undefined": true
+     },
+     "formant_seconds": {
+      "$undefined": true
+     },
+     "resonance_sensitivity_pct": {
+      "$undefined": true
+     },
+     "voiced_seconds": {
+      "$undefined": true
+     }
+    },
     "takeId": "r3"
    },
    {
@@ -25,6 +39,20 @@
     },
     "id": "r1",
     "name": "take 3",
+    "quality": {
+     "clipping_fraction": {
+      "$undefined": true
+     },
+     "formant_seconds": {
+      "$undefined": true
+     },
+     "resonance_sensitivity_pct": {
+      "$undefined": true
+     },
+     "voiced_seconds": {
+      "$undefined": true
+     }
+    },
     "takeId": "r1"
    }
   ],
@@ -103,6 +131,20 @@
    },
    "id": "r3",
    "name": "take 4",
+   "quality": {
+    "clipping_fraction": {
+     "$undefined": true
+    },
+    "formant_seconds": {
+     "$undefined": true
+    },
+    "resonance_sensitivity_pct": {
+     "$undefined": true
+    },
+    "voiced_seconds": {
+     "$undefined": true
+    }
+   },
    "takeId": "r3"
   }
  ],
@@ -115,6 +157,20 @@
    },
    "id": "r3",
    "name": "take 4",
+   "quality": {
+    "clipping_fraction": {
+     "$undefined": true
+    },
+    "formant_seconds": {
+     "$undefined": true
+    },
+    "resonance_sensitivity_pct": {
+     "$undefined": true
+    },
+    "voiced_seconds": {
+     "$undefined": true
+    }
+   },
    "takeId": "r3"
   },
   {
@@ -125,6 +181,20 @@
    },
    "id": "r1",
    "name": "take 3",
+   "quality": {
+    "clipping_fraction": {
+     "$undefined": true
+    },
+    "formant_seconds": {
+     "$undefined": true
+    },
+    "resonance_sensitivity_pct": {
+     "$undefined": true
+    },
+    "voiced_seconds": {
+     "$undefined": true
+    }
+   },
    "takeId": "r1"
   }
  ],
@@ -137,6 +207,20 @@
    },
    "id": "r3",
    "name": "take 4",
+   "quality": {
+    "clipping_fraction": {
+     "$undefined": true
+    },
+    "formant_seconds": {
+     "$undefined": true
+    },
+    "resonance_sensitivity_pct": {
+     "$undefined": true
+    },
+    "voiced_seconds": {
+     "$undefined": true
+    }
+   },
    "takeId": "r3"
   },
   {
@@ -147,6 +231,20 @@
    },
    "id": "r1",
    "name": "take 3",
+   "quality": {
+    "clipping_fraction": {
+     "$undefined": true
+    },
+    "formant_seconds": {
+     "$undefined": true
+    },
+    "resonance_sensitivity_pct": {
+     "$undefined": true
+    },
+    "voiced_seconds": {
+     "$undefined": true
+    }
+   },
    "takeId": "r1"
   }
  ],
@@ -166,6 +264,20 @@
     },
     "id": "r1",
     "name": "take 3",
+    "quality": {
+     "clipping_fraction": {
+      "$undefined": true
+     },
+     "formant_seconds": {
+      "$undefined": true
+     },
+     "resonance_sensitivity_pct": {
+      "$undefined": true
+     },
+     "voiced_seconds": {
+      "$undefined": true
+     }
+    },
     "takeId": "r1"
    }
   ],
@@ -202,6 +314,20 @@
     },
     "id": "r3",
     "name": "take 4",
+    "quality": {
+     "clipping_fraction": {
+      "$undefined": true
+     },
+     "formant_seconds": {
+      "$undefined": true
+     },
+     "resonance_sensitivity_pct": {
+      "$undefined": true
+     },
+     "voiced_seconds": {
+      "$undefined": true
+     }
+    },
     "takeId": "r3"
    },
    {
@@ -218,6 +344,20 @@
     },
     "id": "r1",
     "name": "take 3",
+    "quality": {
+     "clipping_fraction": {
+      "$undefined": true
+     },
+     "formant_seconds": {
+      "$undefined": true
+     },
+     "resonance_sensitivity_pct": {
+      "$undefined": true
+     },
+     "voiced_seconds": {
+      "$undefined": true
+     }
+    },
     "takeId": "r1"
    }
   ],
@@ -255,6 +395,20 @@
     },
     "id": "r3",
     "name": "take 4",
+    "quality": {
+     "clipping_fraction": {
+      "$undefined": true
+     },
+     "formant_seconds": {
+      "$undefined": true
+     },
+     "resonance_sensitivity_pct": {
+      "$undefined": true
+     },
+     "voiced_seconds": {
+      "$undefined": true
+     }
+    },
     "takeId": "r3"
    }
   ],
@@ -307,6 +461,20 @@
     },
     "id": "r1",
     "name": "take 3",
+    "quality": {
+     "clipping_fraction": {
+      "$undefined": true
+     },
+     "formant_seconds": {
+      "$undefined": true
+     },
+     "resonance_sensitivity_pct": {
+      "$undefined": true
+     },
+     "voiced_seconds": {
+      "$undefined": true
+     }
+    },
     "takeId": "r1"
    }
   ],

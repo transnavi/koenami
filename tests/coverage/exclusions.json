@@ -972,22 +972,6 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 276,
-			"column": 85,
-			"code": "if(document.activeElement===document.body||document.activeEl",
-			"reason": "the row action that triggers the delete is a button inside the select's popover, so the active element is always the select when the delete completes"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "branch",
-			"line": 276,
-			"column": 88,
-			"code": "document.activeElement===document.body||document.activeEleme",
-			"reason": "the row action that triggers the delete is a button inside the select's popover, so the active element is always the select when the delete completes"
-		},
-		{
-			"file": "web/app.js",
-			"kind": "branch",
 			"line": 278,
 			"column": 63,
 			"code": "if(value==='')return;",
@@ -1043,8 +1027,48 @@
 		},
 		{
 			"file": "web/app.js",
+			"kind": "branch",
+			"line": 291,
+			"column": 70,
+			"code": "if(!t.stored)continue;",
+			"reason": "every entry of the take index is saved with stored:true; a take whose storage failed never enters the index"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 291,
+			"column": 83,
+			"code": "continue;",
+			"reason": "every entry of the take index is saved with stored:true; a take whose storage failed never enters the index"
+		},
+		{
+			"file": "web/app.js",
 			"kind": "function",
-			"line": 299,
+			"line": 291,
+			"column": 148,
+			"code": "()=>null);if(rec?.pcm)out.push({...t,pcm:rec.pcm});}return o",
+			"reason": "a stored take's record is read from the database that listed it; the read rejects only when the database is gone, and then the index is empty too"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 291,
+			"column": 158,
+			"code": "if(rec?.pcm)out.push({...t,pcm:rec.pcm});",
+			"reason": "a previous take without samples or a URL cannot exist: takes are stored with their samples"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 297,
+			"column": 48,
+			"code": "t.name||'take'",
+			"reason": "takes are saved with the file name or the recording's generated name, never without one"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 321,
 			"column": 934,
 			"code": "()=>state.imported);if(state.lang==='ja')await changeLanguag",
 			"reason": "loadImported fails only when the index fetch fails, which then also stops the import before this point"
@@ -1052,7 +1076,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 304,
+			"line": 326,
 			"column": 20,
 			"code": "if(!sessionReady)return;",
 			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
@@ -1060,7 +1084,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "statement",
-			"line": 304,
+			"line": 326,
 			"column": 37,
 			"code": "return;",
 			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
@@ -1068,7 +1092,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 307,
+			"line": 329,
 			"column": 25,
 			"code": "if(!recordCamera)return;",
 			"reason": "restoreCamera runs only after a recording, which always records the camera first"
@@ -1076,7 +1100,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "statement",
-			"line": 307,
+			"line": 329,
 			"column": 42,
 			"code": "return;",
 			"reason": "restoreCamera runs only after a recording, which always records the camera first"
@@ -1084,7 +1108,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 310,
+			"line": 332,
 			"column": 141,
 			"code": "m.features||{}",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -1092,7 +1116,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 315,
+			"line": 337,
 			"column": 89,
 			"code": "gate.value?`${gate.label} ${gate.value}（${gate.need}）`:gate.",
 			"reason": "gateFailure is called with a measurement only, so the failure always names a check with its value"
@@ -1100,7 +1124,47 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 318,
+			"line": 339,
+			"column": 54,
+			"code": "state.lang==='lab'?'en':state.lang",
+			"reason": "the research library has no human speakers, so the scorer is unavailable there and the share button stays disabled"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 339,
+			"column": 89,
+			"code": "if(!scorer?.available)return [];",
+			"reason": "renderHistory runs from the share handler, which needs a verdict, so the scorer is available"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 339,
+			"column": 111,
+			"code": "return [];",
+			"reason": "renderHistory runs from the share handler, which needs a verdict, so the scorer is available"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 343,
+			"column": 122,
+			"code": "rows.length>1?i/(rows.length-1):.5",
+			"reason": "the history section returns before drawing with fewer than two rows"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 348,
+			"column": 828,
+			"code": "e=>notify(e.message,true));};}li.append(b);return li;}));",
+			"reason": "a listed history take was read from the database moments earlier; restoring it fails only when the database is gone"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 353,
 			"column": 74,
 			"code": "s?.available?[['男性的な見本 · 中央80%',`${formatScore(Math.round(s.",
 			"reason": "the help button sits in the share dialog, which opens only with a verdict, so the scorer is available"
@@ -1108,7 +1172,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 320,
+			"line": 355,
 			"column": 28,
 			"code": "if(!result)return;",
 			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
@@ -1116,7 +1180,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "statement",
-			"line": 320,
+			"line": 355,
 			"column": 39,
 			"code": "return;",
 			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
@@ -1124,7 +1188,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 320,
+			"line": 355,
 			"column": 77,
 			"code": "state.lang==='lab'?'en':state.lang",
 			"reason": "the research library has no human speakers, so the scorer is unavailable there and the share button stays disabled"
@@ -1132,7 +1196,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 332,
+			"line": 368,
 			"column": 0,
 			"code": "if(import.meta.env.PROD&&'serviceWorker' in navigator)naviga",
 			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
@@ -1140,7 +1204,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "branch",
-			"line": 332,
+			"line": 368,
 			"column": 3,
 			"code": "import.meta.env.PROD&&'serviceWorke",
 			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
@@ -1148,7 +1212,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "statement",
-			"line": 332,
+			"line": 368,
 			"column": 54,
 			"code": "navigator.serviceWorker.register('/sw.js').catch(()=>{});",
 			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
@@ -1156,7 +1220,7 @@
 		{
 			"file": "web/app.js",
 			"kind": "function",
-			"line": 332,
+			"line": 368,
 			"column": 103,
 			"code": "()=>{});",
 			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
@@ -1376,14 +1440,6 @@
 			"column": 94,
 			"code": "return p;",
 			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
-		},
-		{
-			"file": "web/map.js",
-			"kind": "branch",
-			"line": 14,
-			"column": 26,
-			"code": "if(this.autoFit)this.fitDirty=true;",
-			"reason": "the resize observer fires while autoFit is on in every run; toggling autoFit off happens only through navigation, after which the layout is stable"
 		},
 		{
 			"file": "web/map.js",
