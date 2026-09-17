@@ -298,6 +298,21 @@ Terms as the Spanish-, Portuguese-, French-, German-, Italian-, Dutch- and Russi
 - **男娘 · 南梁** (zh community) — a feminine-presenting boy and the homophone euphemism that slips censorship [[bili-pusuxueweisheng]] [[bili-dahuang]]. → [[chinese-community]]
 - **医疗陪诊师 · 医疗翻译** (zh) — the escort and interpreter tier around surgery abroad, tagged on a post-surgical voice record [[bili-weimengxiangxingdong]]. → [[transgender-care-context]]
 
+- **Stimmfeminisierung · Stimmanpassung · Stimmtransition** (de) — voice feminization, "voice adaptation" (the dgti's term for the field) and voice transition [[dgti-stimmanpassung]] [[dgti-stimmtransition]] [[medical-voice-center]]. → [[european-languages-voice]]
+- **Stimmlippen · Kehlkopf · zweiter Stimmbruch** (de) — vocal folds, larynx, and the "second voice break" testosterone brings on [[dgti-stimmanpassung]] [[charite-stimme-trans]]. → [[vocal-folds]] · [[puberty-voice-change]]
+- **Glottoplastik · Crico-Thyreoid-Approximation · LAVA** (de) — glottoplasty (also Web-Glottoplastik nach Wendler), cricothyroid approximation, laser-assisted fold thinning [[dgti-stimmanpassung]] [[charite-stimme-trans]] [[medical-voice-center]]. → [[voice-surgery]]
+- **Logopädie / Logopädin · Heilmittel-Verordnung** (de) — speech-language therapy and its practitioner; the prescription by which statutory insurance pays for it [[dgti-stimmanpassung]] [[charite-stimme-trans]]. → [[speech-language-pathology]] · [[transgender-care-context]]
+- **Falsett · Kopfstimme · Bruststimme** (de) — falsetto, head voice (folded into the Falsett article) and chest voice (redirected to Gesangsregister) [[wikipedia-de-falsett]]. → [[vocal-registers]]
+- **orthophonie / orthophoniste · logopédie / logopède** (fr) — the profession in France and Québec, and in Belgium and Switzerland [[wikitrans-voix]] [[laval2016]] [[femivoz]]. → [[speech-language-pathology]]
+- **fausset · voix de tête · registre léger · mécanisme 2 · voix de poitrine** (fr) — the French register names, the first four given as one thing against chest voice [[wikipedia-fr-fausset]]. → [[vocal-registers]]
+- **ALD · mutuelle · tiers payant** (fr) — long-term-condition status, complementary insurer and third-party payment, the French funding instruments for orthophonie [[wikitrans-voix]] [[alloortho-voix]]. → [[transgender-care-context]]
+- **glottoplastie · cricothyropexie · pomme d'Adam** (fr) — glottoplasty, cricothyroidopexy, Adam's apple [[wikitrans-voix]]. → [[voice-surgery]] · [[larynx-anatomy]]
+- **röstträning · logoped · röstläge · rösttrötthet · röstdysfori** (sv) — voice training (also röstterapi, röstbehandling, logopedisk behandling), the speech-language pathologist, pitch level, vocal fatigue as the safety criterion, voice dysphoria [[transformering]]. → [[voice-feminization-therapy]] · [[vocal-fatigue]]
+- **falsett · bröströst · målbrottet** (sv) — falsetto, chest voice, the voice break (Danish and Norwegian stemmeskifte, Finnish äänenmurros) [[wikipedia-sv-falsett]] [[wikipedia-sv-malbrott]]. → [[vocal-registers]] · [[puberty-voice-change]]
+- **logopedie / logopedist · basisverzekering** (nl) — the profession and the basic insurance that covers it after referral [[transvisie]] [[jessiemaya2017]]. → [[speech-language-pathology]] · [[transgender-care-context]]
+- **kopstem · borststem · stembanden / stemplooien · baard in de keel** (nl) — head voice, chest voice, the two words for the vocal folds, and the idiom for the voice break [[wikipedia-nl-kopstem]] [[jessiemaya2017]] [[wikipedia-sv-malbrott]]. → [[vocal-registers]] · [[vocal-folds]]
+- **stem verlagen / stem hoger maken** (nl) — lowering and raising the voice, the plain-language names of the two directions [[maart2020]] [[jessiemaya2017]]. → [[voice-masculinization]] · [[voice-feminization-therapy]]
+
 <!-- lane-terms: entries from the language collectors' reports are merged below this line -->
 
 ### Japanese (ja)
