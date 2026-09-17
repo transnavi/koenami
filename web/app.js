@@ -169,7 +169,7 @@ $('loopback').onclick=()=>{if(!monitorGain||!recordContext||!state.recording)ret
 $('live-mode').onclick=()=>state.recording?stopRecording():startRecording('live');
 window.addEventListener('keydown',e=>{if(e.repeat||document.querySelector('dialog[open]')||['INPUT','TEXTAREA','SELECT','KOE-SELECT'].includes(e.target.tagName)||e.target.isContentEditable)return;if(e.code==='Space'){e.preventDefault();if(!state.recording)$('play-mine').click();}else if(e.code==='KeyR'&&!e.ctrlKey&&!e.metaKey){e.preventDefault();state.recording?stopRecording():startRecording('record');}else if(e.code==='Escape'){if(state.recording)cancelCapture();else if(!state.busy){e.preventDefault();for(const side of ['own','ref'])if(state.ranges[side])selectRange(side,null);}}});
 window.addEventListener('beforeunload',()=>{for(const t of stream?.getTracks()||[])t.stop();});
-async function saveTake(id=crypto.randomUUID()){state.ownTakeId=id;const snapshot=snapshotOwn(),old=state.takes.find(t=>t.id===id),quality=state.ownFull.analysisPending?undefined:Object.fromEntries(['voiced_seconds','formant_seconds','clipping_fraction','resonance_sensitivity_pct'].map(k=>[k,state.ownFull[k]])),t={id,name:state.ownName,date:old?.date||new Date().toISOString(),features:state.ownFull.features,duration:state.ownFull.duration,language:state.ownLanguage,stored:true,...(quality&&{quality})};const saved=await TakeStore.saveRecording(snapshot,t);state.takes=saved.index;await persistTakes();renderTakeMenu();updateMap();}
+async function saveTake(id=crypto.randomUUID()){state.ownTakeId=id;const snapshot=snapshotOwn(),old=state.takes.find(t=>t.id===id),quality=state.ownFull.analysisPending?undefined:Object.fromEntries(['voiced_seconds','formant_seconds','clipping_fraction','resonance_sensitivity_pct'].map(k=>[k,state.ownFull[k]])),t={id,name:state.ownName,date:old?.date||new Date().toISOString(),features:state.ownFull.features,duration:state.ownFull.duration,language:state.ownLanguage,stored:true,...(quality&&{quality}),...(snapshot?.pcm&&{peaks:wavePeaks(snapshot.pcm)})};const saved=await TakeStore.saveRecording(snapshot,t);state.takes=saved.index;await persistTakes();renderTakeMenu();updateMap();}
 async function analyzeTake(take){
  const id=take.takeId;if(!id||state.analyzing.has(id))return;state.analyzing.add(id);controls();
  try{
@@ -248,15 +248,18 @@ $('auto-rotate').setAttribute('aria-pressed',String(map.autoRotate));$('auto-rot
 function clearOwn(){state.ownToken++;state.rangeToken.own++;state.wordToken.own++;state.ownTakeId=null;if(blobURL){URL.revokeObjectURL(blobURL);blobURL=null;}state.own=state.ownFull=state.ownPCM=null;state.ownName='';state.ownId=null;state.ranges.own=null;state.words.own=null;state.liveClock=null;signal.set('own',null);if(state.refFull)setSignalSource('ref');signal.live=false;map.live=false;map.fitDirty=true;player.removeAttribute('src');player.load();$('timer').textContent='0:00';$('quality-state').hidden=true;updateMap();updateIndicators();renderWords();controls();}
 
 let takeChoices=[];
+const wavePeaks=(pcm,buckets=64)=>{if(!pcm?.length)return null;const peaks=new Array(buckets),size=Math.max(1,Math.floor(pcm.length/buckets));for(let i=0;i<buckets;i++){let m=0;for(let j=i*size,e=Math.min((i+1)*size,pcm.length);j<e;j+=8){const v=Math.abs(pcm[j]);if(v>m)m=v;}peaks[i]=m;}const top=Math.max(...peaks)||1;return peaks.map(v=>Math.round(v/top*100)/100);};
+const backfilledPeaks=new Set();
+async function backfillPeaks(){for(const t of state.takes){if(!t.stored||t.peaks||backfilledPeaks.has(t.id))continue;backfilledPeaks.add(t.id);const snapshot=await TakeStore.read('recording:'+t.id).catch(()=>null);const peaks=snapshot?.pcm?wavePeaks(snapshot.pcm):null;if(!peaks)continue;const saved=await TakeStore.updateRecording(t.id,(snap,metadata)=>({snapshot:snap,metadata:{...metadata,peaks}})).catch(()=>null);if(saved?.index){state.takes=saved.index;renderTakeMenu();}}}
 function renderTakeMenu(){const select=$('take-select');if(!select)return;const current=state.recording?recordSnapshot:snapshotOwn(),seen=new Set();takeChoices=[];
  for(const take of [current,state.previousTake,...state.takes.filter(t=>t.stored).map(t=>({...t,storedId:t.id}))]){
   if(!take?.pcm&&!take?.storedId)continue;const key=take.takeId||take.storedId||take.name+':'+take.pcm.length+':'+take.detail.features.f0;if(seen.has(key))continue;seen.add(key);takeChoices.push(take);
  }
- select.replaceChildren();takeChoices.forEach((t,i)=>{const option=new Option(t.name,String(i));option.dataset.detail=clock(t.detail?.duration||t.duration);option.dataset.actions='download,delete';if(state.recording||!(t.takeId||t.storedId))option.dataset.disabledActions='delete';select.add(option);});
+ select.replaceChildren();takeChoices.forEach((t,i)=>{const option=new Option(t.name,String(i));option.dataset.detail=clock(t.detail?.duration||t.duration);option.dataset.actions='play,rename,download,delete';const peaks=t.pcm?wavePeaks(t.pcm):t.peaks;if(peaks)option.dataset.peaks=JSON.stringify(peaks);if(state.recording||!(t.takeId||t.storedId))option.dataset.disabledActions='delete';select.add(option);});
  if(current?.detail?.analysisPending&&!state.analyzing.has(current.takeId))select.add(new Option('再解析','retry'));
- select.disabled=state.busy||!takeChoices.length;select.value=current?.pcm?'0':'';select.setAttribute('data-display-label',current?.name||'録音履歴');
+ select.disabled=state.busy||!takeChoices.length;select.value=current?.pcm?'0':'';select.setAttribute('data-display-label',current?.name||'録音履歴');backfillPeaks();
 }
-async function restoreTake(chosen){if(state.busy)return;if(chosen.storedId)chosen=await TakeStore.read('recording:'+chosen.storedId);if(!chosen?.pcm)throw new Error('この録音は読み込めませんでした。');const current=state.recording?recordSnapshot:snapshotOwn();if(state.recording)await cancelCapture();cancelAB();player.pause();reference.pause();applySnapshot(chosen);state.previousTake=current||null;await persistTakes();saveView();controls();}
+async function restoreTake(chosen){if(state.busy)return;if(chosen.storedId)chosen=await TakeStore.read('recording:'+chosen.storedId);if(!chosen?.pcm)throw new Error('この録音は読み込めませんでした。');const current=state.recording?recordSnapshot:snapshotOwn();if(state.recording)await cancelCapture();cancelAB();player.pause();reference.pause();stopReplay();applySnapshot(chosen);state.previousTake=current||null;await persistTakes();saveView();controls();}
 async function deleteTake(take){
  const id=take?.takeId||take?.storedId;if(state.busy||state.recording||!id)return;
  const current=id===state.ownTakeId;state.busy=true;controls();
@@ -279,12 +282,26 @@ $('take-select').onchange=async e=>{const value=e.target.value;if(value==='')ret
 $('take-select').addEventListener('optionaction',async e=>{
  let chosen=takeChoices[Number(e.detail.value)];if(!chosen)return;
  if(e.detail.action==='delete'){await deleteTake(chosen);return;}
+ if(e.detail.action==='play')try{
+  const source=chosen.pcm?chosen:await TakeStore.read('recording:'+chosen.storedId);
+  if(!source?.pcm)throw new Error('この録音は読み込めませんでした。');
+  replayTake(source,Number(e.detail.value));
+ }catch(error){notify(error.message,true);return;}
+ if(e.detail.action==='rename'){renameTarget=chosen;$('rename-input').value=chosen.name||'';$('rename-status').textContent='';$('rename-dialog').showModal();$('rename-input').select();return;}
  if(e.detail.action==='download')try{
   if(chosen.storedId)chosen=await TakeStore.read('recording:'+chosen.storedId);
   if(!chosen?.pcm)throw new Error('この録音は読み込めませんでした。');
   download(wav(chosen.pcm),chosen.name.replace(/\.[^.]+$/,'')+'.wav');
  }catch(error){notify(error.message,true);}
 });
+
+/* Row-level replay and renaming in the recording history. */
+let replayAudio=null,replayKey=null,renameTarget=null;
+function setReplayIcon(key,playing){const button=$('take-select').shadowRoot.querySelector(`.row-action[data-action=play][data-value="${key}"]`);if(!button)return;const path=button.querySelector('path');if(path)path.setAttribute('d',playing?'M5 4h3v12H5zM12 4h3v12h-3z':'M6 4l10 6-10 6z');button.title=playing?'停止':'再生';button.setAttribute('aria-label',(button.getAttribute('aria-label')||'').replace(/を(再生|停止)$/,playing?'を停止':'を再生'));}
+function stopReplay(){const was=replayKey;if(replayAudio){URL.revokeObjectURL(replayAudio.src);replayAudio.pause();}replayAudio=null;replayKey=null;if(was!=null)setReplayIcon(was,false);}
+function replayTake(take,key){const stop=replayKey===key;stopReplay();if(stop)return;const url=URL.createObjectURL(wav(take.pcm));replayAudio=new Audio(url);replayKey=key;setReplayIcon(key,true);replayAudio.onended=()=>{if(replayKey===key){replayKey=null;setReplayIcon(key,false);}URL.revokeObjectURL(url);replayAudio=null;};replayAudio.play().catch(()=>{stopReplay();URL.revokeObjectURL(url);notify('再生できませんでした。',true);});}
+$('rename-save').onclick=async()=>{const name=$('rename-input').value.trim();if(!name){$('rename-status').textContent='名前を入力してください。';return;}const take=renameTarget;renameTarget=null;$('rename-dialog').close();if(!take)return;const id=take.takeId||take.storedId;if(!id){state.ownName=name;renderTakeMenu();await persistTakes();return;}try{const saved=await TakeStore.updateRecording(id,(snapshot,metadata)=>({snapshot,metadata:{...metadata,name}}));if(!saved)throw 0;state.takes=saved.index;if(state.ownTakeId===id){state.ownName=name;await persistTakes();}renderTakeMenu();}catch{notify('名前を変更できませんでした。もう一度お試しください。',true);}};
+$('rename-input').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('rename-save').click();}};
 
 
 /* Bulk actions on the recording history: one zip of every saved take, or delete them all. */
