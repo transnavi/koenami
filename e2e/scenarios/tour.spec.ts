@@ -56,9 +56,8 @@ test.describe('first-visit guide', () => {
 		await studio.until(app.ready);
 		await studio.tick(1000);
 		await studio.golden('done-stays-done');
-		// Restarting from an open dialog closes that dialog first; the last step finishes.
-		await page.locator('#info-button').click();
-		await page.locator('#tour-restart').dispatchEvent('click');
+		// The toolbar button starts a finished guide again; the last step finishes it.
+		await page.locator('#tour-restart').click();
 		await studio.until(tour.step(1));
 		for (let n = 2; n <= 9; n++) { await page.keyboard.press('ArrowRight'); await studio.until(tour.step(n)); }
 		await studio.tick(100);

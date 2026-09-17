@@ -3,9 +3,12 @@ import { pairs } from '../hooks';
 
 // Both sides loop A → B → A; pause before observing.
 async function paused(page: import('@playwright/test').Page, studio: { until: (e: string, ms?: number) => Promise<void>; tick: (ms?: number) => Promise<void> }) {
-	await studio.until('document.querySelector("#side-a[aria-pressed=true], #side-b[aria-pressed=true]") !== null', 3000).catch(() => {});
-	if (await page.evaluate('document.querySelector("#side-a[aria-pressed=true], #side-b[aria-pressed=true]") !== null')) await page.keyboard.press(' ');
-	await studio.until('document.querySelector("#side-a[aria-pressed=true], #side-b[aria-pressed=true]") === null');
+	const playing = 'document.querySelector("#side-a[aria-pressed=true], #side-b[aria-pressed=true]") !== null';
+	await studio.until(playing, 3000).catch(() => {});
+	// A clip can end between the check and the key; with the loop off that restarts
+	// playback, so pause again.
+	for (let i = 0; i < 3 && (await page.evaluate(playing)); i++) { await page.keyboard.press(' '); await page.waitForTimeout(300); }
+	await studio.until(`!(${playing})`);
 	await studio.tick(100);
 }
 

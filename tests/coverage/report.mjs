@@ -2,7 +2,8 @@
 // tests/coverage/check.mjs merges:
 //   coverage/unit/raw  (written by vitest-monocart-coverage) → coverage/unit/coverage-final.json
 //   coverage/e2e/raw   (written per test by the Playwright fixture) → coverage/e2e/coverage-final.json
-// The browser is served the committed files byte for byte and the unit layer resolves
+// The browser is served the pinned files unchanged (import.meta.env.PROD is substituted at
+// the same width, see tests/mock-api/server.mjs) and the unit layer resolves
 // its transforms through source maps, so both describe identical source text and the
 // istanbul statement maps line up.
 import { readFileSync, readdirSync, existsSync } from 'node:fs';

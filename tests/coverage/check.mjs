@@ -12,10 +12,11 @@ const root = fileURLToPath(new URL('../..', import.meta.url));
 const args = process.argv.slice(2);
 const tree = args.find((a) => !a.startsWith('--')) || process.env.KOENAMI_TREE || 'old';
 const only = args.find((a) => a.startsWith('--only='))?.slice(7).split(',');
-// Unit tests run the pinned copy under tests/old-tree, the browser runs the checked-out
-// web/; both describe the same files when the tree is `old`, so they merge by path.
+// Both layers run the pinned copy under tests/old-tree when the tree is `old`; reports
+// name it either way, so paths merge under the short form and are read from the copy.
 const prefix = tree === 'new' ? 'src/' : 'web/';
 const normalize = (rel) => rel.replace(/^tests\/old-tree\//, '');
+const sourceRoot = tree === 'new' ? root : join(root, 'tests/old-tree');
 const wanted = (rel) => rel.startsWith(prefix) && (!only || only.includes(rel.split('/').pop().replace(/\.[^.]+$/, '')));
 const exclusions = JSON.parse(readFileSync(join(root, 'tests/coverage/exclusions.json'), 'utf8'))[tree];
 
@@ -44,7 +45,7 @@ for (const path of reports(reportRoot)) {
 // and an entry that matches nothing fails the gate.
 const sources = new Map();
 const textAt = (rel, loc) => {
-	if (!sources.has(rel)) sources.set(rel, readFileSync(join(root, rel), 'utf8').split('\n'));
+	if (!sources.has(rel)) sources.set(rel, readFileSync(join(sourceRoot, rel), 'utf8').split('\n'));
 	const lines = sources.get(rel);
 	const line = lines[loc.start.line - 1] || '';
 	const end = loc.end && loc.end.line === loc.start.line && typeof loc.end.column === 'number' ? loc.end.column : undefined;
@@ -57,7 +58,7 @@ for (const file of map.files()) {
 	const rel = relative(root, file);
 	if (!wanted(rel)) continue;
 	const fc = map.fileCoverageFor(file);
-	if (!existsSync(join(root, rel))) { misses.push(`${rel}: covered file missing from the tree`); continue; }
+	if (!existsSync(join(sourceRoot, rel))) { misses.push(`${rel}: covered file missing from the tree`); continue; }
 	summary.merge(fc.toSummary());
 	const excluded = (kind, loc) => {
 		const text = textAt(rel, loc);
@@ -77,8 +78,8 @@ if (stale.length) misses.push(...stale.map((e) => `stale exclusion ${e.file}:${e
 // Every source file of the tree must appear in the data; a module no test loads would
 // otherwise pass unnoticed.
 const sourceFiles = [];
-const walk = (dir, deep) => { for (const name of readdirSync(dir)) { const p = join(dir, name); if (statSync(p).isDirectory()) { if (deep) walk(p, deep); } else if (/\.(js|ts|svelte)$/.test(name) && !name.endsWith('.d.ts')) sourceFiles.push(relative(root, p)); } };
-if (tree === 'new') walk(join(root, 'src/lib'), true); else { walk(join(root, 'web'), false); walk(join(root, 'web/public'), false); }
+const walk = (dir, deep) => { for (const name of readdirSync(dir)) { const p = join(dir, name); if (statSync(p).isDirectory()) { if (deep) walk(p, deep); } else if (/\.(js|ts|svelte)$/.test(name) && !name.endsWith('.d.ts')) sourceFiles.push(normalize(relative(root, p))); } };
+if (tree === 'new') walk(join(root, 'src/lib'), true); else { walk(join(sourceRoot, 'web'), false); walk(join(sourceRoot, 'web/public'), false); }
 const files = map.files().filter((f) => wanted(relative(root, f)));
 for (const rel of sourceFiles.filter(wanted)) if (!files.some((f) => relative(root, f) === rel)) misses.push(`${rel}: no coverage data (no test loads it)`);
 if (!files.length) misses.push(`no coverage data for ${prefix}`);

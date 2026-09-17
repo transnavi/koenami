@@ -26,7 +26,6 @@ export const app = {
 	selectedId: (id: string) => `window.voiceApp.state.selected?.id === ${JSON.stringify(id)}`,
 	selectedGroup: (group: string) => `window.voiceApp.state.selected?.group === ${JSON.stringify(group)}`,
 	selectedSynthetic: 'window.voiceApp.state.selected?.synthetic === true',
-	language: (id: string) => `window.voiceApp?.state.lang === ${JSON.stringify(id)} && !window.voiceApp.state.loadingLanguage`,
 	languageLoaded: (id: string) => `window.voiceApp?.state.lang === ${JSON.stringify(id)} && !window.voiceApp.state.loadingLanguage && !!window.voiceApp.state.refFull`,
 	libraryLoaded: '!window.voiceApp.state.loadingLanguage',
 	range: (side: 'own' | 'ref') => `!!window.voiceApp.state.ranges.${side}`,

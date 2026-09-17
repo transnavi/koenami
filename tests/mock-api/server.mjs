@@ -91,7 +91,7 @@ createServer(async (req, res) => {
 		if (path.endsWith('.html')) body = Buffer.from(body.toString('utf8').replace('<head>', '<head><script type="importmap">{"imports":{"@zip.js/zip.js/index-native.js":"/node_modules/@zip.js/zip.js/index-native.js"}}</script>'));
 		// Vite defines import.meta.env at build time; served raw, the module would throw. The
 		// development value (not production) keeps the service worker unregistered, as Vite does.
-		if (path.endsWith('.js')) body = Buffer.from(body.toString('utf8').replaceAll('import.meta.env.PROD', 'false'.padEnd('import.meta.env.PROD'.length)));
+		if (path.startsWith(site) && path.endsWith('.js')) body = Buffer.from(body.toString('utf8').replaceAll('import.meta.env.PROD', 'false'.padEnd('import.meta.env.PROD'.length)));
 		res.writeHead(200, { 'content-type': types[path.split('.').pop()] || 'application/octet-stream', 'cache-control': 'no-store' });
 		return res.end(req.method === 'HEAD' ? undefined : body);
 	}

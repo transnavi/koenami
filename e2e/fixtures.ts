@@ -32,7 +32,7 @@ type Studio = {
 	 *  timers and real audio together (A/B comparison). The number of ticks depends on
 	 *  timing, so a fixed tick should follow before any golden. */
 	untilTicking: (expression: string, timeoutMs?: number) => Promise<void>;
-	/** Pixel-exact screenshot golden of one element. */
+	/** Pixel-exact PNG golden of one canvas, from the canvas's own pixels. */
 	canvas: (name: string, selector: string) => Promise<void>;
 	/** Download triggered by `action`, recorded as name + SHA-256. */
 	download: (action: () => Promise<void>) => Promise<{ name: string; sha256: string; bytes: number }>;
@@ -202,7 +202,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		// Init scripts stay attached to the page, so a test may install them once; a second
 		// `before` would silently stack on the first.
 		let prepared = false;
-		let tourAllowed = false;
+		let tourSkipped = false;
 		const flush = async () => { await flushers.get(page)?.(); };
 		const back = async () => { await flush(); await page.goBack(); };
 		const forward = async () => { await flush(); await page.goForward(); };
@@ -215,7 +215,8 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			await flush();
 			await install(page);
 			// The guide starts on every first visit; scenarios that are not about it skip it.
-			if (!options.tour && !tourAllowed) { tourAllowed = true; await page.addInitScript(() => { try { if (!localStorage.getItem('voice-tour')) localStorage.setItem('voice-tour', JSON.stringify({ done: true })); } catch {} }); }
+			if (options.tour && tourSkipped) throw new Error('open(): the guide was already marked done in this test; give the tour its own test');
+			if (!options.tour && !tourSkipped) { tourSkipped = true; await page.addInitScript(() => { try { if (!localStorage.getItem('voice-tour')) localStorage.setItem('voice-tour', JSON.stringify({ done: true })); } catch {} }); }
 			if (before) {
 				if (prepared) throw new Error('open(): only one before() per test; split the scenario');
 				prepared = true;
@@ -227,5 +228,5 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 	}
 });
 
-// Playwright's screenshot comparison writes new snapshots only with --update-snapshots;
+// Playwright's snapshot comparison writes new files only with --update-snapshots;
 // RECORD=1 maps onto that in the npm scripts.

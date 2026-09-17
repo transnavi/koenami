@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [
-  "tour-card tour-card-top"
+  "tour-card"
  ],
  "focus": "button",
  "vars": {

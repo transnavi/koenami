@@ -127,7 +127,7 @@
 			"line": 95,
 			"column": 32,
 			"code": "return;",
-			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "web/app.js",
@@ -143,7 +143,7 @@
 			"line": 96,
 			"column": 103,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "web/app.js",
@@ -311,7 +311,7 @@
 			"line": 115,
 			"column": 100,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
 		},
 		{
 			"file": "web/app.js",
@@ -383,7 +383,7 @@
 			"line": 131,
 			"column": 58,
 			"code": "return;",
-			"reason": "the first live measurement tick sees half a second of audio in every run, since audio starts before the fake clock advances"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "web/app.js",
@@ -399,7 +399,7 @@
 			"line": 131,
 			"column": 126,
 			"code": "return;",
-			"reason": "the in-flight live request is aborted when live mode stops, so the fetch rejects (AbortError) before this check runs"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "web/app.js",
@@ -423,7 +423,7 @@
 			"line": 131,
 			"column": 735,
 			"code": "return;",
-			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
 		},
 		{
 			"file": "web/app.js",
@@ -535,7 +535,7 @@
 			"line": 145,
 			"column": 112,
 			"code": "return;",
-			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
+			"reason": "the first live measurement tick sees half a second of audio in every run, since audio starts before the fake clock advances"
 		},
 		{
 			"file": "web/app.js",
@@ -551,7 +551,7 @@
 			"line": 145,
 			"column": 519,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "the in-flight live request is aborted when live mode stops, so the fetch rejects (AbortError) before this check runs"
 		},
 		{
 			"file": "web/app.js",
@@ -631,7 +631,7 @@
 			"line": 152,
 			"column": 45,
 			"code": "return;",
-			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "web/app.js",
@@ -655,7 +655,7 @@
 			"line": 168,
 			"column": 77,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
 		},
 		{
 			"file": "web/app.js",
@@ -679,7 +679,7 @@
 			"line": 174,
 			"column": 54,
 			"code": "return;",
-			"reason": "the profile canvas is part of the page"
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
 		},
 		{
 			"file": "web/app.js",
@@ -695,7 +695,7 @@
 			"line": 177,
 			"column": 71,
 			"code": "return;",
-			"reason": "favourites are toggled from clip rows and the selected clip, which always have ids"
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
 		},
 		{
 			"file": "web/app.js",
@@ -751,7 +751,7 @@
 			"line": 191,
 			"column": 47,
 			"code": "return;",
-			"reason": "the take menu is part of the page"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "web/app.js",
@@ -863,7 +863,7 @@
 			"line": 232,
 			"column": 45,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "the profile canvas is part of the page"
 		},
 		{
 			"file": "web/app.js",
@@ -887,7 +887,7 @@
 			"line": 243,
 			"column": 35,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "favourites are toggled from clip rows and the selected clip, which always have ids"
 		},
 		{
 			"file": "web/app.js",
@@ -911,7 +911,7 @@
 			"line": 251,
 			"column": 67,
 			"code": "return;",
-			"reason": "the take menu lists takes only, never an empty option"
+			"reason": "the take menu is part of the page"
 		},
 		{
 			"file": "web/app.js",
@@ -927,7 +927,7 @@
 			"line": 259,
 			"column": 49,
 			"code": "return;",
-			"reason": "menu values are indices into the list rendered at the same time"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "web/app.js",
@@ -951,7 +951,7 @@
 			"line": 261,
 			"column": 75,
 			"code": "return;",
-			"reason": "menu values are indices into the list rendered at the same time"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "web/app.js",
@@ -999,7 +999,7 @@
 			"line": 278,
 			"column": 77,
 			"code": "return;",
-			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
+			"reason": "the take menu lists takes only, never an empty option"
 		},
 		{
 			"file": "web/app.js",
@@ -1015,7 +1015,7 @@
 			"line": 278,
 			"column": 185,
 			"code": "return;",
-			"reason": "restoreCamera runs only after a recording, which always records the camera first"
+			"reason": "menu values are indices into the list rendered at the same time"
 		},
 		{
 			"file": "web/app.js",
@@ -1031,7 +1031,7 @@
 			"line": 280,
 			"column": 59,
 			"code": "return;",
-			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+			"reason": "menu values are indices into the list rendered at the same time"
 		},
 		{
 			"file": "web/app.js",
@@ -1063,7 +1063,7 @@
 			"line": 304,
 			"column": 37,
 			"code": "return;",
-			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
+			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
 		},
 		{
 			"file": "web/app.js",
@@ -1079,7 +1079,7 @@
 			"line": 307,
 			"column": 42,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "restoreCamera runs only after a recording, which always records the camera first"
 		},
 		{
 			"file": "web/app.js",
@@ -1135,8 +1135,7 @@
 			"line": 332,
 			"column": 0,
 			"code": "if(import.meta.env.PROD&&'serviceWorker' in navigator)naviga",
-			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)",
-			"dead": true
+			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
 		},
 		{
 			"file": "web/app.js",
@@ -1144,8 +1143,7 @@
 			"line": 332,
 			"column": 3,
 			"code": "import.meta.env.PROD&&'serviceWorke",
-			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)",
-			"dead": true
+			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
 		},
 		{
 			"file": "web/app.js",
@@ -1153,8 +1151,7 @@
 			"line": 332,
 			"column": 54,
 			"code": "navigator.serviceWorker.register('/sw.js').catch(()=>{});",
-			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)",
-			"dead": true
+			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
 		},
 		{
 			"file": "web/app.js",
@@ -1162,8 +1159,7 @@
 			"line": 332,
 			"column": 103,
 			"code": "()=>{});",
-			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)",
-			"dead": true
+			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
 		},
 		{
 			"file": "web/card.js",
@@ -1930,7 +1926,7 @@
 			"line": 45,
 			"column": 60,
 			"code": "return;",
-			"reason": "rate() is only reached through key() and the scale buttons, both of which already have a scale"
+			"reason": "the key map plays anchors 1–6 only and the API returns six anchors, one per scale"
 		},
 		{
 			"file": "web/review.js",
@@ -2178,8 +2174,7 @@
 			"line": 52,
 			"column": 1,
 			"code": "if(navigator.share){await navigator.share({title:'Koenami',t",
-			"reason": "the system share button is hidden without navigator.share",
-			"dead": true
+			"reason": "the system share button is hidden without navigator.share"
 		},
 		{
 			"file": "web/share.js",
@@ -2187,8 +2182,7 @@
 			"line": 53,
 			"column": 1,
 			"code": "return false;",
-			"reason": "the system share button is hidden without navigator.share",
-			"dead": true
+			"reason": "the system share button is hidden without navigator.share"
 		},
 		{
 			"file": "web/signals.js",
@@ -2316,7 +2310,7 @@
 			"line": 50,
 			"column": 54,
 			"code": "fisher=fisher.map(x=>-x);",
-			"reason": "Body of the unreachable sign flip above."
+			"reason": "The sign flip needs fisher·difference < 0, i.e. dᵀW⁻¹d < 0, impossible for a positive-definite W."
 		},
 		{
 			"file": "web/space.js",
@@ -2340,8 +2334,7 @@
 			"line": 43,
 			"column": 32,
 			"code": "e=>{e.preventDefault();pause();});",
-			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead",
-			"dead": true
+			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead"
 		},
 		{
 			"file": "web/tour.js",
@@ -2349,8 +2342,7 @@
 			"line": 43,
 			"column": 36,
 			"code": "e.preventDefault();",
-			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead",
-			"dead": true
+			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead"
 		},
 		{
 			"file": "web/tour.js",
@@ -2358,8 +2350,7 @@
 			"line": 43,
 			"column": 55,
 			"code": "pause();",
-			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead",
-			"dead": true
+			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead"
 		},
 		{
 			"file": "web/tour.js",

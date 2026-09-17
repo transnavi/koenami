@@ -7,7 +7,9 @@ cd "$(dirname "$0")/../.."
 python=${KOENAMI_PYTHON:-.venv/bin/python}
 # The review and pairs pages append to these logs; recording starts from the committed state.
 for log in curation/reviews.jsonl curation/pairs.jsonl; do
-	if ! git diff --quiet -- "$log"; then echo "$log has uncommitted changes; commit or stash them first" >&2; exit 1; fi
+	if git ls-files --error-unmatch "$log" >/dev/null 2>&1; then
+		git diff --quiet -- "$log" || { echo "$log has uncommitted changes; commit or stash them first" >&2; exit 1; }
+	elif [[ -e $log ]]; then echo "$log exists but is not tracked; move it aside first" >&2; exit 1; fi
 done
 seed='{"speaker":"23bbcff6f628","clip":"common_voice_ja_19580185","display":"M 1","language":"ja","flags":[],"scope":"clip","ratings":{"femininity":1.0,"masculinity":5.0},"note":"","reviewed":"2026-01-01T00:00:00+00:00"}'
 cleanup() {

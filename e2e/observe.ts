@@ -63,7 +63,7 @@ export function domProjection(): Observation {
 		title: document.title,
 		lang: root.lang,
 		theme: root.dataset.theme ?? null,
-		dialogs: [...document.querySelectorAll('dialog[open]')].map((d) => d.id || d.className),
+		dialogs: [...document.querySelectorAll('dialog[open]')].map((d) => d.id || d.className.split(' ')[0]),
 		focus: document.activeElement?.id || document.activeElement?.tagName.toLowerCase() || null,
 		vars,
 		elements

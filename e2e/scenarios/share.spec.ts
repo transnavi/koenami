@@ -86,8 +86,9 @@ test.describe('verdict and sharing', () => {
 		await page.unroute('**/fonts/**');
 		let release: (() => void) | null = null;
 		await page.route('**/fonts/koenami-share-700.ttf', async (route) => { await new Promise<void>((r) => { release = r; }); await route.continue(); });
+		const held = page.waitForRequest('**/fonts/koenami-share-700.ttf');
 		await page.locator('#share-button').click();
-		await studio.tick(100);
+		await held;
 		await page.locator('#share-dialog [data-close]').click();
 		release!();
 		await studio.tick(500);
@@ -152,6 +153,7 @@ test.describe('verdict and sharing', () => {
 		await page.locator('#share-button').click();
 		await studio.until(app.shareImage);
 		const link = new URL(await page.locator('#share-open').getAttribute('href') || '');
+		const withParams = (changes: Record<string, string>) => { const params = new URLSearchParams(link.search); for (const [key, value] of Object.entries(changes)) params.set(key, value); return `${link.pathname}?${params}`; };
 		await studio.open(link.pathname + link.search);
 		await studio.until('!document.getElementById("result-image").hidden');
 		await studio.tick(300);
@@ -187,14 +189,14 @@ test.describe('verdict and sharing', () => {
 		await studio.open('/r?v=1&l=ja');
 		await studio.tick(300);
 		await studio.golden('result-missing-values');
-		await studio.open(link.pathname + link.search.replace('l=ja', 'l=xx'));
+		await studio.open(withParams({ l: 'xx' }));
 		await studio.tick(300);
 		await studio.golden('result-unknown-language');
-		await studio.open(link.pathname + link.search.replace('v=1', 'v=7'));
+		await studio.open(withParams({ v: '7' }));
 		await studio.until('!document.getElementById("result-image").hidden');
 		await studio.tick(300);
-		await studio.golden('result-older-version');
-		await studio.open(link.pathname + link.search.replace('l=ja', 'l=ko'));
+		await studio.golden('result-other-version');
+		await studio.open(withParams({ l: 'ko' }));
 		await studio.until('document.getElementById("result-status").textContent !== ""');
 		await studio.tick(300);
 		await studio.golden('result-no-verdict-for-language');
@@ -210,7 +212,8 @@ test.describe('verdict and sharing', () => {
 		await studio.tick(300);
 		await studio.golden('result-library-without-clips');
 		await page.unroute('**/api/library**');
-		// Links on either side of the scale and on its midpoint; defaults for the language and the version.
+		// The medians of the fixture library's female and male representatives at the pinned
+		// commit, and their midpoint (see Scorer in score.js); defaults for the language and the version.
 		for (const [name, query] of [['female', 'f0=209.2&df=1146.5&hnr=13.21&bal=-19.05&sp=5.17'], ['male', 'f0=128.6&df=1030.3&hnr=9.13&bal=-15.23&sp=6.39'], ['midpoint', 'f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86']] as const) {
 			await studio.open(`/r?${query}`);
 			await studio.until('!document.getElementById("result-image").hidden');
