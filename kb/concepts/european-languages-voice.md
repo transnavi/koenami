@@ -19,7 +19,8 @@ A hub for the languages outside this vault's main English/Japanese/Chinese/Korea
 - Care structure: a Cologne/Düsseldorf expert-interview paper finds no German guideline and recommends early Logopädie before irreversible surgery, with speaking-F0 adaptation as the central treatment goal [[heydrich2023]].
 - Surgery: the Würzburg glottoplasty series' telephone test — 7 of 18 operated speakers passed as female on the band-limited channel, and formants stayed between the sexes [[meister2017]].
 - Community: peer Stimmtraining videos in German ("Stimmfeminisierung ohne OP") [[leonie2025]]; de Wikipedia covers Feminisierende Laryngoplastik [[wikipedia-de-feminisierende-laryngoplastik]].
-- Vocabulary: Stimmfeminisierung, Logopädie [[heydrich2023]]; note Herbst's objection to reserving Falsett for men and Kopfstimme for women [[herbst2020]].
+- Vocabulary: Stimmfeminisierung, Stimmanpassung, Stimmtransition, Logopädie, Stimmlippen, Kehlkopf, Glottoplastik [[dgti-stimmanpassung]] [[dgti-stimmtransition]] [[heydrich2023]]; Falsett with Kopfstimme folded in as a synonym and Bruststimme redirected to Gesangsregister [[wikipedia-de-falsett]]; note Herbst's objection to reserving Falsett for men and Kopfstimme for women [[herbst2020]].
+- Guidance and funding: the dgti association's guides set out three routes (hormones, Logopädie, surgery), the parameter list and the timelines by direction [[dgti-stimmanpassung]] [[dgti-stimmtransition]]; the Charité's phoniatrics page puts therapy first, funded through a Heilmittel-Verordnung charged to statutory insurance [[charite-stimme-trans]]; a Hamburg voice centre describes its assessment battery and its glottoplasty [[medical-voice-center]]; peer videos name their sources or document one person's surgery [[montugai2023]] [[aufklo2022]]; dgti's reading of the 2023 Bundessozialgericht coverage ruling lists measures without voice therapy [[dgti-kostenuebernahme]].
 
 ## French
 - Instruments: the French TVQ MtF (Liège + Aix-en-Provence, n = 36 Belgian and French trans women) is usable in clinic, with six concern areas [[morsomme2019]].
@@ -27,6 +28,7 @@ A hub for the languages outside this vault's main English/Japanese/Chinese/Korea
 - Encyclopedic: fr Wikipedia titles the field Féminisation de la voix and names orthophonie as the route [[wikipedia-fr-feminisation-de-la-voix]].
 - Québec sources could not be verified in this pass (see the report); the vocabulary attested here is metropolitan French: féminisation de la voix [[wikipedia-fr-feminisation-de-la-voix]], orthophonie/orthophoniste (France), prise en charge, plainte and "féminisation vocale", the authors' own term [[loret2019]].
 - French exercise videos exist from a Spain-based coach [[femivoz]].
+- Routes and funding: a community wiki [[wikitrans-voix]] and a professional information service [[alloortho-voix]] describe the orthophoniste route, its waiting lists and the 60/40 split between Sécurité sociale and complementary insurers in the same terms; a Québec university teaching clinic taught féminisation/masculinisation de la voix by 2016 [[laval2016]]; French orthophonie students met the subject as a competition entry in 2018 [[fneo-loret2018]]; a peer tutorial hands on exercises attributed to a Parisian orthophoniste and a directory of trans-friendly practitioners [[effy2024]]; register terms are fausset, voix de tête, registre léger and mécanisme 2 against voix de poitrine [[wikipedia-fr-fausset]].
 
 ## Italian
 - Instruments: I-TVQMtF, the Italian adaptation of the TVQ MtF, translated and preliminarily validated [[robotti2022]].
@@ -35,11 +37,13 @@ A hub for the languages outside this vault's main English/Japanese/Chinese/Korea
 ## Dutch (Belgium and the Netherlands)
 - The Ghent group dominates: systematic review of speech-therapy effects [[leyns2021]]; short-term listener/self-perception results of a feminization programme [[leyns2023]]; long-term follow-up [[leyns2024]]; a virtual-reality delivery pilot [[leyns2025]]; a randomized trial of intensive intonation training for a more masculine-sounding voice in Dutch speakers (23 participants, listeners rated voices more masculine) [[papeleu2026]]; glottoplasty outcomes [[dhaeseleer2023]].
 - Dutch register vocabulary: the nl Wikipedia's M2 article is titled Kopstem, folding falset(stem) in as a synonym — a naming by felt location rather than mechanism [[wikipedia-nl-kopstem]].
+- Funding and public face: Transvisie states that logopedie is covered by the basisverzekering after a referral and describes the Stem in Transitie workbook [[transvisie]]; the Ghent programme has a Dutch-language public pitch [[leyns2023a]]; client-side vlogs cover a first appointment [[jessiemaya2017]] and lowering the voice without hormones [[maart2020]]; a Flemish private clinic's logopediste appeared on a talk show [[2pass-eerdekens2017]].
 
 ## Swedish
 - Acoustic outcomes of gender-affirming voice training and their association with listener perceptions (74 trans women; population and language not stated in the abstract) [[sodersten2026]]; longitudinal testosterone effects in trans men [[nygren2016]].
 - Umeå's qualitative line: clients' motives and barriers — "a voice of my own choice" against treatments "developed from views of vocal gender as perceived by cisgender persons" [[holmberg2023]].
 - Swedish care framing is person-centred rather than pass-oriented, the contrast drawn against Brazil's "passabilidade" [[dornelas2021]].
+- Names and entitlement: RFSL's Transformering calls the treatment röstträning, röstterapi, röstbehandling or logopedisk behandling and cites the entitlement to Socialstyrelsen, whose guidance lists logopedi among the disciplines its specialist teams combine [[transformering]] [[socialstyrelsen-konsdysfori]]; register terms falsett and bröströst [[wikipedia-sv-falsett]]; the voice break is målbrottet [[wikipedia-sv-malbrott]].
 
 ## Turkish
 - Instruments: TVQMtF-TR validated at Hacettepe (α = 0.972, ICC = 0.931) [[taskin2022]]; the reworked trans-male a-TVQFtM validated in Kocaeli (α = 0.975), with better scores in the hormone-treated group [[sirin2021]].
