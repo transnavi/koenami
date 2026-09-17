@@ -5,6 +5,7 @@ import { loadImported, importedAudio, importJVS, type ImportClip } from '$lib/co
 import { defineKoeSelect } from '$lib/koe-select';
 import { VoiceMap, type MapSample } from '$lib/map';
 import { finite, quantile, clamp, AXES } from '$lib/math';
+import * as engine from '$lib/measure/engine';
 import {
 	Scorer,
 	VERDICTS,
@@ -781,7 +782,7 @@ export function mountStudio() {
 			const detail: Detail =
 				clip.detail ||
 				(localPCM
-					? await api('/api/analyze', { method: 'POST', body: localPCM })
+					? await engine.analyze(localPCM)
 					: await api('/api/detail/' + encodeURIComponent(clip.id)));
 			if (token !== state.detailToken) return;
 			state.ref = state.refFull = detail;
@@ -1155,10 +1156,9 @@ export function mountStudio() {
 			else {
 				const pcm = side === 'own' ? state.ownPCM : state.refPCM;
 				if (!pcm) return;
-				detail = await api('/api/analyze', {
-					method: 'POST',
-					body: pcm.slice(Math.round(range[0] * 16000), Math.round(range[1] * 16000))
-				});
+				detail = await engine.analyze(
+					pcm.slice(Math.round(range[0] * 16000), Math.round(range[1] * 16000))
+				);
 				detail.offset = range[0];
 			}
 			if (token !== state.rangeToken[side]) return;
@@ -1358,7 +1358,7 @@ export function mountStudio() {
 				throw new Error(
 					`${(state.capabilities?.maxSeconds || 900) / 60}分以内の音声を選んでください。`
 				);
-			const detail = await api('/api/analyze', { method: 'POST', body: pcm });
+			const detail = await engine.analyze(pcm);
 			if (side === 'own') {
 				setOwn(detail, file.name, null, pcm);
 				await saveTake();
@@ -1431,11 +1431,7 @@ export function mountStudio() {
 			offset = end - raw.length / rate;
 		try {
 			const pcm = await resample(raw, rate),
-				m = await api('/api/analyze?live=1', {
-					method: 'POST',
-					body: pcm,
-					signal: (liveController = new AbortController()).signal
-				});
+				m = await engine.live(pcm, (liveController = new AbortController()).signal);
 			if (generation !== liveGeneration || !state.recording) return;
 			const rows = m.track!.map((p) => ({ ...p, t: p.t + offset }));
 			const replaceAt = Math.max(offset + 0.12, end - window + 0.12);
@@ -1789,7 +1785,7 @@ export function mountStudio() {
 		state.analyzing.add(id);
 		controls();
 		try {
-			const detail = await api('/api/analyze', { method: 'POST', body: take.pcm! });
+			const detail = await engine.analyze(take.pcm!);
 			const updated = await TakeStore.finishRecording<Take>(id, detail);
 			if (!updated) return;
 			state.takes = updated.index;
@@ -2031,6 +2027,9 @@ export function mountStudio() {
 		sessionReady = true;
 		(window as unknown as { voiceApp: unknown }).voiceApp = {
 			state,
+			// The browser suite's hold on measurements, where it intercepted the analyzer's
+			// routes when the studio posted audio to it.
+			measure: engine.gate,
 			map,
 			signal,
 			fitValue,
