@@ -9,9 +9,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const app = tree === 'new' ? `${root}src/lib` : `${root}tests/old-tree/web`;
 
 export default defineConfig({
-	// The service worker is web/public/sw.js today and src/lib/service-worker.js in the Kit tree
-	// (src/service-worker.js, Kit's entry, only imports it).
-	resolve: { alias: tree === 'new' ? [{ find: '@app/public/sw', replacement: `${root}src/lib/service-worker.js` }, { find: '@app', replacement: app }] : { '@app': app } },
+	resolve: { alias: { '@app': app } },
 	test: {
 		root,
 		include: ['tests/unit/**/*.test.ts'],

@@ -50,6 +50,7 @@ export async function importJVS(files: ArrayLike<File> & Iterable<File>, progres
 				signal.throwIfAborted();
 				const clip = byMember.get(member(entry.filename));
 				if (clip && !ids.has(clip.id) && entry.uncompressedSize === clip.bytes)
+					// Only file entries carry a member name the index knows.
 					candidates.set(clip.id, { clip, read: () => (entry as FileEntry).getData(new BlobWriter('audio/wav'), { signal }) });
 			}
 		} else {

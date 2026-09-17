@@ -14,11 +14,10 @@ const tree = args.find((a) => !a.startsWith('--')) || process.env.KOENAMI_TREE |
 const only = args.find((a) => a.startsWith('--only='))?.slice(7).split(',');
 // Both layers run the pinned copy under tests/old-tree when the tree is `old`; reports
 // name it either way, so paths merge under the short form and are read from the copy.
-const prefixes = tree === 'new' ? ['src/'] : ['web/'];
-const prefix = prefixes[0];
+const prefix = tree === 'new' ? 'src/' : 'web/';
 const normalize = (rel) => rel.replace(/^tests\/old-tree\//, '');
 const sourceRoot = tree === 'new' ? root : join(root, 'tests/old-tree');
-const wanted = (rel) => prefixes.some((p) => rel.startsWith(p)) && (!only || only.includes(rel.split('/').pop().replace(/\.[^.]+$/, '')));
+const wanted = (rel) => rel.startsWith(prefix) && (!only || only.includes(rel.split('/').pop().replace(/\.[^.]+$/, '')));
 const exclusions = JSON.parse(readFileSync(join(root, 'tests/coverage/exclusions.json'), 'utf8'))[tree];
 
 const reportRoot = join(root, 'coverage');

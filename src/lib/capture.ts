@@ -13,7 +13,7 @@ class VoiceCapture extends AudioWorkletProcessor {
 			}
 		};
 	}
-	process(inputs: Float32Array[][]) {
+	process(inputs: Float32Array[][], _outputs: Float32Array[][], _parameters: Record<string, Float32Array>) {
 		const channels = inputs[0];
 		if (!channels?.length) return true;
 		for (let i = 0; i < channels[0].length; i++) {

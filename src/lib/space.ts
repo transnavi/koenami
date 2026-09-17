@@ -81,8 +81,10 @@ function orthogonalize(vector: number[], axes: number[][]): number[] | null {
 
 export class AcousticSpace {
 	static keys: FeatureKey[] = ['f0', 'delta_f', 'hnr', 'balance', 'pitch_span'];
-	static raw(f: Features | null | undefined): number[] {
-		return AcousticSpace.keys.map((k) => (k === 'f0' ? ((f?.[k] ?? 0) > 0 ? 12 * Math.log2(f![k]!) : NaN) : f?.[k])) as number[];
+	/* Pitch in semitones, the rest as given: a missing or null feature passes through and
+	   fails every(finite) downstream. */
+	static raw(f: Features | null | undefined): (number | null | undefined)[] {
+		return AcousticSpace.keys.map((k) => (k === 'f0' ? ((f?.[k] ?? 0) > 0 ? 12 * Math.log2(f![k]!) : NaN) : f?.[k]));
 	}
 	static mean(rows: number[][]): number[] {
 		return AcousticSpace.keys.map((_, k) => rows.reduce((s, v) => s + v[k], 0) / Math.max(1, rows.length));
@@ -156,8 +158,8 @@ export class AcousticSpace {
 		const v = AcousticSpace.raw(f);
 		return v.every(finite) ? v.map((x, k) => (x - this.center[k]) / this.scale[k]) : null;
 	}
-	projection(name: string): Projection {
-		return (this.projections as Record<string, Projection | undefined>)[name] || this.projections.variance;
+	projection(name: 'variance' | 'contrast' | (string & {})): Projection {
+		return this.projections[name as keyof AcousticSpace['projections']] || this.projections.variance;
 	}
 	projectRaw(raw: number[], axes: number[][]): number[] {
 		const z = raw.map((x, k) => (x - this.center[k]) / this.scale[k] - this.mean[k]);

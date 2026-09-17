@@ -22,8 +22,9 @@ function blur(source: Float32Array, target: Float32Array, w: number, h: number, 
 export class DensityCloud {
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
-	a!: Float32Array;
-	b!: Float32Array;
+	a = new Float32Array(0);
+	b = new Float32Array(0);
+	// Created with the field buffers on the first draw, which always resizes from 0×0.
 	image!: ImageData;
 	constructor() {
 		this.canvas = document.createElement('canvas');

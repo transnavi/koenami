@@ -1,4 +1,4 @@
-import { describe, it, vi } from 'vitest';
+import { beforeAll, describe, it, vi } from 'vitest';
 import { golden } from './golden';
 
 // The service worker runs in its own global scope; these stand-ins record what it does.
@@ -60,8 +60,6 @@ vi.stubGlobal('caches', cacheStorage);
 vi.stubGlobal('fetch', fetchStub);
 vi.stubGlobal('location', { origin: ORIGIN });
 vi.stubGlobal('Request', FakeRequest);
-// @ts-expect-error the worker registers its listeners and exports nothing
-await import('@app/public/sw');
 
 const lifecycle = async (type: string) => { const waits: Promise<unknown>[] = []; handlers[type]({ waitUntil: (p) => waits.push(p) }); await Promise.all(waits); };
 const request = async (url: string, init: Init = {}) => {
@@ -74,7 +72,11 @@ const request = async (url: string, init: Init = {}) => {
 };
 const cached = () => [...(caches.get('koenami-v1')?.store.keys() ?? [])].map((u) => u.replace(ORIGIN, '')).sort();
 
-describe('service worker', () => {
+// The Kit tree gets a service worker shaped by its own build ($service-worker) together with
+// the studio; its golden is recorded then.
+describe.skipIf((process.env.KOENAMI_TREE || 'old') === 'new')('service worker', () => {
+	// @ts-expect-error the worker registers its listeners and exports nothing
+	beforeAll(() => import('@app/public/sw'));
 	it('caches the shell, hashed assets and pages, serves them offline, and prunes what no page references', async () => {
 		const log: unknown[] = [['handlers', Object.keys(handlers).sort()]];
 		await lifecycle('install');

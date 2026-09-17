@@ -1,8 +1,10 @@
+import type { Features } from './space';
+
 /* Two complete takes are committed together, so an interrupted write keeps the old pair. */
-export type TakeMetadata = { id: string; features?: unknown; duration?: number; quality?: Record<string, number>; [key: string]: unknown };
+export type TakeMetadata = { id: string; features?: Features; duration?: number; quality?: Record<string, number>; [key: string]: unknown };
 export type TakeSnapshot = { range?: unknown; measurement?: unknown; detail?: unknown; [key: string]: unknown };
 export type TakePair = { current?: { takeId?: string } | null; previous?: { takeId?: string } | null };
-export type AnalysisDetail = { features: unknown; duration: number; voiced_seconds?: number; formant_seconds?: number; clipping_fraction?: number; resonance_sensitivity_pct?: number; [key: string]: unknown };
+export type AnalysisDetail = { features: Features; duration: number; voiced_seconds?: number; formant_seconds?: number; clipping_fraction?: number; resonance_sensitivity_pct?: number; [key: string]: unknown };
 type Change = (snapshot: TakeSnapshot | undefined, metadata: TakeMetadata | undefined) => { snapshot: TakeSnapshot; metadata: TakeMetadata } | null;
 
 export const TakeStore = {
