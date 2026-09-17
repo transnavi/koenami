@@ -93,6 +93,12 @@ def main():
          'synthetic': sum(bool(c.get('synthetic')) for c in libraries[lang]['clips'])}
         for lang, label in LANGUAGES.items()]}
     write(OUT / 'assets' / 'public-api' / 'catalog.json', catalog)
+    # The age model rides in the container with its licence notice; WavLM stays local-only.
+    models = ROOT / '.models' / 'perception'
+    for name in ('age.int8.onnx', 'age-LICENSE', 'age-README.md', 'age-preprocessor_config.json', 'manifest.json'):
+        assert (models / name).is_file(), f'{name} missing: run prepare_voice_models.py'
+        (OUT / 'models').mkdir(exist_ok=True)
+        shutil.copy2(models / name, OUT / 'models' / name)
     write(OUT / 'manifest.json', manifest)
     # Sitemap with last-modified dates taken from git, so a page's date only
     # moves when its source does.

@@ -1,5 +1,5 @@
 import {finite} from './math.js';
-import {Scorer,parseResultParams,shareText,formatScore,METRIC_KEYS,METRIC_LABELS,METRIC_UNITS,METRIC_DIGITS,VERDICTS,LEANINGS} from './score.js';
+import {Scorer,parseResultParams,shareText,formatScore,ageText,METRIC_KEYS,METRIC_LABELS,METRIC_UNITS,METRIC_DIGITS,VERDICTS,LEANINGS} from './score.js';
 import {cardImage,intents,resultURL,systemShare,labelled} from './share.js';
 'use strict';
 const $=id=>document.getElementById(id);
@@ -11,9 +11,10 @@ async function main(){
  if(!parsed||!LANGUAGES.has(parsed.lang)){fail('リンクに測定値が含まれていません。');return;}
  const library=await (await fetch(`/api/library?lang=${encodeURIComponent(parsed.lang)}`)).json().catch(()=>null);
  if(!library){fail('見本の一覧を読み込めませんでした。');return;}
- const scorer=new Scorer(library.clips),result=scorer.score(parsed.features);
+ const scorer=new Scorer(library.clips),scored=scorer.score(parsed.features),result=scored&&{...scored,age:parsed.age};
  if(!result){fail('この言語の見本では判定を計算できません。');return;}
- const url=resultURL(result.features,parsed.lang),text=shareText(result);
+ const url=resultURL(result.features,parsed.lang,location.origin,{age:result.age}),text=shareText(result);
+ if(finite(result.age)){$('result-age').querySelector('strong').textContent=ageText(result.age);$('result-age').hidden=false;}
  document.title=`Koenami · ${VERDICTS[result.verdict]}（${LEANINGS[result.verdict]} ${formatScore(result.display)}）`;
  $('result-verdict').textContent=VERDICTS[result.verdict];$('result-verdict').dataset.verdict=result.verdict;
  $('result-score').querySelector('strong').textContent=formatScore(result.display);$('result-score').querySelector('span').textContent=LEANINGS[result.verdict];$('result-score').hidden=false;

@@ -25,7 +25,7 @@ async function loadFonts(){
  const [regular,bold]=await Promise.all([load(400),load(700)]);
  return fonts={400:regular,700:bold};
 }
-export function resultURL(features,lang,origin=location.origin){return `${origin}/r?${resultParams(features,lang)}`;}
+export function resultURL(features,lang,origin=location.origin,extra={}){return `${origin}/r?${resultParams(features,lang,extra)}`;}
 export function intents(url,text){
  return [
   {id:'x',label:'X',icon:'x',href:`https://x.com/intent/post?${new URLSearchParams({text,url,hashtags:HASHTAG})}`},
@@ -43,7 +43,7 @@ export async function cardImage(result,scorer){
  const blob=await new Promise(ok=>canvas.toBlob(ok,'image/png'));if(!blob)throw new Error('画像を作成できませんでした。');
  return new File([blob],`koenami-${result.display}.png`,{type:'image/png'});
 }
-export function shareBundle(result,scorer,lang){const url=resultURL(result.features,lang),text=shareText(result);return {url,text,svg:cardSVG(result,scorer),intents:intents(url,text)};}
+export function shareBundle(result,scorer,lang){const url=resultURL(result.features,lang,location.origin,{age:result.age}),text=shareText(result);return {url,text,svg:cardSVG(result,scorer),intents:intents(url,text)};}
 export async function systemShare(result,scorer,lang){
  const {url,text}=shareBundle(result,scorer,lang);
  const file=await cardImage(result,scorer);

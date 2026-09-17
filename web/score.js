@@ -69,6 +69,8 @@ export class Scorer{
  }
 }
 const PARAM={f0:'f0',delta_f:'df',hnr:'hnr',balance:'bal',pitch_span:'sp'};
-export function resultParams(features,lang){const p=new URLSearchParams({v:String(SCORE_VERSION),l:lang});for(const k of METRIC_KEYS)p.set(PARAM[k],Number(features[k]).toFixed(METRIC_DIGITS[k]+1));return p;}
-export function parseResultParams(params){const features={};for(const k of METRIC_KEYS){if(!params.has(PARAM[k]))return null;const v=Number(params.get(PARAM[k]));if(!finite(v))return null;features[k]=v;}return {features,lang:params.get('l')||'ja',version:Number(params.get('v'))||1};}
+/* extra.age (years) is optional and only travels when the user chose to include it. */
+export function resultParams(features,lang,extra={}){const p=new URLSearchParams({v:String(SCORE_VERSION),l:lang});for(const k of METRIC_KEYS)p.set(PARAM[k],Number(features[k]).toFixed(METRIC_DIGITS[k]+1));if(finite(extra.age)&&extra.age>=5&&extra.age<=100)p.set('age',String(Math.round(extra.age)));return p;}
+export function parseResultParams(params){const features={};for(const k of METRIC_KEYS){if(!params.has(PARAM[k]))return null;const v=Number(params.get(PARAM[k]));if(!finite(v))return null;features[k]=v;}const age=Number(params.get('age'));return {features,lang:params.get('l')||'ja',version:Number(params.get('v'))||1,age:params.has('age')&&finite(age)&&age>=5&&age<=100?Math.round(age):undefined};}
 export function shareText(result){return `私の声は${VERDICTS[result.verdict]}でした（${LEANINGS[result.verdict]} ${formatScore(result.display)}）`;}
+export const ageText=years=>`約${Math.round(years)}歳`;

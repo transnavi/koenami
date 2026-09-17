@@ -15,8 +15,8 @@ MODEL_DIR = Path(os.environ.get('KOENAMI_MODELS', Path(__file__).parent / '.mode
 _sessions = {}
 
 
-def available():
-    return all((MODEL_DIR / f'{name}.int8.onnx').is_file() for name in ['wavlm', 'age'])
+def available(names=('wavlm', 'age')):
+    return all((MODEL_DIR / f'{name}.int8.onnx').is_file() for name in names)
 
 
 def session(name):
@@ -107,6 +107,17 @@ def timbre(x):
     v = frames[speech].mean(axis=0)
     if v.shape != (768,) or not np.isfinite(v).all(): raise ValueError('この音声の推定に失敗しました。')
     return v
+
+
+def age(x):
+    """Rough listener-facing age in years: the median over at most three four-second windows.
+    The model returns years directly; the range across windows is reported so a spread can be
+    read as instability rather than precision."""
+    parts = windows(x)
+    ages = [float(session('age').run(None, {'values': age_input(part)})[0].ravel()[0]) for part in parts]
+    if not np.isfinite(ages).all(): raise ValueError('この音声の推定に失敗しました。')
+    return {'estimate': round(float(np.median(ages)), 1), 'windowRange': [round(min(ages), 1), round(max(ages), 1)],
+            'windows': len(ages), 'model': 'audeering-6-layer', 'target': 'speaker-age', 'validatedJapanesePerception': False}
 
 
 def describe(x):

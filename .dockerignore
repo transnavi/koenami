@@ -5,6 +5,9 @@
 !curation.py
 !acoustics.py
 !signals.py
+!perception.py
 !.deploy/
 !.deploy/data/
 !.deploy/data/**
+!.deploy/models/
+!.deploy/models/**
