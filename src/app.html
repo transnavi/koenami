@@ -9,22 +9,15 @@
 		<link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<link rel="manifest" href="/site.webmanifest" />
-		<script nonce="%sveltekit.nonce%">
-			// The saved theme is applied before the first paint (web/theme.js today).
-			let savedTheme = 'system';
-			try {
-				savedTheme = localStorage.getItem('voice-theme') || 'system';
-			} catch {}
-			document.documentElement.dataset.theme =
-				savedTheme === 'system'
-					? matchMedia('(prefers-color-scheme: dark)').matches
-						? 'dark'
-						: 'light'
-					: savedTheme;
-		</script>
+		<!-- The saved theme is applied before the first paint; a file of its own, so the pages
+		     can be prerendered under the CSP. -->
+		<script src="/theme.js"></script>
 		%sveltekit.head%
 	</head>
-	<body>
+	<!-- Links load the next page as a new document: the studio's controller (src/lib/studio/app.ts)
+	     wires window and document listeners it does not remove yet, so it must not mount twice in
+	     one document. Goes away when the studio becomes components that clean up after themselves. -->
+	<body data-sveltekit-reload>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

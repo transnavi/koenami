@@ -1,4 +1,7 @@
-@import 'tailwindcss';
+/* Theme and utilities only: the studio keeps its stylesheet (src/lib/studio/studio.css) and its
+   layout until it is restyled panel by panel, so the preflight reset is left out. */
+@import 'tailwindcss/theme' layer(theme);
+@import 'tailwindcss/utilities' layer(utilities);
 
 /* The studio's palette, by the names its canvases read through getComputedStyle. */
 :root {
