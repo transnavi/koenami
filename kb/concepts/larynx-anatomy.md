@@ -25,8 +25,7 @@ The larynx — the voice box — sits at the top of the neck, just below where t
 - Neck MRI (n = 44) and electromyography (n = 29) of the two pitch muscles found age-related decline of the thyroarytenoid across all measured dimensions, a more selective age pattern in the cricothyroid, and "higher CT activation amplitudes in females" [[malkidou2026]].
 - Vertical larynx position, measured by multi-channel electroglottography in 29 untrained speakers, was "clearly associated" with lung volume (high lung volume, lower larynx) and "strongly correlated with pitch"; both dependencies were stronger in males than in females [[iwarsson1998]].
 - The English-language wiki assigns pitch to cricothyroid tilt, closure to the arytenoid and lateral cricoarytenoid muscles, and opening to the posterior cricoarytenoids, which it says are used for breathing and not speech [[sumi-voice-anatomy]].
-- A Japanese learner on day three of practice records the first hurdle as holding the larynx high, and reports that the position drops as soon as they try to phonate or breathe [[note-nuu]].
-- A 2026 Japanese lesson headlines larynx position and shaping as 「超重要」 in its title, the same item Japanese practice puts first [[mitama2026b]].
+- A Japanese learner on day three of practice records the first hurdle as holding the larynx high, and reports that the position drops as soon as they try to phonate or breathe [[note-nuu]]; a 2026 lesson puts the same item in its title, larynx position and shaping as 「超重要」 [[mitama2026b]].
 
 ## Contested or unclear
 - The encyclopedia explanation of the Adam's apple as simply "the angle of the thyroid cartilage" is the usual one [[wikipedia-adams-apple]]; Kahane's cadaveric series found the lamina *angle* not significantly different by sex while the *eminence* was [[kahane1978]]. Prominence and angle are not the same measurement.

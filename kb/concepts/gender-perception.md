@@ -21,11 +21,11 @@ What listeners use when they assign a gender, or a degree of masculinity/feminin
 - Visible bodies shift voice-type ratings toward the visual cue, and trans listeners resisted this for vocal-tract-length manipulations but not for F0 manipulations [[marchandknight2026]].
 - Cisgender and TGD listeners agreed strongly on the masculine and feminine recordings drawn from r/transvoice (r(s) = 0.72 and 0.75) but not on the gender-neutral ones, where agreement was weak and non-significant [[kenny2025]].
 - Telling listeners that a speaker is trans changes how they categorise /s/, in opposite directions for trans women and trans men [[jessee2025]].
-- A note.com writer argues that 声パス depends on the listener's expectations and the quality of the channel rather than on the voice alone [[note-kyanaru-voicepass]].
 
 ## Contested or unclear
 - The relative weight of F0 versus formants (material-dependent; see [[fundamental-frequency]]).
 - Whether listener identity matters: small effect in [[brown2021]], possible differences reported in [[rosi2025]] [[hope2023]].
+- A note.com opinion piece, without measurements, argues that 声パス depends on the listener's expectations and the quality of the channel as much as on the voice [[note-kyanaru-voicepass]].
 
 ## Open questions
 - No Japanese-listener study of trans or 両声類 voices with modern methods exists in this vault; [[hasegawa2017]] and [[tanaka2022]] are the nearest.
