@@ -26,9 +26,9 @@ A hub for the languages outside this vault's main English/Japanese/Chinese/Korea
 - Instruments: the French TVQ MtF (Liège + Aix-en-Provence, n = 36 Belgian and French trans women) is usable in clinic, with six concern areas [[morsomme2019]].
 - Practice: a Glossa protocol trial with five trans women — F0, formant values and vocal range rose "parfois", interindividual variability prevented firm conclusions, patient satisfaction rose [[loret2019]].
 - Encyclopedic: fr Wikipedia titles the field Féminisation de la voix and names orthophonie as the route [[wikipedia-fr-feminisation-de-la-voix]].
-- Québec sources could not be verified in this pass (see the report); the vocabulary attested here is metropolitan French: féminisation de la voix [[wikipedia-fr-feminisation-de-la-voix]], orthophonie/orthophoniste (France), prise en charge, plainte and "féminisation vocale", the authors' own term [[loret2019]].
+- Québec sources could not be verified in this pass (see the report); the vocabulary attested here is metropolitan French: féminisation de la voix [[wikipedia-fr-feminisation-de-la-voix]], orthophonie/orthophoniste (France), prise en charge, plainte and "féminisation vocale", the article's title phrase [[loret2019]].
 - French exercise videos exist from a Spain-based coach [[femivoz]].
-- Routes and funding: a community wiki [[wikitrans-voix]] and a professional information service [[alloortho-voix]] describe the orthophoniste route, its waiting lists and the 60/40 split between Sécurité sociale and complementary insurers in the same terms; a Québec university teaching clinic taught féminisation/masculinisation de la voix by 2016 [[laval2016]]; French orthophonie students met the subject as a competition entry in 2018 [[fneo-loret2018]]; a peer tutorial hands on exercises attributed to a Parisian orthophoniste and a directory of trans-friendly practitioners [[effy2024]]; register terms are fausset, voix de tête, registre léger and mécanisme 2 against voix de poitrine [[wikipedia-fr-fausset]].
+- Routes and funding: a community wiki describes the orthophoniste route, its waiting lists and the 60/40 split between Sécurité sociale and complementary insurers [[wikitrans-voix]], and a professional information service describes the ALD-based coverage and the referral path [[alloortho-voix]]; a Québec university teaching clinic taught féminisation/masculinisation de la voix by 2016 [[laval2016]]; French orthophonie students met the subject as a competition entry in 2018 [[fneo-loret2018]]; a peer tutorial hands on exercises attributed to a Parisian orthophoniste and a directory of trans-friendly practitioners [[effy2024]]; register terms are fausset, voix de tête, registre léger and mécanisme 2 against voix de poitrine [[wikipedia-fr-fausset]].
 
 ## Italian
 - Instruments: I-TVQMtF, the Italian adaptation of the TVQ MtF, translated and preliminarily validated [[robotti2022]].
@@ -48,7 +48,7 @@ A hub for the languages outside this vault's main English/Japanese/Chinese/Korea
 ## Turkish
 - Instruments: TVQMtF-TR validated at Hacettepe (α = 0.972, ICC = 0.931) [[taskin2022]]; the reworked trans-male a-TVQFtM validated in Kocaeli (α = 0.975), with better scores in the hormone-treated group [[sirin2021]].
 - Access: of 31 Istanbul respondents none had received speech and language therapy and 54.8% did not know the service existed; those who knew learned online [[oguz2021]].
-- Surgery and acoustics: Wendler glottoplasty left F0 female-like but formants between the sexes in 20 Turkish-speaking trans women [[paltura2019]]; a laser reduction glottoplasty series at a tertiary centre [[yilmaz2021]].
+- Surgery and acoustics: Wendler glottoplasty left F0 female-like while F1 stayed male-like, F2 resembled women and F3–F4 differed from both sexes in 20 Turkish-speaking trans women [[paltura2019]]; a laser reduction glottoplasty series at a tertiary centre [[yilmaz2021]].
 
 ## Russian
 - The ru Wikipedia article Голосовая терапия для трансгендерных людей names both голосовая терапия and голосовой тренинг [[wikipedia-ru-golosovaya-terapiya]].
