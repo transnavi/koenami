@@ -133,12 +133,25 @@ pub struct Features {
     pub pitch_span: Option<f64>,
 }
 
+/// How much of the speech-level signal was voiced, and whether that is too
+/// little for pitch, resonance and harmonicity medians to describe a voice.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Voicing {
+    pub voiced_fraction: f64,
+    pub sparse: bool,
+}
+
 /// Everything [`measure`] reports.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Measurement {
     pub version: String,
     pub duration: f64,
     pub voiced_seconds: f64,
+    /// Seconds of speech-level frames: within 20 dB of the loudest 5 %.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active_seconds: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub voicing: Option<Voicing>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clipping_fraction: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -208,6 +221,8 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         version: VERSION.to_string(),
         duration: round(duration, 3),
         voiced_seconds: 0.0,
+        active_seconds: None,
+        voicing: None,
         clipping_fraction: None,
         level_dbfs: None,
         features: Features::default(),
@@ -267,13 +282,60 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         .map(|i| f0[i] > 0.0 && strength[i] >= 0.65 && db[i] > threshold)
         .collect();
     let count = voiced.iter().filter(|&&v| v).count();
+    // Speech-level frames: within 20 dB of the loudest 5 %. A noisy microphone
+    // floor can sit above the silence threshold, so the floor itself cannot be
+    // the reference for "how much of the speech was voiced".
+    let speech_level = threshold.max(quantile(&db, 0.95) - 20.0);
+    let active = db.iter().filter(|&&v| v > speech_level).count();
 
     result.voiced_seconds = round(count as f64 * STEP, 3);
+    result.active_seconds = Some(round(active as f64 * STEP, 3));
     result.clipping_fraction =
         Some(signal.iter().filter(|v| v.abs() >= 0.999).count() as f64 / signal.len() as f64);
     let level = (signal.iter().map(|v| v * v).sum::<f64>() / signal.len() as f64).sqrt();
     result.level_dbfs = Some(20.0 * (level + 1e-12).log10());
-    if count < 5 {
+    result.peak = Some(signal.iter().fold(0.0_f64, |m, v| m.max(v.abs())));
+
+    // Low-energy intervals longer than 250 ms, distinct from unvoiced
+    // consonants. They depend on level only, so they are reported whether or
+    // not pitch can be measured.
+    let mut intervals = Vec::new();
+    let mut begin: Option<usize> = None;
+    for j in 0..=db.len() {
+        let quiet = j < db.len() && db[j] <= threshold;
+        match (quiet, begin) {
+            (true, None) => begin = Some(j),
+            (false, Some(b)) => {
+                if (j - b) as f64 * STEP >= 0.25 {
+                    let last = (j - 1).min(times.len() - 1);
+                    intervals.push(QuietInterval {
+                        start: round((times[b] - STEP / 2.0).max(0.0), 3),
+                        end: round((times[last] + STEP / 2.0).min(duration), 3),
+                    });
+                }
+                begin = None;
+            }
+            _ => {}
+        }
+    }
+    let quiet_total: f64 = intervals.iter().map(|p| p.end - p.start).sum();
+    let quiet_mean = if intervals.is_empty() {
+        0.0
+    } else {
+        quiet_total / intervals.len() as f64
+    };
+    result.quiet_intervals = Some(intervals);
+
+    // Pitch, resonance and harmonicity are measured on voiced frames only.
+    // Whispered or mostly unvoiced input can still pass a handful of frames
+    // through the strength gate; those medians would describe noise, so they
+    // are withheld when voicing is sparse.
+    let sparse = count < 10 || (count as f64) < 0.1 * active as f64;
+    result.voicing = Some(Voicing {
+        voiced_fraction: round(count as f64 / active.max(1) as f64, 3),
+        sparse,
+    });
+    if sparse {
         result.reason =
             Some("No reliable voiced speech. Check the microphone and speak normally.".to_string());
         return result;
@@ -416,34 +478,8 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         pitch_span: Some(12.0 * (quantile(&data.f0, 0.9) / quantile(&data.f0, 0.1)).log2()),
     };
 
-    // Low-energy intervals longer than 250 ms, distinct from unvoiced
-    // consonants.
-    let mut intervals = Vec::new();
-    let mut begin: Option<usize> = None;
-    for j in 0..=db.len() {
-        let quiet = j < db.len() && db[j] <= threshold;
-        match (quiet, begin) {
-            (true, None) => begin = Some(j),
-            (false, Some(b)) => {
-                if (j - b) as f64 * STEP >= 0.25 {
-                    let last = (j - 1).min(times.len() - 1);
-                    intervals.push(QuietInterval {
-                        start: round((times[b] - STEP / 2.0).max(0.0), 3),
-                        end: round((times[last] + STEP / 2.0).min(duration), 3),
-                    });
-                }
-                begin = None;
-            }
-            _ => {}
-        }
-    }
-    let quiet_total: f64 = intervals.iter().map(|p| p.end - p.start).sum();
     features.quiet_pct = Some(100.0 * quiet_total / duration);
-    features.quiet_mean = Some(if intervals.is_empty() {
-        0.0
-    } else {
-        quiet_total / intervals.len() as f64
-    });
+    features.quiet_mean = Some(quiet_mean);
 
     result.formant_seconds = Some(round(data.f3.len() as f64 * STEP, 3));
     result.pitch_p10 = Some(quantile(&data.f0, 0.1));
@@ -454,8 +490,6 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
     if let (Some(d), Some(alt)) = (features.delta_f, features.delta_f_alternative) {
         result.resonance_sensitivity_pct = Some(round(100.0 * (d / alt - 1.0).abs(), 1));
     }
-    result.peak = Some(signal.iter().fold(0.0_f64, |m, v| m.max(v.abs())));
-    result.quiet_intervals = Some(intervals);
     result.features = features;
     result.track = track;
     result

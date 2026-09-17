@@ -24,6 +24,23 @@ class AcousticTests(unittest.TestCase):
         for audio in [np.zeros(RATE*5),rng.normal(0,.01,RATE*5)]:
             self.assertNotIn('delta_f',measure(audio)['features'])
 
+    def test_sparse_voicing_withholds_pitch_but_keeps_level_measures(self):
+        rng=np.random.default_rng(3);t=np.arange(RATE*4)/RATE
+        whisper=rng.normal(0,.05,RATE*4);seg=slice(RATE*2,RATE*2+int(RATE*.12))
+        whisper[seg]+=.3*np.sin(2*np.pi*200*t[seg])
+        m=measure(whisper)
+        self.assertTrue(m['voicing']['sparse']);self.assertIsNotNone(m['reason'])
+        self.assertEqual(m['features'],{});self.assertIn('quiet_intervals',m)
+        self.assertGreater(m['active_seconds'],3);self.assertIn('peak',m)
+
+    def test_brief_speech_in_a_long_noisy_window_is_not_sparse(self):
+        rng=np.random.default_rng(5);t=np.arange(RATE*8)/RATE
+        x=rng.normal(0,.003,RATE*8);seg=slice(RATE*3,RATE*3+int(RATE*.5))
+        x[seg]+=.2*sum(np.sin(2*np.pi*180*n*t[seg])/n for n in range(1,6))
+        m=measure(x)
+        self.assertFalse(m['voicing']['sparse']);self.assertGreater(m['voicing']['voiced_fraction'],.5)
+        self.assertAlmostEqual(m['features']['f0'],180,delta=2);self.assertLess(m['active_seconds'],1.5)
+
     def test_known_pitch(self):
         t=np.arange(RATE*3)/RATE
         for hz in [110,180,260]:
