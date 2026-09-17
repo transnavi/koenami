@@ -25,6 +25,7 @@ Lowering pitch and darkening resonance. Testosterone does most of the pitch work
 - Four direct testosterone injections into the bilateral vocal folds lowered mean F0 three months after the final injection in two hormone-naïve adults, with post-treatment testosterone and estradiol levels similar to baseline [[mortonjones2026]].
 - A ten-session protocol of 45-minute weekly sessions for one trans man eight months into hormone treatment targeted descending pitch at the end of sentences, less vowel prolongation, less pitch variation and a "chest resonance" placement, with costodiaphragmatic breathing, projection, maximum phonation time and pauses; his remaining complaints after the hormone-induced change improved with therapy [[santos2020]].
 - In interviews with 14 trans men across Brazil, voice was described as bearing on social interaction and health, and the authors argue for culturally competent care that avoids normative gender standards [[barros2018]].
+- Vietnamese community material for trans men teaches «Cách Luyện Giọng Nói Trầm Như Nam» — how to practise a voice as deep as a man's — and its author later stopped the trans topic, judging that what had been shared «chưa phải gốc rễ», was not the root of the matter [[yt-truongchuclinh-2020]].
 
 ## Open questions
 - Evidence for behavioural masculinization without testosterone (non-binary people, or people not taking T) is absent from this vault.

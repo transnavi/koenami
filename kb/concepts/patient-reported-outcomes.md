@@ -26,6 +26,7 @@ Questionnaires that capture how a person experiences their voice: the Trans Woma
 - A Belgian survey co-designed with the population it studied found 48.2% of 197 TGD respondents dissatisfied with their voices, 57.4% having engaged in voice and communication training with self-reported positive outcomes concentrated among (trans)feminine respondents, and non-binary people presumed female at birth facing more barriers to access [[papeleu2025b]].
 - The Würzburg group deduced a treatment algorithm for voice feminization from Voice Handicap Index and Life Satisfaction Questionnaire scores plus a new addendum [[meister2016]]; in the same 21-patient cohort the reduced general life satisfaction sat especially in the "friends, acquaintances, relatives" domain [[meister2017a]].
 - Post-phonosurgery rehabilitation in Taiwan in 1994 was already planned from a pre-operative self-evaluation questionnaire of vocal behaviours, with 25 patients sorted into voice-rest, vocal-hygiene or direct voice therapy programmes according to their amount of vocal use, environmental pressures and misuse behaviour [[wang1994tw]].
+- The Thai VHI-10 validates against the full Thai VHI (r = 0.969) with a cut-off of 7 giving 92.5% sensitivity and specificity, and cuts completion time from 14.3 to 4.2 minutes [[chantavanich2025]].
 
 ## Open questions
 - No validated Japanese TVQ/TWVQ in this vault — a translation and validation would be a concrete project.

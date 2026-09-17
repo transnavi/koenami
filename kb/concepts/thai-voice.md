@@ -15,6 +15,7 @@ What is known about gendered voice in Thai: an early domestic phonosurgical seri
 - Kamol Hospital offers VFS and VMS pages on a site published in twelve languages; VFS is described as pitch-and-resonance surgery with a menu of CTA, glottal-web formation and fold shortening [[kamol-hospital]].
 - The masculinization route is framed as the fallback for an insufficient testosterone response, with an explicit masculine-voice target of 100–125 Hz and preoperative stroboscopy and acoustic study [[kamol-hospital]].
 - A Thai-affiliated laryngologist (Khon Kaen University) co-authored the UCSF cohort giving GAVT dosage: mean 5.7 sessions in the first year, 62% satisfied — data from US patients, included as the closest Thai-author voice-therapy evidence found [[laohakittikul2025]].
+- A Thai-language podcast episode takes trans women's voices as a research object through «สัทศาสตร์และกลสัทศาสตร์» (phonetics and acoustic phonetics) together with anthropology, funded by the Thailand Research Fund [[yt-poshiepat-2021]].
 - Terminology anchors in Thai Wikipedia: เสียงพูด (voice) [[wikipedia-th-siangphut]], กล่องเสียง (larynx) [[wikipedia-th-klotsiang]], เส้นเสียง/สายเสียง (vocal cords) [[wikipedia-th-sensiang]], ความสั่นพ้องเด่น (formant — a native descriptive coinage, not a loanword) [[wikipedia-th-khwamsanphongden]], คนข้ามเพศ (transgender) [[wikipedia-th-khonkhamplet]] and หญิงข้ามเพศ (trans woman, with the community terms ที-เกิร์ล/T-girl) [[wikipedia-th-yingkhamplet]].
 
 ## Contested or unclear

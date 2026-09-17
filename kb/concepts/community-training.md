@@ -36,6 +36,11 @@ The hub over every non-clinical community resource in the vault: who teaches gen
 **Korean-language lessons.**
 - The most-watched Korean female-voice tutorial found in the 2026 sweep is an all-in-one course whose opening video is an orientation rather than a lesson: instructor background, goal setting, a stated difference from other teaching and the curriculum [[cocochang2023]].
 
+**Vietnamese, Indonesian and Thai channels.**
+- A Vietnamese YouTube series on converting the voice from male to female builds from «âm vực cơ bản» (basic vocal range) upward rather than from pitch targets, and mixes voice instruction with hormone and transition topics on one channel [[yt-senem]].
+- An Indonesian peer tutorial presents a male-to-female routine as «cara latihan aku» — how I practise — with frequency of practice as the only instruction [[yt-niningnnur-2022]].
+- Thai tutorials in the «ทำเสียงผู้หญิง (trap)» genre teach a female character voice to male speakers, are run out of a gaming Discord, and publish no vocal-health guidance on the pages read [[yt-hananeji]].
+
 **Editorial and practice rules the English-language wiki states.**
 - An exercise is included if it works most of the time and has a fairly long track record, then cleared through a risk gate: where a risk exists and a beginner-usable mitigation does not, the method is scrapped, and otherwise the mitigation is printed with the exercise [[sumi-pedagogy]].
 - The daily budget given is 5–10 minutes of exercises and no more than a few hours of a trained voice, with strain or added effort as the hard limit at any time and for any reason [[sumi-how-to-practice]].
