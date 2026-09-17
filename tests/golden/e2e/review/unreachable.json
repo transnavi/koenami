@@ -105,7 +105,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "一覧L ▶‹› 基準 問題 スキップS保存して次へEnter"
+   "text": "一覧L▶‹›基準問題スキップS保存して次へEnter"
   },
   "prev-speaker": {
    "tag": "button",
@@ -232,7 +232,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "話者一覧 ×"
+   "text": "話者一覧×"
   },
   "list-count": {
    "tag": "span",
