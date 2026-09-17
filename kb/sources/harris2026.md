@@ -1,9 +1,9 @@
 ---
 type: source
-key: harris2024
+key: harris2026
 title: "First-Person Perspectives of Gender-Affirming Voice Feminization Training: A Mixed Methods Approach"
 authors: [Harris KJ, Beck LA, Worth BF, Grossman RB]
-year: 2024
+year: 2026
 venue: Journal of Voice 40(4) 1243.e1–1243.e17
 doi: 10.1016/j.jvoice.2024.03.013
 url: https://doi.org/10.1016/j.jvoice.2024.03.013
@@ -27,5 +27,5 @@ topics: ["[[voice-feminization-therapy]]", "[[patient-reported-outcomes]]", "[[v
 - Mixed-methods design gives the field a template for pairing acoustic outcomes with what clients say mattered [[patient-reported-outcomes]].
 
 ## Notes
-- n = 21 survey, 5 interviews; authors declare that the first and third authors had provided paid voice services to three of the participants (those five were excluded from the interview round). US, English-speaking, online recruitment; self-report measures only, no acoustic data.
+- n = 21 survey, 5 interviews; the first and third authors declare having provided gender-affirming voice services to some participants (the record gives conflicting counts, three and five), and those participants were excluded from the interviews. Emerson College affiliations, so presumably a US sample; self-report measures only, no acoustic data.
 - Claims taken from the PubMed abstract (J Voice 2026 Jul;40(4); Epub 2024 Apr 30).

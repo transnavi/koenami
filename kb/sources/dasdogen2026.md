@@ -30,5 +30,5 @@ topics: ["[[voice-surgery]]", "[[harmonics-and-spectrum]]", "[[vocal-weight]]", 
 - The year-long drift after the operation is evidence that the outcome is surgical *plus* behavioural: a shortened fold length still has to be re-learned into the speaking pattern [[voice-quality]].
 
 ## Notes
-- Single centre (Icahn School of Medicine at Mount Sinai, with Sundberg co-authoring from KTH); the abstract does not report participant numbers or whether all had voice therapy as well as surgery.
+- Single centre (all four authors listed at the Icahn School of Medicine at Mount Sinai in the record); the abstract does not report participant numbers or whether all had voice therapy as well as surgery.
 - Claims taken from the PubMed abstract (Laryngoscope 2026 May;136(5); Epub 2025 Dec 25).

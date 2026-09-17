@@ -29,5 +29,5 @@ topics: ["[[intonation]]", "[[voice-feminization-therapy]]", "[[gender-perceptio
 - Raising the F0 25th percentile matches the argument that the *lower limit* of the speaking range drives masculine perception more than the mean [[fundamental-frequency]].
 
 ## Notes
-- Sample 30, single centre, Dutch-speaking, 4-week training block. Follow-up in this report runs 4 weeks after training; the 3-month and 1-year acoustic follow-up is reported separately [[leyns2026]].
+- Sample 30, single centre (Ghent, so presumably Dutch-speaking), 4-week training block. Follow-up in this report runs 4 weeks after training; the same group's 10-week pitch-plus-resonance protocol has a separate one-year acoustic follow-up [[leyns2026]], which does not cover this intonation block.
 - Claims taken from the PubMed abstract. Randomised Controlled Trial, indexed MEDLINE.

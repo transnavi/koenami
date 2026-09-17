@@ -28,5 +28,5 @@ topics: ["[[voice-feminization-therapy]]", "[[intonation]]", "[[patient-reported
 - Says plainly that the therapy relationship and the surrounding social feedback are part of the intervention, not packaging around it [[speech-language-pathology]].
 
 ## Notes
-- n = 10, self-selected from trials run by the same authors' group, in one Belgian centre; interviews were conducted by the team that trained them. Qualitative, no acoustic measures — the acoustic results are in [[papeleu2025]].
+- n = 10, self-selected from trials run by the same authors' group, in one Belgian centre; the abstract does not say who conducted the interviews. Qualitative, no acoustic measures — the acoustic results are in [[papeleu2025]].
 - Claims taken from the PubMed abstract (Int J Lang Commun Disord 2026 Sep-Oct).

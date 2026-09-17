@@ -31,5 +31,5 @@ topics: ["[[voice-feminization-therapy]]", "[[fundamental-frequency]]", "[[forma
 - Also reports that individual results depend on uncontrolled factors (home practice, extra sessions) — the practical variables a clinic cannot see.
 
 ## Notes
-- The trial's short-term and perceptual results are reported elsewhere [[leyns2023]] [[leyns2024]] [[leyns2025]]. Dutch-speaking Belgian participants; the abstract does not state the language of the read text.
+- The trial's short-term and perceptual results are reported elsewhere [[leyns2023]] [[leyns2024]]. Ghent University affiliations, so presumably Dutch-speaking participants; the abstract does not state the language of the read text.
 - Claims taken from the PubMed abstract.

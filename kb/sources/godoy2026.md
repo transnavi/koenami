@@ -17,7 +17,7 @@ topics: ["[[vocal-fatigue]]", "[[voice-health]]", "[[patient-reported-outcomes]]
 # Factors Associated With Vocal Fatigue In Transfeminine And Transmasculine Individuals Who Have Not Undergone Voice Harmonization
 
 ## What it says
-- Online cross-sectional survey in Brazil with convenience sampling: 34 transmasculine and 24 transfeminine participants who had *not* had voice harmonisation training or surgery.
+- Online cross-sectional survey in Brazil with convenience sampling: 34 transmasculine and 24 transfeminine participants who had not undergone "voice harmonization" (the title's term for the training programmes; the abstract does not say whether surgery is included).
 - Instruments: a characterisation questionnaire (age, gender, hormone therapy, whether they adjust their voice in communication, and in how many contexts), the Vocal Fatigue Index (VFI) and the global self-assessment item of the Trans Woman Voice Questionnaire (abstract, "Methods").
 - "Mean VFI scores were outside the reference values for Brazilian Portuguese" — i.e. the group scored in the range associated with vocal fatigue.
 - Transmasculine participants scored significantly higher on total VFI than transfeminine participants.

@@ -19,7 +19,7 @@ topics: ["[[gender-perception]]", "[[formants]]", "[[voice-impressions]]", "[[fu
 ## What it says
 - Two online experiments in which cisgender and transgender participants heard 18 actors on a continuum from bass to soprano singing or speaking short sentences. The video was untouched; audio was manipulated in F0 (experiment 1) or vocal tract length (experiment 2) with no audio–video desynchronisation (abstract).
 - Participants rated audio-only (A), video-only (V) and combined audio-visual (AV) stimuli. The manipulations lowered A-ratings for lower F0 and longer VTL and left V-ratings untouched, as intended.
-- AV ratings "were systematically shifted from A-ratings in the direction of V-ratings" — the seen body contaminates the heard voice (the paper situates this with McGurk-type integration and implicit bias).
+- AV ratings "were systematically shifted from A-ratings in the direction of V-ratings" — the seen body pulls the heard voice toward it.
 - "Trans participants were less prone to this bias in experiment 2 (with VTL manipulations), not in experiment 1 (with F0 manipulations)".
 - The authors' reading: "the trans advantage may partly originate from a better internalization of timbre cues, while pitch cues have more of a universal impact."
 

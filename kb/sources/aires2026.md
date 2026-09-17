@@ -25,7 +25,7 @@ topics: ["[[clinical-guidelines]]", "[[voice-surgery]]", "[[voice-feminization-t
 
 ## Bearing on voice training
 - A national body's clinical position that surgery is not gated on baseline pitch and that postoperative voice therapy is part of the protocol — the clinical counterweight to the framing where surgery is the last resort after training [[clinical-guidelines]] [[voice-surgery]].
-- Cite it for what it is: expert consensus at the lowest evidence levels, in a country with an active public surgical service [[transgender-care-context]] [[aires2023]].
+- Cite it for what it is: expert consensus at the lowest evidence levels [[transgender-care-context]] [[aires2023]].
 
 ## Notes
 - This is a consensus statement, not outcome data; the recommendations are the opinion of ten surgeons. Portuguese-language professional society, published in English in the Brazilian Journal of Otorhinolaryngology. The abstract does not list the absolute and relative contraindications themselves.

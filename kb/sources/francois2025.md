@@ -2,7 +2,7 @@
 type: source
 key: francois2025
 title: "Defining Goals of Transfeminine Individuals Seeking Gender-Affirming Voice Therapy: A Qualitative Study"
-authors: [Francois F, Wolfberg J, Croegaert-Koch C, Fujiki RB, Thibeault SL]
+authors: ["François F", Wolfberg J, Croegaert-Koch C, Fujiki RB, Thibeault SL]
 year: 2025
 venue: American Journal of Speech-Language Pathology 34(4) 2324–2333
 doi: 10.1044/2025_AJSLP-24-00369

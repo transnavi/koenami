@@ -26,7 +26,7 @@ topics: ["[[voice-surgery]]", "[[voice-masculinization]]", "[[clinical-guideline
 
 ## Bearing on voice training
 - The surgical option for masculinisation is essentially unevidenced at the moment: 23 patients, four studies, heterogeneous technique. Anything said about it in a guide or a forum is ahead of the data [[voice-surgery]] [[voice-masculinization]].
-- Contrasts with the feminisation side, where glottoplasty series run to hundreds of patients [[birkent2026]] — the asymmetry is a fact about where surgical effort has gone [[clinical-guidelines]].
+- Contrasts with the feminisation side, where pooled glottoplasty series cover several hundred patients [[chowdhury2025]] — the asymmetry is a fact about where surgical effort has gone [[clinical-guidelines]].
 
 ## Notes
 - The review registers no language or country limits in the abstract but reports no geography of the four included studies. Fundamental frequency is the outcome most often reported; intensity, projection and quality of life are named as gaps.

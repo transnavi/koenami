@@ -28,5 +28,5 @@ topics: ["[[gender-perception]]", "[[voice-impressions]]", "[[male-voice]]", "[[
 - The corpus being open makes this the kind of study a learner can hear rather than only read about [[tools]].
 
 ## Notes
-- Abstract and title taken from the PubMed record; the corpus (Palette of Voices) and rating data are described as openly available there. Listeners were US English speakers, mostly young adults; the abstract does not report talkers' own identities beyond "transgender and cisgender men", or the language variety of the 240 sentences.
+- Abstract and title taken from the PubMed record; the corpus (Palette of Voices) and rating data are described as openly available there. The abstract does not report the listeners' nationality, language or age (Minnesota affiliations suggest US English speakers); the abstract does not report talkers' own identities beyond "transgender and cisgender men", or the language variety of the 240 sentences.
 - Claims taken from the PubMed abstract.

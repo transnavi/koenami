@@ -1,9 +1,9 @@
 ---
 type: source
-key: marshall2025
+key: marshall2026
 title: "Voice Characteristics at Presentation in Nonbinary Individuals Seeking Gender-Affirming Voice Care"
 authors: [Marshall CR, Schneider SL, Gutierrez D, Crosby TW, Rosen CA, Ma Y, Young VN]
-year: 2025
+year: 2026
 venue: Laryngoscope 136(2) 825–831
 doi: 10.1002/lary.70158
 url: https://doi.org/10.1002/lary.70158
@@ -24,7 +24,7 @@ topics: ["[[nonbinary-voice]]", "[[patient-reported-outcomes]]", "[[transgender-
 - "All patients were stimulable for improvement toward patient-expressed goals based on SLP assessment, and voice therapy was recommended to all patients."
 
 ## Bearing on voice training
-- Baseline data for the group the literature usually omits: non-binary patients arrive with the same rate of voice dissatisfaction as binary patients, no laryngeal pathology, and — per the authors — goals that are stimulable, which is the clinical case for behavioural work rather than surgery [[nonbinary-voice]] [[speech-language-pathology]].
+- Baseline data for the group the literature usually omits: non-binary patients arrive with a high rate of voice dissatisfaction (92%), no laryngeal pathology, and — per the authors — goals that are stimulable, which is the clinical case for behavioural work rather than surgery [[nonbinary-voice]] [[speech-language-pathology]].
 - The 52% who used gendered language about their goals is a caution against assuming the target is "androgynous"; the paper presents both [[voice-impressions]].
 
 ## Notes

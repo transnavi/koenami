@@ -28,5 +28,5 @@ topics: ["[[patient-reported-outcomes]]", "[[nonbinary-voice]]", "[[voice-femini
 - Severity bands keyed to the SEM let a clinician tell a real change from retest noise, which the raw score alone cannot.
 
 ## Notes
-- n = 55 (30 retested), recruited online from people wanting voice change but not currently in therapy — a help-seeking sample rather than a clinical one. Published as an open-access article in the Journal of Voice. VENI is also used as an outcome measure in other recent training studies [[hirsch2026]] [[chadwick2026]].
+- n = 55 (30 retested), recruited online from people wanting voice change but not currently in therapy — a help-seeking sample rather than a clinical one. Published as an open-access article in the Journal of Voice. VENI is also used as an outcome measure in a recent training study [[hirsch2026]].
 - Claims taken from the PubMed abstract.

@@ -29,5 +29,5 @@ topics: ["[[articulation]]", "[[voice-quality]]", "[[voice-feminization-therapy]
 - 5.4 semitones is a concrete dose to compare against other programmes' F0 gains [[fundamental-frequency]].
 
 ## Notes
-- n = 16, single US centre (Cincinnati, with Central Florida co-authors), retrospective, no control group; independent-samples statistics on a small chart-review sample. The abstract does not say how many sessions or which therapy protocol.
+- n = 16, single US centre (Cincinnati, with Central Florida co-authors), retrospective, no control group; the abstract names no statistical test. The abstract does not say how many sessions or which therapy protocol.
 - Claims taken from the PubMed abstract.
