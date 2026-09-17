@@ -1,7 +1,7 @@
 /* The shared-result page: recomputes the verdict from the five measurements in the URL
    against the language's public library (ported from web/result.js). */
 import { finite } from './math';
-import { Scorer, parseResultParams, shareText, formatScore, METRIC_KEYS, METRIC_LABELS, METRIC_UNITS, METRIC_DIGITS, VERDICTS, LEANINGS, type Clip } from './score';
+import { Scorer, parseResultParams, shareText, formatScore, ageText, METRIC_KEYS, METRIC_LABELS, METRIC_UNITS, METRIC_DIGITS, VERDICTS, LEANINGS, type Clip } from './score';
 import { cardImage, intents, resultURL, systemShare, labelled } from './share';
 import { LANGUAGES as languages } from './languages';
 
@@ -24,13 +24,15 @@ async function main() {
 		return;
 	}
 	const scorer = new Scorer(library.clips as Clip[]),
-		result = scorer.score(parsed.features);
+		scored = scorer.score(parsed.features),
+		result = scored && { ...scored, age: parsed.age };
 	if (!result) {
 		fail('この言語の見本では判定を計算できません。');
 		return;
 	}
-	const url = resultURL(result.features, parsed.lang),
+	const url = resultURL(result.features, parsed.lang, location.origin, { age: result.age }),
 		text = shareText(result);
+	if (finite(result.age)) { $('result-age').querySelector('strong')!.textContent = ageText(result.age!); $('result-age').hidden = false; }
 	document.title = `Koenami · ${VERDICTS[result.verdict]}（${LEANINGS[result.verdict]} ${formatScore(result.display)}）`;
 	$('result-verdict').textContent = VERDICTS[result.verdict];
 	$('result-verdict').dataset.verdict = result.verdict;

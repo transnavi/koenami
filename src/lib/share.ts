@@ -31,8 +31,8 @@ async function loadFonts() {
 	const [regular, bold] = await Promise.all([load(400), load(700)]);
 	return (fonts = { 400: regular, 700: bold });
 }
-export function resultURL(features: Record<MetricKey, number>, lang: string, origin = location.origin) {
-	return `${origin}/r?${resultParams(features, lang)}`;
+export function resultURL(features: Record<MetricKey, number>, lang: string, origin = location.origin, extra: { age?: number } = {}) {
+	return `${origin}/r?${resultParams(features, lang, extra)}`;
 }
 export type Intent = { id: string; label: string; icon: string; href: string };
 export function intents(url: string, text: string): Intent[] {
@@ -65,7 +65,7 @@ export async function cardImage(result: ScoreResult, scorer: CardScorer): Promis
 	return new File([blob], `koenami-${result.display}.png`, { type: 'image/png' });
 }
 export function shareBundle(result: ScoreResult, scorer: CardScorer, lang: string) {
-	const url = resultURL(result.features, lang),
+	const url = resultURL(result.features, lang, location.origin, { age: result.age }),
 		text = shareText(result);
 	return { url, text, svg: cardSVG(result, scorer), intents: intents(url, text) };
 }

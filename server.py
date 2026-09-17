@@ -135,6 +135,7 @@ def create_app():
         """Age impression from the audEERING model; absent when the prepared model is not shipped."""
         if not perception.available(['age']): raise web.HTTPNotFound(text='年齢の推定モデルが用意されていません。')
         x = await read_audio(request)
+        # Local mode allows 15-minute takes for analysis; the age model only ever needs the first minute.
         if len(x) > RATE * 60: raise web.HTTPBadRequest(text='1分以内の音声を使用してください。')
         async with neural_gate:
             try: return respond(await asyncio.to_thread(perception.age, x))

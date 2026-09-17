@@ -66,7 +66,8 @@ export function gateFailure(detail: Record<string, unknown> | null | undefined):
 export function verdictOf(score: number): Verdict {
 	return score >= 15 ? 'female' : score <= -15 ? 'male' : 'androgynous';
 }
-export type ScoreResult = { version: number; score: number; display: number; verdict: Verdict; point: [number, number] | null; features: Record<MetricKey, number> };
+export type ScoreResult = {
+	age?: number; version: number; score: number; display: number; verdict: Verdict; point: [number, number] | null; features: Record<MetricKey, number> };
 /* Built from the public library alone, never from imported references, so the studio's
    verdict equals what /r and /og.png recompute from the shared numbers. */
 export class Scorer {
@@ -130,12 +131,17 @@ export class Scorer {
 	}
 }
 const PARAM: Record<MetricKey, string> = { f0: 'f0', delta_f: 'df', hnr: 'hnr', balance: 'bal', pitch_span: 'sp' };
-export function resultParams(features: Record<MetricKey, number>, lang: string): URLSearchParams {
+/* extra.age (years) is optional and only travels when the user chose to include it. */
+export function resultParams(features: Record<MetricKey, number>, lang: string, extra: { age?: number } = {}): URLSearchParams {
 	const p = new URLSearchParams({ v: String(SCORE_VERSION), l: lang });
 	for (const k of METRIC_KEYS) p.set(PARAM[k], Number(features[k]).toFixed(METRIC_DIGITS[k] + 1));
+	if (plausibleAge(extra.age)) p.set('age', String(Math.round(extra.age)));
 	return p;
 }
-export function parseResultParams(params: URLSearchParams): { features: Record<MetricKey, number>; lang: string; version: number } | null {
+/* Ages outside this band come from a model far off its training data; nothing shows or travels. */
+export const plausibleAge = (v: number | undefined): v is number => finite(v) && v! >= 5 && v! <= 100;
+export const ageText = (years: number) => `約${Math.round(years)}歳`;
+export function parseResultParams(params: URLSearchParams): { features: Record<MetricKey, number>; lang: string; version: number; age?: number } | null {
 	const features = {} as Record<MetricKey, number>;
 	for (const k of METRIC_KEYS) {
 		if (!params.has(PARAM[k])) return null;
@@ -143,7 +149,8 @@ export function parseResultParams(params: URLSearchParams): { features: Record<M
 		if (!finite(v)) return null;
 		features[k] = v;
 	}
-	return { features, lang: params.get('l') || 'ja', version: Number(params.get('v')) || 1 };
+	const age = Number(params.get('age'));
+	return { features, lang: params.get('l') || 'ja', version: Number(params.get('v')) || 1, age: params.has('age') && plausibleAge(age) ? Math.round(age) : undefined };
 }
 export function shareText(result: ScoreResult): string {
 	return `私の声は${VERDICTS[result.verdict]}でした（${LEANINGS[result.verdict]} ${formatScore(result.display)}）`;

@@ -30,7 +30,7 @@
 <main class="method result-page">
 <p class="result-eyebrow">この声の判定</p>
 <h1 id="result-verdict" class="result-verdict">読み込んでいます…</h1>
-<p id="result-score" class="result-score" hidden><strong>—</strong><span></span></p>
+<p id="result-score" class="result-score" hidden><strong>—</strong><span></span></p><p id="result-age" class="result-age" hidden>聞こえる年齢のめやす：<strong></strong><span class="small"><a href="/references.html#ref-audeering">audEERINGの年齢推定モデル</a>（CC BY-NC-SA 4.0）の参考値。日本語や練習中の声については未検証です。</span></p>
 <figure class="result-card"><img id="result-image" alt="" hidden><figcaption id="result-status" role="status"></figcaption></figure>
 <div id="result-actions" class="result-actions" hidden>
  <a id="result-try" class="result-primary" href="/ja/">自分の声も測る</a>

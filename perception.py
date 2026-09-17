@@ -80,6 +80,8 @@ def windows(x):
 
 
 def age_input(part):
+    # Per-window zero-mean, unit-variance input: what the shipped age-preprocessor_config.json
+    # (Wav2Vec2FeatureExtractor, do_normalize=true) does at 16 kHz; the 4 s windows come from windows().
     return (part - part.mean()) / np.sqrt(part.var() + 1e-7)
 
 

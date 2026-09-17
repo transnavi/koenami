@@ -9,6 +9,7 @@ import { TakeStore } from '$lib/storage';
 import { loadImported, importedAudio, importJVS, type ImportClip } from '$lib/corpus-import';
 import { Scorer, VERDICTS, LEANINGS, formatScore, gateFailure, representatives, type ScoreResult } from '$lib/score';
 import { shareBundle, cardImage, systemShare, labelled } from '$lib/share';
+import { ageText, plausibleAge } from '$lib/score';
 import captureUrl from '$lib/capture?worker&url';
 import type { Clip, Detail, PCM, Snapshot, Take, View, Words } from './types';
 
@@ -365,16 +366,25 @@ export function mountStudio() {
 		$('history-note').hidden = !rows.some((r) => r.unchecked);
 	}
 	let shareImage: File | null = null;
+	type AgeEstimate = { estimate: number; windowRange: [number, number]; windows: number };
+	const ageEstimates = new Map<string, AgeEstimate>();
 	$('verdict-readout').onclick = () => $('share-button').click();
 	$('verdict-help').onclick = () => { const s = state.scorer; openHelp(VERDICT_HELP, s?.available ? [['男性的な見本 · 中央80%', `${formatScore(Math.round(s.bands.male[0]))}〜${formatScore(Math.round(s.bands.male[1]))}`], ['女性的な見本 · 中央80%', `${formatScore(Math.round(s.bands.female[0]))}〜${formatScore(Math.round(s.bands.female[1]))}`], ['参照話者数', s.speakers.length]] : []); };
 	$('share-button').onclick = async () => {
-		const result = shareResult(); if (!result) return; const scorer = state.scorer!, lang = state.lang === 'lab' ? 'en' : state.lang, bundle = shareBundle(result, scorer, lang);
+		const scored = shareResult(); if (!scored) return; const scorer = state.scorer!, lang = state.lang === 'lab' ? 'en' : state.lang;
+		const ageKey = `${state.ownTakeId || state.ownId || state.ownName}|${state.ownPCM?.length || 0}|${state.ranges.own ? state.ranges.own.map((v) => v.toFixed(2)).join('-') : 'all'}`;
+		$<HTMLInputElement>('share-age-include').checked = false;
+		let result = { ...scored, age: undefined as number | undefined }, bundle = shareBundle(result, scorer, lang), renders = 0;
 		$('share-verdict').textContent = VERDICTS[result.verdict]; $('share-verdict').dataset.verdict = result.verdict; $('share-score').querySelector('strong')!.textContent = formatScore(result.display); $('share-score').querySelector('span')!.textContent = LEANINGS[result.verdict];
-		$('share-intents').replaceChildren(...bundle.intents.map((i) => { const a = document.createElement('a'); a.href = i.href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.innerHTML = labelled(i.icon, i.label); a.title = `${i.label}に投稿`; return a; }));
-		$<HTMLAnchorElement>('share-open').href = bundle.url; $('share-open').innerHTML = labelled('external', '結果ページ'); $('share-system').innerHTML = labelled('share', '共有…'); $('share-copy').innerHTML = labelled('link', 'リンクをコピー'); $('share-save').innerHTML = labelled('image', '画像を保存'); $('share-status').textContent = ''; $('share-image').hidden = true;
+		const applyBundle = () => { $('share-intents').replaceChildren(...bundle.intents.map((i) => { const a = document.createElement('a'); a.href = i.href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.innerHTML = labelled(i.icon, i.label); a.title = `${i.label}に投稿`; return a; })); $<HTMLAnchorElement>('share-open').href = bundle.url; }; applyBundle(); $('share-open').innerHTML = labelled('external', '結果ページ'); $('share-system').innerHTML = labelled('share', '共有…'); $('share-copy').innerHTML = labelled('link', 'リンクをコピー'); $('share-save').innerHTML = labelled('image', '画像を保存'); $('share-status').textContent = ''; $('share-image').hidden = true;
 		$('share-copy').onclick = async () => { try { await navigator.clipboard.writeText(bundle.url); $('share-status').textContent = 'リンクをコピーしました。'; } catch { $('share-status').textContent = bundle.url; } };
 		$('share-system').hidden = !navigator.share; $('share-system').onclick = () => systemShare(result, scorer, lang).catch((e) => { if (e.name !== 'AbortError') $('share-status').textContent = e.message; });
 		shareImage = null; const render = async () => shareImage || (shareImage = await cardImage(result, scorer));
+		const showAge = () => { const a = ageEstimates.get(ageKey), lo = a && Math.round(a.windowRange[0]), hi = a && Math.round(a.windowRange[1]); $('share-age-value').textContent = a ? `${ageText(a.estimate)}${a.windows > 1 && lo !== hi ? `（4秒ごとの推定 ${lo}〜${hi}）` : ''}` : ''; $('share-age-run').textContent = a ? 'もう一度推定' : '推定する'; $('share-age-include-label').hidden = !a || !plausibleAge(a.estimate); if (a && !plausibleAge(a.estimate)) $('share-age-value').textContent += '（範囲外のため共有には含められません）'; }; showAge();
+		const refresh = async () => { const a = ageEstimates.get(ageKey); result = { ...scored, age: a && $<HTMLInputElement>('share-age-include').checked ? a.estimate : undefined }; bundle = shareBundle(result, scorer, lang); applyBundle(); shareImage = null; const token = ++renders; try { const file = await render(); if (token !== renders || !$<HTMLDialogElement>('share-dialog').open) return; const img = $<HTMLImageElement>('share-image'); if (img.src) URL.revokeObjectURL(img.src); img.src = URL.createObjectURL(file); img.alt = `${bundle.text}。5つの指標と見本の分布${result.age ? '、年齢のめやす' : ''}を描いた画像。`; } catch (e) { $('share-status').textContent = (e as Error).message; } };
+		$<HTMLInputElement>('share-age-include').onchange = refresh;
+		$('share-age-run').hidden = !state.ownPCM;
+		$<HTMLButtonElement>('share-age-run').onclick = async () => { if (!state.ownPCM) return; const r = state.ranges.own, pcm = r ? state.ownPCM.slice(Math.round(r[0] * 16000), Math.round(r[1] * 16000)) : state.ownPCM; const button = $<HTMLButtonElement>('share-age-run'); button.disabled = true; button.textContent = '推定中…'; try { const a = await api('/api/age', { method: 'POST', body: pcm }) as AgeEstimate; if (ageEstimates.size >= 50) ageEstimates.delete(ageEstimates.keys().next().value!); ageEstimates.set(ageKey, a); showAge(); if ($<HTMLInputElement>('share-age-include').checked) await refresh(); } catch (e) { $('share-status').textContent = (e as Error).message; } finally { button.disabled = false; if (!ageEstimates.get(ageKey)) button.textContent = '推定する'; } };
 		$('share-save').onclick = async () => { try { download(await render(), `koenami-${result.display}.png`); } catch (e) { $('share-status').textContent = (e as Error).message; } };
 		renderHistory(result);
 		$<HTMLDialogElement>('share-dialog').showModal();

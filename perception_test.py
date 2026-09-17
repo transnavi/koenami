@@ -22,6 +22,26 @@ class WindowTests(unittest.TestCase):
             with self.assertRaises(ValueError):perception.windows(x)
 
 
+class AgeTests(unittest.TestCase):
+    def test_summary_is_median_and_window_range_in_years(self):
+        class Session:
+            def __init__(self):self.values=iter([27.4,31.9,25.0])
+            def run(self,names,inputs):return [np.array([[next(self.values)]],dtype=np.float32)]
+        session=Session()
+        with patch.object(perception,'session',lambda name:session):
+            result=perception.age_summary([np.zeros((1,64000),dtype=np.float32)]*3)
+        self.assertEqual(result['estimate'],27.4)
+        self.assertEqual(result['windowRange'],[25.0,31.9])
+        self.assertEqual(result['windows'],3)
+        self.assertFalse(result['validatedJapanesePerception'])
+
+    def test_non_finite_output_rejected(self):
+        class Session:
+            def run(self,names,inputs):return [np.array([[np.nan]],dtype=np.float32)]
+        with patch.object(perception,'session',lambda name:Session()):
+            with self.assertRaises(ValueError):perception.age_summary([np.zeros((1,64000),dtype=np.float32)])
+
+
 class TimbreTests(unittest.TestCase):
     def test_timbre_pools_layer_frames_over_speech_in_one_centre_crop(self):
         calls=[]
