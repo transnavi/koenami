@@ -30,7 +30,7 @@ topics: ["[[transgender-care-context]]", "[[european-languages-voice]]", "[[pati
 - The surgical figure — ten participants out of 197, with "mixed results" — is the patient-side version of what the surgical series report clinically [[scarpa2025]], [[meister2017a]].
 
 ## Notes
-- Cross-sectional survey in a peer-reviewed trans health journal; graded medium. Convenience sample recruited through community channels, so the proportions are not population estimates.
+- Cross-sectional survey in a peer-reviewed trans health journal; graded medium. The abstract describes a community-based participatory design and does not state the sampling method, so the proportions are not population estimates.
 - The abstract prints the surgical proportion as "(0.05%; 10/197)", which does not match the accompanying fraction (10/197 ≈ 5%); the figure is reproduced as published.
 - Only the abstract was read (via OpenAlex; the doi.org record carries no abstract); the full text is paywalled and was not accessed.
 

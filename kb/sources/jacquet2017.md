@@ -5,7 +5,7 @@ title: "Apport du biofeedback dans le cadre d'un traitement de féminisation voc
 title_en: "Contribution of biofeedback in a voice feminization treatment with a transgender (MtF) participant: a case study"
 authors: [Jacquet C]
 year: 2017
-venue: "Mémoire de master, Université de Liège (Matheo); promoteurs Morsomme D, Remacle A, Etienne A-M, Lagier A"
+venue: "Mémoire de master, Université de Liège (Matheo); promoteurs Morsomme D, Remacle A; comité Etienne A-M, Lagier A"
 url: https://matheo.uliege.be/handle/2268.2/3726
 language: fr
 kind: master's thesis
@@ -33,7 +33,7 @@ topics: ["[[voice-feminization-therapy]]", "[[fundamental-frequency]]", "[[europ
 ## Notes
 - Master's thesis (mémoire) in speech and language therapy, Université de Liège, deposited in Matheo; defended 2017-06-21. Single exploratory case; graded low, per the vault's rule for theses and single-speaker work.
 - Only the record and French abstract were read; the PDF (s145045Jacquet2017.pdf) is under restricted access, so no numerical results, session counts or measurement protocol are recorded here.
-- Committee listed on the record: Morsomme (voice), Remacle (voice), Etienne (health psychology), Lagier (MD).
+- Promotors on the record: Morsomme and Remacle (voice); committee members: Etienne (health psychology), Lagier (MD).
 
 ## Related
 [[morsomme2022]] · [[remacle2018]] · [[voice-feminization-therapy]]

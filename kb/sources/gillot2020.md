@@ -5,7 +5,7 @@ title: "Étude de cas : Mesure de l'efficacité de la méthode Astudillo dans le
 title_en: "Case study: measuring the effectiveness of the Astudillo method in speech-therapy management for voice feminization"
 authors: [Gillot A]
 year: 2020
-venue: "Mémoire de master, Université de Liège (Matheo); promoteurs Morsomme D, Warnier M, Scantamburlo G"
+venue: "Mémoire de master, Université de Liège (Matheo); promotrice Morsomme D; comité Warnier M, Scantamburlo G"
 url: https://matheo.uliege.be/handle/2268.2/10732
 language: fr
 kind: master's thesis
