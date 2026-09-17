@@ -21,7 +21,7 @@ topics: ["[[community-training]]", "[[voice-therapy-techniques]]", "[[english-co
 - The speech-like set is short conversational paragraphs written in the wiki's own voice, covering reported speech, questions, exclamation, numbers and filled pauses — for example 「Wait so they went anyway? I thought the weather was going to be bad so I cancelled it all on my end. How are they even going to get there aren't the bridges closed?」 and 「What the hell was that!? They just spawnsniped the whole damn team like 5 times in a row all with headshots. This has gotta be hacks.」
 - The non-speech-like set: 「The rainbow passage」 — 「This passage is very common and useful for starting out. It's a good example of a passage that can be read both as speech and as a script.」 — plus a crate passage and a set of Nasality Tests.
 - A third category, 「Weird passages」: 「These passages are fun, confusing, or just plain weird. You can use these if you'd like to spice up your practices!」 The example given is the Turbo Encabulator, quoted in full and credited 「Source」 to the original text.
-- It also lists three isolated practice sentences (「Many, but not all plants, flower in spring.」, 「She longed to dance beneath the moonlight.」, 「Finding nothing in front they muttered to themselves about something inane.」) and points to Simple English Wikipedia as a source of more passages.
+- The nasality tests' "Nasal:" list holds four sentences (「The wind blew strongly and bent trees over in a show of staggering natural strength.」, 「Many, but not all plants, flower in spring.」, 「She longed to dance beneath the moonlight.」, 「Finding nothing in front they muttered to themselves about something inane.」), and the page points to Simple English Wikipedia as a source of more passages.
 
 ## Bearing on voice training
 - The distinction the page draws is the one that matters for practice design: conversational prose tests intonation and the changes of a real exchange, while a set text like the rainbow passage tests stability and comparability over time ([[intonation]], [[sumi-how-to-practice]]).
@@ -29,4 +29,4 @@ topics: ["[[community-training]]", "[[voice-therapy-techniques]]", "[[english-co
 - The Turbo Encabulator is included for its phonetic awkwardness — a nonsense-technical text that forces articulation rather than letting stock phrases carry the reading ([[articulation]]).
 
 ## Limits
-- Wiki page, "under construction", no sources for the passages beyond the credited Turbo Encabulator, and no claim is made about what any of them measures. The rainbow passage and the speech-like set were read in full; the crate passage and the nasality tests were listed but not quoted here.
+- Wiki page, "under construction", no sources for the passages beyond the credited Turbo Encabulator, and no claim is made about what any of them measures. The rainbow passage and the speech-like set were read in full; the crate passage was listed but not quoted here.

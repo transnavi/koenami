@@ -17,7 +17,7 @@ topics: ["[[english-community]]", "[[community-training]]", "[[voice-feminizatio
 
 ## What it says
 - The page is an invited list of public Discord servers, with the terms of inclusion stated: 「This is of course not exhaustive! Help us fill this out and add more information about the servers. Contact sumianvoice (gmail) to provide more info or servers or make a pull request. Be sure to add a description of what they do, don't send private servers or servers that don't want to be publicly listed. It is best to ask permission first.」
-- The seven servers listed, as described by the page:
+- The eight servers listed, as described by the page:
   - **Voice Art Project** — 「The main maintainers of this site, open voice community run by Sumi」; 「has events and practice sessions」; 「anyone can teach or hold events there」; 「server maintainer (Sumi#7352) offers paid lessons and two free lessons a week randomly selected from an open pool」; 「allows voice related advertising」.
   - **Scinguistics** — 「Huge community with regular events」; 「singing, voice science discussion, linguistics, trans voice」; 「server maintainers offer paid lessons」.
   - **TransVoice** — 「Discord server associated with the r/TransVoice community.」; 「fairly active community」; 「no official voice teachers」.

@@ -27,7 +27,7 @@ The sequel to the July report, with F0 and formant numbers for each configuratio
 - Reference observation: real 女声 samples show 「F0が200～400Hzくらい振れる抑揚がつく」, i.e. the F0 range across an utterance rather than a target pitch.
 
 ## Bearing on voice training
-- The published F0/F1 pairs make the community's own mapping visible: raising pitch also moved F1 up (346 → 348 → 869 Hz), and the "bright" configurations are the ones with high F1, which is the resonance change the acoustic literature measures as formant shift [[formants]] [[fundamental-frequency]].
+- The published F0/F1 pairs, as measured: 普通の地声 180/346 Hz, 高めの地声 223/348 Hz, 脱力裏声 337/869 Hz, エッジ裏声 351/679 Hz; F1 does not follow F0 across them, and the configuration the writer calls brighter (エッジ裏声) has the lower F1 of the two 裏声 settings [[formants]] [[fundamental-frequency]].
 - The self-correction about which muscle produces "edge" is exactly the confusion the English-language wiki warns about under glottal onsets and false-fold closure [[sumi-onsets]] [[vocal-folds]].
 - The hyoid-thyroid massage and the report of a "longer, lighter" sensation afterwards is a community-level intervention with no measurement behind it — recorded as the writer's impression, which they also flag as an impression [[larynx-anatomy]] [[voice-health]].
 - The complaint about "forward/back" placement language is the same complaint the wiki's terminology page makes about chasing sensations instead of sounds [[sumi-questionable-terms]] [[community-training]].

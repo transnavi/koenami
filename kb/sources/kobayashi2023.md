@@ -19,7 +19,7 @@ topics: ["[[voice-therapy-techniques]]", "[[speech-language-pathology]]", "[[jap
 
 ## What it says
 - The bibliographic record is what was verified: a feature article by 小林礼佳 in JOHNS 39(5) 502–504, published 2023-05-01, in a special issue on non-surgical treatment of voice, articulation and language, under the heading 音声障害の治療・病態に応じた対応 and the sub-heading 性同一性障害.
-- The article page behind the DOI (webview.isho.jp) returned the bibliographic header only; the body requires a login, so nothing from the text is quoted or attributed here.
+- The article page behind the DOI (webview.isho.jp) returned the bibliographic header; the body requires a login, and an independent check in the same session reported that the opening paragraph (はじめに) renders above the wall, which this note does not quote because a later fetch was refused (403). Nothing from the text is quoted or attributed here.
 - The author is the same 言語聴覚士 whose report on voice therapy around voice surgery at a Japanese clinic is already in the vault ([[kobayashi2022]]), where voice therapy is described as starting preoperatively and continuing after type 4 thyroplasty.
 
 ## Bearing on voice training
@@ -27,4 +27,4 @@ topics: ["[[voice-therapy-techniques]]", "[[speech-language-pathology]]", "[[jap
 - It is the 2023 Japanese-language reference for what is offered without surgery, which the vault otherwise holds only through the clinics' patient-facing pages ([[kyoto-ent-training]], [[kyoto-ent-rehab]]) and the community's own material ([[japanese-community]]).
 
 ## Limits
-- Not read. Title, author, journal, volume, pages and date are all that was retrieved; the article's content is unknown here.
+- Not read. Title, author, journal, volume, pages and date are all that was retrieved; the article's body is not read here.

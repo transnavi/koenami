@@ -22,7 +22,7 @@ topics: ["[[gender-perception]]", "[[japanese-voice]]", "[[japanese-community]]"
 
 ## Bearing on voice training
 - The title is the reason the note exists: it is the only Japanese academic item found that studies 両声類 — performers, not trans speakers, who produce a convincing female voice without surgery or hormones — and it asks the vault's own question, which acoustic features carry the impression of a female voice ([[gender-perception]]).
-- The index of this vault records that no study of 両声類 voices was in it; this is the pointer to the one that exists, and its lead author's other work in the same period includes アニメ声 processing, 音声の「かわいさ」の知覚 and 統計的声質変換における印象変化 (titles in the same CiNii index), which together are the Japanese research line on voice impression rather than on trans voice.
+- The index of this vault records that no study of 両声類 voices was in it; this is the pointer to the one that exists, and its lead author's other work in the same period includes prosody analysis for processing speech into アニメ風 voices, the perception of 「かわいらしさ」 in speech, and impression change under statistical voice conversion (paraphrased from titles in the same CiNii index), which together are the Japanese research line on voice impression rather than on trans voice.
 
 ## Limits
 - No abstract, no full text and no page numbers were retrievable; the proceedings are not open. Nothing about the method, the sample, the features or the results is claimed here.

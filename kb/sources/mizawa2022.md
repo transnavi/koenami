@@ -31,4 +31,4 @@ topics: ["[[voice-surgery]]", "[[voice-health]]", "[[vocal-folds]]", "[[japanese
 - For a trainee this is a reason the pitch a Japanese TP4 produces should be treated as settled, and the postoperative plan built around it rather than around a further surgical revision.
 
 ## Notes
-- Single case, one institution (日本医科大学系), patient described only as 78歳男性 with no other history given; nothing about listener perception or voice quality beyond the acoustic measures quoted. The abstract is the full text read here; the article's discussion and figures were not fetched.
+- Single case, one institution (日本大学医学部), patient described only as 78歳男性 with no other history given; nothing about listener perception or voice quality beyond the acoustic measures quoted. The abstract is the full text read here; the article's discussion and figures were not fetched.
