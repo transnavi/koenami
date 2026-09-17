@@ -18,6 +18,9 @@ use phx_pitch::{PitchParams, pitch_track};
 use phx_voice::{HarmonicityParams, HnrTrack, hnr_track_cc};
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "wasm")]
+mod wasm;
+
 /// Measurement standard. Every stored feature carries it; a change here
 /// means every library and every saved take is re-measured. A library keeps
 /// the version of the engine that built it until it is rebuilt.
