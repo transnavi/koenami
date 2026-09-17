@@ -1,7 +1,7 @@
 {
  "url": "/zh-CN/",
- "title": "Koenami · 女声・男声のボイトレツール",
- "lang": "ja",
+ "title": "Koenami · 女声・男声练习工具",
+ "lang": "zh-CN",
  "theme": "light",
  "dialogs": [],
  "focus": "body",
@@ -165,7 +165,7 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "見本の言語"
+    "aria-label": "语言（界面与参考声音）"
    },
    "value": "zh-CN",
    "options": [
@@ -195,27 +195,27 @@
     },
     {
      "value": "lab",
-     "text": "発声の見本",
+     "text": "Voice lab",
      "disabled": false,
      "data": {}
     }
    ],
    "trigger": "普通话",
    "expanded": "false",
-   "text": "日本語普通话English한국어発声の見本"
+   "text": "日本語 普通话 English 한국어 Voice lab"
   },
   "corpus-count": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "20音声 · 20人"
+   "text": "20段 · 20人"
   },
   "tour-restart": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "画面ガイド",
-    "aria-label": "画面ガイド"
+    "title": "界面向导",
+    "aria-label": "界面向导"
    },
    "text": ""
   },
@@ -223,8 +223,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "この言語の見本では判定を計算できません",
-    "aria-label": "判定を共有",
+    "title": "这种语言的参考声音无法计算判定",
+    "aria-label": "分享判定",
     "disabled": ""
    },
    "text": ""
@@ -233,8 +233,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "設定",
-    "aria-label": "設定"
+    "title": "设置",
+    "aria-label": "设置"
    },
    "text": ""
   },
@@ -242,8 +242,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "出典と関連ツール",
-    "aria-label": "出典と関連ツール"
+    "title": "来源与相关工具",
+    "aria-label": "来源与相关工具"
    },
    "text": ""
   },
@@ -251,8 +251,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "明暗を切り替え",
-    "aria-label": "明暗を切り替え"
+    "title": "切换明暗",
+    "aria-label": "切换明暗"
    },
    "text": ""
   },
@@ -260,10 +260,10 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "判定を共有",
+    "title": "分享判定",
     "disabled": ""
    },
-   "text": "声の判定この言語では計算できません男性的中間女性的"
+   "text": "声音判定 这种语言无法计算 男性化 中间 女性化"
   },
   "verdict-main": {
    "tag": "span",
@@ -271,13 +271,13 @@
    "attrs": {
     "data-verdict": ""
    },
-   "text": "この言語では計算できません"
+   "text": "这种语言无法计算"
   },
   "verdict-word": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "この言語では計算できません"
+   "text": "这种语言无法计算"
   },
   "verdict-number": {
    "tag": "b",
@@ -319,7 +319,7 @@
    "tag": "canvas",
    "class": "",
    "attrs": {
-    "aria-label": "自分と見本の5指標を重ねた図"
+    "aria-label": "自己与参考声音五项指标的叠加图"
    },
    "text": ""
   },
@@ -328,17 +328,17 @@
    "class": "",
    "attrs": {
     "role": "group",
-    "aria-label": "声の指標"
+    "aria-label": "声音指标"
    },
-   "text": "高さ—Hz273響き—Hz ΔF1095質感—dB12.0明るさ—dB-9.4抑揚—半音7.1"
+   "text": "音高 — Hz 273 共鸣 — Hz ΔF 1095 质感 — dB 12.0 明亮度 — dB -9.4 抑扬 — 半音 7.1"
   },
   "report-button": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "比較レポートを開く"
+    "title": "打开对比报告"
    },
-   "text": "見本との差—"
+   "text": "与参考的差距 —"
   },
   "fit-value": {
    "tag": "strong",
@@ -351,39 +351,40 @@
    "class": "",
    "attrs": {
     "tabindex": "0",
-    "aria-label": "声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。形は1.2秒の移動中央値のうち中心に近い80%。"
+    "aria-label": "声音分布图。滚轮缩放，拖动旋转，Shift+拖动平移。轮廓取1.2秒移动中位数中靠近中心的80%。"
    },
    "text": ""
   },
   "projection-controls": {
    "tag": "div",
    "class": "",
-   "attrs": {},
-   "text": "主成分男女差"
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "主成分 男女差异"
   },
   "auto-rotate": {
    "tag": "button",
    "class": "",
    "attrs": {
     "aria-pressed": "false",
-    "title": "3Dの自動回転を切り替え",
-    "hidden": ""
+    "title": "切换3D自动旋转"
    },
-   "text": "↻ 自動回転"
+   "text": "↻ 自动旋转"
   },
   "space-label": {
    "tag": "span",
    "class": "",
    "attrs": {
-    "title": "5つの指標から計算した主成分空間"
+    "title": "由五项指标计算的主成分空间"
    },
-   "text": "声の分布"
+   "text": "声音分布"
   },
   "group-legend": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "女性的な声男性的な声自分"
+   "text": "女性化声音 男性化声音 自己"
   },
   "show-female": {
    "tag": "input",
@@ -419,8 +420,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "拡大",
-    "aria-label": "拡大"
+    "title": "放大",
+    "aria-label": "放大"
    },
    "text": ""
   },
@@ -428,8 +429,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "縮小",
-    "aria-label": "縮小"
+    "title": "缩小",
+    "aria-label": "缩小"
    },
    "text": ""
   },
@@ -437,8 +438,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "声の広がりに表示を合わせる",
-    "aria-label": "声の広がりに表示を合わせる"
+    "title": "让视图对准声音的范围",
+    "aria-label": "让视图对准声音的范围"
    },
    "text": ""
   },
@@ -446,8 +447,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "表示をリセット",
-    "aria-label": "表示をリセット"
+    "title": "重置视图",
+    "aria-label": "重置视图"
    },
    "text": ""
   },
@@ -463,25 +464,25 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "音声の表示"
+    "aria-label": "信号视图"
    },
    "value": "pitch",
    "options": [
     {
      "value": "pitch",
-     "text": "高さ",
+     "text": "音高",
      "disabled": false,
      "data": {}
     },
     {
      "value": "spectrogram",
-     "text": "スペクトログラム",
+     "text": "语谱图",
      "disabled": false,
      "data": {}
     },
     {
      "value": "spectrum",
-     "text": "スペクトル",
+     "text": "频谱",
      "disabled": false,
      "data": {}
     },
@@ -492,9 +493,9 @@
      "data": {}
     }
    ],
-   "trigger": "高さ",
+   "trigger": "音高",
    "expanded": "false",
-   "text": "高さスペクトログラムスペクトル波形"
+   "text": "音高 语谱图 频谱 波形"
   },
   "signal-own": {
    "tag": "button",
@@ -502,16 +503,16 @@
    "attrs": {
     "aria-pressed": "false"
    },
-   "text": "自分"
+   "text": "自己"
   },
   "signal-both": {
    "tag": "button",
    "class": "",
    "attrs": {
     "aria-pressed": "true",
-    "title": "各範囲の長さを0〜100%にそろえます。単語の位置は一致しません。"
+    "title": "各选区分别拉伸到0〜100%的长度，词的位置不会对齐。"
    },
-   "text": "重ねる"
+   "text": "叠加"
   },
   "signal-ref": {
    "tag": "button",
@@ -519,28 +520,28 @@
    "attrs": {
     "aria-pressed": "false"
    },
-   "text": "見本"
+   "text": "参考"
   },
   "words-button": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "文字起こしと単語分割"
+    "title": "转写并切分成词"
    },
-   "text": "単語"
+   "text": "词"
   },
   "range-label": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "0:08"
+   "text": "0:00"
   },
   "range-reset": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "選択範囲を解除（Esc）",
-    "aria-label": "選択範囲を解除",
+    "title": "取消选区（Esc）",
+    "aria-label": "取消选区",
     "hidden": ""
    },
    "text": ""
@@ -550,7 +551,7 @@
    "class": "",
    "attrs": {
     "tabindex": "0",
-    "aria-label": "波形をクリックして再生位置を移動、ドラッグして範囲を選択。左右キーで再生位置を移動。高さの目盛りをクリックするとHzと音名が切り替わります。"
+    "aria-label": "点击波形跳转播放位置，拖动选择范围。左右方向键移动播放位置。点击音高刻度可在Hz与音名之间切换。"
    },
    "text": ""
   },
@@ -559,7 +560,7 @@
    "class": "",
    "attrs": {
     "role": "group",
-    "aria-label": "推定した単語の位置"
+    "aria-label": "估计的词位置"
    },
    "text": ""
   },
@@ -567,10 +568,10 @@
    "tag": "dialog",
    "class": "",
    "attrs": {
-    "aria-label": "見本を選ぶ"
+    "aria-label": "选择参考声音"
    },
    "open": false,
-   "text": "見本の声10女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 0091阿拉波朗是巴西米纳斯吉拉斯州的一个市镇。273 Hz · 0:08☆F 0011F 0041F 0021F 0071F 0081F 0031F 0101F 0051F 0061もっと見る"
+   "text": "参考声音 10 女性化声音 中性声音 男性化声音 全部声音 ★ 收藏 导入的声音 按说话人名称 最接近我的声音 音高从低到高 音高从高到低 教师 001 002 003 DSFD 音高 低 中 高 共鸣 低 中 高 重量 轻 中 重 添加JVS参考声音 100人 · 5,000段 下载 ↗ 导入 F 009 1 F 001 1 F 004 1 F 002 1 F 007 1 F 008 1 F 003 1 F 010 1 F 005 1 F 006 1 显示更多"
   },
   "library-count": {
    "tag": "span",
@@ -582,8 +583,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "見本の音声を読み込む",
-    "aria-label": "見本の音声を読み込む"
+    "title": "导入参考音频",
+    "aria-label": "导入参考音频"
    },
    "text": ""
   },
@@ -591,37 +592,37 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "見本の種類"
+    "aria-label": "参考声音的类型"
    },
    "value": "female",
    "options": [
     {
      "value": "female",
-     "text": "女性的な声",
+     "text": "女性化声音",
      "disabled": false,
      "data": {}
     },
     {
      "value": "androgynous",
-     "text": "中性的な声",
+     "text": "中性声音",
      "disabled": false,
      "data": {}
     },
     {
      "value": "male",
-     "text": "男性的な声",
+     "text": "男性化声音",
      "disabled": false,
      "data": {}
     },
     {
      "value": "all",
-     "text": "すべての声",
+     "text": "全部声音",
      "disabled": false,
      "data": {}
     },
     {
      "value": "favorites",
-     "text": "★ お気に入り",
+     "text": "★ 收藏",
      "disabled": false,
      "data": {
       "data-divider": ""
@@ -629,21 +630,21 @@
     },
     {
      "value": "custom",
-     "text": "読み込んだ声",
+     "text": "导入的声音",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "女性的な声",
+   "trigger": "女性化声音",
    "expanded": "false",
-   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声"
+   "text": "女性化声音 中性声音 男性化声音 全部声音 ★ 收藏 导入的声音"
   },
   "reference-upload": {
    "tag": "input",
    "class": "",
    "attrs": {
     "type": "file",
-    "aria-label": "見本の音声を読み込む",
+    "aria-label": "导入参考音频",
     "hidden": ""
    },
    "value": "",
@@ -654,46 +655,46 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "並び順"
+    "aria-label": "排序"
    },
    "value": "high",
    "options": [
     {
      "value": "name",
-     "text": "話者名順",
+     "text": "按说话人名称",
      "disabled": false,
      "data": {}
     },
     {
      "value": "near",
-     "text": "自分の声に近い順",
+     "text": "最接近我的声音",
      "disabled": true,
      "data": {}
     },
     {
      "value": "low",
-     "text": "高さが低い順",
+     "text": "音高从低到高",
      "disabled": false,
      "data": {}
     },
     {
      "value": "high",
-     "text": "高さが高い順",
+     "text": "音高从高到低",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "高さが高い順",
+   "trigger": "音高从高到低",
    "expanded": "false",
-   "text": "話者名順自分の声に近い順高さが低い順高さが高い順"
+   "text": "按说话人名称 最接近我的声音 音高从低到高 音高从高到低"
   },
   "search": {
    "tag": "input",
    "class": "",
    "attrs": {
     "type": "search",
-    "placeholder": "検索",
-    "aria-label": "見本を検索"
+    "placeholder": "搜索",
+    "aria-label": "搜索参考声音"
    },
    "value": "",
    "text": ""
@@ -704,19 +705,19 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い"
+   "text": "教师 001 002 003 DSFD 音高 低 中 高 共鸣 低 中 高 重量 轻 中 重"
   },
   "teacher": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "講師"
+    "aria-label": "教师"
    },
    "value": "all",
    "options": [
     {
      "value": "all",
-     "text": "講師",
+     "text": "教师",
      "disabled": false,
      "data": {}
     },
@@ -745,126 +746,126 @@
      "data": {}
     }
    ],
-   "trigger": "講師",
+   "trigger": "教师",
    "expanded": "false",
-   "text": "講師001002003DSFD"
+   "text": "教师 001 002 003 DSFD"
   },
   "teacher-pitch": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "講師の声の高さ"
+    "aria-label": "教师的音高"
    },
    "value": "all",
    "options": [
     {
      "value": "all",
-     "text": "高さ",
+     "text": "音高",
      "disabled": false,
      "data": {}
     },
     {
      "value": "low",
-     "text": "低い",
+     "text": "低",
      "disabled": false,
      "data": {}
     },
     {
      "value": "med",
-     "text": "中間",
+     "text": "中",
      "disabled": false,
      "data": {}
     },
     {
      "value": "high",
-     "text": "高い",
+     "text": "高",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "高さ",
+   "trigger": "音高",
    "expanded": "false",
-   "text": "高さ低い中間高い"
+   "text": "音高 低 中 高"
   },
   "teacher-resonance": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "講師の響き"
+    "aria-label": "教师的共鸣"
    },
    "value": "all",
    "options": [
     {
      "value": "all",
-     "text": "響き",
+     "text": "共鸣",
      "disabled": false,
      "data": {}
     },
     {
      "value": "low",
-     "text": "低い",
+     "text": "低",
      "disabled": false,
      "data": {}
     },
     {
      "value": "med",
-     "text": "中間",
+     "text": "中",
      "disabled": false,
      "data": {}
     },
     {
      "value": "high",
-     "text": "高い",
+     "text": "高",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "響き",
+   "trigger": "共鸣",
    "expanded": "false",
-   "text": "響き低い中間高い"
+   "text": "共鸣 低 中 高"
   },
   "teacher-weight": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "講師の声の重さ"
+    "aria-label": "教师的声音重量"
    },
    "value": "all",
    "options": [
     {
      "value": "all",
-     "text": "重さ",
+     "text": "重量",
      "disabled": false,
      "data": {}
     },
     {
      "value": "low",
-     "text": "軽い",
+     "text": "轻",
      "disabled": false,
      "data": {}
     },
     {
      "value": "med",
-     "text": "中間",
+     "text": "中",
      "disabled": false,
      "data": {}
     },
     {
      "value": "high",
-     "text": "重い",
+     "text": "重",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "重さ",
+   "trigger": "重量",
    "expanded": "false",
-   "text": "重さ軽い中間重い"
+   "text": "重量 轻 中 重"
   },
   "sample-scroll": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 0091阿拉波朗是巴西米纳斯吉拉斯州的一个市镇。273 Hz · 0:08☆F 0011F 0041F 0021F 0071F 0081F 0031F 0101F 0051F 0061もっと見る"
+   "text": "添加JVS参考声音 100人 · 5,000段 下载 ↗ 导入 F 009 1 F 001 1 F 004 1 F 002 1 F 007 1 F 008 1 F 003 1 F 010 1 F 005 1 F 006 1 显示更多"
   },
   "jvs-banner": {
    "tag": "div",
@@ -872,61 +873,59 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込む"
+   "text": "添加JVS参考声音 100人 · 5,000段 下载 ↗ 导入"
   },
   "jvs-download": {
    "tag": "a",
    "class": "",
    "attrs": {
-    "title": "JVS公式配布（ZIP、約3.5GB）",
+    "title": "JVS官方发布（ZIP，约3.5GB）",
     "href": "https://drive.google.com/file/d/19oAw8wWn3Y7z6CKChRdAyGOB9yupL_Xt/view",
     "target": "_blank",
     "rel": "noreferrer"
    },
-   "text": "ダウンロード ↗"
+   "text": "下载 ↗"
   },
   "jvs-banner-import": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "読み込む"
+   "text": "导入"
   },
   "sample-list": {
    "tag": "div",
    "class": "",
    "attrs": {},
    "rows": {
-    "count": 22,
+    "count": 20,
     "head": [
-     "details#zh-CN:female:1509b5046171|speaker-folder||true|F 0091阿拉波朗是巴西米纳斯吉拉斯州的一个市镇。273 Hz · 0:08☆",
-     "summary#||||F 0091",
-     "button#common_voice_zh-CN_19004591|sample-row|true||阿拉波朗是巴西米纳斯吉拉斯州的一个市镇。273 Hz · 0:08",
-     "button#|favorite|false||☆",
-     "details#zh-CN:female:18951ac3bf98|speaker-folder||false|F 0011",
-     "summary#||||F 0011",
-     "details#zh-CN:female:967f9d1f10e4|speaker-folder||false|F 0041",
-     "summary#||||F 0041",
-     "details#zh-CN:female:ab228da47ca1|speaker-folder||false|F 0021",
-     "summary#||||F 0021",
-     "details#zh-CN:female:5c9ef73afb7d|speaker-folder||false|F 0071",
-     "summary#||||F 0071",
-     "details#zh-CN:female:5de20ef76530|speaker-folder||false|F 0081",
-     "summary#||||F 0081",
-     "details#zh-CN:female:baca42c81db6|speaker-folder||false|F 0031",
-     "summary#||||F 0031",
-     "details#zh-CN:female:193215495f16|speaker-folder||false|F 0101",
-     "summary#||||F 0101",
-     "details#zh-CN:female:ddacc7bca927|speaker-folder||false|F 0051",
-     "summary#||||F 0051",
-     "details#zh-CN:female:57100681c3c0|speaker-folder||false|F 0061",
-     "summary#||||F 0061"
+     "details#zh-CN:female:1509b5046171|speaker-folder||false|F 009 1",
+     "summary#||||F 009 1",
+     "details#zh-CN:female:18951ac3bf98|speaker-folder||false|F 001 1",
+     "summary#||||F 001 1",
+     "details#zh-CN:female:967f9d1f10e4|speaker-folder||false|F 004 1",
+     "summary#||||F 004 1",
+     "details#zh-CN:female:ab228da47ca1|speaker-folder||false|F 002 1",
+     "summary#||||F 002 1",
+     "details#zh-CN:female:5c9ef73afb7d|speaker-folder||false|F 007 1",
+     "summary#||||F 007 1",
+     "details#zh-CN:female:5de20ef76530|speaker-folder||false|F 008 1",
+     "summary#||||F 008 1",
+     "details#zh-CN:female:baca42c81db6|speaker-folder||false|F 003 1",
+     "summary#||||F 003 1",
+     "details#zh-CN:female:193215495f16|speaker-folder||false|F 010 1",
+     "summary#||||F 010 1",
+     "details#zh-CN:female:ddacc7bca927|speaker-folder||false|F 005 1",
+     "summary#||||F 005 1",
+     "details#zh-CN:female:57100681c3c0|speaker-folder||false|F 006 1",
+     "summary#||||F 006 1"
     ],
     "tail": [
-     "summary#||||F 0101",
-     "details#zh-CN:female:ddacc7bca927|speaker-folder||false|F 0051",
-     "summary#||||F 0051",
-     "details#zh-CN:female:57100681c3c0|speaker-folder||false|F 0061",
-     "summary#||||F 0061"
+     "summary#||||F 010 1",
+     "details#zh-CN:female:ddacc7bca927|speaker-folder||false|F 005 1",
+     "summary#||||F 005 1",
+     "details#zh-CN:female:57100681c3c0|speaker-folder||false|F 006 1",
+     "summary#||||F 006 1"
     ]
    }
   },
@@ -936,14 +935,14 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "もっと見る"
+   "text": "显示更多"
   },
   "play-reference": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "見本を再生",
-    "aria-label": "見本を再生"
+    "title": "播放参考",
+    "aria-label": "播放参考"
    },
    "text": ""
   },
@@ -951,9 +950,9 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "見本を選ぶ"
+    "title": "选择参考声音"
    },
-   "text": "F 009273 Hz · 1095 ΔF"
+   "text": "F 009 273 Hz · 1095 ΔF"
   },
   "selected-name": {
    "tag": "strong",
@@ -971,8 +970,8 @@
    "tag": "button",
    "class": "favorite",
    "attrs": {
-    "aria-label": "お気に入りに追加",
-    "title": "お気に入り",
+    "aria-label": "加入收藏",
+    "title": "收藏",
     "aria-pressed": "false"
    },
    "text": "☆"
@@ -981,8 +980,8 @@
    "tag": "a",
    "class": "",
    "attrs": {
-    "title": "出典",
-    "aria-label": "出典",
+    "title": "来源",
+    "aria-label": "来源",
     "target": "_blank",
     "rel": "noreferrer",
     "href": "https://huggingface.co/datasets/fsicoli/common_voice_17_0/resolve/8262c16bf297c87a9cd88c51997c4758ed7a8ba2/audio/zh-CN/test/zh-CN_test_0.tar"
@@ -1007,8 +1006,8 @@
    "tag": "button",
    "class": "record-button",
    "attrs": {
-    "title": "録音（R）",
-    "aria-label": "新しく録音",
+    "title": "录音（R）",
+    "aria-label": "新录音",
     "aria-pressed": "false"
    },
    "text": ""
@@ -1017,23 +1016,23 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "自分の声を再生（Space）",
-    "aria-label": "自分の声を再生",
+    "title": "播放我的声音（空格）",
+    "aria-label": "播放我的声音",
     "disabled": ""
    },
-   "text": "再生"
+   "text": "播放"
   },
   "take-select": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "録音履歴",
-    "title": "録音履歴",
-    "data-display-label": "録音履歴"
+    "aria-label": "录音记录",
+    "title": "录音记录",
+    "data-display-label": "录音记录"
    },
    "value": "",
    "options": [],
-   "trigger": "録音履歴",
+   "trigger": "录音记录",
    "expanded": "false",
    "text": ""
   },
@@ -1054,16 +1053,16 @@
    "attrs": {
     "role": "switch",
     "aria-checked": "false",
-    "title": "マイクの声をリアルタイムに表示",
-    "aria-label": "リアルタイム測定を開始"
+    "title": "实时显示麦克风里的声音",
+    "aria-label": "开始实时测量"
    },
-   "text": "リアルタイム<time>"
+   "text": "实时 <time>"
   },
   "live-mode-label": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "リアルタイム"
+   "text": "实时"
   },
   "live-time": {
    "followsPlayback": true
@@ -1073,8 +1072,8 @@
    "class": "",
    "attrs": {
     "aria-pressed": "false",
-    "aria-label": "自分の声を聴く",
-    "title": "自分の声を聴く（イヤホン推奨）",
+    "aria-label": "听自己的声音",
+    "title": "听自己的声音（建议戴耳机）",
     "disabled": ""
    },
    "text": ""
@@ -1087,7 +1086,7 @@
     "min": "0.5",
     "max": "1.5",
     "step": "0.05",
-    "aria-label": "再生速度"
+    "aria-label": "播放速度"
    },
    "value": "1",
    "text": ""
@@ -1096,8 +1095,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "標準速度に戻す",
-    "aria-label": "標準速度に戻す"
+    "title": "恢复标准速度",
+    "aria-label": "恢复标准速度"
    },
    "text": "1×"
   },
@@ -1105,8 +1104,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "見本、自分の順に再生",
-    "aria-label": "見本、自分の順に再生",
+    "title": "先播放参考，再播放我的声音",
+    "aria-label": "先播放参考，再播放我的声音",
     "aria-pressed": "false"
    },
    "text": "A/B"
@@ -1116,7 +1115,7 @@
    "class": "",
    "attrs": {
     "type": "file",
-    "aria-label": "音声を読み込む"
+    "aria-label": "导入音频"
    },
    "value": "",
    "files": 0,
@@ -1183,25 +1182,25 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "見本を追加×音声ファイルを選ぶ ↗JVSを追加公式サイトでダウンロード ↗公式のZIP、または展開したフォルダーを選択。100人・5,000音声を追加できます。ZIPを選ぶフォルダーを選ぶ中止音声の利用はJVSの規約に従ってください。読み込んだ見本は、このブラウザーに保存されます。"
+   "text": "添加参考声音 × 选择音频文件 ↗ 添加JVS 在官方网站下载 ↗ 选择官方ZIP或解压后的文件夹，可添加100人、5,000段音频。 选择ZIP 选择文件夹 中止 音频的使用须遵守JVS的条款。导入的参考声音保存在本浏览器中。"
   },
   "import-audio": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "音声ファイルを選ぶ ↗"
+   "text": "选择音频文件 ↗"
   },
   "choose-jvs-zip": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "ZIPを選ぶ"
+   "text": "选择ZIP"
   },
   "choose-jvs-folder": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "フォルダーを選ぶ"
+   "text": "选择文件夹"
   },
   "jvs-zip": {
    "tag": "input",
@@ -1230,7 +1229,7 @@
    "class": "",
    "attrs": {
     "role": "progressbar",
-    "aria-label": "JVSの読み込み",
+    "aria-label": "JVS导入进度",
     "aria-valuemin": "0",
     "aria-valuemax": "100",
     "aria-valuenow": "0",
@@ -1259,7 +1258,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "設定配色ライトダーク端末に合わせるリアルタイムの解析時間1.5 s3 s6 s12 sリアルタイムに表示する時間5 秒再生音量をそろえる測定値を書き出す録音履歴まとめてダウンロードすべて削除"
+   "text": "设置 配色 浅色 深色 跟随设备 实时分析的时长 1.5 s 3 s 6 s 12 s 实时显示的时长 5 秒 统一播放音量 导出测量值 录音记录 全部下载 全部删除"
   },
   "theme-select": {
    "tag": "koe-select",
@@ -1269,26 +1268,26 @@
    "options": [
     {
      "value": "light",
-     "text": "ライト",
+     "text": "浅色",
      "disabled": false,
      "data": {}
     },
     {
      "value": "dark",
-     "text": "ダーク",
+     "text": "深色",
      "disabled": false,
      "data": {}
     },
     {
      "value": "system",
-     "text": "端末に合わせる",
+     "text": "跟随设备",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "端末に合わせる",
+   "trigger": "跟随设备",
    "expanded": "false",
-   "text": "ライトダーク端末に合わせる"
+   "text": "浅色 深色 跟随设备"
   },
   "live-window": {
    "tag": "koe-select",
@@ -1323,7 +1322,7 @@
    ],
    "trigger": "3 s",
    "expanded": "false",
-   "text": "1.5 s3 s6 s12 s"
+   "text": "1.5 s 3 s 6 s 12 s"
   },
   "live-shape-window": {
    "tag": "input",
@@ -1362,33 +1361,63 @@
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "測定値を書き出す"
+   "text": "导出测量值"
   },
   "download-all": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "まとめてダウンロード"
+   "text": "全部下载"
   },
   "delete-all": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "すべて削除"
+   "text": "全部删除"
   },
   "info-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗参考文献 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考： transnavi.jp"
+   "text": "Koenami 这是一个面向想练成女声或男声的人、跨性别者、以及想试试另一种声音的人的声音训练工具。选一个参考声音，模仿着录下自己的声音，你的声音会显示在同一个声学空间里，可以看到离目标声音有多近。实时测量能让你一边调整声音一边把握靠近的方向。 参考声音除日语外，还收录了普通话、英语和韩语。免费开源，录音保存在浏览器里。今后计划加入声音训练教程、从语音学・声乐・声学・解剖学角度的分析，以及更接近听者感受的评价方法。 使用方法（日文） ↗ 声音的原理与练习指南（日文） ↗ 测量方法与来源（日文） ↗ 参考文献（日文） ↗ Acoustic Gender Space ↗ Phonia ↗ InFormant ↗ 源代码（GitHub） ↗ 配色参考： transnavi.jp"
+  },
+  "rename-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "重命名 保存"
+  },
+  "rename-input": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "aria-label": "录音名称"
+   },
+   "value": "",
+   "text": ""
+  },
+  "rename-status": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "rename-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "保存"
   },
   "report-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "比較×レポートを保存"
+   "text": "对比 × 保存报告"
   },
   "report-content": {
    "tag": "div",
@@ -1400,14 +1429,14 @@
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "レポートを保存"
+   "text": "保存报告"
   },
   "metric-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "何で変わるか注意"
+   "text": "受什么影响 注意"
   },
   "metric-title": {
    "tag": "h2",
@@ -1444,14 +1473,14 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "声の判定 —共有…リンクをコピー画像を保存結果ページ ↗判定の推移この端末の録音古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は測定方法と出典にあります。"
+   "text": "声音判定 — 听感年龄的参考 估计 包含在图片和链接中 这是年龄估计模型（audEERING）给出的参考值。对日语以及练习中的声音，它与「听起来几岁」是否一致尚未验证。音频只用于这次估计，不会被保存。 分享… 复制链接 保存图片 结果页 ↗ 判定的变化 本设备上的录音 较早的录音没有记录判定条件（有声段长度等），这里未经条件检查直接显示。 链接只包含五项测量值，不会发送录音。判定的解读见 测量方法与来源 （日文）。"
   },
   "verdict-help": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "判定の読み方",
-    "aria-label": "判定の読み方"
+    "title": "如何理解判定",
+    "aria-label": "如何理解判定"
    },
    "text": ""
   },
@@ -1483,6 +1512,38 @@
    },
    "text": ""
   },
+  "share-age-run": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "估计"
+  },
+  "share-age-value": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-age-include-label": {
+   "tag": "label",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "包含在图片和链接中"
+  },
+  "share-age-include": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox"
+   },
+   "value": "on",
+   "checked": false,
+   "text": ""
+  },
   "share-intents": {
    "tag": "span",
    "class": "",
@@ -1496,7 +1557,7 @@
     "type": "button",
     "hidden": ""
    },
-   "text": "共有…"
+   "text": "分享…"
   },
   "share-copy": {
    "tag": "button",
@@ -1504,7 +1565,7 @@
    "attrs": {
     "type": "button"
    },
-   "text": "リンクをコピー"
+   "text": "复制链接"
   },
   "share-save": {
    "tag": "button",
@@ -1512,7 +1573,7 @@
    "attrs": {
     "type": "button"
    },
-   "text": "画像を保存"
+   "text": "保存图片"
   },
   "share-open": {
    "tag": "a",
@@ -1522,7 +1583,7 @@
     "target": "_blank",
     "rel": "noopener"
    },
-   "text": "結果ページ ↗"
+   "text": "结果页 ↗"
   },
   "share-history": {
    "tag": "section",
@@ -1530,14 +1591,14 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "判定の推移この端末の録音古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。"
+   "text": "判定的变化 本设备上的录音 较早的录音没有记录判定条件（有声段长度等），这里未经条件检查直接显示。"
   },
   "history-chart": {
    "tag": "svg",
    "class": "",
    "attrs": {
     "role": "img",
-    "aria-label": "録音ごとの判定の推移"
+    "aria-label": "每次录音的判定变化"
    },
    "text": ""
   },
@@ -1553,7 +1614,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。"
+   "text": "较早的录音没有记录判定条件（有声段长度等），这里未经条件检查直接显示。"
   }
  },
  "storage": {
@@ -1561,6 +1622,9 @@
    "voice-speed": 1,
    "voice-tour": {
     "done": true
+   },
+   "koenami-session": {
+    "lang": "zh-CN"
    }
   },
   "idb": {}
@@ -1590,12 +1654,19 @@
   {
    "seq": 4,
    "method": "GET",
+   "path": "/api/catalog",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 5,
+   "method": "GET",
    "path": "/api/library",
    "query": "lang=zh-CN",
    "status": 200
   },
   {
-   "seq": 5,
+   "seq": 6,
    "method": "GET",
    "path": "/api/detail/common_voice_zh-CN_19004591",
    "query": "",

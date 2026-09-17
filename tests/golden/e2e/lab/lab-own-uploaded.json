@@ -165,7 +165,7 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "見本の言語"
+    "aria-label": "言語（画面と見本）"
    },
    "value": "lab",
    "options": [
@@ -195,14 +195,14 @@
     },
     {
      "value": "lab",
-     "text": "発声の見本",
+     "text": "Voice lab",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "発声の見本",
+   "trigger": "Voice lab",
    "expanded": "false",
-   "text": "日本語普通话English한국어発声の見本"
+   "text": "日本語 普通话 English 한국어 Voice lab"
   },
   "corpus-count": {
    "tag": "span",
@@ -263,7 +263,7 @@
     "title": "判定を共有",
     "disabled": ""
    },
-   "text": "声の判定この言語では計算できません男性的中間女性的"
+   "text": "声の判定 この言語では計算できません 男性的 中間 女性的"
   },
   "verdict-main": {
    "tag": "span",
@@ -330,7 +330,7 @@
     "role": "group",
     "aria-label": "声の指標"
    },
-   "text": "高さ226Hz201響き1097Hz ΔF1089質感9.3dB8.7明るさ-15.1dB-17.8抑揚7.5半音9.6"
+   "text": "高さ 226 Hz 201 響き 1097 Hz ΔF 1089 質感 9.3 dB 8.7 明るさ -15.1 dB -17.8 抑揚 7.5 半音 9.6"
   },
   "report-button": {
    "tag": "button",
@@ -338,7 +338,7 @@
    "attrs": {
     "title": "見本との5指標の標準化距離。0が一致。比較レポートを開く。"
    },
-   "text": "見本との差2.33"
+   "text": "見本との差 2.33"
   },
   "fit-value": {
    "tag": "strong",
@@ -361,7 +361,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "主成分男女差"
+   "text": "主成分 男女差"
   },
   "auto-rotate": {
    "tag": "button",
@@ -386,7 +386,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "女性的な声男性的な声自分"
+   "text": "女性的な声 男性的な声 自分"
   },
   "show-female": {
    "tag": "input",
@@ -497,7 +497,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さスペクトログラムスペクトル波形"
+   "text": "高さ スペクトログラム スペクトル 波形"
   },
   "signal-own": {
    "tag": "button",
@@ -573,7 +573,7 @@
     "aria-label": "見本を選ぶ"
    },
    "open": false,
-   "text": "見本の声4女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むlab · 0012lab 1204 Hz · 0:08☆lab 5195 Hz · 0:09☆lab · 0022lab · 0032lab 3201 Hz · 0:05☆lab 7193 Hz · 0:09☆lab · DSFD2もっと見る"
+   "text": "見本の声 4 女性的な声 中性的な声 男性的な声 すべての声 ★ お気に入り 読み込んだ声 話者名順 自分の声に近い順 高さが低い順 高さが高い順 講師 001 002 003 DSFD 高さ 低い 中間 高い 響き 低い 中間 高い 重さ 軽い 中間 重い JVSの見本を追加 100人 · 5,000音声 ダウンロード ↗ 読み込む lab · 001 2 lab 1 204 Hz · 0:08 ☆ lab 5 195 Hz · 0:09 ☆ lab · 002 2 lab · 003 2 lab 3 201 Hz · 0:05 ☆ lab 7 193 Hz · 0:09 ☆ lab · DSFD 2 もっと見る"
   },
   "library-count": {
    "tag": "span",
@@ -639,7 +639,7 @@
    ],
    "trigger": "すべての声",
    "expanded": "false",
-   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声"
+   "text": "女性的な声 中性的な声 男性的な声 すべての声 ★ お気に入り 読み込んだ声"
   },
   "reference-upload": {
    "tag": "input",
@@ -688,7 +688,7 @@
    ],
    "trigger": "話者名順",
    "expanded": "false",
-   "text": "話者名順自分の声に近い順高さが低い順高さが高い順"
+   "text": "話者名順 自分の声に近い順 高さが低い順 高さが高い順"
   },
   "search": {
    "tag": "input",
@@ -705,7 +705,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い"
+   "text": "講師 001 002 003 DSFD 高さ 低い 中間 高い 響き 低い 中間 高い 重さ 軽い 中間 重い"
   },
   "teacher": {
    "tag": "koe-select",
@@ -748,7 +748,7 @@
    ],
    "trigger": "講師",
    "expanded": "false",
-   "text": "講師001002003DSFD"
+   "text": "講師 001 002 003 DSFD"
   },
   "teacher-pitch": {
    "tag": "koe-select",
@@ -785,7 +785,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さ低い中間高い"
+   "text": "高さ 低い 中間 高い"
   },
   "teacher-resonance": {
    "tag": "koe-select",
@@ -822,7 +822,7 @@
    ],
    "trigger": "響き",
    "expanded": "false",
-   "text": "響き低い中間高い"
+   "text": "響き 低い 中間 高い"
   },
   "teacher-weight": {
    "tag": "koe-select",
@@ -859,13 +859,13 @@
    ],
    "trigger": "重さ",
    "expanded": "false",
-   "text": "重さ軽い中間重い"
+   "text": "重さ 軽い 中間 重い"
   },
   "sample-scroll": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むlab · 0012lab 1204 Hz · 0:08☆lab 5195 Hz · 0:09☆lab · 0022lab · 0032lab 3201 Hz · 0:05☆lab 7193 Hz · 0:09☆lab · DSFD2もっと見る"
+   "text": "JVSの見本を追加 100人 · 5,000音声 ダウンロード ↗ 読み込む lab · 001 2 lab 1 204 Hz · 0:08 ☆ lab 5 195 Hz · 0:09 ☆ lab · 002 2 lab · 003 2 lab 3 201 Hz · 0:05 ☆ lab 7 193 Hz · 0:09 ☆ lab · DSFD 2 もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
@@ -873,7 +873,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込む"
+   "text": "JVSの見本を追加 100人 · 5,000音声 ダウンロード ↗ 読み込む"
   },
   "jvs-download": {
    "tag": "a",
@@ -899,29 +899,29 @@
    "rows": {
     "count": 16,
     "head": [
-     "details#lab:lab:001|speaker-folder||true|lab · 0012lab 1204 Hz · 0:08☆lab 5195 Hz · 0:09☆",
-     "summary#||||lab · 0012",
-     "button#lab-1|sample-row|false||lab 1204 Hz · 0:08",
+     "details#lab:lab:001|speaker-folder||true|lab · 001 2 lab 1 204 Hz · 0:08 ☆ lab 5 195 Hz · 0:09 ☆",
+     "summary#||||lab · 001 2",
+     "button#lab-1|sample-row|false||lab 1 204 Hz · 0:08",
      "button#|favorite|false||☆",
-     "button#lab-5|sample-row|false||lab 5195 Hz · 0:09",
+     "button#lab-5|sample-row|false||lab 5 195 Hz · 0:09",
      "button#|favorite|false||☆",
-     "details#lab:lab:002|speaker-folder||false|lab · 0022",
-     "summary#||||lab · 0022",
-     "details#lab:lab:003|speaker-folder||true|lab · 0032lab 3201 Hz · 0:05☆lab 7193 Hz · 0:09☆",
-     "summary#||||lab · 0032",
-     "button#lab-3|sample-row|true||lab 3201 Hz · 0:05",
+     "details#lab:lab:002|speaker-folder||false|lab · 002 2",
+     "summary#||||lab · 002 2",
+     "details#lab:lab:003|speaker-folder||true|lab · 003 2 lab 3 201 Hz · 0:05 ☆ lab 7 193 Hz · 0:09 ☆",
+     "summary#||||lab · 003 2",
+     "button#lab-3|sample-row|true||lab 3 201 Hz · 0:05",
      "button#|favorite|false||☆",
-     "button#lab-7|sample-row|false||lab 7193 Hz · 0:09",
+     "button#lab-7|sample-row|false||lab 7 193 Hz · 0:09",
      "button#|favorite|false||☆",
-     "details#lab:lab:DSFD|speaker-folder||false|lab · DSFD2",
-     "summary#||||lab · DSFD2"
+     "details#lab:lab:DSFD|speaker-folder||false|lab · DSFD 2",
+     "summary#||||lab · DSFD 2"
     ],
     "tail": [
      "button#|favorite|false||☆",
-     "button#lab-7|sample-row|false||lab 7193 Hz · 0:09",
+     "button#lab-7|sample-row|false||lab 7 193 Hz · 0:09",
      "button#|favorite|false||☆",
-     "details#lab:lab:DSFD|speaker-folder||false|lab · DSFD2",
-     "summary#||||lab · DSFD2"
+     "details#lab:lab:DSFD|speaker-folder||false|lab · DSFD 2",
+     "summary#||||lab · DSFD 2"
     ]
    }
   },
@@ -948,7 +948,7 @@
    "attrs": {
     "title": "見本を選ぶ"
    },
-   "text": "lab · 003201 Hz · 1089 ΔF"
+   "text": "lab · 003 201 Hz · 1089 ΔF"
   },
   "selected-name": {
    "tag": "strong",
@@ -980,7 +980,6 @@
     "aria-label": "出典",
     "target": "_blank",
     "rel": "noreferrer",
-    "href": "https://huggingface.co/datasets/FluidInference/cv-corpus-25.0-ja/resolve/365b7654cd582e20e8000921ef7b0e32caa1906a/ja_01/clips/common_voice_ja_36363162.mp3",
     "hidden": ""
    },
    "text": ""
@@ -1034,7 +1033,8 @@
      "disabled": false,
      "data": {
       "data-detail": "0:06",
-      "data-actions": "download,delete"
+      "data-actions": "play,rename,download,delete",
+      "data-peaks": "[0,0,0,0,0,0.01,0.01,0,0,0,0.01,0.83,0.93,0.18,0.87,0.65,1,0.83,0.93,0.95,0.94,0.95,0.9,0.78,0.14,0.82,0.63,0.7,0.99,0.92,0.8,0.6,0.96,1,0.96,0.83,0.88,0.28,0.77,0.32,0.92,0.55,0.81,0.99,0.93,0.59,0.66,0.84,0.96,0.95,0.97,0.98,0.94,0.87,0.39,0.05,0.74,0.17,0,0.13,0,0,0,0]"
      }
     }
    ],
@@ -1062,7 +1062,7 @@
     "title": "マイクの声をリアルタイムに表示",
     "aria-label": "リアルタイム測定を開始"
    },
-   "text": "リアルタイム<time>"
+   "text": "リアルタイム <time>"
   },
   "live-mode-label": {
    "tag": "span",
@@ -1189,7 +1189,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "見本を追加×音声ファイルを選ぶ ↗JVSを追加公式サイトでダウンロード ↗公式のZIP、または展開したフォルダーを選択。100人・5,000音声を追加できます。ZIPを選ぶフォルダーを選ぶ中止音声の利用はJVSの規約に従ってください。読み込んだ見本は、このブラウザーに保存されます。"
+   "text": "見本を追加 × 音声ファイルを選ぶ ↗ JVSを追加 公式サイトでダウンロード ↗ 公式のZIP、または展開したフォルダーを選択。100人・5,000音声を追加できます。 ZIPを選ぶ フォルダーを選ぶ 中止 音声の利用はJVSの規約に従ってください。読み込んだ見本は、このブラウザーに保存されます。"
   },
   "import-audio": {
    "tag": "button",
@@ -1265,7 +1265,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "設定配色ライトダーク端末に合わせるリアルタイムの解析時間1.5 s3 s6 s12 sリアルタイムに表示する時間5 秒再生音量をそろえる測定値を書き出す録音履歴まとめてダウンロードすべて削除"
+   "text": "設定 配色 ライト ダーク 端末に合わせる リアルタイムの解析時間 1.5 s 3 s 6 s 12 s リアルタイムに表示する時間 5 秒 再生音量をそろえる 測定値を書き出す 録音履歴 まとめてダウンロード すべて削除"
   },
   "theme-select": {
    "tag": "koe-select",
@@ -1294,7 +1294,7 @@
    ],
    "trigger": "端末に合わせる",
    "expanded": "false",
-   "text": "ライトダーク端末に合わせる"
+   "text": "ライト ダーク 端末に合わせる"
   },
   "live-window": {
    "tag": "koe-select",
@@ -1329,7 +1329,7 @@
    ],
    "trigger": "3 s",
    "expanded": "false",
-   "text": "1.5 s3 s6 s12 s"
+   "text": "1.5 s 3 s 6 s 12 s"
   },
   "live-shape-window": {
    "tag": "input",
@@ -1387,14 +1387,44 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗参考文献 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考： transnavi.jp"
+   "text": "Koenami 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。 見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。 使い方 ↗ 声のしくみと練習の手引き ↗ 測定方法と出典 ↗ 参考文献 ↗ Acoustic Gender Space ↗ Phonia ↗ InFormant ↗ ソースコード（GitHub） ↗ 配色の参考： transnavi.jp"
+  },
+  "rename-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "名前の変更 保存"
+  },
+  "rename-input": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "aria-label": "録音の名前"
+   },
+   "value": "",
+   "text": ""
+  },
+  "rename-status": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "rename-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "保存"
   },
   "report-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "比較×レポートを保存"
+   "text": "比較 × レポートを保存"
   },
   "report-content": {
    "tag": "div",
@@ -1413,7 +1443,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "何で変わるか注意"
+   "text": "何で変わるか 注意"
   },
   "metric-title": {
    "tag": "h2",
@@ -1450,7 +1480,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "声の判定 —共有…リンクをコピー画像を保存結果ページ ↗判定の推移この端末の録音古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は測定方法と出典にあります。"
+   "text": "声の判定 — 聞こえる年齢のめやす 推定する 画像とリンクに含める 年齢の推定モデル（audEERING）の参考値です。日本語や練習中の声について「何歳に聞こえるか」との一致は確認していません。音声は推定のためだけに送信され、保存されません。 共有… リンクをコピー 画像を保存 結果ページ ↗ 判定の推移 この端末の録音 古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。 リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は 測定方法と出典 にあります。"
   },
   "verdict-help": {
    "tag": "button",
@@ -1487,6 +1517,38 @@
    "attrs": {
     "role": "status"
    },
+   "text": ""
+  },
+  "share-age-run": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "推定する"
+  },
+  "share-age-value": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-age-include-label": {
+   "tag": "label",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "画像とリンクに含める"
+  },
+  "share-age-include": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox"
+   },
+   "value": "on",
+   "checked": false,
    "text": ""
   },
   "share-intents": {
@@ -1536,7 +1598,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "判定の推移この端末の録音古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。"
+   "text": "判定の推移 この端末の録音 古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。"
   },
   "history-chart": {
    "tag": "svg",
@@ -1630,6 +1692,72 @@
      "id": "00000000-0000-4000-8000-000000000001",
      "language": "en",
      "name": "own-a.wav",
+     "peaks": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0.01,
+      0.01,
+      0,
+      0,
+      0,
+      0.01,
+      0.83,
+      0.93,
+      0.18,
+      0.87,
+      0.65,
+      1,
+      0.83,
+      0.93,
+      0.95,
+      0.94,
+      0.95,
+      0.9,
+      0.78,
+      0.14,
+      0.82,
+      0.63,
+      0.7,
+      0.99,
+      0.92,
+      0.8,
+      0.6,
+      0.96,
+      1,
+      0.96,
+      0.83,
+      0.88,
+      0.28,
+      0.77,
+      0.32,
+      0.92,
+      0.55,
+      0.81,
+      0.99,
+      0.93,
+      0.59,
+      0.66,
+      0.84,
+      0.96,
+      0.95,
+      0.97,
+      0.98,
+      0.94,
+      0.87,
+      0.39,
+      0.05,
+      0.74,
+      0.17,
+      0,
+      0.13,
+      0,
+      0,
+      0,
+      0
+     ],
      "quality": {
       "clipping_fraction": 0,
       "formant_seconds": 1.98,
@@ -1641,6 +1769,7 @@
    ],
    "recording:00000000-0000-4000-8000-000000000001": {
     "detail": {
+     "active_seconds": 4.08,
      "clipping_fraction": 0,
      "duration": 6.696,
      "features": {
@@ -1665,6 +1794,7 @@
      "formant_sensitivity_pct": 1.9,
      "level_dbfs": -14.46429916099856,
      "peak": 0.8627919554710388,
+     "pitch_halving_pct": 0.6,
      "pitch_p10": 167.92642399550678,
      "pitch_p90": 258.6940640785254,
      "quiet_intervals": [
@@ -3673,7 +3803,7 @@
        "t": 6.648
       }
      ],
-     "version": "3.0.0",
+     "version": "3.1.1",
      "visuals": {
       "duration": 6.696,
       "spectrogram": {
@@ -3700,11 +3830,16 @@
        "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
       }
      },
-     "voiced_seconds": 3.22
+     "voiced_seconds": 3.22,
+     "voicing": {
+      "sparse": false,
+      "voiced_fraction": 0.765
+     }
     },
     "id": null,
     "language": "en",
     "measurement": {
+     "active_seconds": 4.08,
      "clipping_fraction": 0,
      "duration": 6.696,
      "features": {
@@ -3729,6 +3864,7 @@
      "formant_sensitivity_pct": 1.9,
      "level_dbfs": -14.46429916099856,
      "peak": 0.8627919554710388,
+     "pitch_halving_pct": 0.6,
      "pitch_p10": 167.92642399550678,
      "pitch_p90": 258.6940640785254,
      "quiet_intervals": [
@@ -5737,7 +5873,7 @@
        "t": 6.648
       }
      ],
-     "version": "3.0.0",
+     "version": "3.1.1",
      "visuals": {
       "duration": 6.696,
       "spectrogram": {
@@ -5764,7 +5900,11 @@
        "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
       }
      },
-     "voiced_seconds": 3.22
+     "voiced_seconds": 3.22,
+     "voicing": {
+      "sparse": false,
+      "voiced_fraction": 0.765
+     }
     },
     "name": "own-a.wav",
     "pcm": {
@@ -5780,6 +5920,7 @@
    "takes": {
     "current": {
      "detail": {
+      "active_seconds": 4.08,
       "clipping_fraction": 0,
       "duration": 6.696,
       "features": {
@@ -5804,6 +5945,7 @@
       "formant_sensitivity_pct": 1.9,
       "level_dbfs": -14.46429916099856,
       "peak": 0.8627919554710388,
+      "pitch_halving_pct": 0.6,
       "pitch_p10": 167.92642399550678,
       "pitch_p90": 258.6940640785254,
       "quiet_intervals": [
@@ -7812,7 +7954,7 @@
         "t": 6.648
        }
       ],
-      "version": "3.0.0",
+      "version": "3.1.1",
       "visuals": {
        "duration": 6.696,
        "spectrogram": {
@@ -7839,11 +7981,16 @@
         "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
        }
       },
-      "voiced_seconds": 3.22
+      "voiced_seconds": 3.22,
+      "voicing": {
+       "sparse": false,
+       "voiced_fraction": 0.765
+      }
      },
      "id": null,
      "language": "en",
      "measurement": {
+      "active_seconds": 4.08,
       "clipping_fraction": 0,
       "duration": 6.696,
       "features": {
@@ -7868,6 +8015,7 @@
       "formant_sensitivity_pct": 1.9,
       "level_dbfs": -14.46429916099856,
       "peak": 0.8627919554710388,
+      "pitch_halving_pct": 0.6,
       "pitch_p10": 167.92642399550678,
       "pitch_p90": 258.6940640785254,
       "quiet_intervals": [
@@ -9876,7 +10024,7 @@
         "t": 6.648
        }
       ],
-      "version": "3.0.0",
+      "version": "3.1.1",
       "visuals": {
        "duration": 6.696,
        "spectrogram": {
@@ -9903,7 +10051,11 @@
         "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
        }
       },
-      "voiced_seconds": 3.22
+      "voiced_seconds": 3.22,
+      "voicing": {
+       "sparse": false,
+       "voiced_fraction": 0.765
+      }
      },
      "name": "own-a.wav",
      "pcm": {
@@ -9932,46 +10084,32 @@
    "seq": 2,
    "method": "GET",
    "path": "/api/library",
-   "query": "lang=ja",
-   "status": 200
-  },
-  {
-   "seq": 3,
-   "method": "GET",
-   "path": "/api/detail/common_voice_ja_36363162",
-   "query": "",
-   "status": 200
-  },
-  {
-   "seq": 4,
-   "method": "GET",
-   "path": "/api/library",
    "query": "lang=lab",
    "status": 200
   },
   {
-   "seq": 5,
+   "seq": 3,
    "method": "GET",
    "path": "/api/detail/lab-1",
    "query": "",
    "status": 200
   },
   {
-   "seq": 6,
+   "seq": 4,
    "method": "GET",
    "path": "/api/detail/lab-3",
    "query": "",
    "status": 200
   },
   {
-   "seq": 7,
+   "seq": 5,
    "method": "GET",
    "path": "/api/words/lab-3",
    "query": "lang=en",
    "status": 200
   },
   {
-   "seq": 8,
+   "seq": 6,
    "method": "POST",
    "path": "/api/analyze",
    "query": "",

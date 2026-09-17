@@ -1,9 +1,21 @@
+import { LANGUAGES as languages } from './languages';
 /* The shared-result page: recomputes the verdict from the five measurements in the URL
    against the language's public library (ported from web/result.js). */
 import { finite } from './math';
-import { Scorer, parseResultParams, shareText, formatScore, METRIC_KEYS, METRIC_LABELS, METRIC_UNITS, METRIC_DIGITS, VERDICTS, LEANINGS, type Clip } from './score';
+import {
+	Scorer,
+	parseResultParams,
+	shareText,
+	formatScore,
+	METRIC_KEYS,
+	METRIC_LABELS,
+	METRIC_UNITS,
+	METRIC_DIGITS,
+	VERDICTS,
+	LEANINGS,
+	type Clip
+} from './score';
 import { cardImage, intents, resultURL, systemShare, labelled } from './share';
-import { LANGUAGES as languages } from './languages';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const fmt = (v: unknown, n = 0) => (finite(v) ? v.toFixed(n) : '—');
@@ -18,7 +30,11 @@ async function main() {
 		fail('リンクに測定値が含まれていません。');
 		return;
 	}
-	const library = await (await fetch(`/api/library?lang=${encodeURIComponent(parsed.lang)}`)).json().catch(() => null);
+	const library = await (
+		await fetch(`/api/library?lang=${encodeURIComponent(parsed.lang)}`)
+	)
+		.json()
+		.catch(() => null);
 	if (!library) {
 		fail('見本の一覧を読み込めませんでした。');
 		return;
@@ -38,7 +54,9 @@ async function main() {
 	$('result-score').querySelector('span')!.textContent = LEANINGS[result.verdict];
 	$('result-score').hidden = false;
 	$('result-version').textContent = `v${result.version}`;
-	if (parsed.version !== result.version) $('result-status').textContent = `このリンクは判定方式v${parsed.version}で作られました。現在の方式（v${result.version}）で計算し直しています。`;
+	if (parsed.version !== result.version)
+		$('result-status').textContent =
+			`このリンクは判定方式v${parsed.version}で作られました。現在の方式（v${result.version}）で計算し直しています。`;
 	$<HTMLAnchorElement>('result-try').href = `/${parsed.lang}/`;
 	$('result-metric-rows').innerHTML = METRIC_KEYS.map((key) => {
 		const bands = scorer.metricBands[key],

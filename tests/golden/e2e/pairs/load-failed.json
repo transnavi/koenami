@@ -44,7 +44,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "AQBW A → B を繰り返すRSpace：一時停止／再開 スキップS保存して次へEnter"
+   "text": "A Q B W A → B を繰り返す R Space：一時停止／再開 スキップ S 保存して次へ Enter"
   },
   "side-a": {
    "tag": "button",
@@ -53,7 +53,7 @@
     "type": "button",
     "aria-pressed": "false"
    },
-   "text": "AQ"
+   "text": "A Q"
   },
   "text-a": {
    "tag": "span",
@@ -74,7 +74,7 @@
     "type": "button",
     "aria-pressed": "false"
    },
-   "text": "BW"
+   "text": "B W"
   },
   "text-b": {
    "tag": "span",
@@ -95,7 +95,7 @@
     "type": "button",
     "aria-pressed": "true"
    },
-   "text": "A → B を繰り返すR"
+   "text": "A → B を繰り返す R"
   },
   "questions": {
    "tag": "div",
@@ -122,13 +122,13 @@
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "スキップS"
+   "text": "スキップ S"
   },
   "save": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "保存して次へEnter"
+   "text": "保存して次へ Enter"
   },
   "done": {
    "tag": "p",
@@ -174,8 +174,8 @@
   }
  ],
  "media": [
-  "/samples/common_voice_ja_38843897.mp3",
-  "/samples/common_voice_ja_38935383.mp3"
+  "/samples/common_voice_ja_27988876.mp3",
+  "/samples/common_voice_ja_38916575.mp3"
  ],
  "errors": []
 }

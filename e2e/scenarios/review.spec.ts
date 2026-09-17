@@ -1,15 +1,23 @@
 import { test, expect } from '../fixtures';
-import { app, review } from '../hooks';
+import { review } from '../hooks';
 
 const paused = 'document.querySelector("#play[aria-pressed=false]") !== null';
 
 // Playback starts on every speaker and clip change (except when a draft is restored);
 // it is paused before observing. The start is awaited briefly so a click cannot land
 // before play() and leave the audio running.
-async function settle(page: import('@playwright/test').Page, studio: { until: (e: string, ms?: number) => Promise<void>; tick: (ms?: number) => Promise<void> }) {
+async function settle(
+	page: import('@playwright/test').Page,
+	studio: { until: (e: string, ms?: number) => Promise<void>; tick: (ms?: number) => Promise<void> }
+) {
 	await studio.until(review.loaded);
-	await studio.until('document.querySelector("#play[aria-pressed=true]") !== null', 1500).catch(() => {});
-	if (await page.evaluate('document.getElementById("play").getAttribute("aria-pressed") === "true"')) await page.locator('#play').click();
+	await studio
+		.until('document.querySelector("#play[aria-pressed=true]") !== null', 1500)
+		.catch(() => {});
+	if (
+		await page.evaluate('document.getElementById("play").getAttribute("aria-pressed") === "true"')
+	)
+		await page.locator('#play').click();
 	await studio.until(paused);
 	await studio.tick(100);
 }
@@ -46,7 +54,10 @@ test.describe('listening review page', () => {
 		await studio.until('document.querySelector("#anchors button[aria-pressed=true]") !== null');
 		await studio.tick(100);
 		await studio.golden('anchor-playing');
-		await studio.until('document.querySelector("#anchors button[aria-pressed=true]") === null', 30_000);
+		await studio.until(
+			'document.querySelector("#anchors button[aria-pressed=true]") === null',
+			30_000
+		);
 		await page.locator('#anchors button').nth(1).click();
 		await studio.until('document.querySelector("#anchors button[aria-pressed=true]") !== null');
 		await page.keyboard.press('Shift+Digit9');
@@ -64,7 +75,8 @@ test.describe('listening review page', () => {
 		await studio.tick(100);
 		await studio.golden('empty-save-refused');
 		// Digits rate the active scale and move on; ArrowUp/Down move without rating.
-		for (const key of ['5', '1', 'ArrowDown', '3', '3', 'ArrowUp', '2', '6', '0', '9']) await page.keyboard.press(key);
+		for (const key of ['5', '1', 'ArrowDown', '3', '3', 'ArrowUp', '2', '6', '0', '9'])
+			await page.keyboard.press(key);
 		await page.keyboard.press('e');
 		await page.keyboard.press('z');
 		await page.keyboard.press('x');
@@ -157,12 +169,18 @@ test.describe('listening review page', () => {
 		await studio.until(review.language('en'));
 		await settle(page, studio);
 		await studio.golden('english-queue');
-		await page.route('**/api/review?lang=ko*', (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'no ko' }));
+		await page.route('**/api/review?lang=ko*', (route) =>
+			route.fulfill({ status: 404, contentType: 'text/plain', body: 'no ko' })
+		);
 		await studio.choose('lang', 'ko');
 		await studio.until('document.getElementById("status").textContent === "no ko"');
 		await studio.tick(300);
 		await studio.golden('language-load-failed');
-		await page.route('**/api/review', (route) => route.request().method() === 'POST' ? route.fulfill({ status: 422, contentType: 'text/plain', body: 'unknown clip' }) : route.continue());
+		await page.route('**/api/review', (route) =>
+			route.request().method() === 'POST'
+				? route.fulfill({ status: 422, contentType: 'text/plain', body: 'unknown clip' })
+				: route.continue()
+		);
 		await page.locator('body').click({ position: { x: 5, y: 5 } });
 		await page.keyboard.press('4');
 		await page.keyboard.press('Enter');
@@ -199,16 +217,40 @@ test.describe('listening review page', () => {
 		await studio.until(review.mode('update'));
 		await studio.tick(200);
 		await studio.golden('update-mode-remembered');
-		await page.route('**/api/review?lang=ja&mode=new&*', (route) => route.fulfill({ status: 500, contentType: 'text/plain', body: 'broken' }));
+		await page.route('**/api/review?lang=ja&mode=new&*', (route) =>
+			route.fulfill({ status: 500, contentType: 'text/plain', body: 'broken' })
+		);
 		await page.locator('#mode button[data-mode="new"]').click();
 		await studio.until('document.getElementById("status").textContent === "broken"');
 		await studio.tick(200);
 		await studio.golden('mode-load-failed');
 	});
 
-	test('a legacy single draft is migrated and an unreachable log shows the error', async ({ page, studio }) => {
-		await page.route('**/api/review?lang=ja*', (route) => route.fulfill({ status: 500, contentType: 'text/plain', body: 'broken' }));
-		await studio.open('/review.html', async (p) => p.addInitScript(() => { localStorage.setItem('voice-theme', 'dark'); localStorage.setItem('koenami-review', JSON.stringify({ lang: 'ja', speaker: '23bbcff6f628', clip: 'common_voice_ja_19580185', ratings: { femininity: 2 }, chosen: ['noise'], scope: 'clip', note: 'old', active: 1 })); }));
+	test('a legacy single draft is migrated and an unreachable log shows the error', async ({
+		page,
+		studio
+	}) => {
+		await page.route('**/api/review?lang=ja*', (route) =>
+			route.fulfill({ status: 500, contentType: 'text/plain', body: 'broken' })
+		);
+		await studio.open('/review.html', async (p) =>
+			p.addInitScript(() => {
+				localStorage.setItem('voice-theme', 'dark');
+				localStorage.setItem(
+					'koenami-review',
+					JSON.stringify({
+						lang: 'ja',
+						speaker: '23bbcff6f628',
+						clip: 'common_voice_ja_19580185',
+						ratings: { femininity: 2 },
+						chosen: ['noise'],
+						scope: 'clip',
+						note: 'old',
+						active: 1
+					})
+				);
+			})
+		);
 		await studio.tick(300);
 		await studio.golden('unreachable');
 		// Keys on the empty screen do nothing.
@@ -226,7 +268,9 @@ test.describe('listening review page', () => {
 	});
 
 	test('a corrupt saved state is ignored', async ({ page, studio }) => {
-		await studio.open('/review.html', async (p) => p.addInitScript(() => localStorage.setItem('koenami-review', '{broken')));
+		await studio.open('/review.html', async (p) =>
+			p.addInitScript(() => localStorage.setItem('koenami-review', '{broken'))
+		);
 		await studio.until(review.loaded);
 		await settle(page, studio);
 		await studio.golden('corrupt-state');

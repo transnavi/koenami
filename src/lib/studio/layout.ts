@@ -1,6 +1,14 @@
 // On phones the sample browser is a bottom sheet opened from the selected-sample bar; on
 // wider screens CSS shows it as a static column and it is never opened as a dialog.
-export function initLayout({ browser, toggle, scroll }: { browser: HTMLDialogElement; toggle: HTMLButtonElement; scroll: HTMLElement }) {
+export function initLayout({
+	browser,
+	toggle,
+	scroll
+}: {
+	browser: HTMLDialogElement;
+	toggle: HTMLButtonElement;
+	scroll: HTMLElement;
+}) {
 	const phone = matchMedia('(max-width:800px),(max-height:520px)');
 	const current = () => document.querySelector<HTMLElement>('.sample-row[aria-pressed=true]');
 	function apply() {

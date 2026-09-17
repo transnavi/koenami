@@ -1,5 +1,6 @@
-import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
+
+import { defineConfig } from 'vitest/config';
 
 // KOENAMI_TREE selects which implementation the characterization tests run against:
 //   old  — the pinned vanilla modules extracted by tests/scripts/checkout-old.mjs

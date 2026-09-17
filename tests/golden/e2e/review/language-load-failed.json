@@ -70,19 +70,19 @@
    ],
    "trigger": "English",
    "expanded": "false",
-   "text": "日本語普通话English한국어"
+   "text": "日本語 普通话 English 한국어"
   },
   "mode": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "新規追加項目"
+   "text": "新規 追加項目"
   },
   "pass": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "全部性別・自然さ声質・話し方印象"
+   "text": "全部 性別・自然さ 声質・話し方 印象"
   },
   "progress": {
    "tag": "span",
@@ -103,7 +103,7 @@
    "tag": "section",
    "class": "",
    "attrs": {},
-   "text": "033b81304fd71音声一覧L ▶Are you still using your computer for the research?1/1 · 3.6 秒‹› 基準 性別・発音女性らしさ0123456—感じない強く感じる男性らしさ0123456—感じない強く感じる自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる 問題無音EつぶやきのみU雑音Z歪みX no koスキップS保存して次へEnter"
+   "text": "033b81304fd7 1音声 一覧 L ▶ Are you still using your computer for the research? 1/1 · 3.6 秒 ‹ › 基準 性別・発音 女性らしさ 0 1 2 3 4 5 6 — 感じない 強く感じる 男性らしさ 0 1 2 3 4 5 6 — 感じない 強く感じる 自然さ 0 1 2 3 4 5 6 — 不自然 自然 聞こえる年代 10代以下 20代 30代 40代 50代 60代以上 — 声質 澄み 0 1 2 3 4 5 6 — かすれた 澄んだ 張り 0 1 2 3 4 5 6 — 弱々しい 張りのある 太さ 0 1 2 3 4 5 6 — 細い 太い 鼻声 0 1 2 3 4 5 6 — 感じない 強い 話し方 滑舌 0 1 2 3 4 5 6 — ろれつが回らない はっきり 印象 明るさ 0 1 2 3 4 5 6 — 暗い 明るい 上品さ 0 1 2 3 4 5 6 — 雑 上品 温かさ 0 1 2 3 4 5 6 — 冷たい 温かい 甘さ 0 1 2 3 4 5 6 — 感じない 強く感じる 問題 無音 E つぶやきのみ U 雑音 Z 歪み X no ko スキップ S 保存して次へ Enter"
   },
   "prev-speaker": {
    "tag": "button",
@@ -132,7 +132,7 @@
    "attrs": {
     "type": "button"
    },
-   "text": "一覧L"
+   "text": "一覧 L"
   },
   "play": {
    "tag": "button",
@@ -148,7 +148,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "Are you still using your computer for the research?1/1 · 3.6 秒"
+   "text": "Are you still using your computer for the research? 1/1 · 3.6 秒"
   },
   "prev-clip": {
    "tag": "button",
@@ -178,13 +178,13 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "性別・発音女性らしさ0123456—感じない強く感じる男性らしさ0123456—感じない強く感じる自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる"
+   "text": "性別・発音 女性らしさ 0 1 2 3 4 5 6 — 感じない 強く感じる 男性らしさ 0 1 2 3 4 5 6 — 感じない 強く感じる 自然さ 0 1 2 3 4 5 6 — 不自然 自然 聞こえる年代 10代以下 20代 30代 40代 50代 60代以上 — 声質 澄み 0 1 2 3 4 5 6 — かすれた 澄んだ 張り 0 1 2 3 4 5 6 — 弱々しい 張りのある 太さ 0 1 2 3 4 5 6 — 細い 太い 鼻声 0 1 2 3 4 5 6 — 感じない 強い 話し方 滑舌 0 1 2 3 4 5 6 — ろれつが回らない はっきり 印象 明るさ 0 1 2 3 4 5 6 — 暗い 明るい 上品さ 0 1 2 3 4 5 6 — 雑 上品 温かさ 0 1 2 3 4 5 6 — 冷たい 温かい 甘さ 0 1 2 3 4 5 6 — 感じない 強く感じる"
   },
   "quality-flags": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "問題無音EつぶやきのみU雑音Z歪みX"
+   "text": "問題 無音 E つぶやきのみ U 雑音 Z 歪み X"
   },
   "note": {
    "tag": "input",
@@ -205,13 +205,13 @@
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "スキップS"
+   "text": "スキップ S"
   },
   "save": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "保存して次へEnter"
+   "text": "保存して次へ Enter"
   },
   "done": {
    "tag": "p",
@@ -225,14 +225,14 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "M 2466 · memoM 2506 無音 · テストM 1 女性らしさ 1 · 男性らしさ 5F 3141 雑音M 2497 母語話者らしさ 0 · 男性らしさ 6 · 女性らしさ 0 · 聞こえる年代 20代 · 自然さ 3 · 澄み 3 · 張り 2 · 太さ 1 · 鼻声 1 · 滑舌 6 · 明るさ 4 · 上品さ 3 · 温かさ 5 · 甘さ 0M 2482 女性らしさ 0 · 男性らしさ 6 · 母語話者らしさ 1 · 自然さ 6 · 聞こえる年代 20代 · 澄み 4 · 張り 5 · 太さ 1 · 鼻声 0 · 滑舌 6 · 明るさ 4 · 上品さ 5 · 温かさ 2 · 甘さ 1F 2591 甘さ 1 · 女性らしさ 5 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 6 · 聞こえる年代 30代 · 澄み 2 · 張り 1 · 太さ 2 · 鼻声 1 · 滑舌 6 · 明るさ 3 · 上品さ 3 · 温かさ 1M 3050 男性らしさ 6 · 女性らしさ 0 · 母語話者らしさ 6 · 自然さ 6 · 聞こえる年代 20代 · 滑舌 1 · 澄み 4 · 張り 1 · 太さ 2 · 鼻声 1 · 明るさ 5 · 上品さ 0 · 温かさ 3 · 甘さ 3"
+   "text": "自分 女性らしさ 1 · 男性らしさ 3 · 自然さ 1 · 母語話者らしさ 5 · 聞こえる年代 20代 · 澄み 1 · 張り 4 · 太さ 3 · 鼻声 6 · 滑舌 0 · 明るさ 5 · 上品さ 3 · 温かさ 4 · 甘さ 5 自分 女性らしさ 4 · 男性らしさ 1 · 母語話者らしさ 5 · 自然さ 5 · 聞こえる年代 20代 · 澄み 0 · 張り 2 · 太さ 2 · 鼻声 4 · 滑舌 5 · 明るさ 5 · 上品さ 3 · 温かさ 4 · 甘さ 3 自分 女性らしさ 1 · 男性らしさ 5 · 母語話者らしさ 5 · 自然さ 3 · 聞こえる年代 20代 · 澄み 3 · 張り 2 · 太さ 3 · 鼻声 4 · 滑舌 1 · 明るさ 3 · 上品さ 4 · 温かさ 2 · 甘さ 3 自分 女性らしさ 0 · 男性らしさ 6 · 母語話者らしさ 5 · 自然さ 4 · 澄み 1 · 張り 4 · 太さ 5 · 鼻声 5 · 滑舌 6 · 明るさ 3 · 上品さ 3 · 温かさ 0 · 甘さ 1 自分 女性らしさ 3 · 男性らしさ 1 · 鼻声 5 · 母語話者らしさ 5 · 自然さ 5 · 聞こえる年代 20代 · 澄み 2 · 張り 2 · 太さ 3 · 滑舌 6 · 明るさ 3 · 上品さ 2 · 温かさ 4 · 甘さ 3 自分 女性らしさ 0 · "
   },
   "list-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "話者一覧 20人×033b81304fd7Are you still using your computer for the research?6d06f0216c70What did you say your name was?470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.8668948d2438A group of people, one of them with a guitar, were sitting by the campfire and singing songs.7720658d3e86People sitting on a street while drinking.1c1f78f06fdfRoll the dice, please.bcb7c332cbfaThe more you stir, the more it stinks.f65607943cd8A scientist in a lab coat is using a microscope.1d796894b9eaShe has always been very kind and friendly to everyone, even strangers.fe7d54c"
+   "text": "話者一覧 20人 × 033b81304fd7 Are you still using your computer for the research? 6d06f0216c70 What did you say your name was? 470a80e28937 The computer was going insane, it displayed garbled nonsense and then shut down. 8668948d2438 A group of people, one of them with a guitar, were sitting by the campfire and singing songs. 7720658d3e86 People sitting on a street while drinking. 1c1f78f06fdf Roll the dice, please. bcb7c332cbfa The more you stir, the more it stinks. f65607943cd8 A scientist in a lab coat is using a microscope. 1d796894b9ea She has always been very kind and friendly to everyone, eve"
   },
   "list-count": {
    "tag": "span",
@@ -253,7 +253,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "033b81304fd7Are you still using your computer for the research?6d06f0216c70What did you say your name was?470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.8668948d2438A group of people, one of them with a guitar, were sitting by the campfire and singing songs.7720658d3e86People sitting on a street while drinking.1c1f78f06fdfRoll the dice, please.bcb7c332cbfaThe more you stir, the more it stinks.f65607943cd8A scientist in a lab coat is using a microscope.1d796894b9eaShe has always been very kind and friendly to everyone, even strangers.fe7d54c3d3a3Turn"
+   "text": "033b81304fd7 Are you still using your computer for the research? 6d06f0216c70 What did you say your name was? 470a80e28937 The computer was going insane, it displayed garbled nonsense and then shut down. 8668948d2438 A group of people, one of them with a guitar, were sitting by the campfire and singing songs. 7720658d3e86 People sitting on a street while drinking. 1c1f78f06fdf Roll the dice, please. bcb7c332cbfa The more you stir, the more it stinks. f65607943cd8 A scientist in a lab coat is using a microscope. 1d796894b9ea She has always been very kind and friendly to everyone, even strangers"
   }
  },
  "storage": {

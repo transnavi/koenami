@@ -1,6 +1,5 @@
-import { test, expect, type Page } from '../fixtures';
+import { test, type Page } from '../fixtures';
 import { app } from '../hooks';
-
 
 // Canvas-space position of a plotted sample, taken from the map's hit list.
 async function pointOn(page: Page, id: string) {
@@ -9,7 +8,12 @@ async function pointOn(page: Page, id: string) {
 	if (!xy) throw new Error(`${id} is not plotted`);
 	return { x: box.x + xy[0], y: box.y + xy[1] };
 }
-async function drag(page: Page, from: [number, number], to: [number, number], options: { shift?: boolean; button?: 'left' | 'middle' | 'right' } = {}) {
+async function drag(
+	page: Page,
+	from: [number, number],
+	to: [number, number],
+	options: { shift?: boolean; button?: 'left' | 'middle' | 'right' } = {}
+) {
 	const box = (await page.locator('#voice-map').boundingBox())!;
 	if (options.shift) await page.keyboard.down('Shift');
 	await page.mouse.move(box.x + from[0], box.y + from[1]);
@@ -79,15 +83,34 @@ test.describe('voice map', () => {
 		await page.mouse.wheel(0, -240);
 		await studio.tick(300);
 		await studio.canvas('3d-wheel-in', '#voice-map');
-		await page.locator('#voice-map').dispatchEvent('wheel', { deltaY: 3, deltaMode: 1, clientX: box.x + 400, clientY: box.y + 300 });
-		await page.locator('#voice-map').dispatchEvent('wheel', { deltaY: 0.2, deltaMode: 2, clientX: box.x + 400, clientY: box.y + 300 });
+		await page.locator('#voice-map').dispatchEvent('wheel', {
+			deltaY: 3,
+			deltaMode: 1,
+			clientX: box.x + 400,
+			clientY: box.y + 300
+		});
+		await page.locator('#voice-map').dispatchEvent('wheel', {
+			deltaY: 0.2,
+			deltaMode: 2,
+			clientX: box.x + 400,
+			clientY: box.y + 300
+		});
 		await studio.tick(300);
 		await studio.canvas('3d-wheel-lines-pages', '#voice-map');
 		await page.locator('#find-me').click();
 		await studio.tick(300);
 		await studio.canvas('3d-find-me', '#voice-map');
 		await page.locator('#voice-map').focus();
-		for (const key of ['ArrowRight', 'ArrowUp', 'Shift+ArrowLeft', 'Shift+ArrowDown', '+', '=', '-']) await page.keyboard.press(key);
+		for (const key of [
+			'ArrowRight',
+			'ArrowUp',
+			'Shift+ArrowLeft',
+			'Shift+ArrowDown',
+			'+',
+			'=',
+			'-'
+		])
+			await page.keyboard.press(key);
 		await studio.tick(300);
 		await studio.canvas('3d-keyboard', '#voice-map');
 		await page.keyboard.press('0');
@@ -104,11 +127,27 @@ test.describe('voice map', () => {
 		await studio.tick(300);
 		// Two synthetic pointers, as a touch pinch delivers them.
 		await page.locator('#voice-map').evaluate((canvas) => {
-			const at = (id: number, x: number, y: number, type: string) => canvas.dispatchEvent(new PointerEvent(type, { pointerId: id, clientX: canvas.getBoundingClientRect().left + x, clientY: canvas.getBoundingClientRect().top + y, bubbles: true, button: 0, pointerType: 'touch', isPrimary: id === 1 }));
-			at(1, 300, 300, 'pointerdown'); at(2, 500, 300, 'pointerdown');
-			at(1, 280, 300, 'pointermove'); at(2, 540, 310, 'pointermove');
-			at(1, 260, 300, 'pointermove'); at(2, 560, 320, 'pointermove');
-			at(2, 560, 320, 'pointerup'); at(1, 250, 300, 'pointermove'); at(1, 250, 300, 'pointerup');
+			const at = (id: number, x: number, y: number, type: string) =>
+				canvas.dispatchEvent(
+					new PointerEvent(type, {
+						pointerId: id,
+						clientX: canvas.getBoundingClientRect().left + x,
+						clientY: canvas.getBoundingClientRect().top + y,
+						bubbles: true,
+						button: 0,
+						pointerType: 'touch',
+						isPrimary: id === 1
+					})
+				);
+			at(1, 300, 300, 'pointerdown');
+			at(2, 500, 300, 'pointerdown');
+			at(1, 280, 300, 'pointermove');
+			at(2, 540, 310, 'pointermove');
+			at(1, 260, 300, 'pointermove');
+			at(2, 560, 320, 'pointermove');
+			at(2, 560, 320, 'pointerup');
+			at(1, 250, 300, 'pointermove');
+			at(1, 250, 300, 'pointerup');
 		});
 		await studio.tick(300);
 		await studio.canvas('pinched', '#voice-map');
@@ -116,7 +155,9 @@ test.describe('voice map', () => {
 		await studio.tick(300);
 
 		// Extra mouse buttons and clicks on empty space do nothing.
-		await page.locator('#voice-map').dispatchEvent('pointerdown', { button: 3, pointerId: 7, clientX: 10, clientY: 10 });
+		await page
+			.locator('#voice-map')
+			.dispatchEvent('pointerdown', { button: 3, pointerId: 7, clientX: 10, clientY: 10 });
 		await page.locator('#voice-map').click({ position: { x: 5, y: 5 } });
 		await studio.tick(100);
 		await studio.golden('empty-click');

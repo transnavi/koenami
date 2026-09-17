@@ -1,6 +1,7 @@
+import {t} from './i18n/index.js';
 // First-visit guide: a spotlight and a card walk through the studio one area at a
-// time. The lit area stays clickable; four blockers around it hold the rest. Progress lives in localStorage so "あとで" resumes where it stopped on
-// the next visit; "スキップ" and finishing both mark it done. The card is a
+// time. The lit area stays clickable; four blockers around it hold the rest. Progress lives in localStorage so "later" resumes where it stopped on
+// the next visit; "skip" and finishing both mark it done. The card is a
 // non-modal <dialog>, which also makes the app skip its keyboard shortcuts while
 // the guide is open. The ⓘ dialog can start it again.
 const KEY='voice-tour';
@@ -18,18 +19,21 @@ const ART={
 // Inline stand-ins for the real controls mentioned in the text.
 const icon=(id,cls='')=>`<span class="tour-key ${cls}"><svg aria-hidden="true"><use href="#i-${id}"/></svg></span>`;
 const CHIPS={help:icon('help','tour-key-plain'),info:icon('info','tour-key-plain'),play:icon('play','tour-key-round'),mic:icon('mic','tour-key-round tour-key-record'),star:'<span class="tour-key tour-key-plain">☆</span>',R:'<kbd class="tour-key tour-key-kbd">R</kbd>'};
-const STEPS=[
- {art:'wave',title:'Koenamiへようこそ',text:'見本を真似して録音し、声の違いを目で確かめられるツールです。主な画面の使い方を1分ほどで順にご紹介します。\nスキップしても、画面右上の{help}からいつでも見直せます。'},
- {art:'pick',target:['.target'],title:'選んだ見本',text:'今選択されている見本を{play}で再生でき、また{star}でお気に入りとして登録できます。'},
- {art:'list',target:['.samples-panel .sample-filters','#samples-toggle'],title:'見本の一覧',text:'声の種類で絞り込み、並べ替えて、近づきたい声を探します。'},
- {art:'mic',target:['#record'],title:'録音',text:'{mic}か{R}で録音を始め、もう一度押して止めます。'},
- {art:'radar',target:['#indicators'],title:'声の特徴',text:'高さ・響き・質感・明るさ・抑揚を、自分と見本で見比べます。'},
- {art:'map',target:['.graph-area'],title:'声の分布',text:'見本の声の地図です。自分の声が見本にどれだけ近いかが分かります。'},
- {art:'signal',target:['.signal-panel'],title:'波形',text:'高さの推移やスペクトログラムを見比べます。ドラッグで範囲を選べます。'},
- {art:'live',target:['#live-mode'],title:'リアルタイム',text:'話しながら、声の位置が動くのを見て調整します。'},
- {art:'info',target:['#info-button'],title:'詳しい説明',text:'使い方や声のしくみの解説は{info}から開けます。'},
+// The steps' art and spotlight targets; their titles and texts come from the catalogue in the same order.
+const LAYOUT=[
+ {art:'wave'},
+ {art:'pick',target:['.target']},
+ {art:'list',target:['.samples-panel .sample-filters','#samples-toggle']},
+ {art:'mic',target:['#record']},
+ {art:'radar',target:['#indicators']},
+ {art:'map',target:['.graph-area']},
+ {art:'signal',target:['.signal-panel']},
+ {art:'live',target:['#live-mode']},
+ {art:'info',target:['#info-button']},
 ];
+const STEPS=LAYOUT.map((step,i)=>({...step,...t('tour.steps')[i]}));
 const phone=matchMedia('(max-width:800px),(max-height:520px)');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{};}catch{return {};}};
 const save=v=>{try{localStorage.setItem(KEY,JSON.stringify(v));}catch{}};
 
@@ -38,7 +42,7 @@ function build(){
  shade=document.createElement('div');shade.className='tour-shade';shade.hidden=true;
  spot=document.createElement('div');spot.className='tour-spot';blockers=['top','right','bottom','left'].map(()=>{const d=document.createElement('div');d.className='tour-block';return d;});shade.append(spot,...blockers);
  card=document.createElement('dialog');card.className='tour-card';card.setAttribute('aria-labelledby','tour-title');
- card.innerHTML='<div class="tour-head"><svg class="tour-art" viewBox="0 0 24 24" aria-hidden="true"></svg><div><p class="tour-count" id="tour-count"></p><h2 id="tour-title"></h2></div></div><div id="tour-text"></div><div class="tour-actions"><button type="button" class="text-button" data-act="later" title="中断して、次回に続きから">あとで</button><button type="button" class="text-button" data-act="skip" title="ガイドを終了">スキップ</button><span class="tour-spacer"></span><button type="button" class="text-button" data-act="back">戻る</button><button type="button" class="tour-next" data-act="next">次へ</button></div>';
+ card.innerHTML='<div class="tour-head"><svg class="tour-art" viewBox="0 0 24 24" aria-hidden="true"></svg><div><p class="tour-count" id="tour-count"></p><h2 id="tour-title"></h2></div></div><div id="tour-text"></div><div class="tour-actions"><button type="button" class="text-button" data-act="later" title="'+esc(t('tour.later_title'))+'">'+esc(t('tour.later'))+'</button><button type="button" class="text-button" data-act="skip" title="'+esc(t('tour.skip_title'))+'">'+esc(t('tour.skip'))+'</button><span class="tour-spacer"></span><button type="button" class="text-button" data-act="back">'+esc(t('tour.back'))+'</button><button type="button" class="tour-next" data-act="next">'+esc(t('tour.next'))+'</button></div>';
  card.addEventListener('click',e=>{const act=e.target.closest('[data-act]')?.dataset.act;if(act==='next')next();else if(act==='back')show(step-1);else if(act==='later')pause();else if(act==='skip')finish();});
  card.addEventListener('cancel',e=>{e.preventDefault();pause();});
  card.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();else if(e.key==='ArrowLeft')show(step-1);else if(e.key==='Escape')pause();});
@@ -69,7 +73,7 @@ function show(n){
  card.querySelector('#tour-count').textContent=`${step+1} / ${STEPS.length}`;
  card.querySelector('#tour-title').textContent=s.title;card.querySelector('#tour-text').innerHTML=s.text.split('\n').map(t=>`<p>${t.replace(/\{(\w+)\}/g,(_,id)=>CHIPS[id])}</p>`).join('');card.querySelector('.tour-art').innerHTML=ART[s.art];
  card.querySelector('[data-act=back]').hidden=step===0;
- card.querySelector('[data-act=next]').textContent=step===STEPS.length-1?'はじめる':'次へ';
+ card.querySelector('[data-act=next]').textContent=t(step===STEPS.length-1?'tour.start':'tour.next');
  shade.hidden=false;if(!card.open)card.show();
  target()?.scrollIntoView?.({block:'nearest',inline:'nearest'});
  place();card.querySelector('[data-act=next]').focus();

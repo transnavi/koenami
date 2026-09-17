@@ -1,14 +1,12 @@
-import { test, expect } from '../fixtures';
+import { test } from '../fixtures';
 import { app } from '../hooks';
-
 
 // The research library (KOENAMI_PUBLIC=0 only) replaces the gender groups by teacher
 // configurations.
 test.describe('research library', () => {
 	test('teacher filters, research naming and English words', async ({ page, studio }) => {
-		await studio.open('/ja/');
-		await studio.until(app.ready);
-		await studio.choose('language', 'lab');
+		// The research library is a language of the catalog, so it has its own page.
+		await studio.open('/lab/');
 		await studio.until(app.languageLoaded('lab'));
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');
@@ -36,7 +34,10 @@ test.describe('research library', () => {
 		await studio.choose('sort', 'name');
 		await studio.tick(200);
 		await studio.golden('teacher-all');
-		await page.locator('#sample-list details.speaker-folder[data-speaker*="003"] summary').first().click();
+		await page
+			.locator('#sample-list details.speaker-folder[data-speaker*="003"] summary')
+			.first()
+			.click();
 		await page.locator('.sample-row[data-id="lab-3"]').click();
 		await studio.until(app.selected('lab-3'));
 		await page.locator('#play-reference').click();

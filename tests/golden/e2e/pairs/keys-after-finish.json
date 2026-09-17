@@ -27,7 +27,7 @@
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "済 61組 · 残り 0組"
+   "text": "済 200組 · 残り 0組"
   },
   "theme-button": {
    "tag": "button",
@@ -44,7 +44,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "AQなにしろ、馬をこんなふうに数え、仕込むことのできる人間なら、よほど偉い主人にちがいないと、私は感心しました。6.4 秒BWなんでこの村にいなければならないの？ でも、今のところは、ねえ、あなた、この申し出を聞くことにしようじゃありませんか。8.0 秒 A → B を繰り返すRSpace：一時停止／再開 どちらが女性らしいA1同じ2B3どちらが自然A1同じ2B3どちらを見本にしたいA1同じ2B3 スキップS保存して次へEnter"
+   "text": "A Q この宝石には、おそろしいのろいがつきまとっているのだ。その話がでたらめでないことがわかってきたのだ。 6.7 秒 B W 世界は一つの現在として自己自身を形成し行く、作られたものより作るものへとして無限に生産的であり、創造的である。 10.5 秒 A → B を繰り返す R Space：一時停止／再開 どちらが女性らしい A 1 同じ 2 B 3 女声は男声より上。男声どうしなら高く明るいほう、女声どうしなら高く明るく可愛いほう（低い・年配・雑なほうが下）。 どちらが自然 A 1 同じ 2 B 3 滑らかで良い日本語に聞こえ、機械的でなく、感情がある。 どちらを見本にしたい A 1 同じ 2 B 3 はっきりしていて雑音が少なく、手本らしい。 スキップ S 保存して次へ Enter"
   },
   "side-a": {
    "tag": "button",
@@ -53,19 +53,19 @@
     "type": "button",
     "aria-pressed": "false"
    },
-   "text": "AQなにしろ、馬をこんなふうに数え、仕込むことのできる人間なら、よほど偉い主人にちがいないと、私は感心しました。6.4 秒"
+   "text": "A Q この宝石には、おそろしいのろいがつきまとっているのだ。その話がでたらめでないことがわかってきたのだ。 6.7 秒"
   },
   "text-a": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "なにしろ、馬をこんなふうに数え、仕込むことのできる人間なら、よほど偉い主人にちがいないと、私は感心しました。"
+   "text": "この宝石には、おそろしいのろいがつきまとっているのだ。その話がでたらめでないことがわかってきたのだ。"
   },
   "meta-a": {
    "tag": "small",
    "class": "",
    "attrs": {},
-   "text": "6.4 秒"
+   "text": "6.7 秒"
   },
   "side-b": {
    "tag": "button",
@@ -74,19 +74,19 @@
     "type": "button",
     "aria-pressed": "false"
    },
-   "text": "BWなんでこの村にいなければならないの？ でも、今のところは、ねえ、あなた、この申し出を聞くことにしようじゃありませんか。8.0 秒"
+   "text": "B W 世界は一つの現在として自己自身を形成し行く、作られたものより作るものへとして無限に生産的であり、創造的である。 10.5 秒"
   },
   "text-b": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "なんでこの村にいなければならないの？ でも、今のところは、ねえ、あなた、この申し出を聞くことにしようじゃありませんか。"
+   "text": "世界は一つの現在として自己自身を形成し行く、作られたものより作るものへとして無限に生産的であり、創造的である。"
   },
   "meta-b": {
    "tag": "small",
    "class": "",
    "attrs": {},
-   "text": "8.0 秒"
+   "text": "10.5 秒"
   },
   "loop": {
    "tag": "button",
@@ -95,13 +95,13 @@
     "type": "button",
     "aria-pressed": "true"
    },
-   "text": "A → B を繰り返すR"
+   "text": "A → B を繰り返す R"
   },
   "questions": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "どちらが女性らしいA1同じ2B3どちらが自然A1同じ2B3どちらを見本にしたいA1同じ2B3"
+   "text": "どちらが女性らしい A 1 同じ 2 B 3 女声は男声より上。男声どうしなら高く明るいほう、女声どうしなら高く明るく可愛いほう（低い・年配・雑なほうが下）。 どちらが自然 A 1 同じ 2 B 3 滑らかで良い日本語に聞こえ、機械的でなく、感情がある。 どちらを見本にしたい A 1 同じ 2 B 3 はっきりしていて雑音が少なく、手本らしい。"
   },
   "note": {
    "tag": "input",
@@ -122,13 +122,13 @@
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "スキップS"
+   "text": "スキップ S"
   },
   "save": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "保存して次へEnter"
+   "text": "保存して次へ Enter"
   },
   "done": {
    "tag": "p",
@@ -140,7 +140,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "№ 2642 vs № 2690 女性らしい Ajvs031-parallel100-VOICEACTRESS100_075 vs common_voice_ja_38916530 女性らしい B · 自然 同じ · 見本にしたい Ajvs089-nonpara30-BASIC5000_2526 vs jvs041-parallel100-VOICEACTRESS100_010 女性らしい B · 自然 同じ · 見本にしたい 同じjvs074-nonpara30-BASIC5000_0985 vs jvs012-parallel100-VOICEACTRESS100_080 女性らしい B · 自然 同じ · 見本にしたい 同じcommon_voice_ja_39036782 vs jvs032-nonpara30-BASIC5000_1476 女性らしい B · 自然 A · 見本にしたい Bjvs012-nonpara30-BASIC5000_1153 vs jvs004-nonpara30-TRAVEL1000_0409 女性らしい B · 自然 同じ · 見本にしたい 同じcommon_voice_ja_39380008 vs jvs091-nonpara30-BASIC5000_2904 女性らしい 同じ · 自然 同じ · 見本にしたい Ajvs026-nonpara"
+   "text": "№ 2676 vs № 2602 女性らしい A jvs044-parallel100-VOICEACTRESS100_003 vs own-c44eaea38d26 女性らしい A · 自然 同じ · 見本にしたい 同じ own-b1986c18dd2f vs common_voice_ja_45175991 自然 B · 女性らしい B · 見本にしたい B own-35bb27e39331 vs common_voice_ja_41781995 女性らしい B · 自然 B · 見本にしたい B common_voice_ja_39000260 vs own-901d7e4e23b2 女性らしい A · 自然 同じ · 見本にしたい A jvs029-nonpara30-BASIC5000_2386 vs own-20e89c433af2 女性らしい 同じ · 自然 A · 見本にしたい A own-1ce5cd4ff55d vs № 2530 女性らしい 同じ · 自然 同じ · 見本にしたい 同じ own-4c19f2a0f639 vs jvs026-nonpara30-BASIC5000_1869 女性らしい 同じ · 自然 同じ · 見本にしたい 同じ"
   }
  },
  "storage": {
@@ -173,13 +173,13 @@
    "method": "POST",
    "path": "/api/pairs",
    "query": "",
-   "body": "179b 7ac8655fd0a9c90bdeb2053a72f10bfdf95177991bc71a40abf850b9e4bf1690",
+   "body": "205b 479b741c32972b56ba99ef1a389c5af6a6c8a2e942b1b159a001a2e4dfd672a7",
    "status": 200
   }
  ],
  "media": [
-  "/samples/common_voice_ja_38843897.mp3",
-  "/samples/common_voice_ja_38935383.mp3"
+  "/samples/common_voice_ja_27988876.mp3",
+  "/samples/common_voice_ja_38916575.mp3"
  ],
  "errors": []
 }

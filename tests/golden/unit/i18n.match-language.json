@@ -1,0 +1,46 @@
+[
+ [
+  "ja",
+  "ja"
+ ],
+ [
+  "en-US,en;q=0.9,ja;q=0.8",
+  "en"
+ ],
+ [
+  "zh-TW,zh;q=0.9",
+  "zh-CN"
+ ],
+ [
+  "zh-CN",
+  "zh-CN"
+ ],
+ [
+  "ko-KR;q=0.5,en;q=0.9",
+  "en"
+ ],
+ [
+  "fr,de;q=0.8",
+  "ja"
+ ],
+ [
+  "ko;q=0",
+  "ja"
+ ],
+ [
+  "",
+  "ja"
+ ],
+ [
+  null,
+  "ja"
+ ],
+ [
+  "  en ; q = 0.5 , KO",
+  "en"
+ ],
+ [
+  "x-klingon,zh-Hans",
+  "zh-CN"
+ ]
+]

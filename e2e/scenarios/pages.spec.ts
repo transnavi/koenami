@@ -1,7 +1,6 @@
 import { test, expect } from '../fixtures';
 import { app } from '../hooks';
 
-
 test.describe('phone layout', () => {
 	test.use({ viewport: { width: 390, height: 844 } });
 	test('bottom-sheet sample browser', async ({ page, studio }) => {
@@ -42,7 +41,9 @@ test.describe('phone layout', () => {
 
 test.describe('method page', () => {
 	test('renders with the saved theme and links back to the root', async ({ page, studio }) => {
-		await studio.open('/method.html', async (p) => p.addInitScript(() => localStorage.setItem('voice-theme', 'dark')));
+		await studio.open('/method.html', async (p) =>
+			p.addInitScript(() => localStorage.setItem('voice-theme', 'dark'))
+		);
 		await studio.tick(100);
 		await studio.golden('method');
 		await expect(page.locator('a[href="/"]').first()).toBeVisible();
@@ -51,7 +52,10 @@ test.describe('method page', () => {
 });
 
 test.describe('keyboard guard', () => {
-	test('shortcuts are ignored inside inputs, selects and open dialogs', async ({ page, studio }) => {
+	test('shortcuts are ignored inside inputs, selects and open dialogs', async ({
+		page,
+		studio
+	}) => {
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await page.locator('#search').focus();
@@ -83,7 +87,9 @@ test.describe('static pages', () => {
 			await studio.golden(path.slice(1, -5));
 			await expect(page.locator('a[href="/"]').first()).toBeVisible();
 			await page.emulateMedia({ colorScheme: 'dark' });
-			await studio.open(path, async (p) => p.addInitScript(() => localStorage.setItem('voice-theme', 'system')));
+			await studio.open(path, async (p) =>
+				p.addInitScript(() => localStorage.setItem('voice-theme', 'system'))
+			);
 			await studio.tick(100);
 			await studio.golden(`${path.slice(1, -5)}-dark`);
 		});

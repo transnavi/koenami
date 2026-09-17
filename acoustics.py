@@ -6,7 +6,44 @@ from math import gcd
 
 RATE = 16000
 STEP = 0.02
-VERSION = '3.1.1'
+VERSION = '3.2.0'
+
+
+def interpolated_peak(x, k, half=8, steps=16):
+    """Largest absolute value of the band-limited signal within a sample of the sampled maximum at k: a Hann-
+    windowed sinc interpolant over the 17 samples around k, evaluated every 1/16 sample. The sampled maximum
+    alone shifts with the sampling grid from cycle to cycle and reads as shimmer on a steady voice."""
+    lo, hi = max(0, k - half), min(len(x), k + half + 1); idx = np.arange(lo, hi); best = abs(float(x[k]))
+    for j in range(1 - steps, steps):
+        d = k + j / steps - idx
+        best = max(best, abs(float((x[lo:hi] * np.sinc(d) * (.5 + .5 * np.cos(np.pi * d / (half + 1)))).sum())))
+    return best
+
+
+def perturbation(x, pulses):
+    """Local jitter and local shimmer from glottal pulse times, the Rust engine's definition: periods count
+    between 0.1 and 20 ms; a pair of consecutive periods enters jitter when both count and their ratio stays
+    under 1.3 (mean absolute difference over the mean of those periods); a pulse's amplitude is the band-limited
+    peak (interpolated_peak) within half a period on either side, and a pair of consecutive amplitudes enters shimmer
+    when the periods around them pass the jitter gate and the amplitude ratio stays under 1.6. None with
+    fewer than two usable pairs."""
+    periods = np.diff(pulses)
+    usable = lambda t: 1e-4 <= t <= .02
+    def amplitude(i):
+        before = periods[i - 1] if i > 0 else periods[i]; after = periods[i] if i < len(periods) else periods[i - 1]
+        start = max(0, int(round((pulses[i] - before / 2) * RATE))); end = min(len(x), int(round((pulses[i] + after / 2) * RATE)))
+        if end <= start: return 0.
+        return interpolated_peak(x, start + int(np.argmax(np.abs(x[start:end]))))
+    pd, ps, ad, as_ = [], 0., [], 0.
+    for i in range(1, len(periods)):
+        a, b = periods[i - 1], periods[i]
+        if not (usable(a) and usable(b)) or max(a / b, b / a) >= 1.3: continue
+        pd.append(abs(a - b)); ps += a + b
+        if i + 1 < len(periods) and usable(periods[i + 1]) and max(b / periods[i + 1], periods[i + 1] / b) < 1.3:
+            u_, v = amplitude(i), amplitude(i + 1)
+            if u_ > 0 and v > 0 and max(u_ / v, v / u_) < 1.6: ad.append(abs(u_ - v)); as_ += u_ + v
+    ratio = lambda diffs, total: float(np.mean(diffs) / (total / (2 * len(diffs)))) if len(diffs) >= 2 else None
+    return ratio(pd, ps), ratio(ad, as_)
 
 
 def mono16(audio, rate):
@@ -89,7 +126,7 @@ def measure(audio, rate=RATE, detailed=False):
     hn = sound.to_harmonicity_cc(time_step=STEP, minimum_pitch=65,
                                 silence_threshold=.1, periods_per_window=4.5)
     data = {'f0': [], 'f1': [], 'f2': [], 'f3': [], 'f4': [], 'hnr': [],
-            'balance': [], 'f3_alternative': [], 'delta_f': [], 'delta_f_alternative': []}
+            'balance': [], 'f3_alternative': [], 'delta_f': [], 'delta_f_alternative': [], 'h1h2': []}
     track = []
     halved = []
     for i, t in enumerate(times):
@@ -130,6 +167,8 @@ def measure(audio, rate=RATE, detailed=False):
             peak = lambda hz: float(10*np.log10(spec[np.abs(freq - hz) <= max(.06*hz, RATE/2048)].max() + 1e-20))
             harmonics = [peak(k*f0[i]) for k in range(1, 7)]
             halved.append(np.mean(harmonics[1::2]) - np.mean(harmonics[0::2]) > 10)
+            # In a halved frame "H1" is the absent subharmonic: H1–H2 only where pitch and pattern agree.
+            if not halved[-1]: data['h1h2'].append(harmonics[0] - harmonics[1])
             if detailed and i%2==0:
                 recent=f0[max(0,i-74):i+1][voiced[max(0,i-74):i+1]]
                 if len(recent)>=5:row['pitch_span']=float(12*np.log2(np.quantile(recent,.9)/np.quantile(recent,.1)))
@@ -145,6 +184,16 @@ def measure(audio, rate=RATE, detailed=False):
     features['quiet_pct'] = 100*sum(p['end']-p['start'] for p in intervals)/duration
     features['quiet_mean'] = float(np.mean([p['end']-p['start'] for p in intervals])) if intervals else 0.
     features['pitch_span'] = float(12*np.log2(np.quantile(data['f0'], .9)/np.quantile(data['f0'], .1)))
+    # Voice quality beyond the map's five: H1–H2 (median above), its spread across voiced frames and that of
+    # formant spacing, harmonicity and balance, and pulse perturbation.
+    for key in ['h1h2', 'delta_f', 'hnr', 'balance']:
+        if data[key]: features[key + '_sd'] = float(np.std(data[key]))
+    # Glottal pulses from the app's own pitch track, the operation the Rust engine's pulse search implements.
+    points = parselmouth.praat.call([sound, pitch], 'To PointProcess (cc)')
+    pulses = np.array(parselmouth.praat.call(points, 'To Matrix').values[0]) if parselmouth.praat.call(points, 'Get number of points') else np.array([])
+    jitter, shimmer = perturbation(x, pulses)
+    if jitter is not None: features['jitter'] = jitter
+    if shimmer is not None: features['shimmer'] = shimmer
     base['pitch_halving_pct'] = round(100*float(np.mean(halved)), 1)
     base.update(features=features, track=track,
                 formant_seconds=round(len(data['f3'])*STEP, 3),

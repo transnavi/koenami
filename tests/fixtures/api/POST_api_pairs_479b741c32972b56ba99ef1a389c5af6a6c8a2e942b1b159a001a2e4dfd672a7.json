@@ -1,0 +1,7 @@
+{
+ "key": "POST /api/pairs 479b741c32972b56ba99ef1a389c5af6a6c8a2e942b1b159a001a2e4dfd672a7",
+ "status": 200,
+ "contentType": "application/json; charset=utf-8",
+ "body": "{\"a\": \"common_voice_ja_38916575\", \"b\": \"common_voice_ja_27988876\", \"language\": \"ja\", \"answers\": {\"femininity\": \"a\"}, \"kind\": \"repeat\", \"distance\": 0.8372, \"space\": \"acoustic-five\", \"session\": \"w56cpow4mjuuxd6w\", \"note\": \"\", \"reviewed\": \"2026-09-17T10:06:12+00:00\"}",
+ "base64": false
+}
