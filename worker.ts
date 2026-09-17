@@ -19,7 +19,7 @@ const cardFonts: Record<string, [ArrayBuffer, ArrayBuffer]> = { ja: [fontJaRegul
 // Error text in the language the client asked for; the studio sends its own language.
 const say = (request: Request, key: string) => translator(matchLanguage(request.headers.get('Accept-Language')))(key) as string;
 // Crawler and browser-chrome files at the site root (see web/public and prepare_public.py).
-const siteFiles = /^\/(robots\.txt|sitemap\.xml|site\.webmanifest|sw\.js|og-(image|guide|tutorial|method|references)\.png|screenshot-(wide|narrow)\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
+const siteFiles = /^\/(robots\.txt|sitemap\.xml|site\.webmanifest|sw\.js|language\.js|og-(image|guide|tutorial|method|references)\.png|screenshot-(wide|narrow)\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
 const maxBytes = 16000 * 4 * 60;
 const siteOrigin = 'https://koe.transnavi.jp';
 
