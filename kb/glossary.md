@@ -278,3 +278,38 @@ Terms as the Spanish-, Portuguese-, French-, German-, Italian-, Dutch- and Russi
 
 <!-- lane-terms: entries from the language collectors' reports are merged below this line -->
 
+### Japanese (ja)
+
+Terms met in the Japanese sources added in the 2026-09-17 pass, with the note that attests the usage. The 両声類 scene's words and the ENT clinics' words are listed separately because a reader meets them in different places.
+
+- **地声** (ja) — the natural speaking voice, defined in the encyclopedia only by opposition: 裏声 「地声（表声）に対する語」 [[wikipedia-ja-uragoe]]; the training guides set it as the material to work from, 「あくまでも地声のまま高い声を出す」 [[brushvoice-joseigoe]]. → [[vocal-registers]]
+- **表声** (ja) — the term the 声 article uses for the same register in its list ボーカルフライ、表声、裏声(ファルセット)、ホイッスル [[wikipedia-ja-koe]]. → [[vocal-registers]]
+- **頭声区** (ja) — head register, the register the 裏声 article says 裏声 generally comes from [[wikipedia-ja-uragoe]]; en head voice, ko 두성. → [[vocal-registers]]
+- **換声点** (ja) — the register break, given as the thing to learn to control because 「低くなりすぎると本来の男声に切り替わってしまったりします」 [[brushvoice-joseigoe]]; en passaggio / break. → [[vocal-registers]]
+- **喉を開く ／ 喉を狭くする** (ja) — open the throat (the ordinary singing instruction) versus narrow it (the メラニー法 instruction): 「喉を広く開くというよりは、喉を狭くして発声するということが最大のポイント」 [[brushvoice-joseigoe]]. → [[voice-feminization-therapy]]
+- **喉仏** (ja) — the visible Adam's apple; the guides say to raise and hide it and not to press it down [[brushvoice-joseigoe]], [[wikipedia-melanie-ho]]; en Adam's apple, ko 목젖 (also used for uvula). → [[larynx-anatomy]]
+- **声質** (ja) — voice quality, the property the 両声類 tag targets: 「主に"声質"だけをタグの対象とするため」 [[nicodic-ryoseirui]]; en voice quality. → [[voice-quality]]
+- **声色** (ja) — voice colour, what an uploader praises when a performer switches parts: 「声色を巧みに変えて一人で歌いきる男性」 [[nicovideo-ribbonmatch2007]]; the 声 article lists it first among the things 声 varies in [[wikipedia-ja-koe]]. → [[voice-quality]]
+- **多声類** (ja) — a many-voice performer, the wider category in the tag set (1,396 videos on 2026-09-17) [[nicovideo-ryoseirui-tag]], named as a related article by both encyclopedias [[nicodic-ryoseirui]], [[pixiv-ryoseirui]]. → [[japanese-community]]
+- **声真似** (ja) — voice mimicry; the ニコニコ大百科 article says 生放送 performers are more often 声真似練習者 than singers [[nicodic-ryoseirui]], and the tag carries 11,348 videos against 両声類's 7,349 [[nicovideo-ryoseirui-tag]]. → [[community-training]]
+- **女声講座** (ja) — "female-voice course", the YouTube genre name, used by entertainment channels and by trans trainers alike [[fujimine2025]], [[jura2022]], [[satsukipon]]; the reverse genre is 男声講座 [[noroda2020]]. → [[community-training]]
+- **男性両声類** (ja) — a male 両声類, the group one Japanese study sampled for naturalness ratings [[hasegawa2017]]. → [[japanese-community]]
+- **声パス** (ja, community) — voice passing, the goal label in a trans woman's voice-training category, paired with ボイトレ as 「声パス・ボイトレ」 [[yomedanchii-voice]]; en passing [[wikipedia-passing-gender]]. → [[gender-perception]]
+- **メラニー法** (ja) — the Japanese name for Melanie Anne Phillips' method; the encyclopedia keeps the attribution 「自身もトランスジェンダーであるアメリカのメラニー・アン・フィリップス…によって開発された」 [[wikipedia-melanie-ho]], while a commercial guide uses it loosely for any 「男性が女声を出す発声方法」 [[brushvoice-joseigoe]]. → [[voice-feminization-therapy]]
+- **話声位** (ja) — speaking fundamental frequency, the Japanese clinical measure named in paper titles and keywords [[sakuraba2009]], [[nakamura2021]], [[nimura2015]]; the 声 article's figure is 成人男性で120Hz前後、成人女性で240Hz前後 [[wikipedia-ja-koe]]; en speaking F0 / SFF. → [[fundamental-frequency]]
+- **音声女性化手術** (ja) — voice feminization surgery, the clinics' patient-facing name for the pitch-raising operations [[kyoto-ent-clinic]]; zh 嗓音女性化, ko 음성여성화수술. → [[voice-surgery]]
+- **声帯短縮術 ／ ウェンドラー声帯短縮術** (ja) — vocal-fold shortening, attributed to Wendler's 1990 glottoplasty and described as 「世界的に主流となってきている手術」 [[kyoto-ent-clinic]], [[met-ent-tokyo]]; zh 声带截短术, ko 성대단축술. → [[voice-surgery]]
+- **甲状軟骨形成術Ⅳ型 ／ Ⅲ型** (ja) — type 4 thyroplasty, which tightens fold tension to raise 話声位, and type 3, which slackens it to lower it [[kyoto-ent-clinic]], [[met-ent-tokyo]], [[nakamura2021]]; type 4 is also called 輪状甲状軟骨近接術 and credited in Japanese practice to 一色信彦 in the 1970s [[kyoto-ent-clinic]]; zh 环甲接近术. → [[voice-surgery]]
+- **喉頭枠組み手術 ／ 音声外科手術** (ja) — laryngeal framework surgery, the lecture-category name for the type 3/4 operations [[nakamura2021]], and phonosurgery, the keyword on a type-4 outcomes paper [[nakamura2022]]. → [[voice-surgery]]
+- **声帯注射** (ja) — repeated steroid injection into the folds, offered where surgery is not possible, with 「調節ができず、効果には個人差があります」 [[kyoto-ent-clinic]]. → [[voice-surgery]]
+- **喉頭隆起切除** (ja) — shaving the laryngeal prominence, offered alongside the pitch operations with the warning 「極端な切除を行うと声帯にダメージを与えてしまう」 [[met-ent-tokyo]], [[kyoto-ent-clinic]]; en Adam's-apple shave. → [[larynx-anatomy]]
+- **音声治療（VT）／ 理学療法（PT）／ 自己トレーニング** (ja) — voice therapy and physical therapy as the Japanese clinical abbreviations, given together with type 4 thyroplasty in one case report [[kunieda2023]], and self-training as what a clinic calls the post-operative work it charges for separately [[kyoto-ent-clinic]]; en voice therapy, physiotherapy. → [[voice-therapy-techniques]]
+- **ホルモン音声障害** (ja) — hormone-induced voice disorder, the Japanese clinical label for voice change caused by hormone treatment, described in one case as 「話声位の低音化，声域の狭小化」 [[kunieda2023]]. → [[hormones-and-voice]]
+- **性別適合手術 ／ 特例法** (ja) — gender-affirming surgery, the term both the psychiatric society and the GI society use as official [[wikipedia-ja-seibetsutekigoushujutsu]], and the everyday shortening of 「性同一性障害者の性別の取扱いの特例に関する法律」 [[wikipedia-ja-tokureiho]], [[gidjp-opinion2023]]. → [[transgender-care-context]]
+- **混合診療** (ja) — mixing insured and self-paid treatment in one course, which the community blames for making insured surgery unreachable for anyone already paying for hormones [[note-maru2blog]], [[gidjp-opinion2023]]. → [[transgender-care-context]]
+- **乙女塾** (ja) — a study programme for 「女の子らしくなるための学びの場」 founded by the trans singer and voice trainer 西原さつき, whose channel teaches 女声 as 現役ボイトレ講師・両声類 [[satsukipon]]. → [[japanese-community]]
+- **ささやき法 ／ 濁り抽出法** (ja) — "whisper method" and "muddy-extraction method", the two named 男声→女声 techniques a voice-actor school lists beside メラニー法; the first trains 「吐息まじりに声を出す」 and builds volume from there, the second starts from a throaty 「ヴゥゥー…」 and thins it [[anime-academy-ryoseirui2021]]. → [[voice-therapy-techniques]] · [[japanese-community]]
+- **チェストボイス ／ ミドルボイス ／ ヘッドボイス ／ ウィスパーボイス** (ja) — the four resonance-register names taught for 両声類 work, defined by where the vibration is felt: chest, the midpoint between 地声 and 裏声 with 「鼻の奥にある空洞」, the head (equated on the page with 裏声), and a whispered, folds-open production [[anime-academy-ryoseirui2021]]; en chest voice / mixed voice / head voice / whisper voice. → [[vocal-registers]]
+- **知覚的女声度** (ja) — "perceived degree of female voice", a listener-rated score for an MtF speaker's voice, used as the target of an automatic estimator that reached r = 0.86 against listener ratings where listeners agreed with each other at r = 0.88 [[maruyama2007]]; en perceived femininity score. → [[machine-gender-scoring]] · [[gender-perception]]
+- **男女識別** (ja) — speaker-sex classification, the keyword for the signal-processing side of this work [[maruyama2007]]. → [[machine-gender-scoring]]
+
