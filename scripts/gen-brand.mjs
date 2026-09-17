@@ -71,6 +71,7 @@ const PAGES = [
   { file: 'og-guide', label: '使い方', title: 'Koenamiの使い方', lines: ['見本を選び、録音し、見比べる。', '画面の見方と練習の流れ。'] },
   { file: 'og-tutorial', label: '声のしくみと練習の手引き', title: '声はどう作られ、', title2: 'どう変えられるか', lines: ['音源とフィルター、性別の聞こえ方、', '女性化・男性化の練習を、出典付きで。'] },
   { file: 'og-method', label: '測定方法と出典', title: '5つの指標の測り方', lines: ['高さ・響き・質感・明るさ・抑揚の定義、', '見本の音声の出典と利用条件。'] },
+  { file: 'og-references', label: '参考文献', title: '使った資料の一覧', lines: ['研究・モデル・音声資料・関連ツールを、', '種別と使用箇所つきで。'] },
 ];
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 for (const page of PAGES) {

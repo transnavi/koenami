@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"target": "ES2022", "module": "ESNext", "moduleResolution": "bundler",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"], "strict": true, "noEmit": true, "skipLibCheck": true,
+		"allowJs": true, "resolveJsonModule": true, "types": ["node"],
+		"paths": { "@app/*": ["./old-tree/web/*"] }
+	},
+	"include": ["unit/**/*.ts", "vitest.config.ts", "../e2e/**/*.ts", "../playwright.config.ts"]
+}

@@ -1,5 +1,5 @@
 import {finite} from './math.js';
-import {Scorer,parseResultParams,shareText,METRIC_KEYS,METRIC_LABELS,METRIC_UNITS,METRIC_DIGITS,VERDICTS} from './score.js';
+import {Scorer,parseResultParams,shareText,formatScore,METRIC_KEYS,METRIC_LABELS,METRIC_UNITS,METRIC_DIGITS,VERDICTS,LEANINGS} from './score.js';
 import {cardImage,intents,resultURL,systemShare,labelled} from './share.js';
 'use strict';
 const $=id=>document.getElementById(id);
@@ -14,9 +14,9 @@ async function main(){
  const scorer=new Scorer(library.clips),result=scorer.score(parsed.features);
  if(!result){fail('この言語の見本では判定を計算できません。');return;}
  const url=resultURL(result.features,parsed.lang),text=shareText(result);
- document.title=`Koenami · ${VERDICTS[result.verdict]}（女性度 ${result.display}）`;
+ document.title=`Koenami · ${VERDICTS[result.verdict]}（${LEANINGS[result.verdict]} ${formatScore(result.display)}）`;
  $('result-verdict').textContent=VERDICTS[result.verdict];$('result-verdict').dataset.verdict=result.verdict;
- $('result-score').querySelector('strong').textContent=String(result.display);$('result-score').hidden=false;
+ $('result-score').querySelector('strong').textContent=formatScore(result.display);$('result-score').querySelector('span').textContent=LEANINGS[result.verdict];$('result-score').hidden=false;
  $('result-version').textContent=`v${result.version}`;if(parsed.version!==result.version)$('result-status').textContent=`このリンクは判定方式v${parsed.version}で作られました。現在の方式（v${result.version}）で計算し直しています。`;$('result-try').href=`/${parsed.lang}/`;
  $('result-metric-rows').innerHTML=METRIC_KEYS.map(key=>{const bands=scorer.metricBands[key],n=METRIC_DIGITS[key],range=b=>`${fmt(b[0],n)}〜${fmt(b[1],n)}`;return `<tr><td>${METRIC_LABELS[key]} · ${METRIC_UNITS[key]}</td><td>${fmt(result.features[key],n)}</td><td>${range(bands.female)}</td><td>${range(bands.male)}</td></tr>`;}).join('');
  $('result-metrics').hidden=false;$('result-notes').hidden=false;

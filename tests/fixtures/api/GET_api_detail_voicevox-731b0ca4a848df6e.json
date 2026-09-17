@@ -1,0 +1,7 @@
+{
+ "key": "GET /api/detail/voicevox-731b0ca4a848df6e",
+ "status": 500,
+ "contentType": "text/plain; charset=utf-8",
+ "body": "500 Internal Server Error\n\nServer got itself in trouble",
+ "base64": false
+}

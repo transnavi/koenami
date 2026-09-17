@@ -1,0 +1,323 @@
+{
+ "url": "/review.html",
+ "title": "Koenami · 聴取レビュー",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "play",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "i-globe": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-sun": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-moon": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-list": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "lang": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "言語"
+   },
+   "value": "en",
+   "options": [
+    {
+     "value": "ja",
+     "text": "日本語",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "zh-CN",
+     "text": "普通话",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "en",
+     "text": "English",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "ko",
+     "text": "한국어",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "English",
+   "expanded": "false",
+   "text": "日本語普通话English한국어"
+  },
+  "mode": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "新規追加項目"
+  },
+  "pass": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "全部性別・自然さ声質・話し方印象"
+  },
+  "progress": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "済 0人 · 残り 20人"
+  },
+  "theme-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "明暗を切り替え",
+    "aria-label": "明暗を切り替え"
+   },
+   "text": ""
+  },
+  "card": {
+   "tag": "section",
+   "class": "",
+   "attrs": {},
+   "text": "033b81304fd71音声一覧L ▶Are you still using your computer for the research?1/1 · 3.6 秒‹› 基準 性別・発音女性らしさ0123456—感じない強く感じる男性らしさ0123456—感じない強く感じる自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる 問題無音EつぶやきのみU雑音Z歪みX スキップS保存して次へEnter"
+  },
+  "prev-speaker": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "前の話者",
+    "aria-label": "前の話者"
+   },
+   "text": ""
+  },
+  "display": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "033b81304fd7"
+  },
+  "speaker-meta": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "1音声"
+  },
+  "jump": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "一覧L"
+  },
+  "play": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "false",
+    "aria-label": "再生",
+    "title": "Space：再生／一時停止　R：最初から"
+   },
+   "text": "▶"
+  },
+  "text": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "Are you still using your computer for the research?1/1 · 3.6 秒"
+  },
+  "prev-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-label": "前の音声"
+   },
+   "text": "‹"
+  },
+  "next-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-label": "次の音声"
+   },
+   "text": "›"
+  },
+  "anchors": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "基準"
+  },
+  "scales": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "性別・発音女性らしさ0123456—感じない強く感じる男性らしさ0123456—感じない強く感じる自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる"
+  },
+  "quality-flags": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "問題無音EつぶやきのみU雑音Z歪みX"
+  },
+  "note": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "placeholder": "メモ"
+   },
+   "value": "",
+   "text": ""
+  },
+  "status": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "skip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "スキップS"
+  },
+  "save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "保存して次へEnter"
+  },
+  "done": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "この言語の話者はすべてレビュー済みです。"
+  },
+  "log": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "M 2466 · memoM 2506 無音 · テストM 1 女性らしさ 1 · 男性らしさ 5F 3141 雑音M 2497 母語話者らしさ 0 · 男性らしさ 6 · 女性らしさ 0 · 聞こえる年代 20代 · 自然さ 3 · 澄み 3 · 張り 2 · 太さ 1 · 鼻声 1 · 滑舌 6 · 明るさ 4 · 上品さ 3 · 温かさ 5 · 甘さ 0M 2482 女性らしさ 0 · 男性らしさ 6 · 母語話者らしさ 1 · 自然さ 6 · 聞こえる年代 20代 · 澄み 4 · 張り 5 · 太さ 1 · 鼻声 0 · 滑舌 6 · 明るさ 4 · 上品さ 5 · 温かさ 2 · 甘さ 1F 2591 甘さ 1 · 女性らしさ 5 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 6 · 聞こえる年代 30代 · 澄み 2 · 張り 1 · 太さ 2 · 鼻声 1 · 滑舌 6 · 明るさ 3 · 上品さ 3 · 温かさ 1M 3050 男性らしさ 6 · 女性らしさ 0 · 母語話者らしさ 6 · 自然さ 6 · 聞こえる年代 20代 · 滑舌 1 · 澄み 4 · 張り 1 · 太さ 2 · 鼻声 1 · 明るさ 5 · 上品さ 0 · 温かさ 3 · 甘さ 3"
+  },
+  "list-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "話者一覧 20人×033b81304fd7Are you still using your computer for the research?6d06f0216c70What did you say your name was?470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.8668948d2438A group of people, one of them with a guitar, were sitting by the campfire and singing songs.7720658d3e86People sitting on a street while drinking.1c1f78f06fdfRoll the dice, please.bcb7c332cbfaThe more you stir, the more it stinks.f65607943cd8A scientist in a lab coat is using a microscope.1d796894b9eaShe has always been very kind and friendly to everyone, even strangers.fe7d54c"
+  },
+  "list-count": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "20人"
+  },
+  "list-filter": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "placeholder": "番号や文で絞り込む"
+   },
+   "value": "",
+   "text": ""
+  },
+  "list-items": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "033b81304fd7Are you still using your computer for the research?6d06f0216c70What did you say your name was?470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.8668948d2438A group of people, one of them with a guitar, were sitting by the campfire and singing songs.7720658d3e86People sitting on a street while drinking.1c1f78f06fdfRoll the dice, please.bcb7c332cbfaThe more you stir, the more it stinks.f65607943cd8A scientist in a lab coat is using a microscope.1d796894b9eaShe has always been very kind and friendly to everyone, even strangers.fe7d54c3d3a3Turn"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-tour": {
+    "done": true
+   },
+   "koenami-review": {
+    "lang": "en",
+    "mode": "new",
+    "pass": "all",
+    "skipped": {
+     "ja:new": [],
+     "en:new": []
+    },
+    "speaker": "033b81304fd7",
+    "drafts": {
+     "4c6431bfa9ba": {
+      "clip": "common_voice_ja_21853976",
+      "ratings": {},
+      "chosen": [],
+      "note": "",
+      "active": 0
+     },
+     "93a5f4970c07": {
+      "clip": "common_voice_ja_21311538",
+      "ratings": {},
+      "chosen": [],
+      "note": "",
+      "active": 0
+     },
+     "033b81304fd7": {
+      "clip": "common_voice_en_17682905",
+      "ratings": {},
+      "chosen": [],
+      "note": "",
+      "active": 0
+     }
+    }
+   },
+   "voice-theme": "light"
+  },
+  "idb": {}
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/review",
+   "query": "lang=ja&mode=new&session=w56cpow4mjuuxd6w",
+   "status": 200
+  },
+  {
+   "seq": 2,
+   "method": "GET",
+   "path": "/api/review",
+   "query": "lang=en&mode=new&session=w56cpow4mjuuxd6w",
+   "status": 200
+  }
+ ],
+ "media": [
+  "/samples/common_voice_en_17682905.mp3",
+  "/samples/common_voice_ja_21311538.mp3",
+  "/samples/common_voice_ja_21853976.mp3"
+ ],
+ "errors": []
+}

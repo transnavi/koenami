@@ -1,0 +1,32 @@
+{
+ "version": "3.0.0",
+ "duration": 10.0,
+ "voiced_seconds": 5.84,
+ "clipping_fraction": 0.0,
+ "level_dbfs": -23.008219434796274,
+ "features": {
+  "f0": 156.29393448168133,
+  "f1": 361.0429572490756,
+  "f2": 1627.864105680882,
+  "f3": 2731.8637342900893,
+  "f4": 3818.569147633513,
+  "hnr": 13.925607134317598,
+  "balance": -21.689452525059394,
+  "f3_alternative": 2754.087448297906,
+  "delta_f": 990.2833041652265,
+  "delta_f_alternative": 1000.9488816918292,
+  "f0_mean": 170.23884348703422,
+  "pitch_sd_hz": 62.14130771608338,
+  "pitch_sd_st": 4.262269993119687,
+  "quiet_pct": 0.0,
+  "quiet_mean": 0.0,
+  "pitch_span": 6.021324907139263
+ },
+ "reason": null,
+ "formant_seconds": 2.84,
+ "pitch_p10": 137.5976347527434,
+ "pitch_p90": 194.83228299527872,
+ "formant_sensitivity_pct": 0.8,
+ "resonance_sensitivity_pct": 1.1,
+ "peak": 0.4463632411451399
+}

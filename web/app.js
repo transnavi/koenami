@@ -6,7 +6,7 @@ import {SignalView} from './signals.js';
 import {TakeStore} from './storage.js';
 import {localize} from './locale.js';
 import {loadImported,importedAudio,importJVS} from './corpus-import.js';
-import {Scorer,VERDICTS,representatives,distance2} from './score.js';
+import {Scorer,VERDICTS,LEANINGS,formatScore,gateFailure,verdictOf,representatives,distance2} from './score.js';
 import {shareBundle,cardImage,systemShare,labelled} from './share.js';
 'use strict';
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -14,12 +14,25 @@ const fmt=(v,n=0)=>finite(v)?v.toFixed(n):'—';
 const clock=t=>`${Math.floor((t||0)/60)}:${String(Math.floor((t||0)%60)).padStart(2,'0')}`;
 const icon=(el,name)=>el.querySelector('use')?.setAttribute('href','#i-'+name);
 const METRICS=[
- {key:'f0',label:'高さ',unit:'Hz',n:0,description:'声帯の振動の速さです。有声音の基本周波数（F0）の中央値を使います。値が大きいほど高い声です。帯は参照グループの見本の中央80%を示します。'},
- {key:'delta_f',label:'響き',unit:'Hz ΔF',n:0,description:'最初の4つのフォルマントから求めた間隔です。大きいほど、声道が小さく明るい響きに対応する傾向があります。母音でも変わるので、同じ言葉で比べると違いがわかりやすくなります。'},
- {key:'hnr',label:'質感',unit:'dB',n:1,description:'声の周期成分と雑音成分の比（HNR）です。小さい値には息やかすれが関係することがありますが、録音の雑音にも左右されます。声の重さを直接測る指標ではありません。'},
- {key:'balance',label:'明るさ',unit:'dB',n:1,description:'100〜1,000 Hzに対する1,000〜4,000 Hzの音の強さです。大きいほど高域の成分が多くなります。母音、息の量、マイクの特性も影響します。'},
- {key:'pitch_span',label:'抑揚',unit:'半音',n:1,description:'声の高さの10〜90パーセンタイルの幅です。女性的な印象に関連する場面もありますが、大きければよいとは限りません。日本語のアクセント、中国語の声調、文の種類、感情で変わります。標準偏差や間の取り方はレポートで確認できます。'}
+ {key:'f0',label:'高さ',unit:'Hz',n:0,description:'声帯の振動の速さです。有声音の基本周波数（F0）の中央値を使います。値が大きいほど高い声です。帯は参照グループの見本の中央80%を示します。',
+  factors:['声帯の張り（喉頭の筋肉の使い方）と声帯の質量','喉頭の高さ、息の量、力み','文の種類と感情。疑問文や強調では上がります'],
+  caveats:['高さだけでは性別の印象は決まりません。同じ高さでも響きで印象が変わります（<a href="https://doi.org/10.5112/jjlp.50.14" target="_blank" rel="noreferrer">櫻庭ほか 2009</a>）。','息の音や機械音を拾うと極端な値になります。マイクから10〜20cm離し、静かな場所で試してください。']},
+ {key:'delta_f',label:'響き',unit:'Hz ΔF',n:0,description:'最初の4つのフォルマントから求めた間隔です。大きいほど、声道が小さく明るい響きに対応する傾向があります。母音でも変わるので、同じ言葉で比べると違いがわかりやすくなります。',
+  factors:['喉頭の高さ（上げると声道が短くなり、値が上がります）','口の開き、舌の位置、唇の形','母音。「い」と「あ」では同じ人でも大きく違います'],
+  caveats:['推定値です。短い録音や雑音では安定せず、解析設定でも動きます。','母音の違いが響きの違いに見えることがあります。同じ言葉、できれば同じ母音で比べてください。']},
+ {key:'hnr',label:'質感',unit:'dB',n:1,description:'声の周期成分と雑音成分の比（HNR）です。小さい値には息やかすれが関係することがありますが、録音の雑音にも左右されます。声の重さを直接測る指標ではありません。',
+  factors:['息漏れ（声帯の閉じ方）','かすれ、がらつき','録音の雑音。環境音が多いと下がります'],
+  caveats:['声の「重さ」や「太さ」の指標ではありません。','静かな部屋で録った見本と、雑音のある自分の録音を直接比べると、雑音の分だけ低く出ます。']},
+ {key:'balance',label:'明るさ',unit:'dB',n:1,description:'100〜1,000 Hzに対する1,000〜4,000 Hzの音の強さです。大きいほど高域の成分が多くなります。母音、息の量、マイクの特性も影響します。',
+  factors:['口の開きと舌の位置','息の量と声帯の閉じ方','マイクの位置と特性、ブラウザーの音声処理'],
+  caveats:['機材に強く依存します。録音条件が違う音声どうしでは比べにくい指標です。','見本との差より、同じ機材で録った自分の録音どうしの変化を見るのに向いています。']},
+ {key:'pitch_span',label:'抑揚',unit:'半音',n:1,description:'声の高さの10〜90パーセンタイルの幅です。女性的な印象に関連する場面もありますが、大きければよいとは限りません。日本語のアクセント、中国語の声調、文の種類、感情で変わります。標準偏差や間の取り方はレポートで確認できます。',
+  factors:['文の種類と感情','言語。日本語のアクセント、中国語の声調で幅が変わります','録音の長さ。長いほど幅が広がりやすくなります'],
+  caveats:['大きいほど良いわけではありません。','長さの違う録音は比べにくいので、同じ文か短い句で比べてください。']}
 ];
+const VERDICT_HELP={label:'声の判定',description:'5つの指標を、女性的な声と男性的な声の見本が最も離れる方向（男女差の軸）に投影した位置です。0は両方の見本の中央値のちょうど中間、−25は男性的な見本の中央値、+25は女性的な見本の中央値です。',
+ factors:['上の5指標すべて。特に高さと響きの寄与が大きくなります','見本の言語。言語ごとに見本が違うので、言語をまたいで数値は比べられません'],
+ caveats:['聞き手の評価ではなく、音響指標の位置です。校正は行っていません。','短い録音や雑音の多い録音では安定しません。同じ文を何度か録音して見比べてください。','どちらの向きも、また0に近づけることも、目標として扱います。']};
 let favorites=new Set();try{favorites=new Set(JSON.parse(localStorage.getItem('voice-favorites')||'[]'));}catch{}
 const state={lang:'ja',ownLanguage:'ja',languageToken:0,loadingLanguage:false,clips:[],representatives:[],selected:null,own:null,ownFull:null,ownPCM:null,ownName:'',ownId:null,ref:null,refFull:null,refPCM:null,ranges:{own:null,ref:null},words:{own:null,ref:null},custom:[],imported:[],takes:[],recording:false,busy:false,limit:60,detailToken:0,ownToken:0,rangeToken:{own:0,ref:0},wordToken:{own:0,ref:0},liveTrack:[],liveClock:null,analyzing:new Set()};
 const player=$('player'),reference=$('reference-player');
@@ -42,7 +55,9 @@ let fitModel=null;
 function buildFit(){const refs=referenceStats().filter(c=>AcousticSpace.raw(c.features).every(finite));if(refs.length<20){fitModel=null;return;}const model=new AcousticSpace(refs),z=refs.map(c=>model.standardized(c.features)),h=Math.pow(z.length,-1/9);const density=(v,exclude=-1)=>z.reduce((sum,p,i)=>sum+(i===exclude?0:Math.exp(-v.reduce((sum,x,k)=>sum+(x-p[k])**2,0)/(2*h*h))),0)/(z.length-(exclude>=0?1:0));fitModel={model,loo:z.map((v,i)=>density(v,i)),density,count:z.length};}
 function fitValue(features){if(!fitModel)return null;const v=fitModel.model.standardized(features);if(!v)return null;const d=fitModel.density(v);return 100*fitModel.loo.filter(x=>x<=d).length/fitModel.loo.length;}
 function activeFeatures(side){return (side==='own'?state.own:state.ref)?.features||{};}
-function updateIndicators(){const focused=document.activeElement?.dataset?.metric;const f=activeFeatures('own'),target=activeFeatures('ref'),refs=referenceStats();$('indicators').replaceChildren();for(const m of METRICS){const values=refs.map(s=>s.features[m.key]).filter(finite);let lo=quantile(values,.01),hi=quantile(values,.99);if(!finite(lo)||hi<=lo){lo=AXES[m.key].min;hi=AXES[m.key].max;}lo=Math.min(lo,f[m.key]??lo,target[m.key]??lo);hi=Math.max(hi,f[m.key]??hi,target[m.key]??hi);const pos=v=>clamp((v-lo)/(hi-lo||1)*100,0,100),q1=quantile(values,.1),q9=quantile(values,.9);const b=document.createElement('button');b.className='indicator';b.dataset.metric=m.key;b.title=`${m.label}: 自分 ${fmt(f[m.key],m.n)} ${m.unit}・見本 ${fmt(target[m.key],m.n)} ${m.unit}`;b.setAttribute('aria-label',b.title);b.innerHTML=`<span class="indicator-heading">${m.label}<svg aria-hidden="true"><use href="#i-info"></use></svg></span><span class="indicator-values"><strong>${fmt(f[m.key],m.n)}</strong><small>${m.unit}</small><em>${fmt(target[m.key],m.n)}</em></span><span class="indicator-track">${finite(q1)?`<span class="indicator-band" style="left:${pos(q1)}%;width:${pos(q9)-pos(q1)}%"></span>`:''}${finite(f[m.key])?`<span class="indicator-marker" style="left:${pos(f[m.key])}%"></span>`:''}${finite(target[m.key])?`<span class="indicator-target" style="left:${pos(target[m.key])}%"></span>`:''}</span>`;b.onclick=()=>{$('metric-title').textContent=m.label;$('metric-description').textContent=m.description;$('metric-details').innerHTML=[['自分',`${fmt(f[m.key],m.n)} ${m.unit}`],['選んだ見本',`${fmt(target[m.key],m.n)} ${m.unit}`],[referenceGroupLabel()+'の見本 · 中央80%',`${fmt(q1,m.n)}–${fmt(q9,m.n)} ${m.unit}`],['参照話者数',values.length]].map(([a,b])=>`<div class="metric-detail-row"><span>${a}</span><strong>${b}</strong></div>`).join('');$('metric-dialog').showModal();};$('indicators').append(b);}if(focused)$('indicators').querySelector(`[data-metric="${focused}"]`)?.focus({preventScroll:true});
+/* One dialog for every ?: definition, the numbers, what moves the value, and what it cannot tell. */
+function openHelp(entry,rows=[]){$('metric-title').textContent=entry.label;$('metric-description').textContent=entry.description;$('metric-details').innerHTML=rows.map(([a,b])=>`<div class="metric-detail-row"><span>${a}</span><strong>${b}</strong></div>`).join('');$('metric-factors').innerHTML=entry.factors.map(x=>`<li>${x}</li>`).join('');$('metric-caveats').innerHTML=entry.caveats.map(x=>`<li>${x}</li>`).join('');$('metric-dialog').showModal();}
+function updateIndicators(){const focused=document.activeElement?.dataset?.metric;const f=activeFeatures('own'),target=activeFeatures('ref'),refs=referenceStats();$('indicators').replaceChildren();for(const m of METRICS){const values=refs.map(s=>s.features[m.key]).filter(finite);let lo=quantile(values,.01),hi=quantile(values,.99);if(!finite(lo)||hi<=lo){lo=AXES[m.key].min;hi=AXES[m.key].max;}lo=Math.min(lo,f[m.key]??lo,target[m.key]??lo);hi=Math.max(hi,f[m.key]??hi,target[m.key]??hi);const pos=v=>clamp((v-lo)/(hi-lo||1)*100,0,100),q1=quantile(values,.1),q9=quantile(values,.9);const b=document.createElement('button');b.className='indicator';b.dataset.metric=m.key;b.title=`${m.label}: 自分 ${fmt(f[m.key],m.n)} ${m.unit}・見本 ${fmt(target[m.key],m.n)} ${m.unit}`;b.setAttribute('aria-label',b.title);b.innerHTML=`<span class="indicator-heading">${m.label}<svg aria-hidden="true"><use href="#i-info"></use></svg></span><span class="indicator-values"><strong>${fmt(f[m.key],m.n)}</strong><small>${m.unit}</small><em>${fmt(target[m.key],m.n)}</em></span><span class="indicator-track">${finite(q1)?`<span class="indicator-band" style="left:${pos(q1)}%;width:${pos(q9)-pos(q1)}%"></span>`:''}${finite(f[m.key])?`<span class="indicator-marker" style="left:${pos(f[m.key])}%"></span>`:''}${finite(target[m.key])?`<span class="indicator-target" style="left:${pos(target[m.key])}%"></span>`:''}</span>`;b.onclick=()=>openHelp(m,[['自分',`${fmt(f[m.key],m.n)} ${m.unit}`],['選んだ見本',`${fmt(target[m.key],m.n)} ${m.unit}`],[referenceGroupLabel()+'の見本 · 中央80%',`${fmt(q1,m.n)}–${fmt(q9,m.n)} ${m.unit}`],['参照話者数',values.length]]);$('indicators').append(b);}if(focused)$('indicators').querySelector(`[data-metric="${focused}"]`)?.focus({preventScroll:true});
  drawProfile(f,target);updateVerdict();const comparison=map.space?.comparison(f,target,map.dimension,map.projection);$('fit-value').textContent=comparison?fmt(comparison.distance,2):'—';$('report-button').title=comparison?'見本との5指標の標準化距離。0が一致。比較レポートを開く。':'比較レポートを開く';
 }
 function updateMap(){let points=state.clips.filter(c=>c.plotted&&['female','male'].includes(c.group)&&$(c.group==='female'?'show-female':'show-male').checked);if(state.lang==='lab')points=state.clips.filter(c=>c.plotted&&teacherMatch(c));if(state.selected?.plotted&&!points.some(c=>c.id===state.selected.id)&&!['female','male'].includes(state.selected.group))points.push(state.selected);points=points.concat(state.takes.filter(t=>t.stored&&t.id!==state.ownTakeId).map(t=>({id:'recording-'+t.id,recordingId:t.id,speaker:'self',name:t.name,group:'own-history',features:t.features,duration:t.duration,language:t.language})));map.setSamples(points);map.selected=state.selected?{...state.selected,features:activeFeatures('ref')}:null;map.own=state.ownFull;map.ownFeatures=activeFeatures('own');map.ownRange=state.ranges.own;map.target=state.refFull;map.targetRange=state.ranges.ref;map.showRange=true;map.live=state.captureMode==='live'&&state.recording;const pitchRefs=referenceStats().map(c=>c.features.f0);signal.pitchBand=[quantile(pitchRefs,.1),quantile(pitchRefs,.9)];}
@@ -154,7 +169,7 @@ $('loopback').onclick=()=>{if(!monitorGain||!recordContext||!state.recording)ret
 $('live-mode').onclick=()=>state.recording?stopRecording():startRecording('live');
 window.addEventListener('keydown',e=>{if(e.repeat||document.querySelector('dialog[open]')||['INPUT','TEXTAREA','SELECT','KOE-SELECT'].includes(e.target.tagName)||e.target.isContentEditable)return;if(e.code==='Space'){e.preventDefault();if(!state.recording)$('play-mine').click();}else if(e.code==='KeyR'&&!e.ctrlKey&&!e.metaKey){e.preventDefault();state.recording?stopRecording():startRecording('record');}else if(e.code==='Escape'){if(state.recording)cancelCapture();else if(!state.busy){e.preventDefault();for(const side of ['own','ref'])if(state.ranges[side])selectRange(side,null);}}});
 window.addEventListener('beforeunload',()=>{for(const t of stream?.getTracks()||[])t.stop();});
-async function saveTake(id=crypto.randomUUID()){state.ownTakeId=id;const snapshot=snapshotOwn(),old=state.takes.find(t=>t.id===id),t={id,name:state.ownName,date:old?.date||new Date().toISOString(),features:state.ownFull.features,duration:state.ownFull.duration,language:state.ownLanguage,stored:true};const saved=await TakeStore.saveRecording(snapshot,t);state.takes=saved.index;await persistTakes();renderTakeMenu();updateMap();}
+async function saveTake(id=crypto.randomUUID()){state.ownTakeId=id;const snapshot=snapshotOwn(),old=state.takes.find(t=>t.id===id),quality=state.ownFull.analysisPending?undefined:Object.fromEntries(['voiced_seconds','formant_seconds','clipping_fraction','resonance_sensitivity_pct'].map(k=>[k,state.ownFull[k]])),t={id,name:state.ownName,date:old?.date||new Date().toISOString(),features:state.ownFull.features,duration:state.ownFull.duration,language:state.ownLanguage,stored:true,...(quality&&{quality})};const saved=await TakeStore.saveRecording(snapshot,t);state.takes=saved.index;await persistTakes();renderTakeMenu();updateMap();}
 async function analyzeTake(take){
  const id=take.takeId;if(!id||state.analyzing.has(id))return;state.analyzing.add(id);controls();
  try{
@@ -272,6 +287,28 @@ $('take-select').addEventListener('optionaction',async e=>{
 });
 
 
+/* Bulk actions on the recording history: one zip of every saved take, or delete them all. */
+async function storedTakes(){const out=[];for(const t of state.takes){if(!t.stored)continue;const rec=await TakeStore.read('recording:'+t.id).catch(()=>null);if(rec?.pcm)out.push({...t,pcm:rec.pcm});}return out;}
+$('download-all').onclick=async()=>{
+ if(state.busy||state.recording)return;state.busy=true;controls();
+ try{const takes=await storedTakes();if(!takes.length)throw new Error('保存された録音がありません。');
+  const {ZipWriter,BlobWriter,BlobReader,TextReader}=await import('@zip.js/zip.js/index-native.js');
+  const zip=new ZipWriter(new BlobWriter('application/zip')),used=new Set(),manifest=[];
+  for(const [i,t] of takes.entries()){let name=(t.name||'take').replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|]+/g,'_');if(used.has(name))name+='-'+(i+1);used.add(name);
+   await zip.add(name+'.wav',new BlobReader(wav(t.pcm)));manifest.push({file:name+'.wav',id:t.id,name:t.name,date:t.date,duration:t.duration,features:t.features});}
+  await zip.add('takes.json',new TextReader(JSON.stringify(manifest,null,1)));
+  download(await zip.close(),'koenami-recordings.zip');notify(`${takes.length}件の録音をまとめました。`);
+ }catch(error){notify(error.message,true);}
+ finally{state.busy=false;controls();}
+};
+$('delete-all').onclick=async()=>{
+ if(state.busy||state.recording)return;const stored=state.takes.filter(t=>t.stored);
+ if(!stored.length){notify('保存された録音がありません。');return;}
+ if(!confirm(`保存された録音${stored.length}件をすべて削除します。元に戻せません。`))return;
+ for(const t of stored)await deleteTake({storedId:t.id});
+ notify(`${stored.length}件の録音を削除しました。`);
+};
+
 function updateJvsBanner(){const count=new Set(state.clips.filter(c=>c.dataset==='JVS').map(c=>c.id)).size;$('jvs-banner').hidden=state.lang!=='ja'||count>=5000;}
 let importController=null;
 $('add-reference').onclick=()=>{$('jvs-status').textContent=state.imported.length?`${state.imported.length.toLocaleString()}音声を追加済み`:'';$('import-dialog').showModal();};
@@ -291,20 +328,39 @@ setInterval(saveView,1000);window.addEventListener('beforeunload',saveView);docu
 
 function restoreCamera(){if(!recordCamera)return;if(map.navigationVersion===recordCamera.navigationVersion){map.autoFit=recordCamera.autoFit;map.autoRotate=recordCamera.autoRotate;}recordCamera=null;map.fitDirty=true;map.invalidate();$('auto-rotate').setAttribute('aria-pressed',String(map.autoRotate));}
 /* The share dialog scores whatever the indicators show: the whole recording, or the selected range. */
-function shareResult(){return state.scorer?.available&&state.ownFull&&!state.ownFull.analysisPending?state.scorer.score(activeFeatures('own')):null;}
-const scalePos=s=>`${clamp((s+10)/120,0,1)*100}%`;
-function updateVerdict(){const result=shareResult(),scorer=state.scorer;const readout=$('verdict-readout');readout.disabled=!result;$('verdict-main').dataset.verdict=result?.verdict||'';$('verdict-word').textContent=result?VERDICTS[result.verdict]:scorer?.available?'録音すると表示':'この言語では計算できません';$('verdict-number').textContent=result?String(result.display):'';for(const g of ['male','female']){const band=scorer?.available?scorer.bands[g]:null,el=$('verdict-band-'+g);el.hidden=!band;if(band){el.style.left=scalePos(band[0]);el.style.width=`calc(${scalePos(band[1])} - ${scalePos(band[0])})`;}}if(result)$('verdict-dot').style.left=scalePos(result.score);}
+function activeMeasurement(){return state.own||state.ownFull;}
+function shareResult(){const m=activeMeasurement();return state.scorer?.available&&m&&!m.analysisPending&&!gateFailure(m)?state.scorer.score(m.features||{}):null;}
+const scalePos=s=>`${clamp((s+60)/120,0,1)*100}%`;
+function updateVerdict(){const result=shareResult(),scorer=state.scorer;const readout=$('verdict-readout');readout.disabled=!result;$('verdict-main').dataset.verdict=result?.verdict||'';const m=activeMeasurement(),gate=m&&!m.analysisPending&&scorer?.available?gateFailure(m):null;
+ $('verdict-word').textContent=result?VERDICTS[result.verdict]:!scorer?.available?'この言語では計算できません':!m?'録音すると表示':m.analysisPending?'解析中':'まだ判定できません';
+ $('verdict-number').textContent=result?formatScore(result.display):'';
+ $('verdict-gate').hidden=!gate||!!result;if(gate&&!result)$('verdict-gate').textContent=gate.value?`${gate.label} ${gate.value}（${gate.need}）`:gate.label;for(const g of ['male','female']){const band=scorer?.available?scorer.bands[g]:null,el=$('verdict-band-'+g);el.hidden=!band;if(band){el.style.left=scalePos(band[0]);el.style.width=`calc(${scalePos(band[1])} - ${scalePos(band[0])})`;}}if(result)$('verdict-dot').style.left=scalePos(result.score);}
+/* Every stored take of the current language that has a verdict, oldest first; the chart and list share the rows. */
+function historyRows(){const scorer=state.scorer,lang=state.lang==='lab'?'en':state.lang;if(!scorer?.available)return [];
+ return state.takes.filter(t=>t.stored&&t.language===lang&&t.features&&!(t.quality&&gateFailure(t.quality))).map(t=>({take:t,result:scorer.score(t.features),unchecked:!t.quality})).filter(r=>r.result).sort((a,b)=>a.take.date.localeCompare(b.take.date));}
+function renderHistory(current){
+ const rows=historyRows(),section=$('share-history');section.hidden=rows.length<2;if(section.hidden)return;
+ const bands=state.scorer.bands,W=480,H=110,L=30,R=8,T=8,B=18,y=s=>T+(H-T-B)*(1-(clamp(s,-50,50)+50)/100),x=i=>L+(W-L-R)*(rows.length>1?i/(rows.length-1):.5);
+ const band=(g,color)=>`<rect x="${L}" y="${y(bands[g][1])}" width="${W-L-R}" height="${Math.max(1,y(bands[g][0])-y(bands[g][1]))}" fill="${color}" opacity=".18"/>`;
+ const points=rows.map((r,i)=>[x(i),y(r.result.score)]);
+ const day=d=>new Date(d).toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+ $('history-chart').innerHTML=`${band('male','var(--sky)')}${band('female','var(--pink)')}<line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>${[50,0,-50].map(v=>`<text x="${L-6}" y="${y(v)+3}" font-size="8" text-anchor="end" fill="var(--muted)">${formatScore(v)}</text>`).join('')}<polyline points="${points.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--self)" stroke-width="1.5"/>${points.map(([px,py],i)=>`<circle cx="${px}" cy="${py}" r="${rows[i].take.id===state.ownTakeId?4:2.5}" fill="var(--self)" stroke="var(--surface)" stroke-width="1"/>`).join('')}<text x="${L}" y="${H-4}" font-size="8" fill="var(--muted)">${day(rows[0].take.date)}</text><text x="${W-R}" y="${H-4}" font-size="8" text-anchor="end" fill="var(--muted)">${day(rows.at(-1).take.date)}</text>`;
+ $('history-list').replaceChildren(...[...rows].reverse().map(r=>{const li=document.createElement('li');li.setAttribute('aria-current',String(r.take.id===state.ownTakeId));const when=new Date(r.take.date);li.innerHTML=`<span class="history-name">${esc(r.take.name)}</span><time datetime="${esc(r.take.date)}">${when.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'})} ${when.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})}</time><span class="history-verdict" data-verdict="${r.result.verdict}">${VERDICTS[r.result.verdict]}</span><b>${formatScore(r.result.display)}</b>`;const b=document.createElement('button');if(r.take.id===state.ownTakeId){b.textContent='表示中';b.disabled=true;}else{b.textContent='開く';b.title='この録音を表示';b.onclick=()=>{$('share-dialog').close();restoreTake({storedId:r.take.id}).catch(e=>notify(e.message,true));};}li.append(b);return li;}));
+ $('history-note').hidden=!rows.some(r=>r.unchecked);
+}
 let shareImage=null;
 $('verdict-readout').onclick=()=>$('share-button').click();
+$('verdict-help').onclick=()=>{const s=state.scorer;openHelp(VERDICT_HELP,s?.available?[['男性的な見本 · 中央80%',`${formatScore(Math.round(s.bands.male[0]))}〜${formatScore(Math.round(s.bands.male[1]))}`],['女性的な見本 · 中央80%',`${formatScore(Math.round(s.bands.female[0]))}〜${formatScore(Math.round(s.bands.female[1]))}`],['参照話者数',s.speakers.length]]:[]);};
 $('share-button').onclick=async()=>{
  const result=shareResult();if(!result)return;const scorer=state.scorer,lang=state.lang==='lab'?'en':state.lang,bundle=shareBundle(result,scorer,lang);
- $('share-verdict').textContent=VERDICTS[result.verdict];$('share-verdict').dataset.verdict=result.verdict;$('share-score').querySelector('strong').textContent=String(result.display);
+ $('share-verdict').textContent=VERDICTS[result.verdict];$('share-verdict').dataset.verdict=result.verdict;$('share-score').querySelector('strong').textContent=formatScore(result.display);$('share-score').querySelector('span').textContent=LEANINGS[result.verdict];
  $('share-intents').replaceChildren(...bundle.intents.map(i=>{const a=document.createElement('a');a.href=i.href;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=labelled(i.icon,i.label);a.title=`${i.label}に投稿`;return a;}));
  $('share-open').href=bundle.url;$('share-open').innerHTML=labelled('external','結果ページ');$('share-system').innerHTML=labelled('share','共有…');$('share-copy').innerHTML=labelled('link','リンクをコピー');$('share-save').innerHTML=labelled('image','画像を保存');$('share-status').textContent='';$('share-image').hidden=true;
  $('share-copy').onclick=async()=>{try{await navigator.clipboard.writeText(bundle.url);$('share-status').textContent='リンクをコピーしました。';}catch{$('share-status').textContent=bundle.url;}};
  $('share-system').hidden=!navigator.share;$('share-system').onclick=()=>systemShare(result,scorer,lang).catch(e=>{if(e.name!=='AbortError')$('share-status').textContent=e.message;});
  shareImage=null;const render=async()=>shareImage||(shareImage=await cardImage(result,scorer));
  $('share-save').onclick=async()=>{try{download(await render(),`koenami-${result.display}.png`);}catch(e){$('share-status').textContent=e.message;}};
+ renderHistory(result);
  $('share-dialog').showModal();
  try{const file=await render();if(!$('share-dialog').open)return;const img=$('share-image');if(img.src)URL.revokeObjectURL(img.src);img.src=URL.createObjectURL(file);img.alt=`${bundle.text}。5つの指標と見本の分布を描いた画像。`;img.hidden=false;}catch(e){$('share-status').textContent=e.message;}
 };

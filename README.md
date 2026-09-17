@@ -19,31 +19,34 @@ The recording track in these screenshots uses a public Common Voice clip.
 - **Live** continuously plots microphone input. Its shape shows the most recent five seconds; settings let you choose 1–30 seconds. The headphones button enables microphone monitoring; headphones avoid acoustic feedback.
 - Recordings are saved and playable as soon as capture stops. Measurements finish in the background, so another take can start immediately. Saved recordings remain available after refresh. Their averages appear on the map; the recording title opens the history menu. Each row has download and delete buttons.
 - Compare pitch, resonance, harmonicity, spectral balance, and pitch variation. Orbit, pan, and scroll to zoom the 3D map. The dock combines a waveform playback timeline with pitch, spectrum, and spectrogram comparisons. Click the waveform to seek or drag to select a section.
-- Share a verdict: the toolbar's share button scores the current recording on the female–male contrast axis of the selected language (25 = male median, 75 = female median), draws a card with the five measurements and the reference cloud, and offers X / Bluesky / Misskey posts, a link, and a PNG. The link carries only the five numbers; `/r` recomputes the result and the Worker renders the card as the link's preview image (`/og.png`, resvg-wasm with a subset Noto Sans JP built by `build_share_font.py`).
 - Browse references by speaker, search speaker IDs with or without spaces, favorite individual clips, and adjust playback speed without changing pitch.
 - Import an official **JVS ZIP or extracted folder** through the **JVS banner** in the sample library. Imports are verified against original-file checksums, saved in IndexedDB, and restored on refresh. A single speaker folder also works.
 
 ![Waveform playback timeline above an overlaid spectrogram comparison.](docs/images/spectrogram.png)
 
-The current map uses speaker-balanced PCA of five acoustic measurements. The comparison readout reports the full five-dimensional acoustic distance to the selected reference (zero means equal measured features). Its report shows how much of the difference is omitted by the 2D or 3D projection. It is not calibrated to listener judgments of gender, naturalness, or vocal quality. The underlying measurements can vary with phonetic content and recording conditions. See the app’s method page for definitions and limitations.
+The current map uses speaker-balanced PCA of five acoustic measurements. The comparison readout reports the full five-dimensional acoustic distance to the selected reference (zero means equal measured features). Its report shows how much of the difference is omitted by the 2D or 3D projection. It is not calibrated to listener judgments of gender, naturalness, or vocal quality. The underlying measurements can vary with phonetic content and recording conditions. See the app’s method page for definitions and limitations, and `/references.html` for every source with its type and where it is used.
 
 ## Local development
 
-Requires Node.js 22.12 or newer, Python 3.12, and [uv](https://docs.astral.sh/uv/).
+Requires [Bun](https://bun.sh/), Python 3.12, and [uv](https://docs.astral.sh/uv/).
 
 ```sh
-npm ci
+bun install
 uv venv --python 3.12 .venv
 uv pip install --python .venv/bin/python -r requirements.txt
 .venv/bin/python fetch_demo.py
-npm run dev
+bun run dev
 ```
 
-Open `http://localhost:8766/ja/`. Vite provides HMR and proxies the Python analyzer on port 35511. Where `devrun` is available, launch with `devrun npm run dev` to cap resources and stop both services together.
+Open `http://localhost:8766/ja/`. Vite provides HMR and proxies the Python analyzer on port 35511. Where `devrun` is available, launch with `devrun bun run dev` to cap resources and stop both services together.
 
-`fetch_demo.py` downloads the reference audio from the public demo. The datasets are not included in this repository. To rebuild the larger local JVS collection, download the official archive into `research/jvs_ver1.zip`, then run `build_native.py` and `build_import_index.py`. Development loads all 5,000 prepared JVS recordings by default. The public-demo fetch supplies an import index without requiring a local copy of the full archive. To rebuild the Japanese Common Voice collection from its pinned source, run `.venv/bin/python build_common_voice_ja.py`; selection rules are in `curation/common-voice-ja.json`. Run `.venv/bin/python screen_reference_speech.py` (or `--cpu` without CUDA), then rebuild the collection. The screen runs Silero VAD and a Whisper transcription over every eligible clip and drops a clip when little speech is detected and the transcript is empty, a stock phrase Whisper emits on silence, or unintelligible against the prompt at a very low level. Model outputs are cached by audio checksum; verdicts are recomputed on each run. Display numbers are preserved in `curation/reference-labels.json`.
+`fetch_demo.py` downloads the reference audio from the public demo. The datasets are not included in this repository. To rebuild the larger local JVS collection, download the official archive into `research/jvs_ver1.zip`, build the measurement engine (`cargo build --release` in `measure/`, described below), then run `build_native.py` and `build_import_index.py`. Development loads all 5,000 prepared JVS recordings by default. The public-demo fetch supplies an import index without requiring a local copy of the full archive. To rebuild the Japanese Common Voice collection from its pinned source, run `.venv/bin/python build_common_voice_ja.py`; selection rules are in `curation/common-voice-ja.json`. Run `.venv/bin/python screen_reference_speech.py` (or `--cpu` without CUDA), then rebuild the collection. The screen runs Silero VAD and a Whisper transcription over every eligible clip and drops a clip when little speech is detected and the transcript is empty, a stock phrase Whisper emits on silence, or unintelligible against the prompt at a very low level. Model outputs are cached by audio checksum; verdicts are recomputed on each run. Display numbers are preserved in `curation/reference-labels.json`.
 
-Listening reviews run in a separate local page, `http://localhost:8766/review.html`, which plays one clip per unreviewed speaker and appends each judgement (0–6 ratings, perceived age as a decade, perceived age as a decade, per-clip quality flags — empty, murmur, noise, distortion — and native-like or non-native pronunciation as the 母語話者らしさ rating) to `curation/reviews.jsonl`. `curation.py` derives every exclusion and classifier label from that log; `build_common_voice_ja.py` and `build_pronunciation_model.py` read it. The page is never published. Building the pronunciation classifier needs the WavLM ONNX model from `prepare_voice_models.py` (WavLM weights are MIT; the audEERING age model it also prepares is CC BY-NC-SA 4.0 and is not used by the app).
+Listening reviews run in a separate local page, `http://localhost:8766/review.html`, which plays one clip per unreviewed speaker — Common Voice speakers, the 100 JVS professionals on one shared parallel sentence, and VOICEVOX voices interleaved 5 : 2 : 1 — and appends each judgement (0–6 ratings, perceived age as a decade, perceived age as a decade, per-clip quality flags — empty, murmur, noise, distortion — and native-like or non-native pronunciation as the 母語話者らしさ rating) to `curation/reviews.jsonl`. `curation.py` derives every exclusion and classifier label from that log; `build_common_voice_ja.py` and `build_pronunciation_model.py` read it. A second local page, `/pairs.html`, presents two clips that sit close in the five-feature space (one pair in four is a distant control) and records which sounds more feminine, more natural, and which she would rather use as a reference, to `curation/pairs.jsonl`. Neither page is published. Building the pronunciation classifier needs the WavLM ONNX model from `prepare_voice_models.py` (WavLM weights are MIT; the audEERING age model it also prepares is CC BY-NC-SA 4.0 and is not used by the app).
+
+`measure/` is the measurement engine in Rust, on the Phonia crates (`phx-pitch`, `phx-formant`, `phx-voice`, `phx-audio`): the same pitch, formant, harmonicity and spectral-balance analysis as `acoustics.py`, and the engine every reference library is built with. Build it once (`cargo build --release` in `measure/`; Rust 1.88 or newer; `measure/.cargo/config.toml` makes Cargo fetch the Phonia crates through the git command so an SSH alias for GitHub works). `measure/target/release/koenami-measure FILE...` decodes WAV, FLAC or MP3 files, resamples them to 16 kHz and prints one JSON line per file, in parallel; `--pcm 16000` reads raw float samples from stdin; `--version` prints the measurement version every result carries. `engine.py` wraps the binary for the builders and keeps each measurement cache (`data/*-measurements.json`) per engine version, saving every few hundred files, so a version change re-measures every library on the next build and an interrupted build resumes. Every library manifest's `version` is the engine version its clips were measured with. `measure/parity.py` compares the engine with `acoustics.py` on identical 16 kHz samples (pitch, harmonicity, balance and the quiet-interval statistics agree to rounding; formants to 0.003 % in ΔF at the median and 0.6 % at worst) and, with `--files`, on files the engine decodes and resamples itself, which adds the resampler seam (SciPy's polyphase filter in `acoustics.mono16` against rubato's windowed sinc in the crate).
+
+Three research scripts read the review logs and write their findings under `research/` (not committed): `evaluate_ratings.py` measures an expanded Praat feature set per rated clip and reports test-retest reliability from blind repeats, speaker-held-out ridge and PLS predictions per scale with a permutation null; `evaluate_pronunciation.py` scores each labelled speaker's clips with faster-whisper against the known prompt (reading-form CER, token log-probability, morae per second) and evaluates a leave-one-speaker-out logistic regression on 母語話者らしさ; `screen_speaker_consistency.py` embeds every eligible Common Voice clip with the WavLM speaker-verification model and lists clips far from their speaker's other clips for a listening check.
 
 `build_pronunciation_model.py` evaluates the small listening-reviewed Japanese classifier with one speaker held out at a time. Set `KOENAMI_CUDA=1` in an environment with CUDA ONNX Runtime for model inference. Tentative pronunciation judgements are omitted from training. The prototype has insufficient validation for automatic filtering.
 
@@ -54,8 +57,8 @@ Optional word timing uses Whisper large-v3-turbo with CUDA and Sudachi. Install 
 The frontend and approved sample files run on Cloudflare Workers Static Assets. A Cloudflare Container runs the same Python acoustic analyzer. The configuration permits one `basic` container, which sleeps after one minute idle. Public recordings are limited to one minute; failed analysis preserves the recording and offers retry from its title menu. GPU word timing is available only in the local setup.
 
 ```sh
-npm run build:public
-npm run check:worker
+bun run build:public
+bun run check:worker
 npx wrangler deploy
 ```
 
@@ -80,14 +83,22 @@ Microphone audio and selected imported samples are sent to the analysis service 
 ## Verification
 
 ```sh
-npm run build:public
-npm run check:worker
-node score_test.mjs
-.venv/bin/python demo_browser_test.py
-.venv/bin/python review_browser_test.py
+bun run build:public
+bun run check:worker
+bun run check:tests
+bun run check:all
+.venv/bin/python tests.py
 ```
 
-The browser suite checks live monitoring, persistence, plotted recording history, recording limits, analysis failure recovery, JVS import and playback, selected-range analysis, and desktop/mobile layouts. It requires the official JVS archive for its small import fixture and a locally installed Playwright Chromium. `tests.py` contains additional acoustic regression checks against local controlled audio fixtures; those fixtures are not published.
+`check:all` runs the characterization suite that pins the behaviour of the browser app: unit tests with coverage (`tests/unit`), the browser scenarios (`e2e/scenarios`), the merged coverage report and the 100 % gate. Every test compares what it observes with a golden recorded against the commit named in `tests/golden/META.json`; the goldens describe that commit, and a rewrite has to reproduce them.
+
+- **Unit layer** (vitest): `math`, `space`, `cloud`, `storage`, `corpus-import`, the `capture` worklet and the service worker (`web/public/sw.js`, with stand-ins for its global scope) are driven with fixed inputs and their outputs compared byte for byte with `tests/golden/unit`. The pinned `web/*.js` is extracted to `tests/old-tree` by the test setup (`git archive` needs that commit locally, so a shallow clone must fetch it). `KOENAMI_TREE=new` runs the same tests against `src/lib`; recording is refused there. Floating-point results, error message text and the order of stored records are all part of the contract.
+- **Browser layer** (Playwright, Chromium): `tests/mock-api/server.mjs` serves the pinned `web/` tree (`tests/old-tree`, or the directory named by `E2E_STATIC` with `KOENAMI_TREE=new`), the recorded analyzer responses under `tests/fixtures/api` and the CC0 audio under `tests/fixtures/data`, so every machine sees the same API. What the goldens require of a rewrite, and the small `window.voiceApp` hook the tests read (`e2e/hooks.ts`), is written down in `e2e/CONTRACT.md`. The page clock is paused and advanced only by the tests; the microphone is Chromium's fake device playing `tests/fixtures/audio/microphone.wav`. After each step a test records the state of every element with an id, `localStorage`, IndexedDB (large payloads as hashes), the API requests made so far and, where the drawing does not depend on real audio time, the pixel-exact PNG each canvas encodes of itself (`tests/golden/e2e`, `tests/golden/canvas`). Values that follow real media time or microphone content (clocks, seek positions, sample hashes, live readouts) are masked and marked as such in the goldens.
+- **Coverage gate**: both layers collect native V8 coverage (the browser with `--js-flags=--no-opt`, since the optimiser drops block counters), `coverage:report` converts it to istanbul reports over the same source files, and `coverage:check` requires every statement, branch, function and line of `web/*.js` and `web/public/sw.js`, and fails when a source file appears in no coverage data. The locations the suite cannot reach are listed in `tests/coverage/exclusions.json` with the line, the source text and the reason (dead code, guards behind disabled controls, token races, fallbacks for fields the data never omits, the private baseline take, browser constants); an entry that no longer matches an uncovered location fails the gate, so the list cannot go stale.
+
+`bun run test:e2e:record` re-records the browser goldens and API fixtures against the real analyzer (it needs the Python environment and the models; `KOENAMI_PYTHON` points at another interpreter). `tests/fixtures/data` is built from a prepared public data set by `tests/scripts/build-fixture-data.mjs`; `tests/fixtures/audio/SOURCES.md` lists where the audio comes from.
+
+`tests.py` contains additional acoustic regression checks against local controlled audio fixtures; those fixtures are not published.
 
 ## Acknowledgments
 

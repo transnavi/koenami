@@ -1,0 +1,321 @@
+{
+ "url": "/review.html",
+ "title": "Koenami · 聴取レビュー",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "i-globe": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-sun": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-moon": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-list": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "lang": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "言語"
+   },
+   "value": "ja",
+   "options": [
+    {
+     "value": "ja",
+     "text": "日本語",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "zh-CN",
+     "text": "普通话",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "en",
+     "text": "English",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "ko",
+     "text": "한국어",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "日本語",
+   "expanded": "false",
+   "text": "日本語普通话English한국어"
+  },
+  "mode": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "新規追加項目"
+  },
+  "pass": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "全部性別・自然さ声質・話し方印象"
+  },
+  "progress": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "済 169人 · 残り 0人"
+  },
+  "theme-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "明暗を切り替え",
+    "aria-label": "明暗を切り替え"
+   },
+   "text": ""
+  },
+  "card": {
+   "tag": "section",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "№ 24662音声一覧L ▶わたしの部屋に机やベッドやテレビなどがあります。1/2 · 6.3 秒‹› 基準女性らしさ 0⇧1女性らしさ 5⇧2自然さ 2⇧3自然さ 6⇧4太さ 0⇧5太さ 4⇧6 性別・発音女性らしさ01234563感じない強く感じる男性らしさ0123456—感じない強く感じる母語話者らしさ0123456—非母語母語自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる 問題無音EつぶやきのみU雑音Z歪みX スキップS保存して次へEnter"
+  },
+  "prev-speaker": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "前の話者",
+    "aria-label": "前の話者"
+   },
+   "text": ""
+  },
+  "display": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "№ 2466"
+  },
+  "speaker-meta": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "2音声"
+  },
+  "jump": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "一覧L"
+  },
+  "play": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "false",
+    "aria-label": "再生",
+    "title": "Space：再生／一時停止　R：最初から"
+   },
+   "text": "▶"
+  },
+  "text": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "わたしの部屋に机やベッドやテレビなどがあります。1/2 · 6.3 秒"
+  },
+  "prev-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-label": "前の音声"
+   },
+   "text": "‹"
+  },
+  "next-clip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-label": "次の音声"
+   },
+   "text": "›"
+  },
+  "anchors": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "基準女性らしさ 0⇧1女性らしさ 5⇧2自然さ 2⇧3自然さ 6⇧4太さ 0⇧5太さ 4⇧6"
+  },
+  "scales": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "性別・発音女性らしさ01234563感じない強く感じる男性らしさ0123456—感じない強く感じる母語話者らしさ0123456—非母語母語自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる"
+  },
+  "quality-flags": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "問題無音EつぶやきのみU雑音Z歪みX"
+  },
+  "note": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "placeholder": "メモ"
+   },
+   "value": "memo",
+   "text": ""
+  },
+  "status": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "skip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "スキップS"
+  },
+  "save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "保存して次へEnter"
+  },
+  "done": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": "追加項目が必要な話者はありません。"
+  },
+  "log": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "M 2466 女性らしさ 3 · memoM 2451 女性らしさ 1 · 男性らしさ 5 · 母語話者らしさ 4M 2466 · memoM 2506 無音 · テストM 1 女性らしさ 1 · 男性らしさ 5F 3141 雑音M 2497 母語話者らしさ 0 · 男性らしさ 6 · 女性らしさ 0 · 聞こえる年代 20代 · 自然さ 3 · 澄み 3 · 張り 2 · 太さ 1 · 鼻声 1 · 滑舌 6 · 明るさ 4 · 上品さ 3 · 温かさ 5 · 甘さ 0M 2482 女性らしさ 0 · 男性らしさ 6 · 母語話者らしさ 1 · 自然さ 6 · 聞こえる年代 20代 · 澄み 4 · 張り 5 · 太さ 1 · 鼻声 0 · 滑舌 6 · 明るさ 4 · 上品さ 5 · 温かさ 2 · 甘さ 1"
+  },
+  "list-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "話者一覧 2人×№ 2451済母に誕生日のプレゼントをあげました。№ 2466済わたしの部屋に机やベッドやテレビなどがあります。"
+  },
+  "list-count": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "2人"
+  },
+  "list-filter": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "placeholder": "番号や文で絞り込む"
+   },
+   "value": "",
+   "text": ""
+  },
+  "list-items": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "№ 2451済母に誕生日のプレゼントをあげました。№ 2466済わたしの部屋に机やベッドやテレビなどがあります。"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-tour": {
+    "done": true
+   },
+   "koenami-review": {
+    "lang": "ja",
+    "mode": "update",
+    "pass": "all",
+    "skipped": {
+     "ja:new": [],
+     "ja:update": []
+    },
+    "drafts": {
+     "4c6431bfa9ba": {
+      "clip": "common_voice_ja_21853976",
+      "ratings": {},
+      "chosen": [],
+      "note": "",
+      "active": 0
+     }
+    }
+   }
+  },
+  "idb": {}
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/review",
+   "query": "lang=ja&mode=new&session=w56cpow4mjuuxd6w",
+   "status": 200
+  },
+  {
+   "seq": 2,
+   "method": "GET",
+   "path": "/api/review",
+   "query": "lang=ja&mode=update&session=w56cpow4mjuuxd6w",
+   "status": 200
+  },
+  {
+   "seq": 3,
+   "method": "POST",
+   "path": "/api/review",
+   "query": "",
+   "body": "230b 70b2d55291dd2fc7ac58e0ffe15411de71511576920d3d1c9250219470ca1f0f",
+   "status": 200
+  },
+  {
+   "seq": 4,
+   "method": "POST",
+   "path": "/api/review",
+   "query": "",
+   "body": "205b 7ac79a04765d80061ec23301b125127fe1b77ec13d22f78ba9e7819eba70c9ff",
+   "status": 200
+  }
+ ],
+ "media": [
+  "/samples/common_voice_ja_19580185.mp3",
+  "/samples/common_voice_ja_20068302.mp3",
+  "/samples/common_voice_ja_21853976.mp3"
+ ],
+ "errors": []
+}

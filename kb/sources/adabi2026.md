@@ -9,7 +9,7 @@ doi: 10.1016/j.jvoice.2026.04.026
 url: https://doi.org/10.1016/j.jvoice.2026.04.026
 language: en
 kind: narrative review
-evidence: medium
+evidence: high
 verified: "pubmed abstract 2026-09-17 (PMID 42250950)"
 topics: ["[[voice-health]]", "[[voice-therapy-techniques]]", "[[vocal-registers]]", "[[voice-masculinization]]", "[[speech-language-pathology]]"]
 ---

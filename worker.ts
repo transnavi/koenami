@@ -3,7 +3,7 @@ import { initWasm, Resvg } from '@resvg/resvg-wasm';
 import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm';
 import fontRegular from './web/public/fonts/koenami-share-400.ttf';
 import fontBold from './web/public/fonts/koenami-share-700.ttf';
-import { Scorer, parseResultParams, resultParams, shareText, VERDICTS } from './web/score.js';
+import { Scorer, parseResultParams, resultParams, shareText, formatScore, VERDICTS, LEANINGS } from './web/score.js';
 import { cardSVG } from './web/card.js';
 
 export class VoiceAnalyzer extends Container<Env> {
@@ -15,7 +15,7 @@ export class VoiceAnalyzer extends Container<Env> {
 
 const languages = new Set(['ja', 'zh-CN', 'en', 'ko']);
 // Crawler and browser-chrome files at the site root (see web/public and prepare_public.py).
-const siteFiles = /^\/(robots\.txt|sitemap\.xml|site\.webmanifest|sw\.js|og-(image|guide|tutorial|method)\.png|screenshot-(wide|narrow)\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
+const siteFiles = /^\/(robots\.txt|sitemap\.xml|site\.webmanifest|sw\.js|og-(image|guide|tutorial|method|references)\.png|screenshot-(wide|narrow)\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
 const maxBytes = 16000 * 4 * 60;
 const siteOrigin = 'https://koe.transnavi.jp';
 
@@ -48,7 +48,8 @@ async function resultPage(request: Request, env: Env, url: URL): Promise<Respons
   const page = await env.ASSETS.fetch(new Request(`${siteOrigin}/result.html`, request));
   const shared = await sharedResult(env, url).catch(() => null);
   if (!shared) return page;
-  const title = `Koenami · ${VERDICTS[shared.result.verdict as keyof typeof VERDICTS]}（女性度 ${shared.result.display}）`;
+  const verdict = shared.result.verdict as keyof typeof VERDICTS;
+  const title = `Koenami · ${VERDICTS[verdict]}（${LEANINGS[verdict]} ${formatScore(shared.result.display)}）`;
   const description = `${shareText(shared.result)}。女性的な声・男性的な声の見本の中で、この声がどこにあるか。`;
   const content: Record<string, string> = {
     'og:title': title, 'twitter:title': title, 'og:description': description, 'twitter:description': description,
@@ -102,7 +103,7 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
   } else if (get && (url.pathname === '/' || /^\/(ja|zh-CN|en|ko)\/?$/.test(url.pathname))) asset = '/index.html';
   else if (request.method === 'GET' && url.pathname === '/r') return resultPage(request, env, url);
   else if (request.method === 'GET' && url.pathname === '/og.png') return resultImage(request, env, ctx, url);
-  else if (get && (/^\/(assets|samples|fonts)\/[^/]+$/.test(url.pathname) || /^\/(method|guide|tutorial)\.html$/.test(url.pathname) || siteFiles.test(url.pathname))) asset = url.pathname;
+  else if (get && (/^\/(assets|samples|fonts)\/[^/]+$/.test(url.pathname) || /^\/(method|guide|tutorial|references)\.html$/.test(url.pathname) || siteFiles.test(url.pathname))) asset = url.pathname;
   if (asset) {
     url.pathname = asset; url.search = '';
     return env.ASSETS.fetch(new Request(url, request));

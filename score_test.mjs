@@ -1,14 +1,14 @@
 // Checks the shareable verdict against the built public libraries: node score_test.mjs
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Scorer,parseResultParams,resultParams,verdictOf,shareText} from './web/score.js';
+import {Scorer,parseResultParams,resultParams,verdictOf,shareText,gateFailure} from './web/score.js';
 import {cardSVG} from './web/card.js';
 
 const quantile=(values,q)=>{const s=[...values].sort((a,b)=>a-b);return s[Math.round(q*(s.length-1))];};
 for(const lang of ['ja','zh-CN','en']){
  const scorer=new Scorer(JSON.parse(readFileSync(`.deploy/assets/public-api/${lang}.json`,'utf8')).clips);
  assert.ok(scorer.available,`${lang}: contrast axis`);
- for(const [group,anchor] of [['female',75],['male',25]]){
+ for(const [group,anchor] of [['female',25],['male',-25]]){
   const scores=scorer.speakers.filter(c=>c.group===group).map(c=>scorer.score(c.features).score);
   assert.ok(Math.abs(quantile(scores,.5)-anchor)<1.5,`${lang} ${group} median ${quantile(scores,.5)} ≈ ${anchor}`);
  }
@@ -22,8 +22,14 @@ for(const lang of ['ja','zh-CN','en']){
 const ko=new Scorer(JSON.parse(readFileSync('.deploy/assets/public-api/ko.json','utf8')).clips);
 assert.equal(ko.available,false,'ko has too few labeled speakers for a verdict');
 assert.equal(ko.score({f0:200,delta_f:1100,hnr:10,balance:-15,pitch_span:5}),null);
-assert.deepEqual([verdictOf(80),verdictOf(50),verdictOf(20)],['female','androgynous','male']);
-assert.equal(shareText({verdict:'male',display:22}),'私の声は男性的な声でした（女性度 22）');
+assert.deepEqual([verdictOf(30),verdictOf(0),verdictOf(-30)],['female','androgynous','male']);
+assert.equal(shareText({verdict:'male',display:-28}),'私の声は男性的な声でした（男性寄り −28）');
+assert.equal(shareText({verdict:'androgynous',display:0}),'私の声は中間的な声でした（中間 0）');
 assert.equal(parseResultParams(new URLSearchParams('v=1&l=ja&f0=abc')),null);
 assert.equal(parseResultParams(new URLSearchParams('v=1&l=ja&f0=150')),null,'missing measurements are rejected, not read as 0');
 console.log('score_test: ok');
+assert.equal(gateFailure({voiced_seconds:2,formant_seconds:1,clipping_fraction:0,resonance_sensitivity_pct:3}),null);
+assert.equal(gateFailure({voiced_seconds:.6,formant_seconds:1,clipping_fraction:0}).label,'有声区間');
+assert.equal(gateFailure({voiced_seconds:2,formant_seconds:1,clipping_fraction:.02}).need,'0.5 %以下');
+assert.equal(gateFailure({voiced_seconds:2,formant_seconds:1,clipping_fraction:0,resonance_sensitivity_pct:20}).label,'響きの推定のぶれ');
+console.log('gate: ok');

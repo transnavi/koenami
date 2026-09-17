@@ -1,0 +1,53 @@
+{
+ "custom": {
+  "index": [
+   {
+    "at": 1700000000009,
+    "id": "q",
+    "name": "take 9",
+    "takeId": "q"
+   }
+  ],
+  "snapshot": {
+   "measurement": {
+    "f0": 109
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     9,
+     10
+    ]
+   },
+   "range": null
+  }
+ },
+ "final": {
+  "recording-index": [
+   {
+    "at": 1700000000009,
+    "id": "q",
+    "name": "take 9",
+    "takeId": "q"
+   }
+  ],
+  "recording:q": {
+   "measurement": {
+    "f0": 109
+   },
+   "pcm": {
+    "$typed": "Float32Array",
+    "values": [
+     9,
+     10
+    ]
+   },
+   "range": null
+  },
+  "takes": {
+   "current": null,
+   "previous": null
+  }
+ },
+ "nothing": null
+}

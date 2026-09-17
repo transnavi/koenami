@@ -1,0 +1,31 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Koenami · 比較</title><meta name="robots" content="noindex"><script src="./theme.js"></script><link rel="stylesheet" href="./style.css">
+<style>
+html,body{height:auto;overflow:visible}
+.review{max-width:720px;margin:0 auto;padding:28px 16px 60px;display:flex;flex-direction:column;gap:18px}
+.review-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}.review-head h1{font-size:15px;margin:0;color:var(--heading);white-space:nowrap}.review-head a{font-size:12px;color:var(--muted)}.review-head .progress{font-size:12px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:16px}
+.sides{display:grid;grid-template-columns:1fr 1fr;gap:12px}.side{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;background:transparent;color:var(--ink);font:inherit;text-align:left}.side[aria-pressed=true]{border-color:var(--accent);background:var(--selected)}
+.side .tag{font-size:22px;font-weight:600;color:var(--heading)}.side .tag kbd{font-size:11px;color:var(--muted);margin-left:8px;font-weight:400}.side .text{font-size:13px;line-height:1.6}.side small{color:var(--muted);font-size:11px}
+.loop{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}.loop button{border:1px solid var(--line);background:var(--raised);color:var(--ink);border-radius:8px;padding:6px 12px;font:inherit;font-size:12px;cursor:pointer}.loop button[aria-pressed=true]{background:var(--accent);color:#fff;border-color:transparent}
+.question{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:8px 10px;border-radius:8px}.question[data-active=true]{background:var(--selected)}.question .name{font-size:14px}
+.question .choices{display:flex;gap:6px}.question .choices button{min-width:72px;height:34px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;font:inherit;font-size:13px;cursor:pointer}.question .choices button[aria-pressed=true]{background:var(--accent);border-color:transparent;color:#fff}.question .choices kbd{font:inherit;color:var(--muted);margin-left:5px;font-size:11px}.question .choices button[aria-pressed=true] kbd{color:#ffffffb0}
+.note{width:100%;font:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.actions{display:flex;gap:10px;align-items:center}.actions .status{font-size:12px;color:var(--muted);flex:1}.actions button{font:inherit;font-size:13px;padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:var(--raised);color:var(--ink);cursor:pointer}.actions .primary{background:var(--accent);color:#fff;border-color:transparent}.actions kbd{font:inherit;opacity:.6;margin-left:6px}
+.log{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}.log strong{color:var(--ink)}
+.done{text-align:center;padding:40px 0;color:var(--muted)}
+</style></head><body>
+<svg aria-hidden="true" style="display:none"><defs><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.7 13.2A9 9 0 0 1 10.8 3.3 9 9 0 1 0 20.7 13.2Z"/></symbol></defs></svg>
+<main class="review">
+<div class="review-head"><h1>比較</h1><a href="./review.html">聴取レビューへ</a><span class="progress" id="progress"></span><button id="theme-button" class="icon-button" title="明暗を切り替え" aria-label="明暗を切り替え"><svg aria-hidden="true"><use href="#i-moon"></use></svg></button></div>
+<section class="card" id="card" hidden>
+ <div class="sides"><button class="side" id="side-a" type="button" aria-pressed="false"><span class="tag">A<kbd>Q</kbd></span><span class="text" id="text-a"></span><small id="meta-a"></small></button><button class="side" id="side-b" type="button" aria-pressed="false"><span class="tag">B<kbd>W</kbd></span><span class="text" id="text-b"></span><small id="meta-b"></small></button></div>
+ <div class="loop"><button id="loop" type="button" aria-pressed="true">A → B を繰り返す<kbd>R</kbd></button><span>Space：一時停止／再開</span></div>
+ <div id="questions"></div>
+ <input class="note" id="note" placeholder="メモ（違いを一言）">
+ <div class="actions"><span class="status" id="status"></span><button id="skip">スキップ<kbd>S</kbd></button><button class="primary" id="save">保存して次へ<kbd>Enter</kbd></button></div>
+</section>
+<p class="done" id="done" hidden>比較できる組はありません。</p>
+<div class="log" id="log"></div>
+</main>
+<script type="module" src="./pairs.js"></script>
+</body></html>

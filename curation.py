@@ -25,6 +25,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent
 LOG = ROOT / 'curation/reviews.jsonl'
+PAIRS = ROOT / 'curation/pairs.jsonl'
 
 # Every rating is 0-6 except `age`. Groups and anchor words follow the literature cited in web/method.html#review.
 SCALES = [
@@ -59,6 +60,9 @@ QUALITY = {
 RETIRED = {'other_speaker': '別の話者'}
 FLAGS = QUALITY
 PROBLEMS = {**QUALITY, **RETIRED}
+# Pairwise judgements: two clips, three questions, answered a / b / same. Logged to PAIRS.
+PAIR_QUESTIONS = {'femininity': 'どちらが女性らしい', 'naturalness': 'どちらが自然', 'preference': 'どちらを見本にしたい'}
+PAIR_ANSWERS = ('a', 'b', 'same')
 
 
 def load(path=LOG):
@@ -100,6 +104,35 @@ def append(review, path=LOG):
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a') as f: f.write(json.dumps(record, ensure_ascii=False) + '\n')
     return record
+
+
+def load_pairs(path=PAIRS):
+    if not path.exists(): return []
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def append_pair(record, path=PAIRS):
+    """Validate and add one pairwise judgement; returns the stored record."""
+    if not isinstance(record, dict): raise ValueError('malformed pair')
+    a, b = record.get('a'), record.get('b')
+    if not isinstance(a, str) or not isinstance(b, str) or not a or not b or a == b: raise ValueError('two distinct clips required')
+    answers = record.get('answers') or {}
+    if not isinstance(answers, dict): raise ValueError('malformed answers')
+    unknown = [k for k in answers if k not in PAIR_QUESTIONS]
+    if unknown: raise ValueError(f'unknown questions: {unknown}')
+    answers = {k: v for k, v in answers.items() if v is not None}
+    if any(v not in PAIR_ANSWERS for v in answers.values()): raise ValueError('answers must be a, b or same')
+    if not answers: raise ValueError('at least one answer')
+    kind = record.get('kind') or 'near'
+    if kind not in ('near', 'far'): raise ValueError('kind must be near or far')
+    distance = record.get('distance')
+    if distance is not None and (isinstance(distance, bool) or not isinstance(distance, (int, float))): raise ValueError('distance must be a number')
+    out = {'a': a, 'b': b, 'language': record.get('language', 'ja'), 'answers': answers, 'kind': kind,
+           'distance': None if distance is None else round(float(distance), 4), 'session': str(record.get('session') or '')[:40],
+           'note': str(record.get('note') or '')[:1000].strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open('a') as f: f.write(json.dumps(out, ensure_ascii=False) + '\n')
+    return out
 
 
 class Verdicts:
