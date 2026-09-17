@@ -2,6 +2,6 @@
  "key": "POST /api/pairs e292ee52ce34476a9c20e20fc189f94da248c2bf655b05666ebaa0818c026299",
  "status": 200,
  "contentType": "application/json; charset=utf-8",
- "body": "{\"a\": \"common_voice_ja_38916575\", \"b\": \"common_voice_ja_27988876\", \"language\": \"ja\", \"answers\": {\"femininity\": \"a\", \"naturalness\": \"same\"}, \"kind\": \"repeat\", \"distance\": 0.8372, \"space\": \"acoustic-five\", \"session\": \"w56cpow4mjuuxd6w\", \"note\": \"A\\u306e\\u307b\\u3046\\u304c\\u606f\\u304c\\u591a\\u3044\", \"reviewed\": \"2026-09-17T10:06:04+00:00\"}",
+ "body": "{\"a\": \"common_voice_ja_38916575\", \"b\": \"common_voice_ja_27988876\", \"language\": \"ja\", \"answers\": {\"femininity\": \"a\", \"naturalness\": \"same\"}, \"kind\": \"repeat\", \"distance\": 0.8372, \"space\": \"acoustic-five\", \"session\": \"w56cpow4mjuuxd6w\", \"note\": \"A\\u306e\\u307b\\u3046\\u304c\\u606f\\u304c\\u591a\\u3044\", \"reviewed\": \"2026-09-17T23:20:02+00:00\"}",
  "base64": false
 }

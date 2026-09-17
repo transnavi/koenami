@@ -265,7 +265,7 @@
     "title": "Share the verdict",
     "disabled": ""
    },
-   "text": "Voice verdict Not available in this language Masculine Middle Feminine"
+   "text": "Voice verdict Not available in this language Masculine −100 0 Feminine +100"
   },
   "verdict-main": {
    "tag": "span",

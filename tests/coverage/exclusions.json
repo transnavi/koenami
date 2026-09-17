@@ -1525,7 +1525,7 @@
 			"file": "web/app.js",
 			"kind": "branch",
 			"line": 345,
-			"column": 122,
+			"column": 161,
 			"code": "rows.length>1?i/(rows.length-1):.5",
 			"reason": "the history draws its rows spread over the width; one row sits in the middle, and the fixtures' histories always hold two takes or more when drawn"
 		},

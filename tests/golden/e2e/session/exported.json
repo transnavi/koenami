@@ -265,7 +265,7 @@
     "title": "判定を共有",
     "disabled": ""
    },
-   "text": "声の判定 録音すると表示 男性的 中間 女性的"
+   "text": "声の判定 録音すると表示 男性的 −100 0 女性的 +100"
   },
   "verdict-main": {
    "tag": "span",
@@ -1705,7 +1705,7 @@
  "errors": [],
  "measurements": {
   "name": "voice-measurements.json",
-  "sha256": "59b776d04ad6affa7321c74d2552c62810a10a43874320895bb73f171fdfbba6",
-  "bytes": 770
+  "sha256": "a0bffc913c0934c50cce0067a3271a467c6eaffdd6e3d004baf49a734fa2eff5",
+  "bytes": 1031
  }
 }
