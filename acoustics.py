@@ -6,7 +6,7 @@ from math import gcd
 
 RATE = 16000
 STEP = 0.02
-VERSION = '3.1.0'
+VERSION = '3.1.1'
 
 
 def mono16(audio, rate):
@@ -45,7 +45,8 @@ def measure(audio, rate=RATE, detailed=False):
     # Speech-level frames: within 20 dB of the loudest 5%. A noisy microphone floor can sit
     # above the silence threshold, so the floor itself cannot be the reference for "how much
     # of the speech was voiced".
-    active = int((db > max(threshold, float(np.quantile(db, .95)) - 20.)).sum())
+    speech = db > max(threshold, float(np.quantile(db, .95)) - 20.)
+    active = int(speech.sum())
     count = int(voiced.sum())
     base = {'version': VERSION, 'duration': round(duration, 3),
             'voiced_seconds': round(count * STEP, 3),
@@ -70,7 +71,13 @@ def measure(audio, rate=RATE, detailed=False):
     # Pitch, resonance and harmonicity are measured on voiced frames only. Whispered or
     # mostly unvoiced input can still pass a handful of frames through the strength gate;
     # those medians would describe noise, so they are withheld when voicing is sparse.
-    base['voicing'] = {'voiced_fraction': round(count / max(1, active), 3), 'sparse': count < 10 or count < .1 * active}
+    # The reported fraction counts voiced frames inside the speech-level frames, so it stays within
+    # 0–1 when a quiet but periodic tail is voiced without reaching speech level. The gate keeps
+    # comparing every reliable voiced frame with the speech-level count: a loud non-speech burst
+    # (a cough, handling noise) then shrinks neither the numerator nor the verdict, which the
+    # intersection would.
+    base['voicing'] = {'voiced_fraction': round(int((voiced & speech).sum()) / max(1, active), 3),
+                       'sparse': count < 10 or count < .1 * active}
     if base['voicing']['sparse']:
         base['reason'] = 'No reliable voiced speech. Check the microphone and speak normally.'
         return base

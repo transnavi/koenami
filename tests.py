@@ -33,6 +33,16 @@ class AcousticTests(unittest.TestCase):
         self.assertEqual(m['features'],{});self.assertIn('quiet_intervals',m)
         self.assertGreater(m['active_seconds'],3);self.assertIn('peak',m)
 
+    def test_voiced_fraction_stays_within_one_when_a_quiet_tail_is_voiced(self):
+        t=np.arange(RATE*3)/RATE
+        x=sum(np.sin(2*np.pi*180*n*t)/n for n in range(1,6))*.2
+        # The last two seconds sit 26 dB down: above Praat's silence threshold (about -30 dB of the
+        # peak) and the level gate (-35 dB), below speech level (-20 dB), so voiced but not speech-level.
+        x[RATE:]*=10**(-26/20)
+        m=measure(x)
+        self.assertLessEqual(m['voicing']['voiced_fraction'],1);self.assertGreater(m['voicing']['voiced_fraction'],.9);self.assertFalse(m['voicing']['sparse'])
+        self.assertGreater(m['voiced_seconds'],2)  # the quiet tail still counts as voiced speech
+
     def test_brief_speech_in_a_long_noisy_window_is_not_sparse(self):
         rng=np.random.default_rng(5);t=np.arange(RATE*8)/RATE
         x=rng.normal(0,.003,RATE*8);seg=slice(RATE*3,RATE*3+int(RATE*.5))
