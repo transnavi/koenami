@@ -16,6 +16,9 @@ Lowering pitch and darkening resonance. Testosterone does most of the pitch work
 - Voice-related handicap fell after testosterone to the level of controls without voice disorders [[nimura2022]]; listeners flipped from "female" to "male" between weeks 14 and 28 of one speaker's treatment [[brown2021]].
 - Surgical masculinization is rare: type III laryngoplasty and vocal-fold testosterone injection in 12 patients, average −43.75 Hz [[kalra2026]].
 - Training targets for masculinization (resonance, weight, intonation) are set out in the clinical review, an area with little prior attention [[davies2015]].
+- Not everyone seeking masculinization takes hormones: ASHA names modified vocal function exercises and circumlaryngeal massage with laryngeal reposturing as behavioural routes, and states that hormones do not change intonation, volume or nonverbal communication [[asha-gender-affirming-voice]].
+- The UCSF chapter puts the residual group in numbers: 90% of trans men reach acceptable voice results after 4–5 months of androgens, about 75% are identified as male by telephone, and behavioural intervention after hormones lowered speaking pitch by an additional 35 Hz [[ucsf2016]].
+- Readiness, not scope, is the bottleneck: most of 140 surveyed Taiwanese SLPs accepted trans voice work as in scope but did not feel sufficiently skilled [[litosseliti2019]], and UK SLTs cite lack of training behind clients' difficulty accessing local services [[rcslt2019]].
 
 ## Open questions
 - Evidence for behavioural masculinization without testosterone (non-binary people, or people not taking T) is absent from this vault.
