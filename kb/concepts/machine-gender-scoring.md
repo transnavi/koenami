@@ -16,6 +16,7 @@ Models that output a continuous femininity/masculinity estimate, the datasets be
 - Self-supervised representations beat classical features for within-speaker impression shifts; multimodal LLMs were unreliable [[fujita2026]].
 - On 100 recordings from cisgender speakers, a model trained on a larger low-quality corpus classified voice gender at 92% against 100% for both expert and naïve human listeners, and beat the smaller high-quality model at 84% [[simon2026]].
 - Style-tag datasets: ParaSpeechCaps (59 tags, English) [[diwan2025]]; Coco-Nut (Japanese free-text) [[watanabe2023]]; JVS [[takamichi2019]].
+- Refusal from the design side: a NIME 2026 instrument drives the vocal tract with a voice-coil transducer and has the player select pitches from an oscillator bank by changing vocal resonance, using a microphone only as a sensor, without detection of vowels, formant frequencies or highest frequency peaks; the authors first explored formant analysis to connect spectral qualities to digital mapping parameters and then declined it — 「the idea of detecting gender, even indirectly for the purposes of modulation, leads to a slippery slope in determining gender through machine listening. Gender in voice cannot be wholly represented in or analysed from an audio file; it is fluid, dynamic, and culturally relative.」 [[kuhn2026]].
 
 ## Contested or unclear
 - No model in this vault is calibrated on Japanese listeners; Koenami's WavLM-based 聴こえ方 needs a Japanese listening study (method page).

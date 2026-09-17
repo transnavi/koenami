@@ -12,11 +12,13 @@ Behavioural training toward a feminine-sounding voice: pitch elevation, resonanc
 ## What is known
 - Systematic review of 14 studies: positive effects on pitch, oral resonance, self- and listener perception; small samples, no blinding, short follow-up [[leyns2021]]; the clinical review of protocols and surgeries under SOC7 [[davies2015]]; SOC8 chapter on voice and communication [[coleman2022]].
 - RCT (crossover, n = 30): pitch elevation and articulation–resonance training each help, and the combination scores highest on listener femininity [[leyns2023]]; at one year self-perception held while listener ratings partly regressed [[leyns2024]].
+- A Spanish review that looked at speech therapy as the sole treatment rather than an adjunct to surgery screened two databases and kept seven articles, all reporting gains in fundamental frequency and formant frequencies, while stating that the small number of articles prevents generalisation [[gomezraya2018]].
 - Largest prospective cohort (n = 74, 8–12 sessions): F0 and formants rose, many raised loudness; F0, average formant and loudness predicted "female-sounding" ratings [[sodersten2026]].
 - Resonance-specific: lip spreading and forward tongue carriage raised F1–F3 and F0 in five sessions [[carew2007]]; F2 biofeedback shifted F2 and perceived femininity [[kawitzky2020]].
 - Weighted mean F0 gain from voice therapy across studies +39.9 Hz; therapy after glottoplasty improves TWVQ more than surgery alone [[chowdhury2025]]; postoperative therapy is described as crucial [[catani2024]]; Japanese type IV thyroplasty programmes pair surgery with pre/post therapy [[kobayashi2022]].
 - Untrained trans women already shift formants and may risk vocal fatigue [[huang2024]]; self-ratings diverge from listener ratings [[quinn2021]] [[hancock2011]].
-- Feminising hormones do not change the voice [[leyns2021]] [[kobayashi2022]].
+- Feminising hormones do not change the voice [[leyns2021]] [[kobayashi2022]]; a Brazilian review adds that hormone treatment and laryngeal surgery do not together cover everything a trans woman wants changed, and that laryngeal surgery should be combined with speech-language therapy [[cielo2021]].
+- A Japanese ENT clinic's page describes training delivered by a ボイストレーナー to patients the clinic's 音声外来 has diagnosed as needing it: optional, self-funded at 6,600 yen per 30 minutes, combining 発声 and 構音 training with speech and expression skills, and including 「話声の高さなど、術後音声での話し方の調整」 [[kyoto-ent-training]].
 - Community curricula: [[transvoicelessons]], [[digital-transchinese-mtf-voice]], [[genderfluent]], [[christella-voiceup]].
 
 ## Contested or unclear

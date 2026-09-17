@@ -21,6 +21,7 @@ In English-community training vocabulary, vocal weight is the perceived heavines
 - Classical singing uses the same words for a different contrast — lyric vs dramatic voice classification — so the singing article must not be read as the community definition [[wikipedia-vocal-weight]].
 - The wiki's pitch naturalisation method is a weight-reduction drill in which the learner speaks at their relaxed, default pitch, lets the last word of each phrase float up a little, and attends to the sound rather than to any single feature: "the goal is not to 'raise pitch', but to improve the voice at every pitch" [[sumi-pipm]].
 - For a low-pitched feminine voice the wiki prescribes descending in 20 Hz steps from 200 Hz while speaking at each step, and redrilling resonance voiced at the low pitch [[sumi-low-fem-voices]].
+- The wiki gives base pitch as 「the pitch the voice naturally wants to return to」 after intonation, states that it 「is determined mostly by vocal weight」, and sets the pairing out as 「Heavier vocal weight –> lower base pitch / Lighter weight –> can maintain higher base pitch」 [[sumi-base-pitch]].
 - The wiki's separately signed invented vocabulary defines welit as the estimated vocal fold vibratory mass, with adduction, twang, volume and creak explicitly excluded from it [[sumi-new-terminology]].
 
 **The acoustics that measure the same thing.**

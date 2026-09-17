@@ -34,6 +34,7 @@ The vocal folds can vibrate in more than one pattern. Each pattern covers a stre
 - Whether whistle is a distinct laryngeal mechanism or a resonatory extreme of falsetto is disputed: the encyclopedia asserts a "specific physiological production that is different from the other registers" [[wikipedia-whistle-register]]; the endoscopy cited by Herbst does not [[herbst2020]].
 - Hollien's claim that registers are "totally laryngeal events" with "little or no overlap in fundamental frequency" [[hollien1974]] is contested by the M1/M2 overlap [[roubeau2009]] and by acoustic-register arguments [[bozeman2022]].
 - Closed quotient from electroglottography is not a reliable stand-in for glottal configuration without per-speaker calibration [[verdolini1998]], and EGG open quotient agreed only weakly with high-speed imaging [[echternach2010]].
+- Whether the first step is M2: a Korean course places falsetto first — 「여자 목소리를 내는데 있어서 가장 중요한 첫 번째 관문, 가성(falsetto voice) 내보기 입니다」 — and argues that unless a stable 가성 is available on demand, a female voice is 「거의 불가능한 영역」 for anyone not born with thinner folds, so training it comes before the main work on the voice [[shyuushyuu2024]].
 
 ## Open questions
 - How wide the M1/M2 overlap is in untrained *speaking* voice, as opposed to sung glissandi — the practical content of "weight at a given pitch".

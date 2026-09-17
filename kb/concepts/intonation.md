@@ -17,6 +17,8 @@ The movement of pitch, loudness and timing across an utterance. Koenami's 抑揚
 - A randomised sham-controlled trial (n = 30) found four weeks of intonation training raised every acoustic intonation parameter, the F0 median and its 25th/75th percentiles, and listener femininity ratings [[papeleu2025]].
 - Ascending intonation predicted gender congruence in trans women's connected speech, and for trans men tense vocal quality and descending intonation were among the markers named for masculine perception [[irineu2025]].
 - The English-language wiki's feminine speech-pattern list runs a higher and more frequent intonation range, tempo variation, and emphasis by high pitch, with the masculine list inverting each using weight and volume [[sumi-speech-patterns]].
+- The Voice Resource Project wiki separates speech-like passages, which it calls more realistic and useful for testing intonation and other complex qualities of speech, from passages read like a script, such as the rainbow passage [[sumi-passages]].
+- In blind perceptual judgement of twelve Brazilian influencers' videos, listeners read trans speakers' gender from more than the measured acoustic and prosodic parameters: the authors conclude that trans speech 「não é avaliada exclusivamente por meio da recuperação de padrões acústicos」 and is dialectically constituted, with points of both convergence with and distance from the speech of the declared gender [[soncin2024]].
 
 ## Contested or unclear
 - A wider range is not uniformly "more feminine"; lexical tone and pitch accent set part of the contour (Koenami method page).
