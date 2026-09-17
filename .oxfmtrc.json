@@ -1,0 +1,29 @@
+{
+	"useTabs": true,
+	"singleQuote": true,
+	"trailingComma": "none",
+	"printWidth": 100,
+	"sortImports": true,
+	"sortTailwindcss": {
+		"stylesheet": "./src/app.css"
+	},
+	"svelte": {},
+	"ignorePatterns": [
+		".github/**",
+		"web/**",
+		"tests/golden/**",
+		"tests/fixtures/**",
+		"tests/coverage/exclusions.json",
+		"docs/**",
+		"kb/**",
+		"curation/**",
+		"measure/**",
+		"research/**",
+		"static/**",
+		"**/*.md",
+		"worker-configuration.d.ts",
+		"scripts/kb-*.mjs",
+		"scripts/kb-*.mjs",
+		"src/lib/measure/pkg/**"
+	]
+}

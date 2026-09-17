@@ -1,0 +1,49 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	// Svelte files are checked by svelte-check; oxlint reads the ld+json string the pages emit as a
+	// script block and cannot parse it.
+	"ignorePatterns": [
+		"web/**",
+		"tests/old-tree/**",
+		"tests/fixtures/**",
+		"**/*.svelte",
+		"worker-configuration.d.ts",
+		"scripts/kb-*.mjs",
+		"src/lib/measure/pkg/**"
+	],
+	"plugins": ["typescript", "unicorn", "oxc", "import"],
+	"options": { "typeAware": true },
+	"categories": { "correctness": "error", "suspicious": "warn", "perf": "warn" },
+	"rules": {
+		// The studio assigns element handlers (`el.onclick = …`) and stores `_value`-style fields on
+		// purpose; the ports keep the originals' in-place sorts, spreads and shadowed names.
+		"unicorn/prefer-add-event-listener": "off",
+		"no-underscore-dangle": "off",
+		"unicorn/no-array-sort": "off",
+		"unicorn/no-array-reverse": "off",
+		"oxc/no-map-spread": "off",
+		"no-shadow": "off",
+		"unicorn/consistent-function-scoping": "off",
+		// Sequential awaits in the scenarios are the point of them.
+		"no-await-in-loop": "off",
+		// `as` narrows the untyped records the analyzer and the storage return.
+		"typescript/no-unsafe-type-assertion": "off",
+		// `$<HTMLInputElement>('id')` and the store's record type are single-use parameters by design.
+		"typescript/no-unnecessary-type-parameters": "off",
+		// `export {}` marks a declaration file as a module.
+		"unicorn/require-module-specifiers": "off",
+		// The worklet posts to its own MessagePort, which takes no origin.
+		"unicorn/require-post-message-target-origin": "off",
+		// The unit setup imports fake-indexeddb for its side effect.
+		"import/no-unassigned-import": "off",
+		// Vite's `?worker` imports resolve to a module the import plugin cannot see.
+		"import/default": "off"
+	},
+	"overrides": [
+		{
+			// The scenarios and unit tests save prototype methods to restore them after a stub.
+			"files": ["e2e/**", "tests/**"],
+			"rules": { "typescript/unbound-method": "off" }
+		}
+	]
+}
