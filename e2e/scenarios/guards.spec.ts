@@ -107,6 +107,12 @@ test.describe('busy and recording guards', () => {
 		await studio.until(app.idle);
 		await studio.tick(1200);
 		await studio.golden('unsaved-take-after-failure', { maskAudio: true });
+		// The unsaved take has no stored samples, so there is nothing to bundle.
+		await page.locator('#settings-button').click();
+		await page.locator('#download-all').click();
+		await studio.tick(100);
+		await studio.golden('download-all-with-unsaved-take', { maskAudio: true });
+		await page.locator('#settings-dialog [data-close]').click();
 		await studio.choose('take-select', 'retry');
 		await studio.until(app.idle);
 		await studio.tick(300);

@@ -67,6 +67,22 @@ test.describe('verdict and sharing', () => {
 		await studio.golden('system-share-failed');
 		await page.locator('#share-dialog [data-close]').click();
 
+		// A second stored take of the language brings the verdict history into the dialog.
+		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
+		await studio.until(app.ownNameStartsWith('own-b'));
+		await studio.until(app.analysed);
+		await studio.until(app.shareReady);
+		await page.locator('#share-button').click();
+		await studio.until(app.shareImage);
+		await studio.tick(300);
+		await studio.golden('history-two-takes');
+		// A history row brings its take back and closes the dialog.
+		await page.locator('#history-list li button:not([disabled])').first().click();
+		await studio.until(app.ownNameStartsWith('own-a'));
+		await studio.until(app.analysed);
+		await studio.tick(300);
+		await studio.golden('history-restored');
+
 		// The card cannot be drawn without its fonts.
 		await page.route('**/fonts/**', (route) => route.abort('failed'));
 		await studio.open('/ja/');
