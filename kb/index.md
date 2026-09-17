@@ -454,7 +454,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[rosa2026]] — Rosa HR 2026, O impacto da terapia vocal na readequação da identidade de pessoas trans (The impact of vocal therapy on the readjustment of trans people's identity)
 - [[traser2026]] — Traser L 2026, Dynamic 3D MRI of vocal fold oscillations: In vivo assessment of vocal fold thickness, contact area, and glottal area waveform across phonation types in comparison with high-speed imaging
 
-### community (302)
+### community (303)
 
 - [[nicovideo-ribbonmatch2007]] — リボンマッチ (uploader) 2007, アラジンのテーマソングの男女のパートを1人で歌いこなす男性 (A man who sings both the male and female parts of the Aladdin theme alone (Niconico video))
 - [[nicodic-ryoseirui]] — ニコニコ大百科 editors 2008, 両声類（ニコニコ大百科・単語記事） (Ryōseirui (Niconico Pedia word article))
@@ -560,6 +560,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[shyuushyuu2024]] — 슈슈 (uploader) 2024, 여자 목소리 내는 법 강의! 1탄: 가성을 내보자 (How to produce a female voice, lesson 1: let's produce falsetto (YouTube video))
 - [[tapcpr-friendly-2024]] — 伴盟 (TAPCPR — 聯伴盟/伴侶權益推動聯盟 2024, 友善醫師與諮商資源整理 (Friendly physicians and counselling resources list (TAPCPR transgender information platform))
 - [[wikitrans-voix]] — "Jane Doe Silasol (Wiki Trans)" 2024, Voix (Voice (Wiki Trans, the French-language trans wiki))
+- [[yt-henesheshmat-2024]] — Dr Henes Heshmat (YouTube: @DrHenesHeshmat) 2024, أسرار الصوت الطفولي الأنثوي للرجال Puberphonia/أسبابه/طرق التشخيص/أهم نصائح/وصفات تخشين الصوت/العلاج ('Secrets of the childish feminine voice in men — puberphonia: its causes, diagnosis, key advice, voice-roughening recipes, treatment' (YouTube video))
 - [[bili-chenzhen2025]] — 陈臻谈嗓音 (uploader) 2025, 跨性别嗓音训练，5周效果 (Transgender voice training: 5-week results (Bilibili video))
 - [[bili-fledence2025]] — FLEDENCE (translator-uploader); original by Ama Rose (AmaRoseLessons) 2025, 【授翻】以最快的速度讲解嗓音男性化/How to Masculinize Your Voice: As Fast As Possible（中英双语） (Authorised translation: How to Masculinize Your Voice — As Fast As Possible, bilingual (Bilibili video))
 - [[bili-huarixin2025]] — 花日新 (uploader) 2025, [女伪男*经验分享]是的就是这个嗓子冒烟对了 (Female-to-male experience sharing: yes, that throat-on-fire feeling is right (Bilibili video))
@@ -777,5 +778,5 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - **tr** (3): [[bagcaz2019]] · [[wikipedia-tr-trans-kadin]] · [[yelken2022]]
 - **sv** (3): [[socialstyrelsen-konsdysfori]] · [[wikipedia-sv-falsett]] · [[wikipedia-sv-malbrott]]
 - **id** (3): [[wikipedia-id-transgender]] · [[yt-metrotv-2025]] · [[yt-niningnnur-2022]]
+- **ar** (2): [[wikipedia-ar-jirahat-iaadat-tahdid-aljins]] · [[yt-henesheshmat-2024]]
 - **it** (1): [[iula2023]]
-- **ar** (1): [[wikipedia-ar-jirahat-iaadat-tahdid-aljins]]
