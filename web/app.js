@@ -255,7 +255,7 @@ function renderTakeMenu(){const select=$('take-select');if(!select)return;const 
  for(const take of [current,state.previousTake,...state.takes.filter(t=>t.stored).map(t=>({...t,storedId:t.id}))]){
   if(!take?.pcm&&!take?.storedId)continue;const key=take.takeId||take.storedId||take.name+':'+take.pcm.length+':'+take.detail.features.f0;if(seen.has(key))continue;seen.add(key);takeChoices.push(take);
  }
- select.replaceChildren();takeChoices.forEach((t,i)=>{const option=new Option(t.name,String(i));option.dataset.detail=clock(t.detail?.duration||t.duration);option.dataset.actions='play,rename,download,delete';const peaks=t.pcm?wavePeaks(t.pcm):t.peaks;if(peaks)option.dataset.peaks=JSON.stringify(peaks);if(state.recording||!(t.takeId||t.storedId))option.dataset.disabledActions='delete';select.add(option);});
+ select.replaceChildren();takeChoices.forEach((t,i)=>{const option=new Option(t.name,String(i));option.dataset.detail=clock(t.detail?.duration||t.duration);option.dataset.actions='play,rename,download,delete';const peaks=t.pcm?wavePeaks(t.pcm):t.peaks;if(peaks)option.dataset.peaks=JSON.stringify(peaks);if(state.recording||!(t.takeId||t.storedId))option.dataset.disabledActions='delete'+(state.recording?',play':'');select.add(option);});
  if(current?.detail?.analysisPending&&!state.analyzing.has(current.takeId))select.add(new Option('再解析','retry'));
  select.disabled=state.busy||!takeChoices.length;select.value=current?.pcm?'0':'';select.setAttribute('data-display-label',current?.name||'録音履歴');backfillPeaks();
 }
