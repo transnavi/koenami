@@ -2,7 +2,7 @@
 type: source
 key: simon2026
 title: "Validation of an AI-assisted Treatment Outcome Measure for Gender-Affirming Voice Care: Comparing AI Accuracy to Listener's Perception of Voice Femininity"
-authors: [Simon S, Silverstein E, "Timmons-Sund L", Pinto JM, Castro ME, "O'Dell K", "Johns Iii MM", Mack WJ, Bensoussan Y]
+authors: [Simon S, Silverstein E, "Timmons-Sund L", Pinto JM, Castro ME, "O'Dell K", "Johns III MM", Mack WJ, Bensoussan Y]
 year: 2026
 venue: Journal of Voice 40(3) 614–623
 doi: 10.1016/j.jvoice.2023.12.008
