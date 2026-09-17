@@ -3,6 +3,3 @@
 !src/**
 !vite.config.ts
 !svelte.config.js
-!*.md
-kb/
-docs/

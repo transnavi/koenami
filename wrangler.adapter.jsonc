@@ -1,5 +1,7 @@
-// Read by adapter-cloudflare only (svelte.config.js): where the Kit build goes. Deployment
-// uses wrangler.jsonc, whose entry (worker/entry.ts) re-exports this worker.
+// Read by adapter-cloudflare (svelte.config.js) for where the Kit build goes, and by
+// `bun run cf-typegen` for the Kit app's platform types, which is why the compatibility
+// settings are repeated here: keep them equal to wrangler.jsonc, whose bindings, routes
+// and entry (worker/entry.ts, which re-exports this worker) define the deployed Worker.
 {
   "name": "koenami",
   "main": ".svelte-kit/cloudflare/_worker.js",
