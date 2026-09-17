@@ -94,7 +94,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[kalra2026]] — Kalra A 2026, Surgical Interventions for Voice Masculinization: A Scoping Review
 - [[socialstyrelsen-konsdysfori]] — "Socialstyrelsen (National Board of Health and Welfare 2026, Vård vid könsdysfori (Care for gender dysphoria (Swedish National Board of Health and Welfare))
 
-### medium (227)
+### medium (228)
 
 - [[stevens1937]] — Stevens SS 1937, A Scale for the Measurement of the Psychological Magnitude Pitch
 - [[peterson1952]] — Peterson GE 1952, Control Methods Used in a Study of the Vowels
@@ -133,6 +133,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[kunachak2000]] — Kunachak S 2000, Thyroid cartilage and vocal fold reduction: a new phonosurgical method for male-to-female transsexuals
 - [[kido2001]] — 木戸博 2001, 通常発話の声質に関連した日常表現語：聴取評価による抽出 (Everyday expressions related to voice quality of normal speech: extraction by listening evaluation)
 - [[whiteside2001]] — Whiteside SP 2001, Sex-specific fundamental and formant frequency patterns in a cross-sectional study
+- [[welzel2002]] — Welzel C 2002, Einfluss der Cricothyroidopexie auf geschlechtsspezifische Stimmqualitäten bei Transsexualismus (Influence of cricothyroidopexy on gender-specific voice qualities in transsexualism)
 - [[titze2006]] — Titze IR 2006, Voice Training and Therapy With a Semi-Occluded Vocal Tract: Rationale and Scientific Underpinnings
 - [[carew2007]] — Carew L 2007, The effectiveness of oral resonance therapy on the perception of femininity of voice in male-to-female transsexuals
 - [[kreiman2007]] — Kreiman J 2007, Measures of the glottal source spectrum
@@ -324,13 +325,12 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[yagcioglu2026]] — "Yağcıoğlu D" 2026, Acoustic Voice Properties of Turkish-Speaking Trans Women Who Have Not Received Gender-Affirming Voice Intervention: A Comparison With Cis Women
 - [[zhang2026]] — Zhang Z 2026, Perceiving Physiology from the Voice: Evidence for Physiological Coupling Between Laryngeal and Epilaryngeal Adjustments
 
-### low (116)
+### low (115)
 
 - [[tanaka1981]] — 田中 信三 1981, 声の高さの異常に対する手術 (Surgery for abnormalities of vocal pitch)
 - [[oates1983]] — Oates JM 1983, Speech Pathology Considerations in the Management of Transsexualism—A Review
 - [[verdolinimarston1995]] — Verdolini-Marston K 1995, Preliminary study of two methods of treatment for laryngeal nodules
 - [[takahashi2001]] — Takahashi Y 2001, The surgical management of sex reassignment surgery and its options
-- [[welzel2002]] — Welzel C 2002, Einfluss der Cricothyroidopexie auf geschlechtsspezifische Stimmqualitäten bei Transsexualismus (Influence of cricothyroidopexy on gender-specific voice qualities in transsexualism)
 - [[imaizumi2003]] — 今泉敏 2003, 女声と聴取された性同一性障害者(MtF)の音声の音響分析 (Acoustic analysis of the voices of MtF gender identity disorder speakers who were heard as female)
 - [[umemiya2003]] — 梅宮 新偉 2003, 輪状甲状軟骨接近術による声の女性化がもたらすmale to female性同一性障害transsexualの心理面における経時的変化 (Time-course psychological changes brought about by voice feminization through cricothyroid approximation in male-to-female transsexual people with gender identity disorder)
 - [[kusuyama2005]] — 楠山 敏行 2005, ホルモン音声障害に対する音声治療の経験―声帯粘膜波動に注目して― (Voice therapy for hormonal dysphonia: focusing on the vocal fold mucosal wave)
