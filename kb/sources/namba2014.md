@@ -17,7 +17,7 @@ topics: ["[[japanese-voice]]", "[[transgender-care-context]]", "[[clinical-guide
 
 # 性同一性障害に対する包括的治療
 
-The overview of the whole Japanese treatment pathway by the head of the Okayama University Hospital gender centre, published free to read in 2014 — the year before the modern hormone and voice studies in the vault's Japanese line.
+The overview of the whole Japanese treatment pathway by an author affiliated to the 岡山大学病院ジェンダーセンター, published free to read in 2014 — the year before the modern hormone and voice studies in the vault's Japanese line.
 
 ## What it says
 - What the record establishes: a review article (総説) in the Journal of Okayama Medical Association, volume 126, number 2, pages 109–115, 2014, by 難波祐三郎 of 岡山大学病院 ジェンダーセンター, with the keywords 「性同一性障害 , 包括的治療 , 性別適合手術」 — gender identity disorder, comprehensive treatment, gender-affirming surgery. The journal marks it フリー (free to read).

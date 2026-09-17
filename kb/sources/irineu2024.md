@@ -5,7 +5,7 @@ title: Adaptação transcultural para o português Brasileiro do Vocal Congruenc
 title_en: "Cross-cultural adaptation to Brazilian Portuguese of the Vocal Congruence Scale and the Transgender Congruence Scale"
 authors: [Irineu RA, Ribeiro VV, Sebastião TF, Crow K, van Mersbergen M, Behlau M]
 year: 2024
-venue: CoDAS 36(2) e20232023050
+venue: CoDAS 36(2) e20230050
 doi: 10.1590/2317-1782/20232023050pt
 url: https://doi.org/10.1590/2317-1782/20232023050pt
 language: pt

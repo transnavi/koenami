@@ -1,7 +1,7 @@
 ---
 type: source
 key: kobayashi2012
-title: ホルモン剤による女子の音声障害
+title: "ホルモン剤による女子の音声障害 ─一卵性双生児における30年間の観察例─"
 title_en: "A case of hormonal dysphonia"
 authors: [小林 武夫, 石毛 美代子]
 year: 2012

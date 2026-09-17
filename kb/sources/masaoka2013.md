@@ -20,7 +20,7 @@ topics: ["[[japanese-voice]]", "[[hormones-and-voice]]", "[[fundamental-frequenc
 
 ## What it says
 - What the record establishes: an article by 正岡美麻, 坂口菊恵 and 針間克己 in the journal of the Japan Society of Sexual Science (日本性科学会雑誌), volume 31, number 1, pages 45–54, dated July 2013; NAID 40019855514.
-- The title's scope: changes in the speaking fundamental frequency of FtM transgender people **during** testosterone administration. The author list — a psychiatrist known for GID clinical work alongside two co-authors — suggests a clinical cohort followed as part of hormone treatment rather than a laboratory study.
+- The title's scope: changes in the speaking fundamental frequency of FtM transgender people **during** testosterone administration. The record lists three authors and nothing about their affiliations or the study design.
 
 ## Bearing on voice training
 - If it does what the title says, it is the Japanese precursor of [[nimura2015]], the 23-case time-course study in 音声言語医学 that found the sharpest pitch drop between months one and three of testosterone and significance through month six. Its journal is not indexed in the voice literature, which is probably why the later paper is the one that gets cited ([[hormones-and-voice]], [[voice-masculinization]]).

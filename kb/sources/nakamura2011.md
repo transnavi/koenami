@@ -29,7 +29,7 @@ Three men with mutational dysphonia who did not respond to therapy, with their F
 ## Bearing on voice training
 - The Kayser-Gutzmann method is the named therapy these patients failed, and the drop it failed to achieve is what the operation delivered — therapy-first, surgery for non-responders, which is the sequence the vault's guidelines formalise ([[voice-therapy-techniques]], [[clinical-guidelines]]).
 - The three pre-operative values (170–180 Hz) sit in the range where Japanese listener data shows gender judgements becoming ambiguous ([[sakuraba2009]]), but here they are read as a male voice that is too high, not as an ambiguous one — the same acoustic value means different things depending on who is speaking ([[gender-perception]], [[male-voice]]).
-- The companion case from the same group is [[otsu2010]], with the same therapy-resistant pattern at 276 Hz.
+- A companion case from another institution (三重大学) is [[otsu2010]], with the same therapy-resistant pattern at 276 Hz.
 
 ## Notes
 - n = 3, no control group, single centre; graded low. Only the Japanese abstract was read.

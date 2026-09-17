@@ -17,7 +17,7 @@ topics: ["[[japanese-voice]]", "[[hormones-and-voice]]", "[[voice-therapy-techni
 
 # ホルモン音声障害に対する音声治療の経験
 
-The optimistic counterpart to [[kusuyama2005]] in the same year: hormonal dysphonia treated with exercises, with stroboscopic change reported alongside the pitch gain.
+The optimistic counterpart to [[kusuyama2005]], eight years later: hormonal dysphonia treated with exercises, with improved laryngeal findings reported alongside the pitch gain.
 
 ## What it says
 - The entity defined: 「ホルモン音声障害は，男性ホルモン剤や蛋白同化ステロイド剤などの男性化作用のある薬剤を女性に投与した場合に発症する音声障害を指す」 — a voice disorder in women given virilising drugs, mainly androgens and anabolic steroids.
@@ -30,5 +30,5 @@ The optimistic counterpart to [[kusuyama2005]] in the same year: hormonal dyspho
 - Read with [[kusuyama2005]] and [[kobayashi2012]], the pattern in this Japanese literature is consistent: therapy helps what is left after the drug is stopped, and does not undo the drop if it is not ([[hormones-and-voice]]).
 
 ## Notes
-- n = 1 (the abstract reports a single case), no control group and no instrumental data beyond the stroboscopy described; graded low.
+- n = 1 (the abstract reports a single case), no control group and no instrumental data beyond the 喉頭所見 (laryngeal findings) the abstract mentions; graded low.
 - Only the Japanese abstract was read.

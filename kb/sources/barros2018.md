@@ -20,7 +20,7 @@ topics: ["[[voice-masculinization]]", "[[transgender-care-context]]", "[[voice-h
 ## What it says
 - Qualitative study in dialectical hermeneutics, 「orientada pela noção de performatividade de gênero」 — gender performativity — with semi-structured interviews conducted by a speech-language pathologist with 14 trans men from various regions of Brazil, aged 18–42 (abstract, "Método").
 - Starting premise as the authors state it: voice is 「um fator marcante na percepção de gênero」, and when a voice does not conform to a person's gender expression it 「pode gerar sentimentos de inadequação, tendo um potencial impacto psicossocial sobre voz e comunicação」.
-- The analysis produced categories linking voice and communication in social interaction to 「relações entre voz, saúde e interações sociais e o suporte de profissional da voz na saúde coletiva」.
+- The analysis produced categories linking voice and communication in social interaction to 「relações entre voz, saúde e interações socais [sic] e o suporte de profissional da voz na saúde coletiva」.
 - The stated conclusion is about method and ethics: understanding trans men's own perspective 「possibilita o desenvolvimento de abordagens de cuidado culturalmente competentes, sem padrões normativos de gênero」 — care that does not impose gender norms.
 
 ## Bearing on voice training

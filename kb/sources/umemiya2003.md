@@ -24,7 +24,7 @@ topics: ["[[japanese-voice]]", "[[voice-surgery]]", "[[transgender-care-context]
 
 ## Bearing on voice training
 - If the paper does what its title says, it is the earliest Japanese attempt in this vault to measure what voice surgery does to the person rather than to the pitch — the outcome domain the vault otherwise reaches through questionnaires ([[patient-reported-outcomes]], [[voice-health]]).
-- Its author's other work in the same period is on GID psychotherapy and family relations, not on voice, which is consistent with a psychological follow-up design ([[transgender-care-context]]).
+- The record gives no abstract, so the design is known only from the title: a psychological follow-up ([[transgender-care-context]]).
 
 ## Notes
 - Nothing about the study's method, sample or results is asserted here; the note exists so the item is on record as located-but-unread rather than dropped. Anyone relying on it should obtain the printed bulletin.

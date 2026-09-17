@@ -20,7 +20,7 @@ topics: ["[[clinical-guidelines]]", "[[spanish-voice]]", "[[puberty-voice-change
 A Spanish national paediatric clinical guideline, published by the Spanish paediatric society's working group with authors drawn from endocrinology, paediatrics and adolescent medicine across Spain. Its relevance here is structural: it is the kind of document that decides whether a minor gets referred to voice care at all.
 
 ## What it says
-- The citation establishes the document's scope and standing: a clinical guideline for the care of transsexual, transgender and gender-diverse minors, published in Anales de Pediatría (the Spanish paediatric society's journal) in 2022, with fourteen named authors from Spanish paediatric endocrinology and adolescent units (Crossref record, 2026-09-17).
+- The citation establishes the document's scope and standing: a clinical guideline for the care of transsexual, transgender and gender-diverse minors, published in Anales de Pediatría (the Spanish paediatric society's journal) in 2022, with fourteen named authors (Crossref record, 2026-09-17, which carries no affiliations).
 - No abstract is deposited with the DOI record in either the Spanish or the English version, so this note does not report its recommendations.
 
 ## Bearing on voice training
