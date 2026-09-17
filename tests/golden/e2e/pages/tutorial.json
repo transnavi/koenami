@@ -1,0 +1,80 @@
+{
+ "url": "/tutorial.html",
+ "title": "Koenami · 声のしくみと練習の手引き",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "contents": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "目次"
+  },
+  "what": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "声とは何か：音源とフィルター"
+  },
+  "how": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "人はどうやって声を出しているか"
+  },
+  "perception": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "聞き手は声の性別を何で判断しているか"
+  },
+  "change": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "声はどこまで、どうやって変えられるか"
+  },
+  "koenami": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "Koenamiの指標との対応"
+  },
+  "safety": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "無理をしないために"
+  },
+  "todo": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "これから書く節"
+  },
+  "refs": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "出典"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-tour": {
+    "done": true
+   }
+  },
+  "idb": {}
+ },
+ "network": [],
+ "media": [],
+ "errors": []
+}

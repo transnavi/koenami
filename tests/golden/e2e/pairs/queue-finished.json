@@ -1,0 +1,185 @@
+{
+ "url": "/pairs.html",
+ "title": "Koenami · 比較",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "i-sun": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-moon": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "progress": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "済 61組 · 残り 0組"
+  },
+  "theme-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "明暗を切り替え",
+    "aria-label": "明暗を切り替え"
+   },
+   "text": ""
+  },
+  "card": {
+   "tag": "section",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "AQなにしろ、馬をこんなふうに数え、仕込むことのできる人間なら、よほど偉い主人にちがいないと、私は感心しました。6.4 秒BWなんでこの村にいなければならないの？ でも、今のところは、ねえ、あなた、この申し出を聞くことにしようじゃありませんか。8.0 秒 A → B を繰り返すRSpace：一時停止／再開 どちらが女性らしいA1同じ2B3どちらが自然A1同じ2B3どちらを見本にしたいA1同じ2B3 スキップS保存して次へEnter"
+  },
+  "side-a": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "false"
+   },
+   "text": "AQなにしろ、馬をこんなふうに数え、仕込むことのできる人間なら、よほど偉い主人にちがいないと、私は感心しました。6.4 秒"
+  },
+  "text-a": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "なにしろ、馬をこんなふうに数え、仕込むことのできる人間なら、よほど偉い主人にちがいないと、私は感心しました。"
+  },
+  "meta-a": {
+   "tag": "small",
+   "class": "",
+   "attrs": {},
+   "text": "6.4 秒"
+  },
+  "side-b": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "false"
+   },
+   "text": "BWなんでこの村にいなければならないの？ でも、今のところは、ねえ、あなた、この申し出を聞くことにしようじゃありませんか。8.0 秒"
+  },
+  "text-b": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "なんでこの村にいなければならないの？ でも、今のところは、ねえ、あなた、この申し出を聞くことにしようじゃありませんか。"
+  },
+  "meta-b": {
+   "tag": "small",
+   "class": "",
+   "attrs": {},
+   "text": "8.0 秒"
+  },
+  "loop": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "true"
+   },
+   "text": "A → B を繰り返すR"
+  },
+  "questions": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "どちらが女性らしいA1同じ2B3どちらが自然A1同じ2B3どちらを見本にしたいA1同じ2B3"
+  },
+  "note": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "placeholder": "メモ（違いを一言）"
+   },
+   "value": "",
+   "text": ""
+  },
+  "status": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "skip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "スキップS"
+  },
+  "save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "保存して次へEnter"
+  },
+  "done": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": "比較できる組はありません。"
+  },
+  "log": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "№ 2642 vs № 2690 女性らしい Ajvs031-parallel100-VOICEACTRESS100_075 vs common_voice_ja_38916530 女性らしい B · 自然 同じ · 見本にしたい Ajvs089-nonpara30-BASIC5000_2526 vs jvs041-parallel100-VOICEACTRESS100_010 女性らしい B · 自然 同じ · 見本にしたい 同じjvs074-nonpara30-BASIC5000_0985 vs jvs012-parallel100-VOICEACTRESS100_080 女性らしい B · 自然 同じ · 見本にしたい 同じcommon_voice_ja_39036782 vs jvs032-nonpara30-BASIC5000_1476 女性らしい B · 自然 A · 見本にしたい Bjvs012-nonpara30-BASIC5000_1153 vs jvs004-nonpara30-TRAVEL1000_0409 女性らしい B · 自然 同じ · 見本にしたい 同じcommon_voice_ja_39380008 vs jvs091-nonpara30-BASIC5000_2904 女性らしい 同じ · 自然 同じ · 見本にしたい Ajvs026-nonpara"
+  }
+ },
+ "storage": {
+  "local": {
+   "koenami-review-session": {
+    "id": "w56cpow4mjuuxd6w",
+    "at": 1767236405000
+   },
+   "voice-tour": {
+    "done": true
+   },
+   "koenami-pairs": {
+    "lang": "ja",
+    "key": null,
+    "drafts": {}
+   }
+  },
+  "idb": {}
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/pairs",
+   "query": "lang=ja&session=w56cpow4mjuuxd6w",
+   "status": 200
+  },
+  {
+   "seq": 2,
+   "method": "POST",
+   "path": "/api/pairs",
+   "query": "",
+   "body": "179b 7ac8655fd0a9c90bdeb2053a72f10bfdf95177991bc71a40abf850b9e4bf1690",
+   "status": 200
+  }
+ ],
+ "media": [
+  "/samples/common_voice_ja_38843897.mp3",
+  "/samples/common_voice_ja_38935383.mp3"
+ ],
+ "errors": []
+}

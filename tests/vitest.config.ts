@@ -17,9 +17,11 @@ export default defineConfig({
 		globalSetup: ['tests/unit/global-setup.ts'],
 		environment: 'node',
 		coverage: {
-			provider: 'istanbul',
+			// Native V8 coverage through monocart, the same converter the browser layer uses,
+			// so both layers merge as source ranges (see tests/coverage/report.mjs).
+			provider: 'custom',
+			customProviderModule: 'vitest-monocart-coverage',
 			include: tree === 'new' ? ['src/lib/**/*.{ts,js,svelte}'] : ['tests/old-tree/web/**/*.js'],
-			reporter: ['json', 'text-summary'],
 			reportsDirectory: 'coverage/unit'
 		}
 	}

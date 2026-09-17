@@ -1,0 +1,7 @@
+{
+ "key": "GET /api/words/common_voice_ja_36363162?lang=ja",
+ "status": 200,
+ "contentType": "application/json; charset=utf-8",
+ "body": "{\"pace\": 2.3427041499330654, \"pace_unit\": \"mora/s\", \"units\": 7, \"words\": [{\"text\": \"\\u4eca\\u65e5\", \"start\": 0.37, \"end\": 0.91, \"units\": 2, \"confidence\": 0.9140625}, {\"text\": \"\\u3082\", \"start\": 0.91, \"end\": 1.09, \"units\": 1, \"confidence\": 0.986328125}, {\"text\": \"\\u30ab\\u30ec\\u30fc\", \"start\": 1.09, \"end\": 1.51, \"units\": 3, \"confidence\": 0.9658203125}, {\"text\": \"\\u3088\", \"start\": 1.51, \"end\": 1.63, \"units\": 1, \"confidence\": 0.71630859375}], \"phrases\": [{\"text\": \"\\u4eca\\u65e5\\u3082\\u30ab\\u30ec\\u30fc\\u3088\", \"start\": 0.37, \"end\": 1.63}], \"language\": \"ja\", \"engine\": \"faster-whisper large-v3-turbo / CUDA float16\", \"timing\": \"estimated\", \"duration\": 2.988}",
+ "base64": false
+}

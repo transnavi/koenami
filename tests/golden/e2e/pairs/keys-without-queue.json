@@ -1,0 +1,181 @@
+{
+ "url": "/pairs.html",
+ "title": "Koenami · 比較",
+ "lang": "ja",
+ "theme": "dark",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#ff9ecb",
+  "--self": "#bb9ee8",
+  "--accent": "#74bbf2"
+ },
+ "elements": {
+  "i-sun": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-moon": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "progress": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "theme-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "明暗を切り替え",
+    "aria-label": "明暗を切り替え"
+   },
+   "text": ""
+  },
+  "card": {
+   "tag": "section",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "AQBW A → B を繰り返すRSpace：一時停止／再開 スキップS保存して次へEnter"
+  },
+  "side-a": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "true"
+   },
+   "text": "AQ"
+  },
+  "text-a": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "meta-a": {
+   "tag": "small",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "side-b": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "false"
+   },
+   "text": "BW"
+  },
+  "text-b": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "meta-b": {
+   "tag": "small",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "loop": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "true"
+   },
+   "text": "A → B を繰り返すR"
+  },
+  "questions": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "note": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "placeholder": "メモ（違いを一言）"
+   },
+   "value": "",
+   "text": ""
+  },
+  "status": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "skip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "スキップS"
+  },
+  "save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "保存して次へEnter"
+  },
+  "done": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": "読み込めませんでした: broken"
+  },
+  "log": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  }
+ },
+ "storage": {
+  "local": {
+   "koenami-review-session": {
+    "id": "w56cpow4mjuuxd6w",
+    "at": 1767236405000
+   },
+   "voice-tour": {
+    "done": true
+   },
+   "voice-theme": "dark",
+   "koenami-pairs": "{broken"
+  },
+  "idb": {}
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/pairs",
+   "query": "lang=ja&session=w56cpow4mjuuxd6w",
+   "status": 200
+  },
+  {
+   "seq": 2,
+   "method": "GET",
+   "path": "/api/pairs",
+   "query": "lang=ja&session=w56cpow4mjuuxd6w",
+   "status": 500
+  }
+ ],
+ "media": [
+  "/samples/common_voice_ja_38843897.mp3",
+  "/samples/common_voice_ja_38935383.mp3"
+ ],
+ "errors": []
+}

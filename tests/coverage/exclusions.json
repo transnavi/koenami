@@ -1,53 +1,2372 @@
 {
-	"$comment": "Code the characterization suite cannot reach. Each entry names a file, an istanbul kind (statement, branch, function) and the source text at the uncovered location, plus why no input can execute it. check.mjs treats a matching location as covered and fails when an entry matches nothing, so the list cannot go stale.",
+	"$comment": "Code the characterization suite cannot reach. Each entry names a file, an istanbul kind (statement, branch, function), the line, the column and the source text at the uncovered location in the pinned tree, plus why no input reaches it. check.mjs treats a matching location as covered and fails when an entry matches nothing, so the list cannot go stale.",
 	"old": [
 		{
-			"file": "tests/old-tree/web/space.js",
+			"file": "web/app.js",
 			"kind": "branch",
+			"line": 12,
+			"column": 55,
+			"code": "s??''",
+			"reason": "esc is never passed undefined"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 12,
+			"column": 81,
+			"code": "c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#3",
+			"reason": "no text that passes through esc() contains a character it replaces: fixture clip texts have none, and take names reach the menu through Option objects rather than templates"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 39,
+			"column": 99,
+			"code": "e=>notify(e.message,true)):selectSample(p,true));",
+			"reason": "restoring a history point fails only when its stored take is gone; the take menu covers that path and the map point cannot be targeted for a missing take because such takes leave the map"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 50,
+			"column": 134,
+			"code": "c.name||c.speaker",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 50,
+			"column": 303,
+			"code": "c.index||0",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 56,
+			"column": 28,
+			"code": "if(!fitModel)return null;",
+			"reason": "fitValue is only called once a density model exists (twenty references)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 56,
+			"column": 41,
+			"code": "return null;",
+			"reason": "fitValue is only called once a density model exists (twenty references)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 60,
+			"column": 516,
+			"code": "hi-lo||1",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 65,
+			"column": 987,
+			"code": "sort==='low'?(c.features.f0??Infinity):sort==='high'?-(c.fea",
+			"reason": "features.f0 is present on every fixture clip, so the ?? fallbacks in the sort keys never fire"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 65,
+			"column": 1026,
+			"code": "sort==='high'?-(c.features.f0??-Infinity):0",
+			"reason": "features.f0 is present on every fixture clip, so the ?? fallbacks in the sort keys never fire"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 65,
+			"column": 1042,
+			"code": "c.features.f0??-Infinity",
+			"reason": "features.f0 is present on every fixture clip, so the ?? fallbacks in the sort keys never fire"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 69,
+			"column": 31,
+			"code": "c.synthetic?(c.name||c.speaker):nameOf(c)",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 72,
+			"column": 146,
+			"code": "clip.text||nameOf(clip)",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 74,
+			"column": 286,
+			"code": "clip.text||nameOf(clip)",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 95,
+			"column": 1,
+			"code": "if(state.recording||state.busy)return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 95,
+			"column": 32,
+			"code": "return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 96,
+			"column": 72,
+			"code": "if(token!==state.languageToken)return;",
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 96,
+			"column": 103,
+			"code": "return;",
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 97,
+			"column": 541,
+			"code": "['female','male','androgynous'].includes(c.voice_label)?c.vo",
+			"reason": "every synthetic fixture clip carries a recognised voice_label"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 97,
+			"column": 1397,
+			"code": "chosen||filtered().find(c=>c.plotted&&!c.synthetic)||filtere",
+			"reason": "every fixture clip is plotted and non-synthetic in the groups shown, so the fallbacks after the first find() never run"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 97,
+			"column": 1466,
+			"code": "c=>!c.synthetic)||filtered()[0],false);",
+			"reason": "every fixture clip is plotted and non-synthetic in the groups shown, so the fallbacks after the first find() never run"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 98,
+			"column": 10,
+			"code": "if(token===state.languageToken){state.loadingLanguage=false;",
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 100,
+			"column": 144,
+			"code": "location.pathname.split('/')[1]||'ja'",
+			"reason": "the popstate that lands on the root is covered; a path with no first segment other than the root does not occur"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 100,
+			"column": 195,
+			"code": "e=>notify(e.message,true)));",
+			"reason": "changing to the language named by history fails only when the library request fails, which is injected on the select path"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 101,
+			"column": 45,
+			"code": "if(!clip||state.recording||state.loadingLanguage)return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 101,
+			"column": 94,
+			"code": "return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 101,
+			"column": 756,
+			"code": "if(token!==state.detailToken)return;",
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 101,
+			"column": 785,
+			"code": "return;",
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 101,
+			"column": 1933,
+			"code": "if(token===state.detailToken)notify('見本の解析：'+e.message,true)",
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 106,
+			"column": 619,
+			"code": "peak||1",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 110,
+			"column": 126,
+			"code": "e=>notify(e.message,true));$('normalize').onchange=()=>{if(a",
+			"reason": "playback failure of the reference is injected on selection; the play button path runs the same toggle"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 111,
+			"column": 418,
+			"code": "if(el.src)notify('再生できませんでした。別の音声を選んでください。',true);",
+			"reason": "a media error without a source does not occur: the error path with a source is covered"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 111,
+			"column": 666,
+			"code": "if(!state.recording)$('timer').textContent=state.ownFull?clo",
+			"reason": "the timeupdate handler of the own player fires only with own audio loaded, outside recording"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 111,
+			"column": 709,
+			"code": "state.ownFull?clock(el.currentTime)+' / '+clock(state.ownFul",
+			"reason": "the timeupdate handler of the own player fires only with own audio loaded, outside recording"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 111,
+			"column": 815,
+			"code": "if(r&&el.currentTime>=r[1])el.pause();",
+			"reason": "playback of a range is stopped by the animation loop before the timeupdate handler can observe the range end"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 111,
+			"column": 842,
+			"code": "el.pause();",
+			"reason": "playback of a range is stopped by the animation loop before the timeupdate handler can observe the range end"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 113,
+			"column": 70,
+			"code": "reference.duration||0",
+			"reason": "the seek slider is enabled only once the reference metadata (duration) is known"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 115,
+			"column": 65,
+			"code": "if(!state.selected||!state.ownFull)return;",
+			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 115,
+			"column": 100,
+			"code": "return;",
+			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 117,
+			"column": 28,
+			"code": "state.ranges.ref?.[1]||state.refFull?.duration||state.select",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 118,
+			"column": 1,
+			"code": "if(!finite(seconds)||seconds<=0)throw new Error('両方の音声が読み込まれ",
+			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 118,
+			"column": 33,
+			"code": "throw new Error('両方の音声が読み込まれるまでお待ちください。');",
+			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 120,
+			"column": 189,
+			"code": "e=>{cancelAB();notify(e.message,true);});}else if(phase==='o",
+			"reason": "the own phase of an A/B comparison starts after the reference phase; playback that fails is injected before the first phase and covered there"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 120,
+			"column": 193,
+			"code": "cancelAB();",
+			"reason": "the own phase of an A/B comparison starts after the reference phase; playback that fails is injected before the first phase and covered there"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 120,
+			"column": 204,
+			"code": "notify(e.message,true);",
+			"reason": "the own phase of an A/B comparison starts after the reference phase; playback that fails is injected before the first phase and covered there"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 126,
+			"column": 42,
+			"code": "map.space?.projections||{}",
+			"reason": "the map always has a space once a library is loaded"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 131,
+			"column": 39,
+			"code": "if(state.recording)return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 131,
+			"column": 58,
+			"code": "return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 131,
+			"column": 117,
+			"code": "if(!full)return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 131,
+			"column": 126,
+			"code": "return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 131,
+			"column": 349,
+			"code": "if(sessionReady){persistTakes();saveView();}",
+			"reason": "ranges are only restored from a saved session after initialisation, when sessionReady is already true"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 131,
+			"column": 727,
+			"code": "if(!pcm)return;",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 131,
+			"column": 735,
+			"code": "return;",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 131,
+			"column": 1057,
+			"code": "if(token===state.rangeToken[side])notify(e.message,true);",
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 135,
+			"column": 399,
+			"code": "(side==='own'?state.ownFull:state.refFull)?.duration||0",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 136,
+			"column": 552,
+			"code": "if(!pcm)throw new Error('先に音声を読み込んでください。');",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 136,
+			"column": 560,
+			"code": "throw new Error('先に音声を読み込んでください。');",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 141,
+			"column": 132,
+			"code": "previous?.detail&&(previous.pcm||previous.url)",
+			"reason": "a previous take without samples or a URL cannot exist: takes are stored with their samples"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 141,
+			"column": 359,
+			"code": "id==='baseline'?'ja':(state.lang==='lab'?'en':state.lang)",
+			"reason": "only reached with the private baseline take (data/baseline.wav), which is not part of the fixtures"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 141,
+			"column": 646,
+			"code": "if(pcm){blobURL=URL.createObjectURL(wav(pcm));player.src=blo",
+			"reason": "only reached with the private baseline take (data/baseline.wav), which is not part of the fixtures"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 141,
+			"column": 717,
+			"code": "player.src=url;",
+			"reason": "only reached with the private baseline take (data/baseline.wav), which is not part of the fixtures"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 142,
+			"column": 208,
+			"code": "state.capabilities?.maxSeconds||900",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 142,
+			"column": 265,
+			"code": "state.capabilities?.maxSeconds||900",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 144,
+			"column": 34,
+			"code": "if(rate===16000)return pcm;",
+			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 144,
+			"column": 50,
+			"code": "return pcm;",
+			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 145,
+			"column": 29,
+			"code": "if(liveBusy||!state.recording||!recordContext||samples<recor",
+			"reason": "the first live measurement tick sees half a second of audio in every run, since audio starts before the fake clock advances"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 145,
+			"column": 112,
+			"code": "return;",
+			"reason": "the first live measurement tick sees half a second of audio in every run, since audio starts before the fake clock advances"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 145,
+			"column": 470,
+			"code": "if(generation!==liveGeneration||!state.recording)return;",
+			"reason": "the in-flight live request is aborted when live mode stops, so the fetch rejects (AbortError) before this check runs"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 145,
+			"column": 519,
+			"code": "return;",
+			"reason": "the in-flight live request is aborted when live mode stops, so the fetch rejects (AbortError) before this check runs"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 146,
+			"column": 1555,
+			"code": "if(data instanceof Float32Array){chunks.push(data);samples+=",
+			"reason": "the capture worklet posts Float32Array packets and the string 'flushed' only"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 146,
+			"column": 1861,
+			"code": "state.capabilities?.maxSeconds||900",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 148,
+			"column": 254,
+			"code": "state.ownId==='baseline'?'/data/baseline.wav':null",
+			"reason": "only reached with the private baseline take (data/baseline.wav), which is not part of the fixtures"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 149,
+			"column": 26,
+			"code": "if(!t?.detail)return;",
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 149,
+			"column": 40,
+			"code": "return;",
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 149,
+			"column": 158,
+			"code": "t.measurement||t.detail",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 149,
+			"column": 261,
+			"code": "t.range?state.own:null",
+			"reason": "restored takes carry no range in the fixtures; ranges are covered on live takes"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 150,
+			"column": 38,
+			"code": "state.recording?recordSnapshot:snapshotOwn()",
+			"reason": "persistTakes runs before the recording flag is set and after it is cleared"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 152,
+			"column": 31,
+			"code": "if(state.busy)return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 152,
+			"column": 45,
+			"code": "return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 159,
+			"column": 49,
+			"code": "state.capabilities?.maxSeconds||900",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 168,
+			"column": 27,
+			"code": "if(!monitorGain||!recordContext||!state.recording)return;",
+			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 168,
+			"column": 77,
+			"code": "return;",
+			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 171,
+			"column": 59,
+			"code": "stream?.getTracks()||[]",
+			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 174,
+			"column": 22,
+			"code": "if(!id||state.analyzing.has(id))return;",
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 174,
+			"column": 54,
+			"code": "return;",
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 177,
+			"column": 59,
+			"code": "if(!updated)return;",
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 177,
+			"column": 71,
+			"code": "return;",
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 178,
+			"column": 27,
+			"code": "snapshot?.takeId===id?{...snapshot,detail,measurement:snapsh",
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 178,
+			"column": 81,
+			"code": "snapshot.range?snapshot.measurement:detail",
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 181,
+			"column": 24,
+			"code": "if(!state.ranges.own)state.own=detail;",
+			"reason": "the analysis completes before any range can be selected on the pending take; a range request on a pending take is itself an analysis request queued behind it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 182,
+			"column": 67,
+			"code": "state.ranges.own?state.own:null",
+			"reason": "the analysis completes before any range can be selected on the pending take; a range request on a pending take is itself an analysis request queued behind it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 187,
+			"column": 11,
+			"code": "if(state.takes.some(t=>t.id===id))notify('録音を残しました。録音のメニューから",
+			"reason": "an analysis that fails on a take that was never stored cannot happen: analysis is only queued after the take is stored"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 191,
+			"column": 1,
+			"code": "if(state.busy||state.recording||!state.ownPCM)return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 191,
+			"column": 47,
+			"code": "return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 194,
+			"column": 21,
+			"code": "state.ownTakeId||crypto.randomUUID()",
+			"reason": "a retry always has a take id, assigned when the take was first saved"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 204,
+			"column": 135,
+			"code": "state.words.ref?.pace_unit===state.words.own.pace_unit?fmt(s",
+			"reason": "own and reference words come from the same language, so their pace units agree"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 205,
+			"column": 187,
+			"code": "if(finite(f.delta_f)&&finite(r.delta_f))notes.push(`響きの推定値は自",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 207,
+			"column": 704,
+			"code": "state.selected||{}",
+			"reason": "the report is opened with a selected reference"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 207,
+			"column": 948,
+			"code": "map.space?.explained(map.dimension,map.projection)||0",
+			"reason": "the map always has a space once a library is loaded"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 208,
+			"column": 980,
+			"code": "state.selected?{id:state.selected.id,features:activeFeatures",
+			"reason": "the export is written with a selected reference"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 210,
+			"column": 47,
+			"code": "(now-lastFrame)/1000||0",
+			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 210,
+			"column": 1189,
+			"code": "recordContext?.sampleRate||48000",
+			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 211,
+			"column": 123,
+			"code": "catalog.capabilities||{}",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 218,
+			"column": 27,
+			"code": "view.group||'female'",
+			"reason": "saved sessions always carry group and sort"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 218,
+			"column": 64,
+			"code": "view.sort||'high'",
+			"reason": "saved sessions always carry group and sort"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 225,
+			"column": 213,
+			"code": "recordContext?.sampleRate||1",
+			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 232,
+			"column": 34,
+			"code": "if(!canvas)return;",
+			"reason": "the profile canvas is part of the page"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 232,
+			"column": 45,
+			"code": "return;",
+			"reason": "the profile canvas is part of the page"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 233,
+			"column": 20,
+			"code": "devicePixelRatio||1",
+			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 243,
+			"column": 28,
+			"code": "if(!id)return;",
+			"reason": "favourites are toggled from clip rows and the selected clip, which always have ids"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 243,
+			"column": 35,
+			"code": "return;",
+			"reason": "favourites are toggled from clip rows and the selected clip, which always have ids"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 248,
+			"column": 321,
+			"code": "if(state.refFull)setSignalSource('ref');",
+			"reason": "clearing the own audio happens with a reference loaded"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 251,
+			"column": 56,
+			"code": "if(!select)return;",
+			"reason": "the take menu is part of the page"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 251,
+			"column": 67,
+			"code": "return;",
+			"reason": "the take menu is part of the page"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 259,
+			"column": 35,
+			"code": "if(state.busy)return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 259,
+			"column": 49,
+			"code": "return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 259,
+			"column": 370,
+			"code": "current||null",
+			"reason": "restoring a take always has a current snapshot to keep as previous"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 261,
+			"column": 39,
+			"code": "if(state.busy||state.recording||!id)return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 261,
+			"column": 75,
+			"code": "return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 266,
+			"column": 2,
+			"code": "if(recordSnapshot?.takeId===id)recordSnapshot=null;",
+			"reason": "a take cannot be deleted while it is the snapshot of a recording in progress: deletion is refused while recording"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 266,
+			"column": 33,
+			"code": "recordSnapshot=null;",
+			"reason": "a take cannot be deleted while it is the snapshot of a recording in progress: deletion is refused while recording"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 276,
+			"column": 85,
+			"code": "if(document.activeElement===document.body||document.activeEl",
+			"reason": "the row action that triggers the delete is a button inside the select's popover, so the active element is always the select when the delete completes"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 276,
+			"column": 88,
+			"code": "document.activeElement===document.body||document.activeEleme",
+			"reason": "the row action that triggers the delete is a button inside the select's popover, so the active element is always the select when the delete completes"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 278,
+			"column": 63,
+			"code": "if(value==='')return;",
+			"reason": "the take menu lists takes only, never an empty option"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 278,
+			"column": 77,
+			"code": "return;",
+			"reason": "the take menu lists takes only, never an empty option"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 278,
+			"column": 174,
+			"code": "if(!chosen)return;",
+			"reason": "menu values are indices into the list rendered at the same time"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 278,
+			"column": 185,
+			"code": "return;",
+			"reason": "menu values are indices into the list rendered at the same time"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 280,
+			"column": 48,
+			"code": "if(!chosen)return;",
+			"reason": "menu values are indices into the list rendered at the same time"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 280,
+			"column": 59,
+			"code": "return;",
+			"reason": "menu values are indices into the list rendered at the same time"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 282,
+			"column": 1,
+			"code": "if(e.detail.action==='download')try{",
+			"reason": "the only row actions are download and delete"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 299,
+			"column": 934,
+			"code": "()=>state.imported);if(state.lang==='ja')await changeLanguag",
+			"reason": "loadImported fails only when the index fetch fails, which then also stops the import before this point"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 304,
+			"column": 20,
+			"code": "if(!sessionReady)return;",
+			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 304,
+			"column": 37,
+			"code": "return;",
+			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 307,
+			"column": 25,
+			"code": "if(!recordCamera)return;",
+			"reason": "restoreCamera runs only after a recording, which always records the camera first"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 307,
+			"column": 42,
+			"code": "return;",
+			"reason": "restoreCamera runs only after a recording, which always records the camera first"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 310,
+			"column": 141,
+			"code": "m.features||{}",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 315,
+			"column": 89,
+			"code": "gate.value?`${gate.label} ${gate.value}（${gate.need}）`:gate.",
+			"reason": "gateFailure is called with a measurement only, so the failure always names a check with its value"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 318,
+			"column": 74,
+			"code": "s?.available?[['男性的な見本 · 中央80%',`${formatScore(Math.round(s.",
+			"reason": "the help button sits in the share dialog, which opens only with a verdict, so the scorer is available"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 320,
+			"column": 28,
+			"code": "if(!result)return;",
+			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 320,
+			"column": 39,
+			"code": "return;",
+			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 320,
+			"column": 77,
+			"code": "state.lang==='lab'?'en':state.lang",
+			"reason": "the research library has no human speakers, so the scorer is unavailable there and the share button stays disabled"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 332,
+			"column": 0,
+			"code": "if(import.meta.env.PROD&&'serviceWorker' in navigator)naviga",
+			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "branch",
+			"line": 332,
+			"column": 3,
+			"code": "import.meta.env.PROD&&'serviceWorke",
+			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "statement",
+			"line": 332,
+			"column": 54,
+			"code": "navigator.serviceWorker.register('/sw.js').catch(()=>{});",
+			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
+		},
+		{
+			"file": "web/app.js",
+			"kind": "function",
+			"line": 332,
+			"column": 103,
+			"code": "()=>{});",
+			"reason": "Vite replaces import.meta.env.PROD at build time; the test server serves the source with the development value, so the page never registers the worker (the worker itself is covered by the unit layer)"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 9,
+			"column": 20,
+			"code": "s??''",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "function",
+			"line": 9,
+			"column": 46,
+			"code": "c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#3",
+			"reason": "esc only escapes the site name and the metric units, which contain no markup characters (the callback is invoked through String.replace)"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 10,
+			"column": 19,
+			"code": "finite(v)?v.toFixed(n).replace('-','−'):'—'",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 13,
+			"column": 23,
+			"code": "bands?.[g]?`<rect x=\"${pos(bands[g][0])}\" y=\"${y-7}\" width=\"",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 17,
+			"column": 22,
+			"code": "bands?.female||[]",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 17,
+			"column": 45,
+			"code": "bands?.male||[]",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 17,
+			"column": 133,
+			"code": "hi-lo||1",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 19,
+			"column": 23,
+			"code": "bands?.[g]?.every(finite)?`<rect x=\"${pos(bands[g][0])}\" y=\"",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 20,
+			"column": 458,
+			"code": "finite(value)?`<circle cx=\"${pos(value)}\" cy=\"${y+63}\" r=\"7\"",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 24,
+			"column": 11,
+			"code": "point?`<g transform=\"translate(${x+size*clamp(point[0],0,1)}",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/card.js",
+			"kind": "branch",
+			"line": 32,
+			"column": 940,
+			"code": "scorer.cloud||[]",
+			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "branch",
+			"line": 5,
+			"column": 498,
+			"code": "this.list.matches(':popover-open')?this.close():this.open()",
+			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "function",
+			"line": 9,
+			"column": 21,
+			"code": "(){this.observer?.disconnect();}",
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "statement",
+			"line": 9,
+			"column": 24,
+			"code": "this.observer?.disconnect();",
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "function",
+			"line": 11,
+			"column": 20,
+			"code": "(){return this.options.filter(o=>o.value===this.value);}",
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "statement",
+			"line": 11,
+			"column": 23,
+			"code": "return this.options.filter(o=>o.value===this.value);",
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "function",
+			"line": 11,
+			"column": 50,
+			"code": "o=>o.value===this.value);}",
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "branch",
+			"line": 12,
+			"column": 20,
+			"code": "this._value??this.options.find(o=>o.hasAttribute('selected')",
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "branch",
+			"line": 17,
+			"column": 10,
+			"code": "if(!this.trigger)return;",
+			"reason": "render() runs after the shadow root is built"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "statement",
+			"line": 17,
+			"column": 27,
+			"code": "return;",
+			"reason": "render() runs after the shadow root is built"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "branch",
+			"line": 18,
+			"column": 221,
+			"code": "this.getAttribute('aria-label')||this.getAttribute('title')|",
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "branch",
+			"line": 28,
+			"column": 30,
+			"code": "if(!spec)continue;",
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "statement",
+			"line": 28,
+			"column": 39,
+			"code": "continue;",
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "branch",
+			"line": 36,
+			"column": 19,
+			"code": "if(this.disabled)return;",
+			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
+		},
+		{
+			"file": "web/controls.js",
+			"kind": "statement",
+			"line": 36,
+			"column": 36,
+			"code": "return;",
+			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 6,
+			"column": 80,
+			"code": "if(p.length<3)return p;",
+			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 6,
+			"column": 94,
+			"code": "return p;",
+			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 14,
+			"column": 26,
+			"code": "if(this.autoFit)this.fitDirty=true;",
+			"reason": "the resize observer fires while autoFit is on in every run; toggling autoFit off happens only through navigation, after which the layout is stable"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 28,
+			"column": 102,
+			"code": "point.name||point.speaker",
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 41,
+			"column": 247,
+			"code": "this.camera?.[0]??.5",
+			"reason": "the camera is set before the first frame"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 41,
+			"column": 277,
+			"code": "this.camera?.[1]??.5",
+			"reason": "the camera is set before the first frame"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 41,
+			"column": 307,
+			"code": "this.camera?.[2]??.5",
+			"reason": "the camera is set before the first frame"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "function",
+			"line": 43,
+			"column": 11,
+			"code": "(detail,range){return (detail?.track||[]).filter(p=>!range||",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 43,
+			"column": 26,
+			"code": "return (detail?.track||[]).filter(p=>!range||(p.t>=range[0]&",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 43,
+			"column": 34,
+			"code": "detail?.track||[]",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "function",
+			"line": 43,
+			"column": 60,
+			"code": "p=>!range||(p.t>=range[0]&&p.t<=range[1]));}",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 43,
+			"column": 63,
+			"code": "!range||(p.t>=range[0]&&p.t<=range[1])",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 54,
+			"column": 101,
+			"code": "if(hold&&values.length<4)values=held.map(p=>p[k]).filter(fin",
+			"reason": "needs a live window with fewer than four voiced frames while a hold is active; the fixture microphone is continuously voiced"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 54,
+			"column": 126,
+			"code": "values=held.map(p=>p[k]).filter(finite).slice(0,4);",
+			"reason": "needs a live window with fewer than four voiced frames while a hold is active; the fixture microphone is continuously voiced"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "function",
+			"line": 54,
+			"column": 142,
+			"code": "p=>p[k]).filter(finite).slice(0,4);f[k]=values.length>=(hold",
+			"reason": "needs a live window with fewer than four voiced frames while a hold is active; the fixture microphone is continuously voiced"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 60,
+			"column": 17,
+			"code": "if(!track.length||!finite(t))return null;",
+			"reason": "the cursor is asked only for tracks with frames and a finite time"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 60,
+			"column": 46,
+			"code": "return null;",
+			"reason": "the cursor is asked only for tracks with frames and a finite time"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 62,
+			"column": 59,
+			"code": "b.t-a.t||1",
+			"reason": "track frames have distinct timestamps"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 67,
+			"column": 46,
+			"code": "devicePixelRatio||1",
+			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 67,
+			"column": 121,
+			"code": "if(!this.width||!this.height)return;",
+			"reason": "the map canvas has a size whenever it is drawn"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 67,
+			"column": 150,
+			"code": "return;",
+			"reason": "the map canvas has a size whenever it is drawn"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 72,
+			"column": 171,
+			"code": "this.colors[p.sample.group]||this.colors.research",
+			"reason": "the colour table has an entry for every group the fixtures use, including research"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "function",
+			"line": 78,
+			"column": 8,
+			"code": "(p,color,alpha){if(p.length<3)return;const g=this.ctx;g.begi",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 78,
+			"column": 24,
+			"code": "if(p.length<3)return;",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 24,
+			"code": "if(p.length<3)return;",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 38,
+			"code": "return;",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 45,
+			"code": "const g=this.ctx;",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 62,
+			"code": "g.beginPath();",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 76,
+			"code": "p.forEach((v,i)=>i?g.lineTo(v[0],v[1]):g.moveTo(v[0],v[1]));",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "function",
+			"line": 78,
+			"column": 86,
+			"code": "(v,i)=>i?g.lineTo(v[0],v[1]):g.moveTo(v[0],v[1]));g.closePat",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 78,
+			"column": 93,
+			"code": "i?g.lineTo(v[0],v[1]):g.moveTo(v[0],v[1])",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 136,
+			"code": "g.closePath();",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 150,
+			"code": "g.fillStyle=color;",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 168,
+			"code": "g.globalAlpha=alpha;",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 188,
+			"code": "g.fill();",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 197,
+			"code": "g.globalAlpha=Math.min(.4,alpha*3);",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 232,
+			"code": "g.strokeStyle=color;",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 252,
+			"code": "g.lineWidth=1;",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 266,
+			"code": "g.stroke();",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 78,
+			"column": 277,
+			"code": "g.globalAlpha=1;",
+			"reason": "no caller anywhere in the tree",
+			"dead": true
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 90,
+			"column": 123,
+			"code": "if(best)points.push(best);",
+			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 98,
+			"column": 59,
+			"code": "m?.points||[]",
+			"reason": "shape cache entries always carry points"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 125,
+			"column": 25,
+			"code": "if(row.t>time)break;",
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 125,
+			"column": 39,
+			"code": "break;",
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 136,
+			"column": 2,
+			"code": "if(finite(this.headSeen)&&time<this.headSeen-1){this.headPos",
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 136,
+			"column": 50,
+			"code": "this.headPos=this.headTarget=null;",
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 136,
+			"column": 84,
+			"code": "this.headSeen=undefined;",
+			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "branch",
+			"line": 153,
+			"column": 1,
+			"code": "if(p.length<4)return [];",
+			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
+		},
+		{
+			"file": "web/map.js",
+			"kind": "statement",
+			"line": 153,
+			"column": 15,
+			"code": "return [];",
+			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
+		},
+		{
+			"file": "web/pairs.js",
+			"kind": "function",
+			"line": 21,
+			"column": 107,
+			"code": "()=>{});else p.pause();mark();}",
+			"reason": "play() on a clip that already loaded does not reject; the handler only guards the autoplay policy"
+		},
+		{
+			"file": "web/pairs.js",
+			"kind": "branch",
+			"line": 33,
+			"column": 58,
+			"code": "p[side].text||''",
+			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "web/pairs.js",
+			"kind": "branch",
+			"line": 33,
+			"column": 104,
+			"code": "p[side].duration||0",
+			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "web/pairs.js",
+			"kind": "branch",
+			"line": 53,
+			"column": 46,
+			"code": "p.a.display||p.a.speaker",
+			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "web/pairs.js",
+			"kind": "branch",
+			"line": 53,
+			"column": 71,
+			"code": "p.b.display||p.b.speaker",
+			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "web/pairs.js",
+			"kind": "branch",
+			"line": 60,
+			"column": 196,
+			"code": "l||''",
+			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "web/pairs.js",
+			"kind": "branch",
+			"line": 61,
+			"column": 29,
+			"code": "r.answers||{}",
+			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "web/pairs.js",
+			"kind": "branch",
+			"line": 61,
+			"column": 58,
+			"code": "state.questions[k]||k",
+			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "web/pairs.js",
+			"kind": "branch",
+			"line": 61,
+			"column": 110,
+			"code": "{a:'A',b:'B',same:'同じ'}[v]||v",
+			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "web/result.js",
+			"kind": "branch",
+			"line": 6,
+			"column": 19,
+			"code": "finite(v)?v.toFixed(n):'—'",
+			"reason": "the result page scores finite parameters only and the library's bands are finite"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 8,
+			"column": 120,
+			"code": "if(!s||now-s.at>40*60*1000)s={id:Math.random().toString(36).",
+			"reason": "sessionId() is called while building `state` on line 4, before `const STORAGE` on line 6 is initialised; the read and the write of the stored session both throw in the temporal dead zone and are swallowed, so the page always starts a new session (a latent bug: the pairs page has the same code with a literal key and keeps its session)"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 8,
+			"column": 123,
+			"code": "!s||now-s.at>40*60*1000",
+			"reason": "sessionId() is called while building `state` on line 4, before `const STORAGE` on line 6 is initialised; the read and the write of the stored session both throw in the temporal dead zone and are swallowed, so the page always starts a new session (a latent bug: the pairs page has the same code with a literal key and keeps its session)"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 20,
+			"column": 116,
+			"code": "data.anchors||[]",
+			"reason": "the review API always returns the anchors list, each with a display label and a known scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 43,
+			"column": 113,
+			"code": "state.anchors||[]",
+			"reason": "the review API always returns the anchors list, each with a display label and a known scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 44,
+			"column": 90,
+			"code": "state.scales.find(s=>s.key===a.scale)?.name||a.scale",
+			"reason": "the review API always returns the anchors list, each with a display label and a known scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 44,
+			"column": 257,
+			"code": "a.display||''",
+			"reason": "the review API always returns the anchors list, each with a display label and a known scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 45,
+			"column": 32,
+			"code": "state.anchors||[]",
+			"reason": "the review API always returns the anchors list, each with a display label and a known scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 45,
+			"column": 54,
+			"code": "if(!a)return;",
+			"reason": "the key map plays anchors 1–6 only and the API returns six anchors, one per scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "statement",
+			"line": 45,
+			"column": 60,
+			"code": "return;",
+			"reason": "the key map plays anchors 1–6 only and the API returns six anchors, one per scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "function",
+			"line": 45,
+			"column": 179,
+			"code": "()=>{});$('anchors').querySelectorAll('button').forEach((b,j",
+			"reason": "play() on a clip that already loaded does not reject; the handler only guards the autoplay policy"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 48,
+			"column": 42,
+			"code": "q.clips[0].display||q.speaker",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 48,
+			"column": 103,
+			"code": "q.clips.find(c=>c.id===q.first)?.text||''",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 50,
+			"column": 194,
+			"code": "state.skipped.includes(q.speaker)?'後回し':''",
+			"reason": "a skipped speaker always has a draft stored at skip time, so the list shows 途中 rather than 後回し"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 56,
+			"column": 94,
+			"code": "c.display||item.speaker",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 56,
+			"column": 220,
+			"code": "c.text||''",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "function",
+			"line": 58,
+			"column": 58,
+			"code": "()=>{});else audio.pause();}",
+			"reason": "play() on a clip that already loaded does not reject; the handler only guards the autoplay policy"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 75,
+			"column": 48,
+			"code": "if(!s)return;",
+			"reason": "rate() is only reached through key() and the scale buttons, both of which already have a scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "statement",
+			"line": 75,
+			"column": 54,
+			"code": "return;",
+			"reason": "rate() is only reached through key() and the scale buttons, both of which already have a scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 77,
+			"column": 83,
+			"code": "state.anchors||[]",
+			"reason": "the review API always returns the anchors list, each with a display label and a known scale"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 79,
+			"column": 19,
+			"code": "state.offered||[]",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 79,
+			"column": 197,
+			"code": "KEYS[flag]||''",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 96,
+			"column": 140,
+			"code": "r.display||r.speaker",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 97,
+			"column": 19,
+			"code": "r.flags||[]",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 97,
+			"column": 39,
+			"code": "state.flags?.[f]||f",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 97,
+			"column": 78,
+			"code": "r.ratings||{}",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 97,
+			"column": 107,
+			"code": "state.scales?.find(s=>s.key===k)?.name||k",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/review.js",
+			"kind": "branch",
+			"line": 97,
+			"column": 155,
+			"code": "k==='age'?state.decades?.[v]??v:v",
+			"reason": "the review API always returns display labels, clip text, offered flags with key letters and a scales list; the log entries it returns always carry flags and ratings"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "branch",
+			"line": 21,
+			"column": 38,
+			"code": "finite(a?.f0)&&finite(a?.delta_f)&&finite(b?.f0)&&finite(b?.",
+			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "branch",
+			"line": 35,
+			"column": 1,
+			"code": "if(!detail)return {label:'測定なし'};",
+			"reason": "gateFailure is called with a measurement only, so the failure always names a check with its value"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "statement",
+			"line": 35,
+			"column": 12,
+			"code": "return {label:'測定なし'};",
+			"reason": "gateFailure is called with a measurement only, so the failure always names a check with its value"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "branch",
+			"line": 36,
+			"column": 54,
+			"code": "finite(raw)?raw:(g.min!==undefined?0:0)",
+			"reason": "the analyzer reports every gate measurement as a finite number, so the fallback (0 either way) never runs"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "branch",
+			"line": 36,
+			"column": 71,
+			"code": "g.min!==undefined?0:0",
+			"reason": "the analyzer reports every gate measurement as a finite number, so the fallback (0 either way) never runs"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "branch",
+			"line": 53,
+			"column": 48,
+			"code": "if(finite(v))groups[c.group].push(v);",
+			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "branch",
+			"line": 59,
+			"column": 91,
+			"code": "v?[v[0],v[1],c.group]:null",
+			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "branch",
+			"line": 65,
+			"column": 2,
+			"code": "if(!finite(score))return null;",
+			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "statement",
+			"line": 65,
+			"column": 20,
+			"code": "return null;",
+			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
+		},
+		{
+			"file": "web/score.js",
+			"kind": "branch",
+			"line": 68,
+			"column": 79,
+			"code": "vector?[vector[0],vector[1]]:null",
+			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
+		},
+		{
+			"file": "web/share.js",
+			"kind": "branch",
+			"line": 43,
+			"column": 65,
+			"code": "if(!blob)throw new Error('画像を作成できませんでした。');",
+			"reason": "canvas.toBlob returns a blob for a 1200×630 canvas in Chromium"
+		},
+		{
+			"file": "web/share.js",
+			"kind": "statement",
+			"line": 43,
+			"column": 74,
+			"code": "throw new Error('画像を作成できませんでした。');",
+			"reason": "canvas.toBlob returns a blob for a 1200×630 canvas in Chromium"
+		},
+		{
+			"file": "web/share.js",
+			"kind": "branch",
+			"line": 52,
+			"column": 1,
+			"code": "if(navigator.share){await navigator.share({title:'Koenami',t",
+			"reason": "the system share button is hidden without navigator.share"
+		},
+		{
+			"file": "web/share.js",
+			"kind": "statement",
+			"line": 53,
+			"column": 1,
+			"code": "return false;",
+			"reason": "the system share button is hidden without navigator.share"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "branch",
+			"line": 6,
+			"column": 263,
+			"code": "if(!this.data[this.source])return;",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "statement",
+			"line": 6,
+			"column": 290,
+			"code": "return;",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "branch",
+			"line": 9,
+			"column": 128,
+			"code": "this.data[this.source]?.duration||0",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "branch",
+			"line": 13,
+			"column": 37,
+			"code": "this.data[this.source]?.duration||0",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "branch",
+			"line": 16,
+			"column": 390,
+			"code": "getComputedStyle(document.documentElement).getPropertyValue(",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "branch",
+			"line": 17,
+			"column": 209,
+			"code": "devicePixelRatio||1",
+			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "branch",
+			"line": 17,
+			"column": 421,
+			"code": "if(w<30||h<20)return;",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "statement",
+			"line": 17,
+			"column": 435,
+			"code": "return;",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "branch",
+			"line": 24,
+			"column": 2,
+			"code": "if(ph>5)for(const side of sides){const original=this.data[si",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "branch",
+			"line": 28,
+			"column": 192,
+			"code": "if(!wave[i])continue;",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/signals.js",
+			"kind": "statement",
+			"line": 28,
+			"column": 204,
+			"code": "continue;",
+			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "web/space.js",
+			"kind": "branch",
+			"line": 21,
+			"column": 10,
 			"code": "a[c][c]||1e-12",
 			"reason": "solve(): the pivot fallback needs an exact zero pivot; the within-class covariance carries a 1e-6 ridge on its diagonal, so elimination never cancels to exactly zero."
 		},
 		{
-			"file": "tests/old-tree/web/space.js",
+			"file": "web/space.js",
 			"kind": "branch",
+			"line": 22,
+			"column": 27,
 			"code": "r[i]||1e-12",
 			"reason": "solve(): the back-substitution fallback needs an exact zero diagonal after elimination; same ridge argument."
 		},
 		{
-			"file": "tests/old-tree/web/space.js",
+			"file": "web/space.js",
 			"kind": "branch",
-			"code": "if(finite(norm)&&norm>0)",
+			"line": 48,
+			"column": 4,
+			"code": "if(finite(norm)&&norm>0){",
 			"reason": "Cannot be false: rows are filtered to finite features, the difference vector is non-zero (checked one line above) and the ridged covariance is positive definite, so the solved Fisher vector is finite and non-zero."
 		},
 		{
-			"file": "tests/old-tree/web/space.js",
+			"file": "web/space.js",
 			"kind": "branch",
-			"code": "if(fisher.reduce((s,x,k)=>s+x*difference[k],0)<0)",
+			"line": 50,
+			"column": 5,
+			"code": "if(fisher.reduce((s,x,k)=>s+x*difference[k],0)<0)fisher=fish",
 			"reason": "The sign flip needs fisher·difference < 0, i.e. dᵀW⁻¹d < 0, impossible for a positive-definite W."
 		},
 		{
-			"file": "tests/old-tree/web/space.js",
+			"file": "web/space.js",
 			"kind": "statement",
-			"code": "fisher=fisher.map(x=>-x)",
-			"reason": "Body of the unreachable sign flip above."
+			"line": 50,
+			"column": 54,
+			"code": "fisher=fisher.map(x=>-x);",
+			"reason": "The sign flip needs fisher·difference < 0, i.e. dᵀW⁻¹d < 0, impossible for a positive-definite W."
 		},
 		{
-			"file": "tests/old-tree/web/space.js",
+			"file": "web/space.js",
 			"kind": "function",
-			"code": "x=>-x",
+			"line": 50,
+			"column": 72,
+			"code": "x=>-x);",
 			"reason": "Arrow inside the unreachable sign flip above."
 		},
 		{
-			"file": "tests/old-tree/web/space.js",
-			"kind": "statement",
-			"code": "-x",
-			"reason": "Body of that arrow."
+			"file": "web/space.js",
+			"kind": "branch",
+			"line": 53,
+			"column": 5,
+			"code": "if(axes.length===5)this.projections.contrast={axes};",
+			"reason": "In practice never false: after the eigenvectors, the five unit vectors are appended as candidates and at least four of them are independent of any single Fisher axis, so orthogonalize (norm > 1e-6) always completes the basis."
 		},
 		{
-			"file": "tests/old-tree/web/space.js",
+			"file": "web/tour.js",
+			"kind": "function",
+			"line": 43,
+			"column": 32,
+			"code": "e=>{e.preventDefault();pause();});",
+			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead"
+		},
+		{
+			"file": "web/tour.js",
+			"kind": "statement",
+			"line": 43,
+			"column": 36,
+			"code": "e.preventDefault();",
+			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead"
+		},
+		{
+			"file": "web/tour.js",
+			"kind": "statement",
+			"line": 43,
+			"column": 55,
+			"code": "pause();",
+			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead"
+		},
+		{
+			"file": "web/tour.js",
 			"kind": "branch",
-			"code": "if(axes.length===5)this.projections.contrast",
-			"reason": "In practice never false: after the eigenvectors, the five unit vectors are appended as candidates and at least four of them are independent of any single Fisher axis, so orthogonalize (norm > 1e-6) always completes the basis."
+			"line": 62,
+			"column": 70,
+			"code": "if(left+w>vw-12)left=r.left-gap-w;",
+			"reason": "at the desktop size the only lit areas that push the card to their side (the graph and signal panels) reach the samples panel, so the card always flips to the left; narrower windows use the phone sheet"
+		},
+		{
+			"file": "web/tour.js",
+			"kind": "branch",
+			"line": 78,
+			"column": 35,
+			"code": "if(card.open)card.close();",
+			"reason": "close() runs only from pause and finish, which the open card triggers"
 		}
 	],
 	"new": []
