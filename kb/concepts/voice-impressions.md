@@ -11,7 +11,7 @@ Warmth, dominance, age, attractiveness and the everyday words listeners use.
 
 ## What is known
 - Sub-second "hello" yields consistent impressions on valence and dominance; female attractiveness is driven by valence [[mcaleer2014]].
-- A Russian-language review of the voice-and-personality literature reports that negative emotions are recognised from the voice better than positive ones, anger and sadness most accurately of all, and that among the Big Five extraversion carries the most significant acoustic-prosodic correlations [[rafikova2022]].
+- A Russian-language review of the voice-and-personality literature reports that negative emotions are recognised from the voice better than positive ones, anger and sadness most accurately of all, and that among the Big Five extraversion showed the largest number of significant correlations with acoustic-prosodic and auditory features [[rafikova2022]].
 - Japanese vocabularies: [[kido2001]], [[kanato2016]], [[yasuda2023]], [[watanabe2023]]; English tags [[diwan2025]].
 - Attractiveness of female voices in Japanese listeners follows an inverted U in F0 and formant dispersion [[tanaka2022]]; voice actors' character voices are perceived reliably [[hayashi2026]].
 - Perceived sexual orientation and masculinity/femininity are separable dimensions [[munson2007]].
