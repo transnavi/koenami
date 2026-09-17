@@ -1,0 +1,6512 @@
+{
+ "commit": "6860827",
+ "producers_sha256": {
+  "benchmark_jvs_similarity.py": "44af6f8f80905cd883ca937fb1b383d65073124967d54b29a366195fa3f57738",
+  "probe_jvs_similarity.py": "213099547c7711a6f4cdebe44d211e50f91410e62217e2c868f69aa813a9f0ca",
+  "extract_expanded_acoustics.py": "e83214411507168fcd7e131508c223f9e1232c3efb09074a06bf7a490129d2f3",
+  "research_jvs_deploy_check.py": "43cc9001b2a5f8b535d63f61b8d1742ce5a2e747bc9d1f01108ac86ae1f8c0f3",
+  "research_jvs_halving_audit.py": "57b9e8c51830123fef9424e112523e65d1525a347a6f237963a845a13a84270a",
+  "assemble_jvs_results.py": "4a82cf107d7d579e56364c64c16cb0727987a3b46c2581b708603ebea01c762e",
+  "acoustics.py": "ea9888ca5bf3bf69547f3e3a5434692af754aca61130d439d30b3ed9a105414f",
+  "perception.py": "1853e5c25a51ef28709e834b3640b39b66f16ff3548fe1aa4012bb29ef0eda84",
+  "prepare_voice_models.py": "0c90cf3ef4a1a095eb29fbd0cafee184f18858df8d02d78863dae9b3b59ec67c"
+ },
+ "bootstrap_draws": {
+  "raw_distance": 500,
+  "deployment": 1000,
+  "paired_raw_delta": 1000
+ },
+ "models": {
+  "wavlm_sv": {
+   "id": "microsoft/wavlm-base-plus-sv",
+   "revision": "1bfd64eca136543feb28c5ffaf05381c6af33121"
+  },
+  "wavlm_base": {
+   "id": "microsoft/wavlm-base-plus",
+   "revision": "4c66d4806a428f2e922ccfa1a962776e232d487b"
+  },
+  "checks": {
+   "encoder_weight_max_abs_diff": 0.0,
+   "xvector_layer_weights": [
+    0.151349,
+    0.081155,
+    0.084608,
+    0.100538,
+    0.170393,
+    0.132725,
+    0.057263,
+    0.076139,
+    0.039118,
+    0.024993,
+    0.030239,
+    0.025827,
+    0.025652
+   ],
+   "padding_to_8s_cosine_alone_vs_padded": {
+    "layer3_mean": 0.964116,
+    "layer12_mean": 0.998928,
+    "xvector": 0.997225
+   },
+   "padding_check_clip": "data/original-excerpt.wav, first 5 s"
+  }
+ },
+ "versions": {
+  "acoustics": "3.1.0",
+  "library_engine": "4.0.0",
+  "timbre_descriptor": "wavlm-l3-int8-v1",
+  "xvector_descriptor": "wavlm-sv-int8-v2"
+ },
+ "ratings": {
+  "source": "jvs_ver1/speaker_similarity_{female,male}.csv (JVS tags, CC BY-SA 4.0)",
+  "groups": {
+   "female": {
+    "speakers": 51,
+    "max_asymmetry": 0.0
+   },
+   "male": {
+    "speakers": 49,
+    "max_asymmetry": 0.0
+   }
+  },
+  "scale": "-3..+3, ten listeners per pair"
+ },
+ "preprocessing": {
+  "benchmark": "none, one clip per pass, centre crop <= 8 s, fp16 autocast",
+  "deployed": "int8 ONNX graph from prepare_voice_models.py through perception.timbre; see the docstring there for the crop and pooling rule"
+ },
+ "raw_distance_vs_ratings": {
+  "parallel20": {
+   "acoustic_five": {
+    "female": {
+     "spearman": 0.255,
+     "anchor_median": 0.234,
+     "anchor_p10": 0.036,
+     "anchor_min": -0.117,
+     "ci95": [
+      0.135,
+      0.36
+     ]
+    },
+    "male": {
+     "spearman": 0.26,
+     "anchor_median": 0.203,
+     "anchor_p10": 0.029,
+     "anchor_min": -0.083,
+     "ci95": [
+      0.126,
+      0.373
+     ]
+    }
+   },
+   "xvector": {
+    "female": {
+     "spearman": 0.278,
+     "anchor_median": 0.28,
+     "anchor_p10": 0.045,
+     "anchor_min": -0.225,
+     "ci95": [
+      0.144,
+      0.415
+     ]
+    },
+    "male": {
+     "spearman": 0.327,
+     "anchor_median": 0.311,
+     "anchor_p10": 0.154,
+     "anchor_min": -0.128,
+     "ci95": [
+      0.194,
+      0.437
+     ]
+    }
+   },
+   "sv_L00_mean": {
+    "female": {
+     "spearman": 0.224,
+     "anchor_median": 0.245,
+     "anchor_p10": 0.09,
+     "anchor_min": -0.202,
+     "ci95": [
+      0.13,
+      0.322
+     ]
+    },
+    "male": {
+     "spearman": 0.306,
+     "anchor_median": 0.292,
+     "anchor_p10": 0.093,
+     "anchor_min": 0.034,
+     "ci95": [
+      0.192,
+      0.406
+     ]
+    }
+   },
+   "sv_L01_mean": {
+    "female": {
+     "spearman": 0.311,
+     "anchor_median": 0.294,
+     "anchor_p10": 0.125,
+     "anchor_min": 0.046,
+     "ci95": [
+      0.195,
+      0.412
+     ]
+    },
+    "male": {
+     "spearman": 0.382,
+     "anchor_median": 0.349,
+     "anchor_p10": 0.12,
+     "anchor_min": 0.027,
+     "ci95": [
+      0.261,
+      0.484
+     ]
+    }
+   },
+   "sv_L02_mean": {
+    "female": {
+     "spearman": 0.4,
+     "anchor_median": 0.388,
+     "anchor_p10": 0.201,
+     "anchor_min": 0.051,
+     "ci95": [
+      0.274,
+      0.503
+     ]
+    },
+    "male": {
+     "spearman": 0.381,
+     "anchor_median": 0.371,
+     "anchor_p10": 0.122,
+     "anchor_min": 0.02,
+     "ci95": [
+      0.273,
+      0.473
+     ]
+    }
+   },
+   "sv_L03_mean": {
+    "female": {
+     "spearman": 0.428,
+     "anchor_median": 0.385,
+     "anchor_p10": 0.214,
+     "anchor_min": 0.047,
+     "ci95": [
+      0.32,
+      0.532
+     ]
+    },
+    "male": {
+     "spearman": 0.357,
+     "anchor_median": 0.36,
+     "anchor_p10": 0.105,
+     "anchor_min": -0.034,
+     "ci95": [
+      0.241,
+      0.453
+     ]
+    }
+   },
+   "sv_L04_mean": {
+    "female": {
+     "spearman": 0.418,
+     "anchor_median": 0.372,
+     "anchor_p10": 0.227,
+     "anchor_min": 0.024,
+     "ci95": [
+      0.297,
+      0.531
+     ]
+    },
+    "male": {
+     "spearman": 0.31,
+     "anchor_median": 0.312,
+     "anchor_p10": 0.029,
+     "anchor_min": -0.139,
+     "ci95": [
+      0.173,
+      0.428
+     ]
+    }
+   },
+   "sv_L05_mean": {
+    "female": {
+     "spearman": 0.386,
+     "anchor_median": 0.372,
+     "anchor_p10": 0.177,
+     "anchor_min": 0.085,
+     "ci95": [
+      0.268,
+      0.503
+     ]
+    },
+    "male": {
+     "spearman": 0.281,
+     "anchor_median": 0.282,
+     "anchor_p10": -0.011,
+     "anchor_min": -0.124,
+     "ci95": [
+      0.166,
+      0.392
+     ]
+    }
+   },
+   "sv_L06_mean": {
+    "female": {
+     "spearman": 0.33,
+     "anchor_median": 0.31,
+     "anchor_p10": 0.101,
+     "anchor_min": -0.003,
+     "ci95": [
+      0.199,
+      0.442
+     ]
+    },
+    "male": {
+     "spearman": 0.256,
+     "anchor_median": 0.252,
+     "anchor_p10": -0.025,
+     "anchor_min": -0.207,
+     "ci95": [
+      0.133,
+      0.371
+     ]
+    }
+   },
+   "sv_L07_mean": {
+    "female": {
+     "spearman": 0.273,
+     "anchor_median": 0.28,
+     "anchor_p10": 0.069,
+     "anchor_min": -0.028,
+     "ci95": [
+      0.153,
+      0.397
+     ]
+    },
+    "male": {
+     "spearman": 0.235,
+     "anchor_median": 0.23,
+     "anchor_p10": -0.073,
+     "anchor_min": -0.232,
+     "ci95": [
+      0.107,
+      0.351
+     ]
+    }
+   },
+   "sv_L08_mean": {
+    "female": {
+     "spearman": 0.224,
+     "anchor_median": 0.226,
+     "anchor_p10": 0.039,
+     "anchor_min": -0.135,
+     "ci95": [
+      0.1,
+      0.33
+     ]
+    },
+    "male": {
+     "spearman": 0.216,
+     "anchor_median": 0.217,
+     "anchor_p10": -0.099,
+     "anchor_min": -0.221,
+     "ci95": [
+      0.091,
+      0.327
+     ]
+    }
+   },
+   "sv_L09_mean": {
+    "female": {
+     "spearman": 0.197,
+     "anchor_median": 0.218,
+     "anchor_p10": 0.023,
+     "anchor_min": -0.147,
+     "ci95": [
+      0.075,
+      0.31
+     ]
+    },
+    "male": {
+     "spearman": 0.214,
+     "anchor_median": 0.211,
+     "anchor_p10": -0.125,
+     "anchor_min": -0.236,
+     "ci95": [
+      0.09,
+      0.329
+     ]
+    }
+   },
+   "sv_L10_mean": {
+    "female": {
+     "spearman": 0.201,
+     "anchor_median": 0.224,
+     "anchor_p10": 0.045,
+     "anchor_min": -0.116,
+     "ci95": [
+      0.094,
+      0.321
+     ]
+    },
+    "male": {
+     "spearman": 0.217,
+     "anchor_median": 0.201,
+     "anchor_p10": -0.078,
+     "anchor_min": -0.226,
+     "ci95": [
+      0.101,
+      0.336
+     ]
+    }
+   },
+   "sv_L11_mean": {
+    "female": {
+     "spearman": 0.157,
+     "anchor_median": 0.181,
+     "anchor_p10": 0.005,
+     "anchor_min": -0.151,
+     "ci95": [
+      0.045,
+      0.275
+     ]
+    },
+    "male": {
+     "spearman": 0.198,
+     "anchor_median": 0.169,
+     "anchor_p10": -0.112,
+     "anchor_min": -0.268,
+     "ci95": [
+      0.077,
+      0.3
+     ]
+    }
+   },
+   "sv_L12_mean": {
+    "female": {
+     "spearman": 0.179,
+     "anchor_median": 0.198,
+     "anchor_p10": -0.015,
+     "anchor_min": -0.205,
+     "ci95": [
+      0.077,
+      0.283
+     ]
+    },
+    "male": {
+     "spearman": 0.215,
+     "anchor_median": 0.207,
+     "anchor_p10": -0.042,
+     "anchor_min": -0.206,
+     "ci95": [
+      0.087,
+      0.336
+     ]
+    }
+   },
+   "sv_L00_meanstd": {
+    "female": {
+     "spearman": 0.232,
+     "anchor_median": 0.245,
+     "anchor_p10": 0.064,
+     "anchor_min": -0.143,
+     "ci95": [
+      0.146,
+      0.324
+     ]
+    },
+    "male": {
+     "spearman": 0.323,
+     "anchor_median": 0.264,
+     "anchor_p10": 0.123,
+     "anchor_min": 0.062,
+     "ci95": [
+      0.205,
+      0.423
+     ]
+    }
+   },
+   "sv_L01_meanstd": {
+    "female": {
+     "spearman": 0.297,
+     "anchor_median": 0.302,
+     "anchor_p10": 0.113,
+     "anchor_min": -0.03,
+     "ci95": [
+      0.197,
+      0.405
+     ]
+    },
+    "male": {
+     "spearman": 0.372,
+     "anchor_median": 0.339,
+     "anchor_p10": 0.108,
+     "anchor_min": 0.047,
+     "ci95": [
+      0.256,
+      0.474
+     ]
+    }
+   },
+   "sv_L02_meanstd": {
+    "female": {
+     "spearman": 0.35,
+     "anchor_median": 0.358,
+     "anchor_p10": 0.169,
+     "anchor_min": -0.016,
+     "ci95": [
+      0.236,
+      0.452
+     ]
+    },
+    "male": {
+     "spearman": 0.361,
+     "anchor_median": 0.353,
+     "anchor_p10": 0.093,
+     "anchor_min": 0.01,
+     "ci95": [
+      0.239,
+      0.469
+     ]
+    }
+   },
+   "sv_L03_meanstd": {
+    "female": {
+     "spearman": 0.351,
+     "anchor_median": 0.365,
+     "anchor_p10": 0.182,
+     "anchor_min": -0.093,
+     "ci95": [
+      0.238,
+      0.45
+     ]
+    },
+    "male": {
+     "spearman": 0.332,
+     "anchor_median": 0.334,
+     "anchor_p10": 0.093,
+     "anchor_min": -0.04,
+     "ci95": [
+      0.213,
+      0.444
+     ]
+    }
+   },
+   "sv_L04_meanstd": {
+    "female": {
+     "spearman": 0.344,
+     "anchor_median": 0.36,
+     "anchor_p10": 0.169,
+     "anchor_min": -0.094,
+     "ci95": [
+      0.218,
+      0.466
+     ]
+    },
+    "male": {
+     "spearman": 0.292,
+     "anchor_median": 0.29,
+     "anchor_p10": 0.017,
+     "anchor_min": -0.12,
+     "ci95": [
+      0.174,
+      0.407
+     ]
+    }
+   },
+   "sv_L05_meanstd": {
+    "female": {
+     "spearman": 0.318,
+     "anchor_median": 0.336,
+     "anchor_p10": 0.132,
+     "anchor_min": -0.099,
+     "ci95": [
+      0.191,
+      0.433
+     ]
+    },
+    "male": {
+     "spearman": 0.259,
+     "anchor_median": 0.262,
+     "anchor_p10": -0.023,
+     "anchor_min": -0.123,
+     "ci95": [
+      0.134,
+      0.377
+     ]
+    }
+   },
+   "sv_L06_meanstd": {
+    "female": {
+     "spearman": 0.275,
+     "anchor_median": 0.294,
+     "anchor_p10": 0.084,
+     "anchor_min": -0.138,
+     "ci95": [
+      0.151,
+      0.404
+     ]
+    },
+    "male": {
+     "spearman": 0.235,
+     "anchor_median": 0.232,
+     "anchor_p10": -0.082,
+     "anchor_min": -0.186,
+     "ci95": [
+      0.118,
+      0.337
+     ]
+    }
+   },
+   "sv_L07_meanstd": {
+    "female": {
+     "spearman": 0.249,
+     "anchor_median": 0.249,
+     "anchor_p10": 0.067,
+     "anchor_min": -0.121,
+     "ci95": [
+      0.124,
+      0.379
+     ]
+    },
+    "male": {
+     "spearman": 0.228,
+     "anchor_median": 0.206,
+     "anchor_p10": -0.087,
+     "anchor_min": -0.232,
+     "ci95": [
+      0.108,
+      0.327
+     ]
+    }
+   },
+   "sv_L08_meanstd": {
+    "female": {
+     "spearman": 0.207,
+     "anchor_median": 0.212,
+     "anchor_p10": 0.028,
+     "anchor_min": -0.209,
+     "ci95": [
+      0.089,
+      0.332
+     ]
+    },
+    "male": {
+     "spearman": 0.207,
+     "anchor_median": 0.211,
+     "anchor_p10": -0.077,
+     "anchor_min": -0.192,
+     "ci95": [
+      0.089,
+      0.333
+     ]
+    }
+   },
+   "sv_L09_meanstd": {
+    "female": {
+     "spearman": 0.194,
+     "anchor_median": 0.214,
+     "anchor_p10": 0.025,
+     "anchor_min": -0.181,
+     "ci95": [
+      0.062,
+      0.309
+     ]
+    },
+    "male": {
+     "spearman": 0.208,
+     "anchor_median": 0.212,
+     "anchor_p10": -0.083,
+     "anchor_min": -0.225,
+     "ci95": [
+      0.095,
+      0.313
+     ]
+    }
+   },
+   "sv_L10_meanstd": {
+    "female": {
+     "spearman": 0.196,
+     "anchor_median": 0.208,
+     "anchor_p10": 0.051,
+     "anchor_min": -0.157,
+     "ci95": [
+      0.087,
+      0.305
+     ]
+    },
+    "male": {
+     "spearman": 0.206,
+     "anchor_median": 0.202,
+     "anchor_p10": -0.074,
+     "anchor_min": -0.203,
+     "ci95": [
+      0.082,
+      0.321
+     ]
+    }
+   },
+   "sv_L11_meanstd": {
+    "female": {
+     "spearman": 0.155,
+     "anchor_median": 0.187,
+     "anchor_p10": 0.004,
+     "anchor_min": -0.135,
+     "ci95": [
+      0.05,
+      0.255
+     ]
+    },
+    "male": {
+     "spearman": 0.195,
+     "anchor_median": 0.184,
+     "anchor_p10": -0.126,
+     "anchor_min": -0.283,
+     "ci95": [
+      0.075,
+      0.314
+     ]
+    }
+   },
+   "sv_L12_meanstd": {
+    "female": {
+     "spearman": 0.17,
+     "anchor_median": 0.202,
+     "anchor_p10": -0.008,
+     "anchor_min": -0.205,
+     "ci95": [
+      0.073,
+      0.287
+     ]
+    },
+    "male": {
+     "spearman": 0.205,
+     "anchor_median": 0.193,
+     "anchor_p10": -0.057,
+     "anchor_min": -0.194,
+     "ci95": [
+      0.096,
+      0.324
+     ]
+    }
+   }
+  },
+  "parallel5": {
+   "acoustic_five": {
+    "female": {
+     "spearman": 0.23,
+     "anchor_median": 0.215,
+     "anchor_p10": 0.021,
+     "anchor_min": -0.108,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.249,
+     "anchor_median": 0.212,
+     "anchor_p10": 0.034,
+     "anchor_min": -0.101,
+     "ci95": null
+    }
+   },
+   "xvector": {
+    "female": {
+     "spearman": 0.264,
+     "anchor_median": 0.262,
+     "anchor_p10": 0.031,
+     "anchor_min": -0.199,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.316,
+     "anchor_median": 0.29,
+     "anchor_p10": 0.129,
+     "anchor_min": -0.136,
+     "ci95": null
+    }
+   },
+   "sv_L00_mean": {
+    "female": {
+     "spearman": 0.207,
+     "anchor_median": 0.213,
+     "anchor_p10": 0.042,
+     "anchor_min": -0.164,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.287,
+     "anchor_median": 0.25,
+     "anchor_p10": 0.091,
+     "anchor_min": 0.006,
+     "ci95": null
+    }
+   },
+   "sv_L01_mean": {
+    "female": {
+     "spearman": 0.301,
+     "anchor_median": 0.292,
+     "anchor_p10": 0.115,
+     "anchor_min": 0.005,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.363,
+     "anchor_median": 0.346,
+     "anchor_p10": 0.109,
+     "anchor_min": 0.015,
+     "ci95": null
+    }
+   },
+   "sv_L02_mean": {
+    "female": {
+     "spearman": 0.393,
+     "anchor_median": 0.369,
+     "anchor_p10": 0.198,
+     "anchor_min": 0.049,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.353,
+     "anchor_median": 0.341,
+     "anchor_p10": 0.089,
+     "anchor_min": -0.024,
+     "ci95": null
+    }
+   },
+   "sv_L03_mean": {
+    "female": {
+     "spearman": 0.398,
+     "anchor_median": 0.373,
+     "anchor_p10": 0.192,
+     "anchor_min": -0.051,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.332,
+     "anchor_median": 0.326,
+     "anchor_p10": 0.079,
+     "anchor_min": -0.074,
+     "ci95": null
+    }
+   },
+   "sv_L04_mean": {
+    "female": {
+     "spearman": 0.38,
+     "anchor_median": 0.35,
+     "anchor_p10": 0.174,
+     "anchor_min": -0.007,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.283,
+     "anchor_median": 0.281,
+     "anchor_p10": 0.016,
+     "anchor_min": -0.166,
+     "ci95": null
+    }
+   },
+   "sv_L05_mean": {
+    "female": {
+     "spearman": 0.35,
+     "anchor_median": 0.318,
+     "anchor_p10": 0.146,
+     "anchor_min": -0.039,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.252,
+     "anchor_median": 0.249,
+     "anchor_p10": -0.001,
+     "anchor_min": -0.145,
+     "ci95": null
+    }
+   },
+   "sv_L06_mean": {
+    "female": {
+     "spearman": 0.287,
+     "anchor_median": 0.254,
+     "anchor_p10": 0.085,
+     "anchor_min": -0.023,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.213,
+     "anchor_median": 0.196,
+     "anchor_p10": -0.053,
+     "anchor_min": -0.227,
+     "ci95": null
+    }
+   },
+   "sv_L07_mean": {
+    "female": {
+     "spearman": 0.232,
+     "anchor_median": 0.21,
+     "anchor_p10": 0.047,
+     "anchor_min": -0.046,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.231,
+     "anchor_median": 0.207,
+     "anchor_p10": -0.039,
+     "anchor_min": -0.216,
+     "ci95": null
+    }
+   },
+   "sv_L08_mean": {
+    "female": {
+     "spearman": 0.174,
+     "anchor_median": 0.174,
+     "anchor_p10": -0.001,
+     "anchor_min": -0.108,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.207,
+     "anchor_median": 0.19,
+     "anchor_p10": -0.056,
+     "anchor_min": -0.209,
+     "ci95": null
+    }
+   },
+   "sv_L09_mean": {
+    "female": {
+     "spearman": 0.17,
+     "anchor_median": 0.175,
+     "anchor_p10": -0.001,
+     "anchor_min": -0.159,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.175,
+     "anchor_median": 0.155,
+     "anchor_p10": -0.089,
+     "anchor_min": -0.276,
+     "ci95": null
+    }
+   },
+   "sv_L10_mean": {
+    "female": {
+     "spearman": 0.151,
+     "anchor_median": 0.153,
+     "anchor_p10": -0.013,
+     "anchor_min": -0.159,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.208,
+     "anchor_median": 0.185,
+     "anchor_p10": -0.048,
+     "anchor_min": -0.274,
+     "ci95": null
+    }
+   },
+   "sv_L11_mean": {
+    "female": {
+     "spearman": 0.118,
+     "anchor_median": 0.149,
+     "anchor_p10": -0.041,
+     "anchor_min": -0.186,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.189,
+     "anchor_median": 0.178,
+     "anchor_p10": -0.085,
+     "anchor_min": -0.251,
+     "ci95": null
+    }
+   },
+   "sv_L12_mean": {
+    "female": {
+     "spearman": 0.149,
+     "anchor_median": 0.16,
+     "anchor_p10": -0.042,
+     "anchor_min": -0.149,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.201,
+     "anchor_median": 0.179,
+     "anchor_p10": -0.07,
+     "anchor_min": -0.196,
+     "ci95": null
+    }
+   },
+   "sv_L00_meanstd": {
+    "female": {
+     "spearman": 0.214,
+     "anchor_median": 0.231,
+     "anchor_p10": 0.035,
+     "anchor_min": -0.167,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.31,
+     "anchor_median": 0.26,
+     "anchor_p10": 0.111,
+     "anchor_min": 0.007,
+     "ci95": null
+    }
+   },
+   "sv_L01_meanstd": {
+    "female": {
+     "spearman": 0.273,
+     "anchor_median": 0.271,
+     "anchor_p10": 0.087,
+     "anchor_min": -0.057,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.362,
+     "anchor_median": 0.322,
+     "anchor_p10": 0.123,
+     "anchor_min": 0.028,
+     "ci95": null
+    }
+   },
+   "sv_L02_meanstd": {
+    "female": {
+     "spearman": 0.322,
+     "anchor_median": 0.34,
+     "anchor_p10": 0.137,
+     "anchor_min": 0.024,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.342,
+     "anchor_median": 0.315,
+     "anchor_p10": 0.067,
+     "anchor_min": -0.046,
+     "ci95": null
+    }
+   },
+   "sv_L03_meanstd": {
+    "female": {
+     "spearman": 0.345,
+     "anchor_median": 0.352,
+     "anchor_p10": 0.158,
+     "anchor_min": -0.048,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.315,
+     "anchor_median": 0.294,
+     "anchor_p10": 0.06,
+     "anchor_min": -0.083,
+     "ci95": null
+    }
+   },
+   "sv_L04_meanstd": {
+    "female": {
+     "spearman": 0.332,
+     "anchor_median": 0.331,
+     "anchor_p10": 0.129,
+     "anchor_min": -0.049,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.262,
+     "anchor_median": 0.253,
+     "anchor_p10": 0.016,
+     "anchor_min": -0.175,
+     "ci95": null
+    }
+   },
+   "sv_L05_meanstd": {
+    "female": {
+     "spearman": 0.288,
+     "anchor_median": 0.29,
+     "anchor_p10": 0.098,
+     "anchor_min": -0.053,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.249,
+     "anchor_median": 0.231,
+     "anchor_p10": -0.0,
+     "anchor_min": -0.105,
+     "ci95": null
+    }
+   },
+   "sv_L06_meanstd": {
+    "female": {
+     "spearman": 0.233,
+     "anchor_median": 0.238,
+     "anchor_p10": 0.06,
+     "anchor_min": -0.114,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.212,
+     "anchor_median": 0.197,
+     "anchor_p10": -0.061,
+     "anchor_min": -0.222,
+     "ci95": null
+    }
+   },
+   "sv_L07_meanstd": {
+    "female": {
+     "spearman": 0.211,
+     "anchor_median": 0.202,
+     "anchor_p10": 0.038,
+     "anchor_min": -0.096,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.185,
+     "anchor_median": 0.171,
+     "anchor_p10": -0.069,
+     "anchor_min": -0.324,
+     "ci95": null
+    }
+   },
+   "sv_L08_meanstd": {
+    "female": {
+     "spearman": 0.179,
+     "anchor_median": 0.196,
+     "anchor_p10": 0.024,
+     "anchor_min": -0.209,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.192,
+     "anchor_median": 0.176,
+     "anchor_p10": -0.077,
+     "anchor_min": -0.254,
+     "ci95": null
+    }
+   },
+   "sv_L09_meanstd": {
+    "female": {
+     "spearman": 0.152,
+     "anchor_median": 0.17,
+     "anchor_p10": -0.015,
+     "anchor_min": -0.148,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.168,
+     "anchor_median": 0.14,
+     "anchor_p10": -0.096,
+     "anchor_min": -0.294,
+     "ci95": null
+    }
+   },
+   "sv_L10_meanstd": {
+    "female": {
+     "spearman": 0.158,
+     "anchor_median": 0.169,
+     "anchor_p10": -0.003,
+     "anchor_min": -0.157,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.185,
+     "anchor_median": 0.164,
+     "anchor_p10": -0.08,
+     "anchor_min": -0.265,
+     "ci95": null
+    }
+   },
+   "sv_L11_meanstd": {
+    "female": {
+     "spearman": 0.107,
+     "anchor_median": 0.127,
+     "anchor_p10": -0.035,
+     "anchor_min": -0.161,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.152,
+     "anchor_median": 0.136,
+     "anchor_p10": -0.128,
+     "anchor_min": -0.309,
+     "ci95": null
+    }
+   },
+   "sv_L12_meanstd": {
+    "female": {
+     "spearman": 0.152,
+     "anchor_median": 0.154,
+     "anchor_p10": -0.007,
+     "anchor_min": -0.185,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.199,
+     "anchor_median": 0.184,
+     "anchor_p10": -0.07,
+     "anchor_min": -0.181,
+     "ci95": null
+    }
+   }
+  },
+  "parallel1": {
+   "acoustic_five": {
+    "female": {
+     "spearman": 0.175,
+     "anchor_median": 0.165,
+     "anchor_p10": -0.033,
+     "anchor_min": -0.156,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.188,
+     "anchor_median": 0.167,
+     "anchor_p10": -0.028,
+     "anchor_min": -0.197,
+     "ci95": null
+    }
+   },
+   "xvector": {
+    "female": {
+     "spearman": 0.224,
+     "anchor_median": 0.212,
+     "anchor_p10": -0.016,
+     "anchor_min": -0.207,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.278,
+     "anchor_median": 0.259,
+     "anchor_p10": 0.074,
+     "anchor_min": -0.164,
+     "ci95": null
+    }
+   },
+   "sv_L00_mean": {
+    "female": {
+     "spearman": 0.178,
+     "anchor_median": 0.164,
+     "anchor_p10": -0.005,
+     "anchor_min": -0.186,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.254,
+     "anchor_median": 0.216,
+     "anchor_p10": 0.044,
+     "anchor_min": -0.063,
+     "ci95": null
+    }
+   },
+   "sv_L01_mean": {
+    "female": {
+     "spearman": 0.207,
+     "anchor_median": 0.189,
+     "anchor_p10": 0.014,
+     "anchor_min": -0.129,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.288,
+     "anchor_median": 0.258,
+     "anchor_p10": 0.069,
+     "anchor_min": -0.064,
+     "ci95": null
+    }
+   },
+   "sv_L02_mean": {
+    "female": {
+     "spearman": 0.288,
+     "anchor_median": 0.273,
+     "anchor_p10": 0.066,
+     "anchor_min": -0.1,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.25,
+     "anchor_median": 0.233,
+     "anchor_p10": 0.024,
+     "anchor_min": -0.115,
+     "ci95": null
+    }
+   },
+   "sv_L03_mean": {
+    "female": {
+     "spearman": 0.271,
+     "anchor_median": 0.254,
+     "anchor_p10": 0.066,
+     "anchor_min": -0.094,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.231,
+     "anchor_median": 0.208,
+     "anchor_p10": 0.001,
+     "anchor_min": -0.198,
+     "ci95": null
+    }
+   },
+   "sv_L04_mean": {
+    "female": {
+     "spearman": 0.25,
+     "anchor_median": 0.223,
+     "anchor_p10": 0.045,
+     "anchor_min": -0.102,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.168,
+     "anchor_median": 0.159,
+     "anchor_p10": -0.026,
+     "anchor_min": -0.214,
+     "ci95": null
+    }
+   },
+   "sv_L05_mean": {
+    "female": {
+     "spearman": 0.187,
+     "anchor_median": 0.162,
+     "anchor_p10": 0.007,
+     "anchor_min": -0.116,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.155,
+     "anchor_median": 0.135,
+     "anchor_p10": -0.071,
+     "anchor_min": -0.239,
+     "ci95": null
+    }
+   },
+   "sv_L06_mean": {
+    "female": {
+     "spearman": 0.153,
+     "anchor_median": 0.13,
+     "anchor_p10": -0.045,
+     "anchor_min": -0.19,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.116,
+     "anchor_median": 0.103,
+     "anchor_p10": -0.082,
+     "anchor_min": -0.245,
+     "ci95": null
+    }
+   },
+   "sv_L07_mean": {
+    "female": {
+     "spearman": 0.099,
+     "anchor_median": 0.092,
+     "anchor_p10": -0.088,
+     "anchor_min": -0.204,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.12,
+     "anchor_median": 0.122,
+     "anchor_p10": -0.092,
+     "anchor_min": -0.258,
+     "ci95": null
+    }
+   },
+   "sv_L08_mean": {
+    "female": {
+     "spearman": 0.058,
+     "anchor_median": 0.047,
+     "anchor_p10": -0.111,
+     "anchor_min": -0.238,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.114,
+     "anchor_median": 0.082,
+     "anchor_p10": -0.106,
+     "anchor_min": -0.276,
+     "ci95": null
+    }
+   },
+   "sv_L09_mean": {
+    "female": {
+     "spearman": 0.044,
+     "anchor_median": 0.044,
+     "anchor_p10": -0.135,
+     "anchor_min": -0.235,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.087,
+     "anchor_median": 0.078,
+     "anchor_p10": -0.12,
+     "anchor_min": -0.249,
+     "ci95": null
+    }
+   },
+   "sv_L10_mean": {
+    "female": {
+     "spearman": 0.07,
+     "anchor_median": 0.073,
+     "anchor_p10": -0.111,
+     "anchor_min": -0.266,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.092,
+     "anchor_median": 0.084,
+     "anchor_p10": -0.112,
+     "anchor_min": -0.266,
+     "ci95": null
+    }
+   },
+   "sv_L11_mean": {
+    "female": {
+     "spearman": 0.033,
+     "anchor_median": 0.042,
+     "anchor_p10": -0.13,
+     "anchor_min": -0.267,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.111,
+     "anchor_median": 0.095,
+     "anchor_p10": -0.114,
+     "anchor_min": -0.25,
+     "ci95": null
+    }
+   },
+   "sv_L12_mean": {
+    "female": {
+     "spearman": 0.079,
+     "anchor_median": 0.074,
+     "anchor_p10": -0.089,
+     "anchor_min": -0.239,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.13,
+     "anchor_median": 0.112,
+     "anchor_p10": -0.105,
+     "anchor_min": -0.258,
+     "ci95": null
+    }
+   },
+   "sv_L00_meanstd": {
+    "female": {
+     "spearman": 0.16,
+     "anchor_median": 0.159,
+     "anchor_p10": -0.011,
+     "anchor_min": -0.195,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.254,
+     "anchor_median": 0.224,
+     "anchor_p10": 0.047,
+     "anchor_min": -0.066,
+     "ci95": null
+    }
+   },
+   "sv_L01_meanstd": {
+    "female": {
+     "spearman": 0.202,
+     "anchor_median": 0.191,
+     "anchor_p10": -0.003,
+     "anchor_min": -0.166,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.282,
+     "anchor_median": 0.241,
+     "anchor_p10": 0.066,
+     "anchor_min": -0.087,
+     "ci95": null
+    }
+   },
+   "sv_L02_meanstd": {
+    "female": {
+     "spearman": 0.227,
+     "anchor_median": 0.228,
+     "anchor_p10": 0.03,
+     "anchor_min": -0.128,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.248,
+     "anchor_median": 0.219,
+     "anchor_p10": 0.021,
+     "anchor_min": -0.141,
+     "ci95": null
+    }
+   },
+   "sv_L03_meanstd": {
+    "female": {
+     "spearman": 0.23,
+     "anchor_median": 0.223,
+     "anchor_p10": 0.034,
+     "anchor_min": -0.128,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.198,
+     "anchor_median": 0.183,
+     "anchor_p10": -0.028,
+     "anchor_min": -0.171,
+     "ci95": null
+    }
+   },
+   "sv_L04_meanstd": {
+    "female": {
+     "spearman": 0.187,
+     "anchor_median": 0.182,
+     "anchor_p10": -0.004,
+     "anchor_min": -0.137,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.17,
+     "anchor_median": 0.157,
+     "anchor_p10": -0.073,
+     "anchor_min": -0.186,
+     "ci95": null
+    }
+   },
+   "sv_L05_meanstd": {
+    "female": {
+     "spearman": 0.15,
+     "anchor_median": 0.137,
+     "anchor_p10": -0.028,
+     "anchor_min": -0.163,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.157,
+     "anchor_median": 0.143,
+     "anchor_p10": -0.055,
+     "anchor_min": -0.186,
+     "ci95": null
+    }
+   },
+   "sv_L06_meanstd": {
+    "female": {
+     "spearman": 0.125,
+     "anchor_median": 0.121,
+     "anchor_p10": -0.048,
+     "anchor_min": -0.215,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.125,
+     "anchor_median": 0.1,
+     "anchor_p10": -0.101,
+     "anchor_min": -0.248,
+     "ci95": null
+    }
+   },
+   "sv_L07_meanstd": {
+    "female": {
+     "spearman": 0.087,
+     "anchor_median": 0.092,
+     "anchor_p10": -0.1,
+     "anchor_min": -0.189,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.108,
+     "anchor_median": 0.103,
+     "anchor_p10": -0.109,
+     "anchor_min": -0.254,
+     "ci95": null
+    }
+   },
+   "sv_L08_meanstd": {
+    "female": {
+     "spearman": 0.071,
+     "anchor_median": 0.091,
+     "anchor_p10": -0.13,
+     "anchor_min": -0.282,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.124,
+     "anchor_median": 0.093,
+     "anchor_p10": -0.092,
+     "anchor_min": -0.227,
+     "ci95": null
+    }
+   },
+   "sv_L09_meanstd": {
+    "female": {
+     "spearman": 0.05,
+     "anchor_median": 0.051,
+     "anchor_p10": -0.121,
+     "anchor_min": -0.262,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.091,
+     "anchor_median": 0.073,
+     "anchor_p10": -0.122,
+     "anchor_min": -0.255,
+     "ci95": null
+    }
+   },
+   "sv_L10_meanstd": {
+    "female": {
+     "spearman": 0.061,
+     "anchor_median": 0.068,
+     "anchor_p10": -0.111,
+     "anchor_min": -0.248,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.119,
+     "anchor_median": 0.087,
+     "anchor_p10": -0.098,
+     "anchor_min": -0.298,
+     "ci95": null
+    }
+   },
+   "sv_L11_meanstd": {
+    "female": {
+     "spearman": 0.035,
+     "anchor_median": 0.052,
+     "anchor_p10": -0.134,
+     "anchor_min": -0.283,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.107,
+     "anchor_median": 0.093,
+     "anchor_p10": -0.111,
+     "anchor_min": -0.273,
+     "ci95": null
+    }
+   },
+   "sv_L12_meanstd": {
+    "female": {
+     "spearman": 0.066,
+     "anchor_median": 0.065,
+     "anchor_p10": -0.107,
+     "anchor_min": -0.233,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.098,
+     "anchor_median": 0.088,
+     "anchor_p10": -0.104,
+     "anchor_min": -0.236,
+     "ci95": null
+    }
+   }
+  },
+  "nonpara30": {
+   "acoustic_five": {
+    "female": {
+     "spearman": 0.237,
+     "anchor_median": 0.208,
+     "anchor_p10": 0.033,
+     "anchor_min": -0.166,
+     "ci95": [
+      0.122,
+      0.368
+     ]
+    },
+    "male": {
+     "spearman": 0.293,
+     "anchor_median": 0.261,
+     "anchor_p10": 0.055,
+     "anchor_min": -0.129,
+     "ci95": [
+      0.173,
+      0.427
+     ]
+    }
+   },
+   "xvector": {
+    "female": {
+     "spearman": 0.285,
+     "anchor_median": 0.273,
+     "anchor_p10": 0.033,
+     "anchor_min": -0.243,
+     "ci95": [
+      0.128,
+      0.416
+     ]
+    },
+    "male": {
+     "spearman": 0.312,
+     "anchor_median": 0.276,
+     "anchor_p10": 0.088,
+     "anchor_min": -0.104,
+     "ci95": [
+      0.195,
+      0.423
+     ]
+    }
+   },
+   "sv_L00_mean": {
+    "female": {
+     "spearman": 0.189,
+     "anchor_median": 0.18,
+     "anchor_p10": 0.012,
+     "anchor_min": -0.076,
+     "ci95": [
+      0.093,
+      0.29
+     ]
+    },
+    "male": {
+     "spearman": 0.284,
+     "anchor_median": 0.254,
+     "anchor_p10": 0.071,
+     "anchor_min": 0.016,
+     "ci95": [
+      0.172,
+      0.388
+     ]
+    }
+   },
+   "sv_L01_mean": {
+    "female": {
+     "spearman": 0.253,
+     "anchor_median": 0.252,
+     "anchor_p10": 0.072,
+     "anchor_min": 0.04,
+     "ci95": [
+      0.151,
+      0.352
+     ]
+    },
+    "male": {
+     "spearman": 0.353,
+     "anchor_median": 0.317,
+     "anchor_p10": 0.101,
+     "anchor_min": 0.021,
+     "ci95": [
+      0.223,
+      0.451
+     ]
+    }
+   },
+   "sv_L02_mean": {
+    "female": {
+     "spearman": 0.316,
+     "anchor_median": 0.289,
+     "anchor_p10": 0.148,
+     "anchor_min": 0.054,
+     "ci95": [
+      0.218,
+      0.424
+     ]
+    },
+    "male": {
+     "spearman": 0.345,
+     "anchor_median": 0.311,
+     "anchor_p10": 0.1,
+     "anchor_min": -0.018,
+     "ci95": [
+      0.226,
+      0.438
+     ]
+    }
+   },
+   "sv_L03_mean": {
+    "female": {
+     "spearman": 0.346,
+     "anchor_median": 0.333,
+     "anchor_p10": 0.142,
+     "anchor_min": 0.043,
+     "ci95": [
+      0.244,
+      0.447
+     ]
+    },
+    "male": {
+     "spearman": 0.338,
+     "anchor_median": 0.33,
+     "anchor_p10": 0.064,
+     "anchor_min": -0.051,
+     "ci95": [
+      0.205,
+      0.461
+     ]
+    }
+   },
+   "sv_L04_mean": {
+    "female": {
+     "spearman": 0.352,
+     "anchor_median": 0.322,
+     "anchor_p10": 0.14,
+     "anchor_min": 0.025,
+     "ci95": [
+      0.223,
+      0.459
+     ]
+    },
+    "male": {
+     "spearman": 0.297,
+     "anchor_median": 0.303,
+     "anchor_p10": 0.012,
+     "anchor_min": -0.105,
+     "ci95": [
+      0.17,
+      0.411
+     ]
+    }
+   },
+   "sv_L05_mean": {
+    "female": {
+     "spearman": 0.333,
+     "anchor_median": 0.317,
+     "anchor_p10": 0.111,
+     "anchor_min": -0.047,
+     "ci95": [
+      0.228,
+      0.454
+     ]
+    },
+    "male": {
+     "spearman": 0.274,
+     "anchor_median": 0.281,
+     "anchor_p10": -0.032,
+     "anchor_min": -0.089,
+     "ci95": [
+      0.154,
+      0.379
+     ]
+    }
+   },
+   "sv_L06_mean": {
+    "female": {
+     "spearman": 0.269,
+     "anchor_median": 0.251,
+     "anchor_p10": 0.058,
+     "anchor_min": -0.055,
+     "ci95": [
+      0.156,
+      0.382
+     ]
+    },
+    "male": {
+     "spearman": 0.244,
+     "anchor_median": 0.252,
+     "anchor_p10": -0.036,
+     "anchor_min": -0.187,
+     "ci95": [
+      0.127,
+      0.354
+     ]
+    }
+   },
+   "sv_L07_mean": {
+    "female": {
+     "spearman": 0.238,
+     "anchor_median": 0.231,
+     "anchor_p10": 0.054,
+     "anchor_min": -0.08,
+     "ci95": [
+      0.137,
+      0.34
+     ]
+    },
+    "male": {
+     "spearman": 0.221,
+     "anchor_median": 0.185,
+     "anchor_p10": -0.078,
+     "anchor_min": -0.18,
+     "ci95": [
+      0.095,
+      0.341
+     ]
+    }
+   },
+   "sv_L08_mean": {
+    "female": {
+     "spearman": 0.196,
+     "anchor_median": 0.191,
+     "anchor_p10": 0.02,
+     "anchor_min": -0.149,
+     "ci95": [
+      0.087,
+      0.31
+     ]
+    },
+    "male": {
+     "spearman": 0.208,
+     "anchor_median": 0.202,
+     "anchor_p10": -0.065,
+     "anchor_min": -0.129,
+     "ci95": [
+      0.084,
+      0.321
+     ]
+    }
+   },
+   "sv_L09_mean": {
+    "female": {
+     "spearman": 0.193,
+     "anchor_median": 0.202,
+     "anchor_p10": 0.014,
+     "anchor_min": -0.187,
+     "ci95": [
+      0.075,
+      0.295
+     ]
+    },
+    "male": {
+     "spearman": 0.213,
+     "anchor_median": 0.196,
+     "anchor_p10": -0.028,
+     "anchor_min": -0.208,
+     "ci95": [
+      0.097,
+      0.315
+     ]
+    }
+   },
+   "sv_L10_mean": {
+    "female": {
+     "spearman": 0.185,
+     "anchor_median": 0.189,
+     "anchor_p10": 0.017,
+     "anchor_min": -0.194,
+     "ci95": [
+      0.075,
+      0.277
+     ]
+    },
+    "male": {
+     "spearman": 0.222,
+     "anchor_median": 0.207,
+     "anchor_p10": -0.022,
+     "anchor_min": -0.172,
+     "ci95": [
+      0.111,
+      0.336
+     ]
+    }
+   },
+   "sv_L11_mean": {
+    "female": {
+     "spearman": 0.143,
+     "anchor_median": 0.156,
+     "anchor_p10": -0.014,
+     "anchor_min": -0.208,
+     "ci95": [
+      0.034,
+      0.243
+     ]
+    },
+    "male": {
+     "spearman": 0.208,
+     "anchor_median": 0.18,
+     "anchor_p10": -0.025,
+     "anchor_min": -0.261,
+     "ci95": [
+      0.072,
+      0.326
+     ]
+    }
+   },
+   "sv_L12_mean": {
+    "female": {
+     "spearman": 0.157,
+     "anchor_median": 0.162,
+     "anchor_p10": -0.066,
+     "anchor_min": -0.228,
+     "ci95": [
+      0.062,
+      0.258
+     ]
+    },
+    "male": {
+     "spearman": 0.2,
+     "anchor_median": 0.183,
+     "anchor_p10": -0.049,
+     "anchor_min": -0.155,
+     "ci95": [
+      0.081,
+      0.319
+     ]
+    }
+   },
+   "sv_L00_meanstd": {
+    "female": {
+     "spearman": 0.189,
+     "anchor_median": 0.187,
+     "anchor_p10": 0.024,
+     "anchor_min": -0.051,
+     "ci95": [
+      0.091,
+      0.282
+     ]
+    },
+    "male": {
+     "spearman": 0.299,
+     "anchor_median": 0.264,
+     "anchor_p10": 0.081,
+     "anchor_min": 0.037,
+     "ci95": [
+      0.164,
+      0.405
+     ]
+    }
+   },
+   "sv_L01_meanstd": {
+    "female": {
+     "spearman": 0.234,
+     "anchor_median": 0.24,
+     "anchor_p10": 0.043,
+     "anchor_min": 0.015,
+     "ci95": [
+      0.146,
+      0.325
+     ]
+    },
+    "male": {
+     "spearman": 0.347,
+     "anchor_median": 0.316,
+     "anchor_p10": 0.101,
+     "anchor_min": 0.017,
+     "ci95": [
+      0.234,
+      0.447
+     ]
+    }
+   },
+   "sv_L02_meanstd": {
+    "female": {
+     "spearman": 0.267,
+     "anchor_median": 0.293,
+     "anchor_p10": 0.094,
+     "anchor_min": 0.025,
+     "ci95": [
+      0.159,
+      0.366
+     ]
+    },
+    "male": {
+     "spearman": 0.332,
+     "anchor_median": 0.3,
+     "anchor_p10": 0.049,
+     "anchor_min": -0.034,
+     "ci95": [
+      0.222,
+      0.437
+     ]
+    }
+   },
+   "sv_L03_meanstd": {
+    "female": {
+     "spearman": 0.269,
+     "anchor_median": 0.27,
+     "anchor_p10": 0.085,
+     "anchor_min": -0.026,
+     "ci95": [
+      0.16,
+      0.389
+     ]
+    },
+    "male": {
+     "spearman": 0.313,
+     "anchor_median": 0.281,
+     "anchor_p10": -0.014,
+     "anchor_min": -0.062,
+     "ci95": [
+      0.192,
+      0.421
+     ]
+    }
+   },
+   "sv_L04_meanstd": {
+    "female": {
+     "spearman": 0.276,
+     "anchor_median": 0.29,
+     "anchor_p10": 0.086,
+     "anchor_min": -0.087,
+     "ci95": [
+      0.168,
+      0.394
+     ]
+    },
+    "male": {
+     "spearman": 0.277,
+     "anchor_median": 0.282,
+     "anchor_p10": -0.05,
+     "anchor_min": -0.119,
+     "ci95": [
+      0.161,
+      0.383
+     ]
+    }
+   },
+   "sv_L05_meanstd": {
+    "female": {
+     "spearman": 0.269,
+     "anchor_median": 0.274,
+     "anchor_p10": 0.069,
+     "anchor_min": -0.094,
+     "ci95": [
+      0.152,
+      0.387
+     ]
+    },
+    "male": {
+     "spearman": 0.255,
+     "anchor_median": 0.227,
+     "anchor_p10": -0.035,
+     "anchor_min": -0.096,
+     "ci95": [
+      0.124,
+      0.367
+     ]
+    }
+   },
+   "sv_L06_meanstd": {
+    "female": {
+     "spearman": 0.224,
+     "anchor_median": 0.221,
+     "anchor_p10": 0.059,
+     "anchor_min": -0.131,
+     "ci95": [
+      0.101,
+      0.345
+     ]
+    },
+    "male": {
+     "spearman": 0.231,
+     "anchor_median": 0.214,
+     "anchor_p10": -0.03,
+     "anchor_min": -0.151,
+     "ci95": [
+      0.109,
+      0.354
+     ]
+    }
+   },
+   "sv_L07_meanstd": {
+    "female": {
+     "spearman": 0.217,
+     "anchor_median": 0.195,
+     "anchor_p10": 0.02,
+     "anchor_min": -0.113,
+     "ci95": [
+      0.102,
+      0.335
+     ]
+    },
+    "male": {
+     "spearman": 0.218,
+     "anchor_median": 0.186,
+     "anchor_p10": -0.04,
+     "anchor_min": -0.167,
+     "ci95": [
+      0.113,
+      0.342
+     ]
+    }
+   },
+   "sv_L08_meanstd": {
+    "female": {
+     "spearman": 0.184,
+     "anchor_median": 0.16,
+     "anchor_p10": 0.007,
+     "anchor_min": -0.155,
+     "ci95": [
+      0.083,
+      0.287
+     ]
+    },
+    "male": {
+     "spearman": 0.203,
+     "anchor_median": 0.192,
+     "anchor_p10": -0.042,
+     "anchor_min": -0.154,
+     "ci95": [
+      0.084,
+      0.326
+     ]
+    }
+   },
+   "sv_L09_meanstd": {
+    "female": {
+     "spearman": 0.189,
+     "anchor_median": 0.19,
+     "anchor_p10": 0.03,
+     "anchor_min": -0.182,
+     "ci95": [
+      0.091,
+      0.285
+     ]
+    },
+    "male": {
+     "spearman": 0.206,
+     "anchor_median": 0.196,
+     "anchor_p10": -0.023,
+     "anchor_min": -0.197,
+     "ci95": [
+      0.078,
+      0.332
+     ]
+    }
+   },
+   "sv_L10_meanstd": {
+    "female": {
+     "spearman": 0.183,
+     "anchor_median": 0.18,
+     "anchor_p10": -0.008,
+     "anchor_min": -0.184,
+     "ci95": [
+      0.073,
+      0.286
+     ]
+    },
+    "male": {
+     "spearman": 0.215,
+     "anchor_median": 0.198,
+     "anchor_p10": -0.036,
+     "anchor_min": -0.174,
+     "ci95": [
+      0.084,
+      0.349
+     ]
+    }
+   },
+   "sv_L11_meanstd": {
+    "female": {
+     "spearman": 0.149,
+     "anchor_median": 0.163,
+     "anchor_p10": -0.046,
+     "anchor_min": -0.201,
+     "ci95": [
+      0.04,
+      0.251
+     ]
+    },
+    "male": {
+     "spearman": 0.202,
+     "anchor_median": 0.188,
+     "anchor_p10": -0.04,
+     "anchor_min": -0.301,
+     "ci95": [
+      0.084,
+      0.313
+     ]
+    }
+   },
+   "sv_L12_meanstd": {
+    "female": {
+     "spearman": 0.16,
+     "anchor_median": 0.156,
+     "anchor_p10": -0.056,
+     "anchor_min": -0.24,
+     "ci95": [
+      0.053,
+      0.251
+     ]
+    },
+    "male": {
+     "spearman": 0.197,
+     "anchor_median": 0.166,
+     "anchor_p10": -0.053,
+     "anchor_min": -0.162,
+     "ci95": [
+      0.073,
+      0.316
+     ]
+    }
+   }
+  },
+  "nonpara1": {
+   "acoustic_five": {
+    "female": {
+     "spearman": 0.17,
+     "anchor_median": 0.164,
+     "anchor_p10": -0.056,
+     "anchor_min": -0.193,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.158,
+     "anchor_median": 0.136,
+     "anchor_p10": -0.065,
+     "anchor_min": -0.214,
+     "ci95": null
+    }
+   },
+   "xvector": {
+    "female": {
+     "spearman": 0.232,
+     "anchor_median": 0.201,
+     "anchor_p10": -0.005,
+     "anchor_min": -0.207,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.259,
+     "anchor_median": 0.235,
+     "anchor_p10": 0.033,
+     "anchor_min": -0.153,
+     "ci95": null
+    }
+   },
+   "sv_L00_mean": {
+    "female": {
+     "spearman": 0.137,
+     "anchor_median": 0.133,
+     "anchor_p10": -0.047,
+     "anchor_min": -0.214,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.195,
+     "anchor_median": 0.174,
+     "anchor_p10": -0.003,
+     "anchor_min": -0.163,
+     "ci95": null
+    }
+   },
+   "sv_L01_mean": {
+    "female": {
+     "spearman": 0.179,
+     "anchor_median": 0.168,
+     "anchor_p10": 0.007,
+     "anchor_min": -0.111,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.239,
+     "anchor_median": 0.214,
+     "anchor_p10": 0.034,
+     "anchor_min": -0.14,
+     "ci95": null
+    }
+   },
+   "sv_L02_mean": {
+    "female": {
+     "spearman": 0.212,
+     "anchor_median": 0.192,
+     "anchor_p10": 0.015,
+     "anchor_min": -0.1,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.21,
+     "anchor_median": 0.186,
+     "anchor_p10": 0.005,
+     "anchor_min": -0.144,
+     "ci95": null
+    }
+   },
+   "sv_L03_mean": {
+    "female": {
+     "spearman": 0.204,
+     "anchor_median": 0.19,
+     "anchor_p10": 0.026,
+     "anchor_min": -0.129,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.167,
+     "anchor_median": 0.145,
+     "anchor_p10": -0.058,
+     "anchor_min": -0.257,
+     "ci95": null
+    }
+   },
+   "sv_L04_mean": {
+    "female": {
+     "spearman": 0.2,
+     "anchor_median": 0.18,
+     "anchor_p10": -0.003,
+     "anchor_min": -0.176,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.154,
+     "anchor_median": 0.144,
+     "anchor_p10": -0.055,
+     "anchor_min": -0.241,
+     "ci95": null
+    }
+   },
+   "sv_L05_mean": {
+    "female": {
+     "spearman": 0.18,
+     "anchor_median": 0.154,
+     "anchor_p10": -0.017,
+     "anchor_min": -0.176,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.106,
+     "anchor_median": 0.106,
+     "anchor_p10": -0.093,
+     "anchor_min": -0.229,
+     "ci95": null
+    }
+   },
+   "sv_L06_mean": {
+    "female": {
+     "spearman": 0.116,
+     "anchor_median": 0.097,
+     "anchor_p10": -0.061,
+     "anchor_min": -0.21,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.094,
+     "anchor_median": 0.081,
+     "anchor_p10": -0.1,
+     "anchor_min": -0.277,
+     "ci95": null
+    }
+   },
+   "sv_L07_mean": {
+    "female": {
+     "spearman": 0.099,
+     "anchor_median": 0.08,
+     "anchor_p10": -0.089,
+     "anchor_min": -0.23,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.073,
+     "anchor_median": 0.066,
+     "anchor_p10": -0.136,
+     "anchor_min": -0.281,
+     "ci95": null
+    }
+   },
+   "sv_L08_mean": {
+    "female": {
+     "spearman": 0.092,
+     "anchor_median": 0.078,
+     "anchor_p10": -0.076,
+     "anchor_min": -0.24,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.084,
+     "anchor_median": 0.07,
+     "anchor_p10": -0.112,
+     "anchor_min": -0.209,
+     "ci95": null
+    }
+   },
+   "sv_L09_mean": {
+    "female": {
+     "spearman": 0.021,
+     "anchor_median": 0.034,
+     "anchor_p10": -0.152,
+     "anchor_min": -0.294,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.072,
+     "anchor_median": 0.08,
+     "anchor_p10": -0.139,
+     "anchor_min": -0.298,
+     "ci95": null
+    }
+   },
+   "sv_L10_mean": {
+    "female": {
+     "spearman": 0.051,
+     "anchor_median": 0.053,
+     "anchor_p10": -0.12,
+     "anchor_min": -0.262,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.07,
+     "anchor_median": 0.072,
+     "anchor_p10": -0.124,
+     "anchor_min": -0.308,
+     "ci95": null
+    }
+   },
+   "sv_L11_mean": {
+    "female": {
+     "spearman": 0.056,
+     "anchor_median": 0.064,
+     "anchor_p10": -0.119,
+     "anchor_min": -0.292,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.073,
+     "anchor_median": 0.068,
+     "anchor_p10": -0.115,
+     "anchor_min": -0.257,
+     "ci95": null
+    }
+   },
+   "sv_L12_mean": {
+    "female": {
+     "spearman": 0.043,
+     "anchor_median": 0.038,
+     "anchor_p10": -0.141,
+     "anchor_min": -0.239,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.056,
+     "anchor_median": 0.062,
+     "anchor_p10": -0.13,
+     "anchor_min": -0.262,
+     "ci95": null
+    }
+   },
+   "sv_L00_meanstd": {
+    "female": {
+     "spearman": 0.152,
+     "anchor_median": 0.143,
+     "anchor_p10": -0.03,
+     "anchor_min": -0.153,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.213,
+     "anchor_median": 0.183,
+     "anchor_p10": 0.001,
+     "anchor_min": -0.172,
+     "ci95": null
+    }
+   },
+   "sv_L01_meanstd": {
+    "female": {
+     "spearman": 0.161,
+     "anchor_median": 0.158,
+     "anchor_p10": -0.026,
+     "anchor_min": -0.164,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.235,
+     "anchor_median": 0.211,
+     "anchor_p10": 0.023,
+     "anchor_min": -0.158,
+     "ci95": null
+    }
+   },
+   "sv_L02_meanstd": {
+    "female": {
+     "spearman": 0.196,
+     "anchor_median": 0.194,
+     "anchor_p10": 0.012,
+     "anchor_min": -0.146,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.192,
+     "anchor_median": 0.175,
+     "anchor_p10": -0.018,
+     "anchor_min": -0.134,
+     "ci95": null
+    }
+   },
+   "sv_L03_meanstd": {
+    "female": {
+     "spearman": 0.163,
+     "anchor_median": 0.148,
+     "anchor_p10": -0.01,
+     "anchor_min": -0.161,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.164,
+     "anchor_median": 0.15,
+     "anchor_p10": -0.026,
+     "anchor_min": -0.205,
+     "ci95": null
+    }
+   },
+   "sv_L04_meanstd": {
+    "female": {
+     "spearman": 0.157,
+     "anchor_median": 0.152,
+     "anchor_p10": -0.017,
+     "anchor_min": -0.176,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.146,
+     "anchor_median": 0.132,
+     "anchor_p10": -0.047,
+     "anchor_min": -0.239,
+     "ci95": null
+    }
+   },
+   "sv_L05_meanstd": {
+    "female": {
+     "spearman": 0.146,
+     "anchor_median": 0.14,
+     "anchor_p10": -0.049,
+     "anchor_min": -0.181,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.13,
+     "anchor_median": 0.124,
+     "anchor_p10": -0.06,
+     "anchor_min": -0.242,
+     "ci95": null
+    }
+   },
+   "sv_L06_meanstd": {
+    "female": {
+     "spearman": 0.092,
+     "anchor_median": 0.084,
+     "anchor_p10": -0.089,
+     "anchor_min": -0.217,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.106,
+     "anchor_median": 0.102,
+     "anchor_p10": -0.092,
+     "anchor_min": -0.244,
+     "ci95": null
+    }
+   },
+   "sv_L07_meanstd": {
+    "female": {
+     "spearman": 0.074,
+     "anchor_median": 0.062,
+     "anchor_p10": -0.107,
+     "anchor_min": -0.282,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.11,
+     "anchor_median": 0.099,
+     "anchor_p10": -0.095,
+     "anchor_min": -0.313,
+     "ci95": null
+    }
+   },
+   "sv_L08_meanstd": {
+    "female": {
+     "spearman": 0.071,
+     "anchor_median": 0.077,
+     "anchor_p10": -0.12,
+     "anchor_min": -0.254,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.084,
+     "anchor_median": 0.075,
+     "anchor_p10": -0.124,
+     "anchor_min": -0.257,
+     "ci95": null
+    }
+   },
+   "sv_L09_meanstd": {
+    "female": {
+     "spearman": 0.047,
+     "anchor_median": 0.042,
+     "anchor_p10": -0.142,
+     "anchor_min": -0.294,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.095,
+     "anchor_median": 0.086,
+     "anchor_p10": -0.113,
+     "anchor_min": -0.282,
+     "ci95": null
+    }
+   },
+   "sv_L10_meanstd": {
+    "female": {
+     "spearman": 0.053,
+     "anchor_median": 0.05,
+     "anchor_p10": -0.119,
+     "anchor_min": -0.288,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.085,
+     "anchor_median": 0.068,
+     "anchor_p10": -0.113,
+     "anchor_min": -0.254,
+     "ci95": null
+    }
+   },
+   "sv_L11_meanstd": {
+    "female": {
+     "spearman": 0.068,
+     "anchor_median": 0.061,
+     "anchor_p10": -0.107,
+     "anchor_min": -0.267,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.072,
+     "anchor_median": 0.065,
+     "anchor_p10": -0.137,
+     "anchor_min": -0.283,
+     "ci95": null
+    }
+   },
+   "sv_L12_meanstd": {
+    "female": {
+     "spearman": 0.071,
+     "anchor_median": 0.074,
+     "anchor_p10": -0.115,
+     "anchor_min": -0.27,
+     "ci95": null
+    },
+    "male": {
+     "spearman": 0.073,
+     "anchor_median": 0.066,
+     "anchor_p10": -0.122,
+     "anchor_min": -0.273,
+     "ci95": null
+    }
+   }
+  }
+ },
+ "sensitivity_ratios": {
+  "acoustic_five": {
+   "whisper": 5.058,
+   "falsetto": 3.19,
+   "other_text": 0.967,
+   "other_speaker": 1.802,
+   "whisper_over_text": 5.233,
+   "falsetto_over_text": 3.301,
+   "whisper_over_speaker": 2.807,
+   "falsetto_over_speaker": 1.771
+  },
+  "xvector": {
+   "whisper": 0.133,
+   "falsetto": 0.112,
+   "other_text": 0.026,
+   "other_speaker": 0.094,
+   "whisper_over_text": 5.133,
+   "falsetto_over_text": 4.34,
+   "whisper_over_speaker": 1.412,
+   "falsetto_over_speaker": 1.194
+  },
+  "sv_L00_mean": {
+   "whisper": 0.485,
+   "falsetto": 0.279,
+   "other_text": 0.056,
+   "other_speaker": 0.157,
+   "whisper_over_text": 8.585,
+   "falsetto_over_text": 4.94,
+   "whisper_over_speaker": 3.09,
+   "falsetto_over_speaker": 1.778
+  },
+  "sv_L01_mean": {
+   "whisper": 0.371,
+   "falsetto": 0.197,
+   "other_text": 0.045,
+   "other_speaker": 0.093,
+   "whisper_over_text": 8.221,
+   "falsetto_over_text": 4.362,
+   "whisper_over_speaker": 4.009,
+   "falsetto_over_speaker": 2.127
+  },
+  "sv_L02_mean": {
+   "whisper": 0.341,
+   "falsetto": 0.184,
+   "other_text": 0.054,
+   "other_speaker": 0.091,
+   "whisper_over_text": 6.266,
+   "falsetto_over_text": 3.386,
+   "whisper_over_speaker": 3.768,
+   "falsetto_over_speaker": 2.037
+  },
+  "sv_L03_mean": {
+   "whisper": 0.321,
+   "falsetto": 0.183,
+   "other_text": 0.07,
+   "other_speaker": 0.094,
+   "whisper_over_text": 4.61,
+   "falsetto_over_text": 2.627,
+   "whisper_over_speaker": 3.406,
+   "falsetto_over_speaker": 1.941
+  },
+  "sv_L04_mean": {
+   "whisper": 0.29,
+   "falsetto": 0.163,
+   "other_text": 0.084,
+   "other_speaker": 0.099,
+   "whisper_over_text": 3.475,
+   "falsetto_over_text": 1.947,
+   "whisper_over_speaker": 2.924,
+   "falsetto_over_speaker": 1.638
+  },
+  "sv_L05_mean": {
+   "whisper": 0.299,
+   "falsetto": 0.165,
+   "other_text": 0.109,
+   "other_speaker": 0.111,
+   "whisper_over_text": 2.734,
+   "falsetto_over_text": 1.51,
+   "whisper_over_speaker": 2.681,
+   "falsetto_over_speaker": 1.481
+  },
+  "sv_L06_mean": {
+   "whisper": 0.286,
+   "falsetto": 0.144,
+   "other_text": 0.139,
+   "other_speaker": 0.116,
+   "whisper_over_text": 2.054,
+   "falsetto_over_text": 1.038,
+   "whisper_over_speaker": 2.456,
+   "falsetto_over_speaker": 1.241
+  },
+  "sv_L07_mean": {
+   "whisper": 0.211,
+   "falsetto": 0.11,
+   "other_text": 0.138,
+   "other_speaker": 0.097,
+   "whisper_over_text": 1.528,
+   "falsetto_over_text": 0.796,
+   "whisper_over_speaker": 2.177,
+   "falsetto_over_speaker": 1.134
+  },
+  "sv_L08_mean": {
+   "whisper": 0.153,
+   "falsetto": 0.081,
+   "other_text": 0.117,
+   "other_speaker": 0.073,
+   "whisper_over_text": 1.309,
+   "falsetto_over_text": 0.69,
+   "whisper_over_speaker": 2.091,
+   "falsetto_over_speaker": 1.102
+  },
+  "sv_L09_mean": {
+   "whisper": 0.109,
+   "falsetto": 0.056,
+   "other_text": 0.089,
+   "other_speaker": 0.051,
+   "whisper_over_text": 1.235,
+   "falsetto_over_text": 0.636,
+   "whisper_over_speaker": 2.137,
+   "falsetto_over_speaker": 1.1
+  },
+  "sv_L10_mean": {
+   "whisper": 0.104,
+   "falsetto": 0.051,
+   "other_text": 0.082,
+   "other_speaker": 0.046,
+   "whisper_over_text": 1.268,
+   "falsetto_over_text": 0.616,
+   "whisper_over_speaker": 2.249,
+   "falsetto_over_speaker": 1.093
+  },
+  "sv_L11_mean": {
+   "whisper": 0.077,
+   "falsetto": 0.034,
+   "other_text": 0.058,
+   "other_speaker": 0.033,
+   "whisper_over_text": 1.325,
+   "falsetto_over_text": 0.583,
+   "whisper_over_speaker": 2.354,
+   "falsetto_over_speaker": 1.035
+  },
+  "sv_L12_mean": {
+   "whisper": 0.1,
+   "falsetto": 0.043,
+   "other_text": 0.076,
+   "other_speaker": 0.04,
+   "whisper_over_text": 1.317,
+   "falsetto_over_text": 0.574,
+   "whisper_over_speaker": 2.508,
+   "falsetto_over_speaker": 1.093
+  }
+ },
+ "extractor_coverage": {
+  "modal": {
+   "clips": 500,
+   "all_five_present": 1.0,
+   "withheld": 0,
+   "median_voiced_seconds_of_reported": 4.36,
+   "median_f0_of_reported": 202.104
+  },
+  "whisper": {
+   "clips": 500,
+   "all_five_present": 0.062,
+   "withheld": 469,
+   "median_voiced_seconds_of_reported": 0.64,
+   "median_f0_of_reported": 281.863
+  },
+  "falsetto": {
+   "clips": 495,
+   "all_five_present": 1.0,
+   "withheld": 0,
+   "median_voiced_seconds_of_reported": 4.74,
+   "median_f0_of_reported": 341.442
+  }
+ },
+ "probes": {
+  "protocol": {
+   "outer_folds": 5,
+   "repeats": 2,
+   "inner_folds": 4,
+   "grid": {
+    "k": [
+     8,
+     16,
+     32,
+     64
+    ],
+    "lam": [
+     0.1,
+     1,
+     10,
+     100,
+     1000
+    ]
+   },
+   "query_draws": 5,
+   "aug_draws": 3
+  },
+  "query_duration_s": {
+   "median": 4.836,
+   "p10": 3.343,
+   "p90": 8.024
+  },
+  "seed0": {
+   "variants": {
+    "acoustic_five/raw": {
+     "query_single_median": 0.204,
+     "query_single_p10": 0.015,
+     "query_centroid_median": 0.233,
+     "query_centroid_p10": 0.013,
+     "pair_female": 0.2,
+     "pair_male": 0.261
+    },
+    "acoustic_five/standardized": {
+     "query_single_median": 0.141,
+     "query_single_p10": -0.033,
+     "query_centroid_median": 0.226,
+     "query_centroid_p10": 0.003,
+     "pair_female": 0.189,
+     "pair_male": 0.228
+    },
+    "acoustic_five/learned": {
+     "query_single_median": 0.17,
+     "query_single_p10": 0.005,
+     "query_centroid_median": 0.235,
+     "query_centroid_p10": 0.008,
+     "pair_female": 0.209,
+     "pair_male": 0.265
+    },
+    "acoustic_five/projected": {
+     "query_single_median": 0.195,
+     "query_single_p10": 0.001,
+     "query_centroid_median": 0.222,
+     "query_centroid_p10": 0.025,
+     "pair_female": 0.26,
+     "pair_male": 0.198
+    },
+    "acoustic_five/learned_projected": {
+     "query_single_median": 0.206,
+     "query_single_p10": 0.018,
+     "query_centroid_median": 0.233,
+     "query_centroid_p10": 0.019,
+     "pair_female": 0.244,
+     "pair_male": 0.319
+    },
+    "acoustic_five/learned_projected+aug": {
+     "query_single_median": 0.19,
+     "query_single_p10": 0.033,
+     "query_centroid_median": 0.228,
+     "query_centroid_p10": 0.019,
+     "pair_female": 0.259,
+     "pair_male": 0.281
+    },
+    "acoustic_expanded/raw": {
+     "query_single_median": 0.217,
+     "query_single_p10": 0.047,
+     "query_centroid_median": 0.274,
+     "query_centroid_p10": 0.063,
+     "pair_female": 0.349,
+     "pair_male": 0.291
+    },
+    "acoustic_expanded/standardized": {
+     "query_single_median": 0.162,
+     "query_single_p10": 0.034,
+     "query_centroid_median": 0.265,
+     "query_centroid_p10": 0.034,
+     "pair_female": 0.223,
+     "pair_male": 0.229
+    },
+    "acoustic_expanded/learned": {
+     "query_single_median": 0.192,
+     "query_single_p10": 0.038,
+     "query_centroid_median": 0.289,
+     "query_centroid_p10": 0.058,
+     "pair_female": 0.233,
+     "pair_male": 0.323
+    },
+    "acoustic_expanded/projected": {
+     "query_single_median": 0.213,
+     "query_single_p10": 0.031,
+     "query_centroid_median": 0.287,
+     "query_centroid_p10": 0.037,
+     "pair_female": 0.294,
+     "pair_male": 0.296
+    },
+    "acoustic_expanded/learned_projected": {
+     "query_single_median": 0.227,
+     "query_single_p10": 0.035,
+     "query_centroid_median": 0.293,
+     "query_centroid_p10": 0.06,
+     "pair_female": 0.298,
+     "pair_male": 0.384
+    },
+    "acoustic_expanded/learned_projected+aug": {
+     "query_single_median": 0.222,
+     "query_single_p10": 0.062,
+     "query_centroid_median": 0.309,
+     "query_centroid_p10": 0.111,
+     "pair_female": 0.297,
+     "pair_male": 0.344
+    },
+    "xvector/raw": {
+     "query_single_median": 0.267,
+     "query_single_p10": 0.044,
+     "query_centroid_median": 0.289,
+     "query_centroid_p10": 0.056,
+     "pair_female": 0.277,
+     "pair_male": 0.289
+    },
+    "xvector/standardized": {
+     "query_single_median": 0.207,
+     "query_single_p10": 0.014,
+     "query_centroid_median": 0.229,
+     "query_centroid_p10": 0.013,
+     "pair_female": 0.362,
+     "pair_male": 0.21
+    },
+    "xvector/learned": {
+     "query_single_median": 0.228,
+     "query_single_p10": 0.025,
+     "query_centroid_median": 0.249,
+     "query_centroid_p10": 0.018,
+     "pair_female": 0.231,
+     "pair_male": 0.296
+    },
+    "xvector/projected": {
+     "query_single_median": 0.266,
+     "query_single_p10": 0.026,
+     "query_centroid_median": 0.305,
+     "query_centroid_p10": 0.065,
+     "pair_female": 0.211,
+     "pair_male": 0.303
+    },
+    "xvector/learned_projected": {
+     "query_single_median": 0.261,
+     "query_single_p10": 0.065,
+     "query_centroid_median": 0.301,
+     "query_centroid_p10": 0.066,
+     "pair_female": 0.235,
+     "pair_male": 0.274
+    },
+    "xvector/learned_projected+aug": {
+     "query_single_median": 0.258,
+     "query_single_p10": 0.056,
+     "query_centroid_median": 0.28,
+     "query_centroid_p10": 0.067,
+     "pair_female": 0.267,
+     "pair_male": 0.288
+    },
+    "early_layer/raw": {
+     "query_single_median": 0.305,
+     "query_single_p10": 0.095,
+     "query_centroid_median": 0.39,
+     "query_centroid_p10": 0.13,
+     "pair_female": 0.398,
+     "pair_male": 0.324
+    },
+    "early_layer/standardized": {
+     "query_single_median": 0.259,
+     "query_single_p10": 0.065,
+     "query_centroid_median": 0.326,
+     "query_centroid_p10": 0.121,
+     "pair_female": 0.425,
+     "pair_male": 0.332
+    },
+    "early_layer/learned": {
+     "query_single_median": 0.265,
+     "query_single_p10": 0.069,
+     "query_centroid_median": 0.33,
+     "query_centroid_p10": 0.115,
+     "pair_female": 0.367,
+     "pair_male": 0.282
+    },
+    "early_layer/projected": {
+     "query_single_median": 0.307,
+     "query_single_p10": 0.119,
+     "query_centroid_median": 0.361,
+     "query_centroid_p10": 0.159,
+     "pair_female": 0.38,
+     "pair_male": 0.316
+    },
+    "early_layer/learned_projected": {
+     "query_single_median": 0.308,
+     "query_single_p10": 0.078,
+     "query_centroid_median": 0.37,
+     "query_centroid_p10": 0.11,
+     "pair_female": 0.371,
+     "pair_male": 0.261
+    },
+    "early_layer/learned_projected+aug": {
+     "query_single_median": 0.311,
+     "query_single_p10": 0.058,
+     "query_centroid_median": 0.38,
+     "query_centroid_p10": 0.105,
+     "pair_female": 0.359,
+     "pair_male": 0.404
+    }
+   },
+   "chosen": {
+    "acoustic_five/raw": [
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ]
+    ],
+    "acoustic_five/standardized": [
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ]
+    ],
+    "acoustic_five/learned": [
+     [
+      "acoustic_five",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      16,
+      1
+     ],
+     [
+      "acoustic_five",
+      8,
+      1
+     ],
+     [
+      "acoustic_five",
+      64,
+      1
+     ],
+     [
+      "acoustic_five",
+      64,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      64,
+      1
+     ],
+     [
+      "acoustic_five",
+      32,
+      1
+     ],
+     [
+      "acoustic_five",
+      32,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      64,
+      100
+     ]
+    ],
+    "acoustic_five/projected": [
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      32,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      16,
+      null
+     ]
+    ],
+    "acoustic_five/learned_projected": [
+     [
+      "acoustic_five",
+      32,
+      10
+     ],
+     [
+      "acoustic_five",
+      32,
+      1
+     ],
+     [
+      "acoustic_five",
+      8,
+      1000
+     ],
+     [
+      "acoustic_five",
+      64,
+      100
+     ],
+     [
+      "acoustic_five",
+      8,
+      1000
+     ],
+     [
+      "acoustic_five",
+      8,
+      1
+     ],
+     [
+      "acoustic_five",
+      8,
+      10
+     ],
+     [
+      "acoustic_five",
+      32,
+      10
+     ],
+     [
+      "acoustic_five",
+      16,
+      10
+     ],
+     [
+      "acoustic_five",
+      16,
+      10
+     ]
+    ],
+    "acoustic_five/learned_projected+aug": [
+     [
+      "acoustic_five",
+      64,
+      10
+     ],
+     [
+      "acoustic_five",
+      8,
+      10
+     ],
+     [
+      "acoustic_five",
+      64,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      16,
+      100
+     ],
+     [
+      "acoustic_five",
+      8,
+      1
+     ],
+     [
+      "acoustic_five",
+      8,
+      1000
+     ],
+     [
+      "acoustic_five",
+      64,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      8,
+      100
+     ],
+     [
+      "acoustic_five",
+      16,
+      10
+     ],
+     [
+      "acoustic_five",
+      8,
+      10
+     ]
+    ],
+    "acoustic_expanded/raw": [
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ]
+    ],
+    "acoustic_expanded/standardized": [
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ]
+    ],
+    "acoustic_expanded/learned": [
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ]
+    ],
+    "acoustic_expanded/projected": [
+     [
+      "acoustic_expanded",
+      64,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      null
+     ]
+    ],
+    "acoustic_expanded/learned_projected": [
+     [
+      "acoustic_expanded",
+      64,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      1000
+     ]
+    ],
+    "acoustic_expanded/learned_projected+aug": [
+     [
+      "acoustic_expanded",
+      16,
+      10
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      10
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      1
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      10
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      10
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      10
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      100
+     ]
+    ],
+    "xvector/raw": [
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ]
+    ],
+    "xvector/standardized": [
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ]
+    ],
+    "xvector/learned": [
+     [
+      "xvector",
+      8,
+      0.1
+     ],
+     [
+      "xvector",
+      8,
+      10
+     ],
+     [
+      "xvector",
+      8,
+      100
+     ],
+     [
+      "xvector",
+      8,
+      10
+     ],
+     [
+      "xvector",
+      8,
+      1
+     ],
+     [
+      "xvector",
+      8,
+      10
+     ],
+     [
+      "xvector",
+      8,
+      10
+     ],
+     [
+      "xvector",
+      8,
+      1
+     ],
+     [
+      "xvector",
+      8,
+      0.1
+     ],
+     [
+      "xvector",
+      8,
+      10
+     ]
+    ],
+    "xvector/projected": [
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      16,
+      null
+     ],
+     [
+      "xvector",
+      64,
+      null
+     ],
+     [
+      "xvector",
+      32,
+      null
+     ],
+     [
+      "xvector",
+      64,
+      null
+     ],
+     [
+      "xvector",
+      64,
+      null
+     ],
+     [
+      "xvector",
+      16,
+      null
+     ],
+     [
+      "xvector",
+      32,
+      null
+     ],
+     [
+      "xvector",
+      32,
+      null
+     ],
+     [
+      "xvector",
+      64,
+      null
+     ]
+    ],
+    "xvector/learned_projected": [
+     [
+      "xvector",
+      16,
+      10
+     ],
+     [
+      "xvector",
+      32,
+      100
+     ],
+     [
+      "xvector",
+      16,
+      10
+     ],
+     [
+      "xvector",
+      64,
+      100
+     ],
+     [
+      "xvector",
+      32,
+      10
+     ],
+     [
+      "xvector",
+      64,
+      100
+     ],
+     [
+      "xvector",
+      16,
+      100
+     ],
+     [
+      "xvector",
+      16,
+      100
+     ],
+     [
+      "xvector",
+      64,
+      1000
+     ],
+     [
+      "xvector",
+      16,
+      10
+     ]
+    ],
+    "xvector/learned_projected+aug": [
+     [
+      "xvector",
+      16,
+      0.1
+     ],
+     [
+      "xvector",
+      32,
+      100
+     ],
+     [
+      "xvector",
+      8,
+      1
+     ],
+     [
+      "xvector",
+      16,
+      10
+     ],
+     [
+      "xvector",
+      32,
+      1000
+     ],
+     [
+      "xvector",
+      32,
+      1
+     ],
+     [
+      "xvector",
+      32,
+      1
+     ],
+     [
+      "xvector",
+      32,
+      100
+     ],
+     [
+      "xvector",
+      32,
+      1
+     ],
+     [
+      "xvector",
+      32,
+      100
+     ]
+    ],
+    "early_layer/raw": [
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L03",
+      null,
+      null
+     ]
+    ],
+    "early_layer/standardized": [
+     [
+      "L03",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L03",
+      8,
+      null
+     ]
+    ],
+    "early_layer/learned": [
+     [
+      "L03",
+      8,
+      1000
+     ],
+     [
+      "L02",
+      8,
+      1
+     ],
+     [
+      "L03",
+      8,
+      10
+     ],
+     [
+      "L02",
+      8,
+      1
+     ],
+     [
+      "L02",
+      8,
+      10
+     ],
+     [
+      "L02",
+      8,
+      10
+     ],
+     [
+      "L03",
+      8,
+      0.1
+     ],
+     [
+      "L02",
+      8,
+      100
+     ],
+     [
+      "L02",
+      8,
+      1000
+     ],
+     [
+      "L03",
+      8,
+      1
+     ]
+    ],
+    "early_layer/projected": [
+     [
+      "L02",
+      16,
+      null
+     ],
+     [
+      "L02",
+      64,
+      null
+     ],
+     [
+      "L02",
+      64,
+      null
+     ],
+     [
+      "L02",
+      16,
+      null
+     ],
+     [
+      "L02",
+      16,
+      null
+     ],
+     [
+      "L02",
+      32,
+      null
+     ],
+     [
+      "L02",
+      64,
+      null
+     ],
+     [
+      "L02",
+      32,
+      null
+     ],
+     [
+      "L02",
+      64,
+      null
+     ],
+     [
+      "L02",
+      32,
+      null
+     ]
+    ],
+    "early_layer/learned_projected": [
+     [
+      "L03",
+      16,
+      0.1
+     ],
+     [
+      "L02",
+      16,
+      1000
+     ],
+     [
+      "L02",
+      8,
+      1
+     ],
+     [
+      "L02",
+      8,
+      100
+     ],
+     [
+      "L02",
+      32,
+      1
+     ],
+     [
+      "L03",
+      64,
+      1000
+     ],
+     [
+      "L02",
+      8,
+      10
+     ],
+     [
+      "L02",
+      16,
+      100
+     ],
+     [
+      "L02",
+      32,
+      1
+     ],
+     [
+      "L02",
+      16,
+      100
+     ]
+    ],
+    "early_layer/learned_projected+aug": [
+     [
+      "L02",
+      8,
+      1
+     ],
+     [
+      "L02",
+      32,
+      10
+     ],
+     [
+      "L02",
+      16,
+      100
+     ],
+     [
+      "L02",
+      8,
+      100
+     ],
+     [
+      "L02",
+      32,
+      1000
+     ],
+     [
+      "L02",
+      64,
+      1000
+     ],
+     [
+      "L02",
+      32,
+      1000
+     ],
+     [
+      "L02",
+      32,
+      1000
+     ],
+     [
+      "L02",
+      16,
+      1
+     ],
+     [
+      "L02",
+      32,
+      0.1
+     ]
+    ]
+   },
+   "sensitivity": {
+    "acoustic_five/raw": {
+     "representation": "acoustic_five",
+     "k": 32,
+     "lam": 10,
+     "whisper_over_other_text": 5.233,
+     "whisper_over_other_speaker": 2.807,
+     "falsetto_over_other_text": 3.301,
+     "falsetto_over_other_speaker": 1.771
+    },
+    "acoustic_five/learned": {
+     "representation": "acoustic_five",
+     "k": 64,
+     "lam": 1,
+     "whisper_over_other_text": 3.722,
+     "whisper_over_other_speaker": 2.71,
+     "falsetto_over_other_text": 2.555,
+     "falsetto_over_other_speaker": 1.86
+    },
+    "acoustic_five/learned_projected": {
+     "representation": "acoustic_five",
+     "k": 32,
+     "lam": 10,
+     "whisper_over_other_text": 4.988,
+     "whisper_over_other_speaker": 2.79,
+     "falsetto_over_other_text": 3.373,
+     "falsetto_over_other_speaker": 1.887
+    },
+    "acoustic_expanded/raw": {
+     "representation": "acoustic_expanded",
+     "k": 64,
+     "lam": 100,
+     "whisper_over_other_text": 5.941,
+     "whisper_over_other_speaker": 4.117,
+     "falsetto_over_other_text": 3.084,
+     "falsetto_over_other_speaker": 2.137
+    },
+    "acoustic_expanded/learned": {
+     "representation": "acoustic_expanded",
+     "k": 8,
+     "lam": 0.1,
+     "whisper_over_other_text": 6.698,
+     "whisper_over_other_speaker": 4.643,
+     "falsetto_over_other_text": 3.43,
+     "falsetto_over_other_speaker": 2.378
+    },
+    "acoustic_expanded/learned_projected": {
+     "representation": "acoustic_expanded",
+     "k": 64,
+     "lam": 100,
+     "whisper_over_other_text": 5.884,
+     "whisper_over_other_speaker": 4.352,
+     "falsetto_over_other_text": 3.155,
+     "falsetto_over_other_speaker": 2.334
+    },
+    "xvector/raw": {
+     "representation": "xvector",
+     "k": 16,
+     "lam": 10,
+     "whisper_over_other_text": 5.133,
+     "whisper_over_other_speaker": 1.412,
+     "falsetto_over_other_text": 4.34,
+     "falsetto_over_other_speaker": 1.194
+    },
+    "xvector/learned": {
+     "representation": "xvector",
+     "k": 8,
+     "lam": 10,
+     "whisper_over_other_text": 2.24,
+     "whisper_over_other_speaker": 1.0,
+     "falsetto_over_other_text": 2.105,
+     "falsetto_over_other_speaker": 0.94
+    },
+    "xvector/learned_projected": {
+     "representation": "xvector",
+     "k": 16,
+     "lam": 10,
+     "whisper_over_other_text": 2.504,
+     "whisper_over_other_speaker": 1.15,
+     "falsetto_over_other_text": 2.259,
+     "falsetto_over_other_speaker": 1.038
+    },
+    "early_layer/raw": {
+     "representation": "L02",
+     "k": 32,
+     "lam": 1,
+     "whisper_over_other_text": 6.266,
+     "whisper_over_other_speaker": 3.768,
+     "falsetto_over_other_text": 3.386,
+     "falsetto_over_other_speaker": 2.037
+    },
+    "early_layer/learned": {
+     "representation": "L02",
+     "k": 8,
+     "lam": 1,
+     "whisper_over_other_text": 2.415,
+     "whisper_over_other_speaker": 1.532,
+     "falsetto_over_other_text": 1.792,
+     "falsetto_over_other_speaker": 1.137
+    },
+    "early_layer/learned_projected": {
+     "representation": "L02",
+     "k": 32,
+     "lam": 1,
+     "whisper_over_other_text": 2.722,
+     "whisper_over_other_speaker": 1.713,
+     "falsetto_over_other_text": 2.058,
+     "falsetto_over_other_speaker": 1.295
+    }
+   },
+   "paired_raw_delta_vs_xvector": {
+    "female": {
+     "acoustic_five": {
+      "mean": -0.025,
+      "ci95": [
+       -0.173,
+       0.13
+      ]
+     },
+     "acoustic_expanded": {
+      "mean": 0.022,
+      "ci95": [
+       -0.138,
+       0.184
+      ]
+     },
+     "L02": {
+      "mean": 0.119,
+      "ci95": [
+       0.007,
+       0.229
+      ]
+     },
+     "L03": {
+      "mean": 0.146,
+      "ci95": [
+       0.025,
+       0.265
+      ]
+     }
+    },
+    "male": {
+     "acoustic_five": {
+      "mean": -0.067,
+      "ci95": [
+       -0.225,
+       0.087
+      ]
+     },
+     "acoustic_expanded": {
+      "mean": -0.008,
+      "ci95": [
+       -0.14,
+       0.122
+      ]
+     },
+     "L02": {
+      "mean": 0.053,
+      "ci95": [
+       -0.069,
+       0.159
+      ]
+     },
+     "L03": {
+      "mean": 0.03,
+      "ci95": [
+       -0.101,
+       0.143
+      ]
+     }
+    }
+   }
+  },
+  "seed1": {
+   "variants": {
+    "acoustic_five/raw": {
+     "query_single_median": 0.192,
+     "query_single_p10": 0.013,
+     "query_centroid_median": 0.224,
+     "query_centroid_p10": 0.031,
+     "pair_female": 0.268,
+     "pair_male": 0.246
+    },
+    "acoustic_five/standardized": {
+     "query_single_median": 0.143,
+     "query_single_p10": -0.039,
+     "query_centroid_median": 0.227,
+     "query_centroid_p10": -0.003,
+     "pair_female": 0.135,
+     "pair_male": 0.319
+    },
+    "acoustic_five/learned": {
+     "query_single_median": 0.151,
+     "query_single_p10": -0.029,
+     "query_centroid_median": 0.227,
+     "query_centroid_p10": 0.01,
+     "pair_female": 0.235,
+     "pair_male": 0.313
+    },
+    "acoustic_five/projected": {
+     "query_single_median": 0.192,
+     "query_single_p10": -0.013,
+     "query_centroid_median": 0.218,
+     "query_centroid_p10": 0.013,
+     "pair_female": 0.254,
+     "pair_male": 0.243
+    },
+    "acoustic_five/learned_projected": {
+     "query_single_median": 0.191,
+     "query_single_p10": 0.025,
+     "query_centroid_median": 0.23,
+     "query_centroid_p10": 0.029,
+     "pair_female": 0.227,
+     "pair_male": 0.333
+    },
+    "acoustic_five/learned_projected+aug": {
+     "query_single_median": 0.202,
+     "query_single_p10": 0.027,
+     "query_centroid_median": 0.219,
+     "query_centroid_p10": 0.013,
+     "pair_female": 0.225,
+     "pair_male": 0.274
+    },
+    "acoustic_expanded/raw": {
+     "query_single_median": 0.218,
+     "query_single_p10": 0.039,
+     "query_centroid_median": 0.28,
+     "query_centroid_p10": 0.065,
+     "pair_female": 0.305,
+     "pair_male": 0.338
+    },
+    "acoustic_expanded/standardized": {
+     "query_single_median": 0.17,
+     "query_single_p10": 0.004,
+     "query_centroid_median": 0.271,
+     "query_centroid_p10": 0.026,
+     "pair_female": 0.237,
+     "pair_male": 0.281
+    },
+    "acoustic_expanded/learned": {
+     "query_single_median": 0.2,
+     "query_single_p10": 0.026,
+     "query_centroid_median": 0.283,
+     "query_centroid_p10": 0.044,
+     "pair_female": 0.377,
+     "pair_male": 0.337
+    },
+    "acoustic_expanded/projected": {
+     "query_single_median": 0.219,
+     "query_single_p10": 0.024,
+     "query_centroid_median": 0.294,
+     "query_centroid_p10": 0.059,
+     "pair_female": 0.287,
+     "pair_male": 0.287
+    },
+    "acoustic_expanded/learned_projected": {
+     "query_single_median": 0.223,
+     "query_single_p10": 0.037,
+     "query_centroid_median": 0.293,
+     "query_centroid_p10": 0.057,
+     "pair_female": 0.33,
+     "pair_male": 0.305
+    },
+    "acoustic_expanded/learned_projected+aug": {
+     "query_single_median": 0.22,
+     "query_single_p10": 0.07,
+     "query_centroid_median": 0.297,
+     "query_centroid_p10": 0.094,
+     "pair_female": 0.289,
+     "pair_male": 0.301
+    },
+    "xvector/raw": {
+     "query_single_median": 0.263,
+     "query_single_p10": 0.054,
+     "query_centroid_median": 0.292,
+     "query_centroid_p10": 0.082,
+     "pair_female": 0.296,
+     "pair_male": 0.254
+    },
+    "xvector/standardized": {
+     "query_single_median": 0.203,
+     "query_single_p10": 0.025,
+     "query_centroid_median": 0.232,
+     "query_centroid_p10": 0.03,
+     "pair_female": 0.28,
+     "pair_male": 0.212
+    },
+    "xvector/learned": {
+     "query_single_median": 0.233,
+     "query_single_p10": 0.034,
+     "query_centroid_median": 0.253,
+     "query_centroid_p10": 0.035,
+     "pair_female": 0.244,
+     "pair_male": 0.235
+    },
+    "xvector/projected": {
+     "query_single_median": 0.248,
+     "query_single_p10": 0.054,
+     "query_centroid_median": 0.28,
+     "query_centroid_p10": 0.04,
+     "pair_female": 0.335,
+     "pair_male": 0.346
+    },
+    "xvector/learned_projected": {
+     "query_single_median": 0.259,
+     "query_single_p10": 0.084,
+     "query_centroid_median": 0.289,
+     "query_centroid_p10": 0.084,
+     "pair_female": 0.303,
+     "pair_male": 0.26
+    },
+    "xvector/learned_projected+aug": {
+     "query_single_median": 0.265,
+     "query_single_p10": 0.051,
+     "query_centroid_median": 0.304,
+     "query_centroid_p10": 0.066,
+     "pair_female": 0.281,
+     "pair_male": 0.226
+    },
+    "early_layer/raw": {
+     "query_single_median": 0.294,
+     "query_single_p10": 0.116,
+     "query_centroid_median": 0.366,
+     "query_centroid_p10": 0.134,
+     "pair_female": 0.431,
+     "pair_male": 0.391
+    },
+    "early_layer/standardized": {
+     "query_single_median": 0.279,
+     "query_single_p10": 0.062,
+     "query_centroid_median": 0.324,
+     "query_centroid_p10": 0.097,
+     "pair_female": 0.319,
+     "pair_male": 0.318
+    },
+    "early_layer/learned": {
+     "query_single_median": 0.27,
+     "query_single_p10": 0.046,
+     "query_centroid_median": 0.339,
+     "query_centroid_p10": 0.086,
+     "pair_female": 0.364,
+     "pair_male": 0.273
+    },
+    "early_layer/projected": {
+     "query_single_median": 0.303,
+     "query_single_p10": 0.066,
+     "query_centroid_median": 0.364,
+     "query_centroid_p10": 0.103,
+     "pair_female": 0.364,
+     "pair_male": 0.392
+    },
+    "early_layer/learned_projected": {
+     "query_single_median": 0.307,
+     "query_single_p10": 0.093,
+     "query_centroid_median": 0.372,
+     "query_centroid_p10": 0.128,
+     "pair_female": 0.387,
+     "pair_male": 0.306
+    },
+    "early_layer/learned_projected+aug": {
+     "query_single_median": 0.295,
+     "query_single_p10": 0.08,
+     "query_centroid_median": 0.357,
+     "query_centroid_p10": 0.094,
+     "pair_female": 0.328,
+     "pair_male": 0.3
+    }
+   },
+   "chosen": {
+    "acoustic_five/raw": [
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ],
+     [
+      "acoustic_five",
+      null,
+      null
+     ]
+    ],
+    "acoustic_five/standardized": [
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      32,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      32,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      32,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ]
+    ],
+    "acoustic_five/learned": [
+     [
+      "acoustic_five",
+      32,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      32,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      32,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      32,
+      1000
+     ],
+     [
+      "acoustic_five",
+      16,
+      1
+     ],
+     [
+      "acoustic_five",
+      8,
+      10
+     ],
+     [
+      "acoustic_five",
+      32,
+      1000
+     ],
+     [
+      "acoustic_five",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      32,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      16,
+      0.1
+     ]
+    ],
+    "acoustic_five/projected": [
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      64,
+      null
+     ],
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      8,
+      null
+     ],
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      16,
+      null
+     ],
+     [
+      "acoustic_five",
+      16,
+      null
+     ]
+    ],
+    "acoustic_five/learned_projected": [
+     [
+      "acoustic_five",
+      64,
+      100
+     ],
+     [
+      "acoustic_five",
+      16,
+      1
+     ],
+     [
+      "acoustic_five",
+      32,
+      1000
+     ],
+     [
+      "acoustic_five",
+      8,
+      100
+     ],
+     [
+      "acoustic_five",
+      8,
+      1
+     ],
+     [
+      "acoustic_five",
+      64,
+      1000
+     ],
+     [
+      "acoustic_five",
+      64,
+      1
+     ],
+     [
+      "acoustic_five",
+      32,
+      10
+     ],
+     [
+      "acoustic_five",
+      8,
+      10
+     ],
+     [
+      "acoustic_five",
+      8,
+      100
+     ]
+    ],
+    "acoustic_five/learned_projected+aug": [
+     [
+      "acoustic_five",
+      8,
+      1
+     ],
+     [
+      "acoustic_five",
+      16,
+      1
+     ],
+     [
+      "acoustic_five",
+      64,
+      10
+     ],
+     [
+      "acoustic_five",
+      32,
+      100
+     ],
+     [
+      "acoustic_five",
+      16,
+      1
+     ],
+     [
+      "acoustic_five",
+      64,
+      0.1
+     ],
+     [
+      "acoustic_five",
+      8,
+      100
+     ],
+     [
+      "acoustic_five",
+      16,
+      100
+     ],
+     [
+      "acoustic_five",
+      64,
+      1000
+     ],
+     [
+      "acoustic_five",
+      32,
+      100
+     ]
+    ],
+    "acoustic_expanded/raw": [
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      null,
+      null
+     ]
+    ],
+    "acoustic_expanded/standardized": [
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ]
+    ],
+    "acoustic_expanded/learned": [
+     [
+      "acoustic_expanded",
+      8,
+      1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      0.1
+     ]
+    ],
+    "acoustic_expanded/projected": [
+     [
+      "acoustic_expanded",
+      32,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      null
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      null
+     ]
+    ],
+    "acoustic_expanded/learned_projected": [
+     [
+      "acoustic_expanded",
+      32,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      1000
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      100
+     ]
+    ],
+    "acoustic_expanded/learned_projected+aug": [
+     [
+      "acoustic_expanded",
+      32,
+      1
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      10
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      1
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      1
+     ],
+     [
+      "acoustic_expanded",
+      16,
+      10
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      1
+     ],
+     [
+      "acoustic_expanded",
+      32,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      8,
+      100
+     ],
+     [
+      "acoustic_expanded",
+      64,
+      1000
+     ]
+    ],
+    "xvector/raw": [
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ],
+     [
+      "xvector",
+      null,
+      null
+     ]
+    ],
+    "xvector/standardized": [
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ],
+     [
+      "xvector",
+      8,
+      null
+     ]
+    ],
+    "xvector/learned": [
+     [
+      "xvector",
+      8,
+      0.1
+     ],
+     [
+      "xvector",
+      8,
+      0.1
+     ],
+     [
+      "xvector",
+      8,
+      0.1
+     ],
+     [
+      "xvector",
+      8,
+      1
+     ],
+     [
+      "xvector",
+      8,
+      10
+     ],
+     [
+      "xvector",
+      8,
+      0.1
+     ],
+     [
+      "xvector",
+      8,
+      1
+     ],
+     [
+      "xvector",
+      8,
+      1
+     ],
+     [
+      "xvector",
+      8,
+      10
+     ],
+     [
+      "xvector",
+      8,
+      1
+     ]
+    ],
+    "xvector/projected": [
+     [
+      "xvector",
+      64,
+      null
+     ],
+     [
+      "xvector",
+      32,
+      null
+     ],
+     [
+      "xvector",
+      64,
+      null
+     ],
+     [
+      "xvector",
+      64,
+      null
+     ],
+     [
+      "xvector",
+      64,
+      null
+     ],
+     [
+      "xvector",
+      16,
+      null
+     ],
+     [
+      "xvector",
+      16,
+      null
+     ],
+     [
+      "xvector",
+      64,
+      null
+     ],
+     [
+      "xvector",
+      32,
+      null
+     ],
+     [
+      "xvector",
+      16,
+      null
+     ]
+    ],
+    "xvector/learned_projected": [
+     [
+      "xvector",
+      32,
+      1000
+     ],
+     [
+      "xvector",
+      32,
+      1000
+     ],
+     [
+      "xvector",
+      32,
+      1000
+     ],
+     [
+      "xvector",
+      64,
+      10
+     ],
+     [
+      "xvector",
+      32,
+      1000
+     ],
+     [
+      "xvector",
+      64,
+      100
+     ],
+     [
+      "xvector",
+      32,
+      100
+     ],
+     [
+      "xvector",
+      32,
+      10
+     ],
+     [
+      "xvector",
+      16,
+      100
+     ],
+     [
+      "xvector",
+      32,
+      1000
+     ]
+    ],
+    "xvector/learned_projected+aug": [
+     [
+      "xvector",
+      64,
+      100
+     ],
+     [
+      "xvector",
+      32,
+      1000
+     ],
+     [
+      "xvector",
+      64,
+      10
+     ],
+     [
+      "xvector",
+      32,
+      1
+     ],
+     [
+      "xvector",
+      64,
+      100
+     ],
+     [
+      "xvector",
+      32,
+      1000
+     ],
+     [
+      "xvector",
+      32,
+      0.1
+     ],
+     [
+      "xvector",
+      16,
+      1000
+     ],
+     [
+      "xvector",
+      32,
+      10
+     ],
+     [
+      "xvector",
+      64,
+      100
+     ]
+    ],
+    "early_layer/raw": [
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L03",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ],
+     [
+      "L02",
+      null,
+      null
+     ]
+    ],
+    "early_layer/standardized": [
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L03",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L03",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L03",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ]
+    ],
+    "early_layer/learned": [
+     [
+      "L03",
+      8,
+      0.1
+     ],
+     [
+      "L02",
+      8,
+      1
+     ],
+     [
+      "L03",
+      8,
+      100
+     ],
+     [
+      "L03",
+      8,
+      1
+     ],
+     [
+      "L04",
+      8,
+      100
+     ],
+     [
+      "L02",
+      16,
+      0.1
+     ],
+     [
+      "L02",
+      8,
+      1
+     ],
+     [
+      "L02",
+      8,
+      0.1
+     ],
+     [
+      "L02",
+      8,
+      100
+     ],
+     [
+      "L02",
+      8,
+      0.1
+     ]
+    ],
+    "early_layer/projected": [
+     [
+      "L02",
+      32,
+      null
+     ],
+     [
+      "L02",
+      16,
+      null
+     ],
+     [
+      "L02",
+      32,
+      null
+     ],
+     [
+      "L02",
+      16,
+      null
+     ],
+     [
+      "L02",
+      32,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ],
+     [
+      "L02",
+      32,
+      null
+     ],
+     [
+      "L02",
+      16,
+      null
+     ],
+     [
+      "L03",
+      32,
+      null
+     ],
+     [
+      "L02",
+      8,
+      null
+     ]
+    ],
+    "early_layer/learned_projected": [
+     [
+      "L02",
+      32,
+      100
+     ],
+     [
+      "L02",
+      32,
+      100
+     ],
+     [
+      "L03",
+      64,
+      10
+     ],
+     [
+      "L02",
+      16,
+      1000
+     ],
+     [
+      "L02",
+      32,
+      100
+     ],
+     [
+      "L02",
+      32,
+      100
+     ],
+     [
+      "L02",
+      16,
+      100
+     ],
+     [
+      "L02",
+      16,
+      10
+     ],
+     [
+      "L02",
+      32,
+      0.1
+     ],
+     [
+      "L02",
+      16,
+      1000
+     ]
+    ],
+    "early_layer/learned_projected+aug": [
+     [
+      "L02",
+      8,
+      1000
+     ],
+     [
+      "L02",
+      64,
+      1
+     ],
+     [
+      "L02",
+      64,
+      10
+     ],
+     [
+      "L02",
+      32,
+      1000
+     ],
+     [
+      "L02",
+      32,
+      0.1
+     ],
+     [
+      "L02",
+      32,
+      1
+     ],
+     [
+      "L02",
+      32,
+      100
+     ],
+     [
+      "L02",
+      64,
+      0.1
+     ],
+     [
+      "L03",
+      8,
+      100
+     ],
+     [
+      "L03",
+      8,
+      100
+     ]
+    ]
+   },
+   "sensitivity": {
+    "acoustic_five/raw": {
+     "representation": "acoustic_five",
+     "k": 8,
+     "lam": 100,
+     "whisper_over_other_text": 5.233,
+     "whisper_over_other_speaker": 2.807,
+     "falsetto_over_other_text": 3.301,
+     "falsetto_over_other_speaker": 1.771
+    },
+    "acoustic_five/learned": {
+     "representation": "acoustic_five",
+     "k": 32,
+     "lam": 0.1,
+     "whisper_over_other_text": 3.675,
+     "whisper_over_other_speaker": 2.653,
+     "falsetto_over_other_text": 2.681,
+     "falsetto_over_other_speaker": 1.936
+    },
+    "acoustic_five/learned_projected": {
+     "representation": "acoustic_five",
+     "k": 8,
+     "lam": 100,
+     "whisper_over_other_text": 5.124,
+     "whisper_over_other_speaker": 2.781,
+     "falsetto_over_other_text": 3.286,
+     "falsetto_over_other_speaker": 1.784
+    },
+    "acoustic_expanded/raw": {
+     "representation": "acoustic_expanded",
+     "k": 32,
+     "lam": 100,
+     "whisper_over_other_text": 5.941,
+     "whisper_over_other_speaker": 4.117,
+     "falsetto_over_other_text": 3.084,
+     "falsetto_over_other_speaker": 2.137
+    },
+    "acoustic_expanded/learned": {
+     "representation": "acoustic_expanded",
+     "k": 8,
+     "lam": 0.1,
+     "whisper_over_other_text": 6.698,
+     "whisper_over_other_speaker": 4.643,
+     "falsetto_over_other_text": 3.43,
+     "falsetto_over_other_speaker": 2.378
+    },
+    "acoustic_expanded/learned_projected": {
+     "representation": "acoustic_expanded",
+     "k": 32,
+     "lam": 100,
+     "whisper_over_other_text": 5.884,
+     "whisper_over_other_speaker": 4.352,
+     "falsetto_over_other_text": 3.155,
+     "falsetto_over_other_speaker": 2.334
+    },
+    "xvector/raw": {
+     "representation": "xvector",
+     "k": 32,
+     "lam": 1000,
+     "whisper_over_other_text": 5.133,
+     "whisper_over_other_speaker": 1.412,
+     "falsetto_over_other_text": 4.34,
+     "falsetto_over_other_speaker": 1.194
+    },
+    "xvector/learned": {
+     "representation": "xvector",
+     "k": 8,
+     "lam": 0.1,
+     "whisper_over_other_text": 2.27,
+     "whisper_over_other_speaker": 1.011,
+     "falsetto_over_other_text": 2.132,
+     "falsetto_over_other_speaker": 0.95
+    },
+    "xvector/learned_projected": {
+     "representation": "xvector",
+     "k": 32,
+     "lam": 1000,
+     "whisper_over_other_text": 2.377,
+     "whisper_over_other_speaker": 1.167,
+     "falsetto_over_other_text": 2.187,
+     "falsetto_over_other_speaker": 1.073
+    },
+    "early_layer/raw": {
+     "representation": "L02",
+     "k": 32,
+     "lam": 100,
+     "whisper_over_other_text": 6.266,
+     "whisper_over_other_speaker": 3.768,
+     "falsetto_over_other_text": 3.386,
+     "falsetto_over_other_speaker": 2.037
+    },
+    "early_layer/learned": {
+     "representation": "L02",
+     "k": 8,
+     "lam": 0.1,
+     "whisper_over_other_text": 2.391,
+     "whisper_over_other_speaker": 1.518,
+     "falsetto_over_other_text": 1.76,
+     "falsetto_over_other_speaker": 1.117
+    },
+    "early_layer/learned_projected": {
+     "representation": "L02",
+     "k": 32,
+     "lam": 100,
+     "whisper_over_other_text": 2.727,
+     "whisper_over_other_speaker": 1.715,
+     "falsetto_over_other_text": 2.059,
+     "falsetto_over_other_speaker": 1.294
+    }
+   },
+   "paired_raw_delta_vs_xvector": {
+    "female": {
+     "acoustic_five": {
+      "mean": -0.021,
+      "ci95": [
+       -0.16,
+       0.127
+      ]
+     },
+     "acoustic_expanded": {
+      "mean": 0.026,
+      "ci95": [
+       -0.133,
+       0.192
+      ]
+     },
+     "L02": {
+      "mean": 0.121,
+      "ci95": [
+       0.014,
+       0.233
+      ]
+     },
+     "L03": {
+      "mean": 0.148,
+      "ci95": [
+       0.038,
+       0.268
+      ]
+     }
+    },
+    "male": {
+     "acoustic_five": {
+      "mean": -0.063,
+      "ci95": [
+       -0.212,
+       0.076
+      ]
+     },
+     "acoustic_expanded": {
+      "mean": -0.005,
+      "ci95": [
+       -0.132,
+       0.123
+      ]
+     },
+     "L02": {
+      "mean": 0.057,
+      "ci95": [
+       -0.061,
+       0.17
+      ]
+     },
+     "L03": {
+      "mean": 0.033,
+      "ci95": [
+       -0.092,
+       0.155
+      ]
+     }
+    }
+   }
+  }
+ },
+ "deployment": {
+  "clips": 2500,
+  "clips_ok": {
+   "xvector": 2481,
+   "timbre_windows": 2481,
+   "timbre_trimmed_crop": 2481,
+   "timbre_raw_crop": 2481,
+   "timbre_raw_crop_speech": 2481,
+   "timbre_deployed": 2481,
+   "fp32_raw_crop": 2481,
+   "fp32_raw_crop_speech": 2481,
+   "fp32_trimmed_crop": 2481
+  },
+  "timbre_version": "wavlm-l3-int8-v1",
+  "xvector_version": "wavlm-sv-int8-v2",
+  "sv_revision": "1bfd64eca136543feb28c5ffaf05381c6af33121",
+  "variants": {
+   "xvector": {
+    "parallel20/female": {
+     "spearman": 0.286,
+     "ci95": [
+      0.144,
+      0.424
+     ],
+     "anchor_median": 0.292,
+     "anchor_p10": 0.05,
+     "anchor_min": -0.185
+    },
+    "nonpara1_query/female": {
+     "median": 0.263,
+     "p10": 0.087
+    },
+    "parallel20/male": {
+     "spearman": 0.337,
+     "ci95": [
+      0.2,
+      0.449
+     ],
+     "anchor_median": 0.317,
+     "anchor_p10": 0.145,
+     "anchor_min": -0.181
+    },
+    "nonpara1_query/male": {
+     "median": 0.261,
+     "p10": 0.119
+    }
+   },
+   "timbre_windows": {
+    "parallel20/female": {
+     "spearman": 0.375,
+     "ci95": [
+      0.248,
+      0.487
+     ],
+     "anchor_median": 0.362,
+     "anchor_p10": 0.176,
+     "anchor_min": 0.05
+    },
+    "nonpara1_query/female": {
+     "median": 0.277,
+     "p10": 0.126
+    },
+    "parallel20/male": {
+     "spearman": 0.305,
+     "ci95": [
+      0.176,
+      0.416
+     ],
+     "anchor_median": 0.302,
+     "anchor_p10": 0.046,
+     "anchor_min": -0.042
+    },
+    "nonpara1_query/male": {
+     "median": 0.226,
+     "p10": 0.038
+    }
+   },
+   "timbre_trimmed_crop": {
+    "parallel20/female": {
+     "spearman": 0.377,
+     "ci95": [
+      0.264,
+      0.486
+     ],
+     "anchor_median": 0.358,
+     "anchor_p10": 0.186,
+     "anchor_min": 0.066
+    },
+    "nonpara1_query/female": {
+     "median": 0.305,
+     "p10": 0.119
+    },
+    "parallel20/male": {
+     "spearman": 0.3,
+     "ci95": [
+      0.172,
+      0.413
+     ],
+     "anchor_median": 0.293,
+     "anchor_p10": 0.053,
+     "anchor_min": -0.044
+    },
+    "nonpara1_query/male": {
+     "median": 0.216,
+     "p10": 0.041
+    }
+   },
+   "timbre_raw_crop": {
+    "parallel20/female": {
+     "spearman": 0.428,
+     "ci95": [
+      0.318,
+      0.525
+     ],
+     "anchor_median": 0.39,
+     "anchor_p10": 0.221,
+     "anchor_min": 0.064
+    },
+    "nonpara1_query/female": {
+     "median": 0.32,
+     "p10": 0.145
+    },
+    "parallel20/male": {
+     "spearman": 0.352,
+     "ci95": [
+      0.217,
+      0.453
+     ],
+     "anchor_median": 0.348,
+     "anchor_p10": 0.089,
+     "anchor_min": -0.038
+    },
+    "nonpara1_query/male": {
+     "median": 0.272,
+     "p10": 0.048
+    }
+   },
+   "timbre_raw_crop_speech": {
+    "parallel20/female": {
+     "spearman": 0.453,
+     "ci95": [
+      0.348,
+      0.542
+     ],
+     "anchor_median": 0.432,
+     "anchor_p10": 0.267,
+     "anchor_min": 0.134
+    },
+    "nonpara1_query/female": {
+     "median": 0.344,
+     "p10": 0.196
+    },
+    "parallel20/male": {
+     "spearman": 0.424,
+     "ci95": [
+      0.315,
+      0.521
+     ],
+     "anchor_median": 0.378,
+     "anchor_p10": 0.24,
+     "anchor_min": -0.077
+    },
+    "nonpara1_query/male": {
+     "median": 0.309,
+     "p10": 0.158
+    }
+   },
+   "timbre_deployed": {
+    "parallel20/female": {
+     "spearman": 0.452,
+     "ci95": [
+      0.351,
+      0.556
+     ],
+     "anchor_median": 0.436,
+     "anchor_p10": 0.267,
+     "anchor_min": 0.116
+    },
+    "nonpara1_query/female": {
+     "median": 0.344,
+     "p10": 0.202
+    },
+    "parallel20/male": {
+     "spearman": 0.425,
+     "ci95": [
+      0.305,
+      0.53
+     ],
+     "anchor_median": 0.378,
+     "anchor_p10": 0.241,
+     "anchor_min": -0.086
+    },
+    "nonpara1_query/male": {
+     "median": 0.306,
+     "p10": 0.157
+    }
+   },
+   "fp32_raw_crop": {
+    "parallel20/female": {
+     "spearman": 0.428,
+     "ci95": [
+      0.31,
+      0.532
+     ],
+     "anchor_median": 0.385,
+     "anchor_p10": 0.214,
+     "anchor_min": 0.047
+    },
+    "nonpara1_query/female": {
+     "median": 0.321,
+     "p10": 0.147
+    },
+    "parallel20/male": {
+     "spearman": 0.357,
+     "ci95": [
+      0.226,
+      0.465
+     ],
+     "anchor_median": 0.36,
+     "anchor_p10": 0.105,
+     "anchor_min": -0.034
+    },
+    "nonpara1_query/male": {
+     "median": 0.271,
+     "p10": 0.074
+    }
+   },
+   "fp32_raw_crop_speech": {
+    "parallel20/female": {
+     "spearman": 0.455,
+     "ci95": [
+      0.348,
+      0.546
+     ],
+     "anchor_median": 0.43,
+     "anchor_p10": 0.273,
+     "anchor_min": 0.13
+    },
+    "nonpara1_query/female": {
+     "median": 0.342,
+     "p10": 0.196
+    },
+    "parallel20/male": {
+     "spearman": 0.423,
+     "ci95": [
+      0.31,
+      0.516
+     ],
+     "anchor_median": 0.38,
+     "anchor_p10": 0.247,
+     "anchor_min": -0.089
+    },
+    "nonpara1_query/male": {
+     "median": 0.312,
+     "p10": 0.154
+    }
+   },
+   "fp32_trimmed_crop": {
+    "parallel20/female": {
+     "spearman": 0.378,
+     "ci95": [
+      0.263,
+      0.494
+     ],
+     "anchor_median": 0.357,
+     "anchor_p10": 0.191,
+     "anchor_min": 0.037
+    },
+    "nonpara1_query/female": {
+     "median": 0.305,
+     "p10": 0.126
+    },
+    "parallel20/male": {
+     "spearman": 0.306,
+     "ci95": [
+      0.197,
+      0.413
+     ],
+     "anchor_median": 0.301,
+     "anchor_p10": 0.067,
+     "anchor_min": -0.037
+    },
+    "nonpara1_query/male": {
+     "median": 0.222,
+     "p10": 0.066
+    }
+   }
+  },
+  "paired_delta_vs_xvector": {
+   "female": {
+    "mean": 0.166,
+    "ci95": [
+     0.06,
+     0.277
+    ]
+   },
+   "male": {
+    "mean": 0.085,
+    "ci95": [
+     -0.018,
+     0.201
+    ]
+   }
+  }
+ },
+ "pitch_audit": {
+  "acoustics_version": "3.1.0",
+  "clips": {
+   "modal": {
+    "clips": 500,
+    "withheld_by_sparse_gate": 0,
+    "reported_median_voiced_seconds": 4.36,
+    "tracked_f0_p50_p90_max": [
+     202.1,
+     274.7,
+     344.2
+    ],
+    "halving_pct_p50_p90_max": [
+     0.0,
+     0.0,
+     4.9
+    ],
+    "clips_over_20pct": 0
+   },
+   "whisper": {
+    "clips": 500,
+    "withheld_by_sparse_gate": 469,
+    "reported_median_voiced_seconds": 0.64,
+    "tracked_f0_p50_p90_max": [
+     281.9,
+     421.4,
+     466.2
+    ],
+    "halving_pct_p50_p90_max": [
+     0.0,
+     42.9,
+     100.0
+    ],
+    "clips_over_20pct": 107
+   },
+   "falsetto": {
+    "clips": 495,
+    "withheld_by_sparse_gate": 0,
+    "reported_median_voiced_seconds": 4.74,
+    "tracked_f0_p50_p90_max": [
+     341.4,
+     399.0,
+     439.4
+    ],
+    "halving_pct_p50_p90_max": [
+     9.7,
+     50.1,
+     98.9
+    ],
+    "clips_over_20pct": 204
+   }
+  },
+  "rule_vs_higher_ceiling_reference": {
+   "modal": {
+    "voiced_frames": 110755,
+    "reference_twice": 10,
+    "reference_same": 110695,
+    "sensitivity": 0.2,
+    "specificity": 0.999
+   },
+   "whisper": {
+    "voiced_frames": 4650,
+    "reference_twice": 925,
+    "reference_same": 3123,
+    "sensitivity": 0.409,
+    "specificity": 0.975
+   },
+   "falsetto": {
+    "voiced_frames": 118314,
+    "reference_twice": 23151,
+    "reference_same": 95065,
+    "sensitivity": 0.998,
+    "specificity": 0.996
+   }
+  },
+  "falsetto_vs_modal": {
+   "pairs": 495,
+   "f0_ratio_p10_p50_p90": [
+    1.13,
+    1.7,
+    2.76
+   ],
+   "pairs_under_1_15": 56,
+   "of_which_halving_over_20pct": 56,
+   "flagged_clips_tracked_f0_p25_p50_p75": [
+    304,
+    325,
+    347
+   ]
+  }
+ },
+ "reproduction": [
+  ".venv-embedding/bin/python benchmark_jvs_similarity.py extract",
+  "KOENAMI_CUDA=1 .venv-embedding/bin/python benchmark_jvs_similarity.py checks",
+  ".venv-embedding/bin/python benchmark_jvs_similarity.py evaluate",
+  ".venv/bin/python extract_expanded_acoustics.py",
+  ".venv-embedding/bin/python probe_jvs_similarity.py --seed 0 --repeats 2 --variants raw,standardized,learned,projected,learned_projected,learned_projected+aug --tag probe-seed0",
+  ".venv-embedding/bin/python probe_jvs_similarity.py --seed 1 --repeats 2 --variants raw,standardized,learned,projected,learned_projected,learned_projected+aug --tag probe-seed1",
+  "KOENAMI_CUDA=1 .venv-embedding/bin/python research_jvs_deploy_check.py --fp32",
+  ".venv/bin/python research_jvs_halving_audit.py",
+  ".venv-embedding/bin/python assemble_jvs_results.py"
+ ]
+}
