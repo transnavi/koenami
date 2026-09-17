@@ -153,12 +153,24 @@ class EngineTests(unittest.TestCase):
             self.assertNotIn('quiet_intervals',saved['data/baseline.wav'])
 
 class CollectionTests(unittest.TestCase):
+    def test_every_library_carries_the_current_engine_version(self):
+        """A library measured by an older engine has to be rebuilt."""
+        import engine
+        if not engine.BINARY.exists():self.skipTest('build measure/ first (cargo build --release)')
+        for name in ['native-ja','common-voice-ja','synthetic','voicevox','research-demos','libraries/en','libraries/ko','libraries/zh-CN']:
+            path=ROOT/f'data/{name}.json'
+            if not path.exists():continue
+            with self.subTest(library=name):
+                self.assertEqual(json.loads(path.read_text())['version'],engine.version(),f'rebuild {name}: run its build_*.py')
+
     def test_all_collected_audio_decodes_and_matches_manifest(self):
         library=json.loads((ROOT/'data/native-ja.json').read_text());clips=library['clips']
-        self.assertEqual(library['version'],'4.0.0')
         self.assertGreater(len(clips),6500)
         self.assertEqual(len({p['id'] for p in clips}),len(clips))
-        self.assertGreater(len({p['speaker'] for p in clips}),550)
+        # 100 JVS speakers and every Common Voice speaker the listening
+        # reviews still admit — 448 of them as of batch 8, and falling as
+        # reviews exclude more.
+        self.assertGreater(len({p['speaker'] for p in clips}),500)
         self.assertGreaterEqual(sum(p['plotted'] for p in clips),2900)
         self.assertTrue(all(p.get('native') for p in clips if p.get('dataset')=='JVS'))
         self.assertGreater(sum(p.get('dataset')=='Common Voice' for p in clips),1500)
