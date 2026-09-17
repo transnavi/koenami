@@ -27,7 +27,7 @@ The hub over every non-clinical community resource in the vault: who teaches gen
 
 **Chinese-language resources.**
 - The 2024 self-study MtF voice-training guide mirrored on the Trans Chinese Digital Archive, with a stated 185–220+ Hz pitch-phase benchmark [[digital-transchinese-mtf-voice]].
-- The Taipei hospital team's public teaching and surgery pages, community-grade provider material with 180 Hz-up / 140 Hz-down targets [[voicedoctor-tw]].
+- A New Taipei hospital team's (亞東紀念醫院) public teaching and surgery pages, community-grade provider material with 180 Hz-up / 140 Hz-down targets [[voicedoctor-tw]].
 - The wider 伪声 and MtF.wiki layer is mapped in [[chinese-community]].
 
 **What all of these have in common.**
@@ -37,11 +37,11 @@ The hub over every non-clinical community resource in the vault: who teaches gen
 ## Contested or unclear
 - Commercial claims of speed ("6–8 lessons" [[seattle-voice-lab]]) sit against clinical schedules of 8–12 sessions [[sodersten2026]] and 12-session intensives [[lin2026]]; no independent verification exists for any community curriculum.
 - Volunteer infrastructure is fragile: the Sumi wiki banners itself "under construction" with missing pages [[sumianvoice]], and the r/transvoice wiki's resource lists were already unreachable in 2026 [[transvoice-wiki]].
-- Safety teaching is uneven: one YouTube tutorial retracted a swallow-based larynx cue on safety grounds [[lucy2023]], while folk material elsewhere still rates harmful drills without caveats [[moegirl-weisheng]].
+- Safety teaching varies in form: one YouTube tutorial retracted a swallow-based larynx cue on safety grounds [[lucy2023]], while 萌娘百科 rates each method on a throat-harm scale and caps daily practice [[moegirl-weisheng]].
 
 ## Open questions
 - Which community drills survive measurement — no study tests pitch slides, whisper sirens or Big Dog Little Dog against acoustic or listener outcomes [[sumi2021]] [[sutherland2025]] [[yoxon2023]].
-- How the app-delivered "gender" scores relate to listener perception; the apps themselves disclaim assessment [[transvoice-app]] [[genderfluent]] [[machine-gender-scoring]].
+- How the app-delivered "gender" scores relate to listener perception; TransVoice.App disclaims assessment [[transvoice-app]] while Genderfluent shows a "gender" estimate [[genderfluent]]; see [[machine-gender-scoring]].
 
 ## Related
 
