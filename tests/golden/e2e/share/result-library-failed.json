@@ -175,6 +175,12 @@
      "id": "00000000-0000-4000-8000-000000000001",
      "language": "ja",
      "name": "own-a.wav",
+     "quality": {
+      "clipping_fraction": 0,
+      "formant_seconds": 1.98,
+      "resonance_sensitivity_pct": 0.5,
+      "voiced_seconds": 3.22
+     },
      "stored": true
     }
    ],
