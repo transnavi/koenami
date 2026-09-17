@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '../fixtures';
+import { liveIgnore, test, expect, type Page } from '../fixtures';
 import { app } from '../hooks';
 
 // A two-second cap keeps takes short. Manual stops happen between 1.4 s and 1.7 s of
@@ -13,33 +13,17 @@ const shortCap = async (page: Page) =>
 	});
 const manualStop = 1.4;
 const audio = { maskAudio: true } as const;
-// Live readouts summarise the pitch track over a time window measured in captured
-// samples, so their numbers shift with real capture timing.
-const live = {
-	maskAudio: true,
-	ignore: ['indicators', 'fit-value', 'report-button', 'quality-state', 'live-mode', 'live-time']
-} as const;
+const live = { maskAudio: true, ignore: liveIgnore } as const;
 
 test.describe('recording', () => {
 	test('record with R, stop, analyse in the background, and the take menu', async ({
 		page,
 		studio
 	}) => {
-		// The first analysis is held back so the saved-but-unanalysed state can be observed.
-		let release: (() => void) | null = null;
-		await page.route(
-			'**/api/analyze',
-			async (route) => {
-				if (!release)
-					await new Promise<void>((resolve) => {
-						release = resolve;
-					});
-				await route.continue();
-			},
-			{ times: 1 }
-		);
 		await studio.open('/ja/', shortCap);
 		await studio.until(app.ready);
+		// The first analysis is held back so the saved-but-unanalysed state can be observed.
+		const release = await studio.measure.hold('take');
 		await page.keyboard.press('r');
 		await studio.until(app.recording);
 		await studio.tick(300);
@@ -49,7 +33,7 @@ test.describe('recording', () => {
 		await studio.until(app.stopped + ' && ' + app.ownSamples + ' && ' + app.oneAnalysing);
 		await studio.tick(100);
 		await studio.golden('stopped', audio);
-		release!();
+		await release();
 		await studio.until(app.idle);
 		await studio.tick(1200);
 		await studio.golden('analysed', audio);
@@ -114,18 +98,9 @@ test.describe('recording', () => {
 	});
 
 	test('a failed analysis keeps the take and offers a retry', async ({ page, studio }) => {
-		let fail = true;
-		await page.route('**/api/analyze', async (route) => {
-			if (fail)
-				return route.fulfill({
-					status: 503,
-					contentType: 'text/plain; charset=utf-8',
-					body: '解析サーバーを準備しています。'
-				});
-			return route.continue();
-		});
 		await studio.open('/ja/', shortCap);
 		await studio.until(app.ready);
+		await studio.measure.fail('解析サーバーを準備しています。', 'take');
 		await page.locator('#record').click();
 		await studio.until(app.recording);
 		await studio.until(app.buffered(manualStop));
@@ -133,7 +108,6 @@ test.describe('recording', () => {
 		await studio.until(app.idle);
 		await studio.tick(1200);
 		await studio.golden('analysis-failed', audio);
-		fail = false;
 		await studio.choose('take-select', 'retry');
 		await studio.until('!' + app.analysisPending + ' && ' + app.idle);
 		await studio.tick(600);
@@ -166,20 +140,17 @@ test.describe('recording', () => {
 		await studio.tick(500);
 		await studio.golden('live-shape-window', live);
 		// Measurements that stop arriving leave the live head to fade out.
-		await page.route('**/api/analyze?live=1', (route) =>
-			route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: 'busy' })
-		);
+		await studio.measure.fail('busy', 'live', { times: Infinity });
 		await studio.tick(4000);
 		await studio.golden('live-silent', live);
 		// Measurements that resume after a gap draw the trail with a pause.
-		await page.unroute('**/api/analyze?live=1');
+		await studio.measure.restore('live');
 		await studio.tick(1000);
 		await studio.golden('live-resumed-after-gap', live);
 		await page.keyboard.press('r');
 		await studio.until(app.stopped + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('live-stopped', live);
-		await page.unroute('**/api/analyze?live=1');
 		await page.locator('#live-mode').click();
 		await studio.until(app.recording);
 		await studio.until(app.buffered(3.3));
@@ -187,24 +158,14 @@ test.describe('recording', () => {
 		await studio.golden('live-restarted', live);
 		// A measurement still in flight when live mode stops is discarded, and the buffer
 		// is trimmed once more than twelve seconds have been captured.
-		let release: (() => void) | null = null;
-		await page.route(
-			'**/api/analyze?live=1',
-			async (route) => {
-				await new Promise<void>((resolve) => {
-					release = resolve;
-				});
-				await route.continue();
-			},
-			{ times: 1 }
-		);
+		const release = await studio.measure.hold('live');
 		// The live buffer is trimmed to about twelve seconds, so it never reads more.
 		await studio.until(app.buffered(12), 40_000);
 		await page.waitForTimeout(1500);
 		await studio.tick(500);
 		await page.locator('#live-mode').click();
 		await studio.until(app.stopped + ' && ' + app.idle);
-		release!();
+		await release();
 		await studio.tick(300);
 		await studio.golden('live-stopped-with-request-in-flight', live);
 		await page.locator('#live-mode').click();

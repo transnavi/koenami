@@ -10,7 +10,48 @@ import { domProjection, storageDump, type Observation } from './observe';
 export { expect, type Page };
 export const record = process.env.RECORD === '1';
 export const root = fileURLToPath(new URL('..', import.meta.url));
-export const goldenDir = join(root, 'tests/golden/e2e');
+// The old tree calls the analyzer; the new one measures in the page, so the two
+// make different requests and draw different live tracks. Each keeps its own set.
+export const tree = process.env.KOENAMI_TREE === 'new' ? 'new' : 'old';
+/** Element ids whose state follows a live measurement. Live readouts summarise the pitch
+ *  track over a window measured in captured samples, so their numbers shift with real
+ *  capture timing; on the new tree the measurement itself is of the fake device's audio
+ *  rather than a recorded response, so the verdict it feeds follows it too. */
+/** Element ids that show a captured take's measurement; masked on the new tree with
+ *  `maskAudio` for the reason given where it is applied. */
+export const measuredIgnore: readonly string[] = [
+	'indicators',
+	'fit-value',
+	'report-button',
+	'verdict-readout',
+	'verdict-main',
+	'verdict-word',
+	'verdict-number',
+	'verdict-gate',
+	'verdict-dot',
+	'share-verdict',
+	'share-score'
+];
+export const liveIgnore: readonly string[] = [
+	'indicators',
+	'fit-value',
+	'report-button',
+	'quality-state',
+	'live-mode',
+	'live-time',
+	...(tree === 'new'
+		? [
+				'verdict-readout',
+				'verdict-main',
+				'verdict-word',
+				'verdict-number',
+				'verdict-dot',
+				'share-verdict',
+				'share-score'
+			]
+		: [])
+];
+export const goldenDir = join(root, tree === 'new' ? 'tests/golden/e2e-new' : 'tests/golden/e2e');
 export const fixtureAudio = (name: string) => join(root, 'tests/fixtures/audio', name);
 
 const START = Date.UTC(2026, 0, 1, 3, 0, 0); // 2026-01-01 12:00 JST
@@ -66,7 +107,29 @@ type Studio = {
 	forward: () => Promise<void>;
 	/** Absolute path of an audio fixture. */
 	audio: (name: string) => string;
+	/** A hold on the studio's measurements. The old tree posts audio to the analyzer, so
+	 *  the hold intercepts `/api/analyze`; the new tree measures in the page, so it is
+	 *  `window.voiceApp.measure`, the engine's own gate. Either way: hold the next take
+	 *  or live window until released, fail the next one with a message, or reshape every
+	 *  answer of a kind with a function given as source (it runs in the page on the new
+	 *  tree and on the recorded response on the old). */
+	measure: {
+		hold: (kind?: MeasureKind) => Promise<() => Promise<void>>;
+		/** Fails the next measurement, or every one until `restore` when `times` is Infinity.
+		 *  `network` fails it the way a dropped connection does: the old tree's request is
+		 *  aborted (and the browser's own message, "Failed to fetch", is what the app shows),
+		 *  the new tree's engine fails with `message`. */
+		fail: (
+			message: string,
+			kind?: MeasureKind,
+			options?: { status?: number; times?: number; network?: boolean }
+		) => Promise<void>;
+		restore: (kind?: MeasureKind) => Promise<void>;
+		patch: (kind: MeasureKind, source: string | null) => Promise<void>;
+	};
 };
+/** `take` is a recorded or imported take (or a range of one), `live` a live window. */
+export type MeasureKind = 'take' | 'live';
 
 async function install(page: Page) {
 	await page.addInitScript(() => {
@@ -219,6 +282,12 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				for (const entry of observation.network)
 					if (entry.method === 'POST' && entry.path === '/api/analyze' && entry.body)
 						entry.body = masked;
+				// The old tree's analyzer answered a captured take from a recording keyed by
+				// its length, so its measurement was the same on every run; the new tree
+				// measures the captured samples themselves, so everything derived from them
+				// follows the microphone too.
+				if (tree === 'new') for (const id of measuredIgnore) dom.elements[id] = { ignored: true };
+				const measured = tree === 'new' ? ['features', 'detail', 'measurement', 'quality'] : [];
 				const strip = (value: unknown): unknown => {
 					if (Array.isArray(value)) return value.map(strip);
 					if (value && typeof value === 'object')
@@ -226,6 +295,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 							Object.entries(value).map(([k, v]) => [
 								k,
 								k === 'waveform' ||
+								measured.includes(k) ||
 								(['sha256', 'duration', 'length'].includes(k) &&
 									v !== null &&
 									typeof v !== 'object')
@@ -352,6 +422,111 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			await page.goto(path);
 			await ready();
 		};
+		// Measurement holds, per tree (see the Studio type).
+		const routeOf = (kind?: MeasureKind) =>
+			kind === 'live'
+				? '**/api/analyze?live=1'
+				: kind === 'take'
+					? '**/api/analyze'
+					: '**/api/analyze**';
+		const engineKind = (kind?: MeasureKind) =>
+			kind === 'live' ? 'live' : kind === 'take' ? 'analyze' : undefined;
+		const measure: Studio['measure'] = {
+			hold: async (kind) => {
+				if (tree === 'new') {
+					await page.evaluate((k) => {
+						const w = window as unknown as {
+							voiceApp: { measure: { hold: (kind?: string) => () => void } };
+							__release?: Record<string, () => void>;
+						};
+						(w.__release ??= {})[k ?? '*'] = w.voiceApp.measure.hold(k);
+					}, engineKind(kind));
+					return () =>
+						page.evaluate((k) => {
+							const w = window as unknown as { __release?: Record<string, () => void> };
+							w.__release?.[k ?? '*']?.();
+							delete w.__release?.[k ?? '*'];
+						}, engineKind(kind));
+				}
+				let release: (() => void) | null = null;
+				const held = new Promise<void>((resolve) => {
+					release = resolve;
+				});
+				await page.route(
+					routeOf(kind),
+					async (route) => {
+						await held;
+						await route.continue();
+					},
+					{ times: 1 }
+				);
+				return async () => release!();
+			},
+			fail: async (message, kind, { status = 503, times = 1, network = false } = {}) => {
+				if (tree === 'new') {
+					await page.evaluate(
+						([m, k, n]) =>
+							(
+								window as unknown as {
+									voiceApp: {
+										measure: { fail: (message: string, kind?: string, times?: number) => void };
+									};
+								}
+							).voiceApp.measure.fail(m, k, n === null ? Infinity : n),
+						[message, engineKind(kind), Number.isFinite(times) ? times : null] as const
+					);
+					return;
+				}
+				await page.route(
+					routeOf(kind),
+					(route) =>
+						network
+							? route.abort('connectionfailed')
+							: route.fulfill({ status, contentType: 'text/plain; charset=utf-8', body: message }),
+					Number.isFinite(times) ? { times } : undefined
+				);
+			},
+			restore: async (kind) => {
+				if (tree === 'new') {
+					await page.evaluate(
+						(k) =>
+							(
+								window as unknown as { voiceApp: { measure: { restore: (kind?: string) => void } } }
+							).voiceApp.measure.restore(k),
+						engineKind(kind)
+					);
+					return;
+				}
+				await page.unroute(routeOf(kind));
+			},
+			patch: async (kind, source) => {
+				if (tree === 'new') {
+					await page.evaluate(
+						([k, s]) =>
+							(
+								window as unknown as {
+									voiceApp: { measure: { patch: (kind: string, fn: unknown) => void } };
+								}
+							).voiceApp.measure.patch(
+								k,
+								// The patch is test-authored source (see the Studio type), built in the page.
+								// oxlint-disable-next-line no-implied-eval
+								s ? new Function('return ' + s)() : null
+							),
+						[engineKind(kind)!, source] as const
+					);
+					return;
+				}
+				await page.unroute(routeOf(kind));
+				if (!source) return;
+				// oxlint-disable-next-line no-implied-eval
+				const fn = new Function('return ' + source)() as (detail: unknown) => unknown;
+				await page.route(routeOf(kind), async (route) => {
+					const response = await route.fetch();
+					await route.fulfill({ response, json: fn(await response.json()) });
+				});
+			}
+		};
 		await use({
 			log,
 			golden,
@@ -366,7 +541,8 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			open,
 			back,
 			forward,
-			audio: fixtureAudio
+			audio: fixtureAudio,
+			measure
 		});
 	}
 });

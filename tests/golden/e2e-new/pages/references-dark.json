@@ -1,0 +1,393 @@
+{
+ "url": "/references.html",
+ "title": "Koenami · 参考文献",
+ "lang": "ja",
+ "theme": "dark",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#ff9ecb",
+  "--self": "#bb9ee8",
+  "--accent": "#74bbf2"
+ },
+ "elements": {
+  "acoustics": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "音響指標の定義と計算"
+  },
+  "ref-fant": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "書籍Fant, G. (1960).Acoustic Theory of Speech Production. The Hague: Mouton.使用箇所：声のしくみ：声とは何か"
+  },
+  "ref-titze-book": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "書籍Titze, I. R. (1994).Principles of Voice Production. Englewood Cliffs: Prentice Hall.使用箇所：声のしくみ：声とは何か、人はどうやって声を出しているか"
+  },
+  "ref-titze-1989": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Titze, I. R. (1989). Physiologic and acoustic differences between male and female voices.The Journal of the Acoustical Society of America, 85(4), 1699–1707.doi:10.1121/1.397959使用箇所：声のしくみ：人はどうやって声を出しているか"
+  },
+  "ref-fitch": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Fitch, W. T., & Giedd, J. (1999). Morphology and development of the human vocal tract: A study using magnetic resonance imaging.The Journal of the Acoustical Society of America, 106(3), 1511–1522.doi:10.1121/1.427148使用箇所：声のしくみ：人はどうやって声を出しているか"
+  },
+  "ref-simpson": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Simpson, A. P. (2009). Phonetic differences between male and female speech.Language and Linguistics Compass, 3(2), 621–640.doi:10.1111/j.1749-818X.2009.00125.x使用箇所：声のしくみ：人はどうやって声を出しているか"
+  },
+  "ref-praat": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェアBoersma, P., & Weenink, D.Praat: doing phonetics by computer.fon.hum.uva.nl/praat使用箇所：高さ（自己相関法F0）、響き（Burg法フォルマント）、質感（相互相関法HNR）の計算。測定方法の指標の定義"
+  },
+  "ref-parselmouth": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Jadoul, Y., Thompson, B., & de Boer, B. (2018). Introducing Parselmouth: A Python interface to Praat.Journal of Phonetics, 71, 1–15.doi:10.1016/j.wocn.2018.07.001使用箇所：解析サーバー（acoustics.py）がPraatを呼び出すために使用"
+  },
+  "ref-netzorg": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "国際会議Netzorg, R., Carvalho, N., Guzman, A., Wang, L., Francis, J., Garoute, K. V., Johnson, K., & Anumanchipalli, G. K. (2025). On the production and perception of a single speaker's gender.Interspeech 2025.isca-archive.org使用箇所：響き（ΔF）の計算の参考。声のしくみ：聞き手は声の性別を何で判断しているか本アプリの有声判定やF0の集計は同じ手順ではありません。"
+  },
+  "ref-fisher": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Fisher, R. A. (1936). The use of multiple measurements in taxonomic problems.Annals of Eugenics, 7(2), 179–188.doi:10.1111/j.1469-1809.1936.tb02137.x使用箇所：2D図の「男女差」の軸と声の判定（線形判別の方向）"
+  },
+  "perception": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "声と性別の知覚、印象の評価"
+  },
+  "ref-leung": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（メタ分析）Leung, Y., Oates, J., & Chan, S. P. (2018). Voice, articulation, and prosody contribute to listener perceptions of speaker gender: A systematic review and meta-analysis.Journal of Speech, Language, and Hearing Research, 61(2), 266–297.doi:10.1044/2017_JSLHR-S-17-0067使用箇所：滑舌の聴取レビュー尺度の根拠。声のしくみ：聞き手は声の性別を何で判断しているか、声はどこまで、どうやって変えられるか"
+  },
+  "ref-hillenbrand": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Hillenbrand, J. M., & Clark, M. J. (2009). The role of f0 and formant frequencies in distinguishing the voices of men and women.Attention, Perception, & Psychophysics, 71(5), 1150–1166.doi:10.3758/APP.71.5.1150使用箇所：声のしくみ：聞き手は声の性別を何で判断しているか"
+  },
+  "ref-gelfer": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Gelfer, M. P., & Schofield, K. J. (2000). Comparison of acoustic and perceptual measures of voice in male-to-female transsexuals perceived as female versus those perceived as male.Journal of Voice, 14(1), 22–33.doi:10.1016/S0892-1997(00)80092-2使用箇所：声のしくみ：聞き手は声の性別を何で判断しているか"
+  },
+  "ref-rsos": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー）Rosi, V., & McGettigan, C. (2025). Voice gender diversity: expression, perception and acoustics.Royal Society Open Science, 12(10).doi:10.1098/rsos.251193使用箇所：測定方法の研究資料。声のしくみ：聞き手は声の性別を何で判断しているか、声はどこまで、どうやって変えられるか"
+  },
+  "ref-sakuraba": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌櫻庭京子・今泉敏・峯松信明・田山二朗・堀川直史（2009）「女性と判定される声の特徴 ─性同一性障害者の話声位─」『音声言語医学』50(1), 14–20.doi:10.5112/jjlp.50.14使用箇所：高さの説明の注意書き：高さだけでは性別の印象が決まらないこと"
+  },
+  "ref-nieber": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Nieber, L., Kachel, S., & Scharinger, M. (2026). Acoustic representations of different dimensions of the gendered self. An analysis of nonbinary and cisgender speakers.Journal of Phonetics, 117, 101512.doi:10.1016/j.wocn.2026.101512使用箇所：音源・声道・声質の関係についての研究資料本アプリのPCAや密度スコアを検証した研究ではありません。"
+  },
+  "ref-mcaleer": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌McAleer, P., Todorov, A., & Belin, P. (2014). How do you say 'hello'? Personality impressions from brief novel voices.PLoS ONE, 9(3), e90779.doi:10.1371/journal.pone.0090779使用箇所：聴取レビューの印象尺度の参考。声のしくみ：聞き手は声の性別を何で判断しているか"
+  },
+  "ref-kido": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌木戸博・粕谷英樹（2001）「通常発話の声質に関連した日常表現語—聴取評価による抽出」『日本音響学会誌』57(5).J-STAGE使用箇所：聴取レビューの声質の語彙。声のしくみ：聞き手は声の性別を何で判断しているか"
+  },
+  "ref-kanato": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌金礪愛・中野倫靖・後藤真孝・菊池英明（2016）「歌声の印象評価尺度の構築に基づく多様な印象の自動推定手法」『情報処理学会論文誌』57(5), 1375–1388.PDF使用箇所：聴取レビューの印象尺度の参考"
+  },
+  "ref-coconut": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "プレプリントWatanabe, A., Takamichi, S., Saito, Y., Nakata, W., Xin, D., & Saruwatari, H. (2023). Coco-Nut: Corpus of Japanese utterance and voice characteristics description for prompt-based control. arXiv:2309.13509.arxiv.org/abs/2309.13509使用箇所：聴取レビューの日本語の声の記述語の参考"
+  },
+  "ref-paraspeechcaps": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "プレプリントDiwan, A., Zheng, Z., Harwath, D., & Choi, E. (2025). Scaling rich style-prompted text-to-speech datasets (ParaSpeechCaps). arXiv:2503.04713.arxiv.org/abs/2503.04713使用箇所：滑舌の尺度（clarity群）の参考"
+  },
+  "ref-hasegawa": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "学部論文長谷川翔太（2017）「男性両声類の女声らしさに関わる特徴量の分析」日本大学卒業論文.PDF使用箇所：両声類の声の特徴についての参考。声のしくみ：声はどこまで、どうやって変えられるか1回のコンテスト音声に基づく学部論文で、証拠としては弱い。"
+  },
+  "models": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "推定モデルと音声処理"
+  },
+  "ref-voicepassing": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "国際会議Doukhan, D., Devauchelle, S., Girard-Monneron, L., Chávez Ruz, M., Chaddouk, V., Wagner, I., & Rilliard, A. (2023). Voice Passing: A non-binary voice gender prediction system for evaluating transgender voice transition.Proc. Interspeech 2023, 5207–5211.arxiv.org/abs/2404.15176使用箇所：連続的な女性らしさの推定という設計の参考"
+  },
+  "ref-vgs": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "プレプリントChen, F., Togneri, R., Maybery, M., & Tan, D. (2021). Voice gender scoring and independent acoustic characterization of perceived masculinity and femininity. arXiv:2102.07982.arxiv.org/abs/2102.07982使用箇所：女性らしさ・男性らしさを別々に評価する聴取レビューの設計の参考"
+  },
+  "ref-fujita": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "プレプリントFujita, K., & Ijima, Y. (2026). Investigation for relative voice impression estimation. arXiv:2602.14172.arxiv.org/abs/2602.14172使用箇所：自己教師あり音声表現で印象を推定する設計の参考"
+  },
+  "ref-wavlm": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Chen, S., Wang, C., Chen, Z., Wu, Y., Liu, S., Chen, Z., Li, J., Kanda, N., Yoshioka, T., Xiao, X., Wu, J., Zhou, L., Ren, S., Qian, Y., Qian, Y., Wu, J., Zeng, M., Yu, X., & Wei, F. (2022). WavLM: Large-scale self-supervised pre-training for full stack speech processing.IEEE Journal of Selected Topics in Signal Processing, 16(6), 1505–1518.doi:10.1109/JSTSP.2022.3188113。モデルmicrosoft/wavlm-base-plus-sv（MIT）使用箇所：聴こえ方の推定に使う512次元の話者埋め込み"
+  },
+  "ref-audeering": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "プレプリントBurkhardt, F., Wagner, J., Wierstorf, H., Eyben, F., & Schuller, B. (2023). Speech-based age and gender prediction with transformers. arXiv:2306.16962.arxiv.org/abs/2306.16962。モデルaudeering/wav2vec2-large-robust-6-ft-age-gender（CC BY-NC-SA 4.0）使用箇所：聴こえ方の年齢の参考値。性別分類の出力は使用しません日本語や練習中の発声について「何歳に聞こえるか」との一致は未検証。"
+  },
+  "ref-silero": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェアSilero Team (2024).Silero VAD: pre-trained enterprise-grade voice activity detector.github.com/snakers4/silero-vad（MIT）使用箇所：見本の音声の無音判定（screen_reference_speech.py）"
+  },
+  "ref-whisper": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "国際会議Radford, A., Kim, J. W., Xu, T., Brockman, G., McLeavey, C., & Sutskever, I. (2023). Robust speech recognition via large-scale weak supervision.Proc. ICML 2023.arxiv.org/abs/2212.04356。実装faster-whisper、モデル large-v3-turbo使用箇所：見本の音声の文字起こし判定と、ローカル版の単語位置推定"
+  },
+  "ref-sudachi": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "国際会議Takaoka, K., Hisamoto, S., Kawahara, N., Sakamoto, M., Uchida, Y., & Matsumoto, Y. (2018). Sudachi: a Japanese tokenizer for business.Proc. LREC 2018.github.com/WorksApplications/Sudachi使用箇所：日本語の単語分割と、話す速さのモーラ数"
+  },
+  "ref-irodori": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェアAratako.Irodori-TTS.github.com/Aratako/Irodori-TTS使用箇所：日本語音声合成の参考。本アプリには未搭載"
+  },
+  "data": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "見本の音声と素材"
+  },
+  "ref-jvs": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "プレプリントTakamichi, S., Mitsui, K., Saito, Y., Koriyama, T., Tanji, N., & Saruwatari, H. (2019). JVS corpus: free Japanese multi-speaker voice corpus. arXiv:1908.06248.arxiv.org/abs/1908.06248。配布ページと利用規約使用箇所：日本語の見本（公開版は10音声、読み込みで100人・5,000音声）個人利用・非商用研究等に限られ、全体の再配布には制限があります。タグ情報はCC BY-SA 4.0。"
+  },
+  "ref-commonvoice": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "国際会議Ardila, R., Branson, M., Davis, K., Henretty, M., Kohler, M., Meyer, J., Morais, R., Saunders, L., Tyers, F. M., & Weber, G. (2020). Common Voice: A massively-multilingual speech corpus.Proc. LREC 2020, 4218–4222.aclanthology.org。使用ミラー：Common Voice v17、日本語v25（CC0）使用箇所：日本語・中国語・英語・韓国語の見本"
+  },
+  "ref-voicevox": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェアVOICEVOX（ヒホ）.voicevox.hiroshiba.jp。利用規約、音声ライブラリの規約使用箇所：AI表示の合成音声の見本54音声（四国めたん、春日部つむぎ、雨晴はう、冥鳴ひまり、九州そら、中国うさぎ、玄野武宏、白上虎太郎、栗田まろん）"
+  },
+  "ref-vvd": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "プレプリントNetzorg, R., Cote, A., Koshin, S., Garoute, K. V., & Anumanchipalli, G. K. (2024). Speech after gender: A trans-feminine perspective on next steps for speech science and technology (Versatile Voice Dataset). arXiv:2407.07235.arxiv.org/abs/2407.07235使用箇所：ローカル版の「Voice lab」の講師音声（複数の発声条件）"
+  },
+  "ref-noto": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "フォントGoogle.Noto Sans JP（SIL Open Font License 1.1）.fonts.google.com使用箇所：共有カードの文字（build_share_font.pyでサブセット化）"
+  },
+  "ref-resvg": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェアresvg（github.com/linebender/resvg、MPL-2.0）、WASM版resvg-js使用箇所：共有カードの画像をサーバーで描画"
+  },
+  "practice": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "練習・医療の資料"
+  },
+  "ref-davies": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー）Davies, S., Papp, V. G., & Antoni, C. (2015). Voice and communication change for gender nonconforming individuals: Giving voice to the person inside.International Journal of Transgenderism, 16(3), 117–159.doi:10.1080/15532739.2015.1075931使用箇所：声のしくみ：声はどこまで、どうやって変えられるか、無理をしないために"
+  },
+  "ref-carew": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Carew, L., Dacakis, G., & Oates, J. (2007). The effectiveness of oral resonance therapy on the perception of femininity of voice in male-to-female transsexuals.Journal of Voice, 21(5), 591–603.doi:10.1016/j.jvoice.2006.05.005使用箇所：声のしくみ：声はどこまで、どうやって変えられるか、無理をしないために"
+  },
+  "ref-ziegler": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（メタ分析）Ziegler, A., Henke, T., Wiedrick, J., & Helou, L. B. (2018). Effectiveness of testosterone therapy for masculinizing voice in transgender patients: A meta-analytic review.International Journal of Transgenderism, 19(1), 25–45.doi:10.1080/15532739.2017.1411857使用箇所：声のしくみ：声はどこまで、どうやって変えられるか"
+  },
+  "ref-nygren": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Nygren, U., Nordenskjöld, A., Arver, S., & Södersten, M. (2016). Effects on voice fundamental frequency and satisfaction with voice in trans men during testosterone treatment—A longitudinal study.Journal of Voice, 30(6), 766.e23–766.e34.doi:10.1016/j.jvoice.2015.10.016使用箇所：声のしくみ：声はどこまで、どうやって変えられるか"
+  },
+  "ref-soc8": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（診療ガイドライン）Coleman, E., et al. (2022). Standards of Care for the Health of Transgender and Gender Diverse People, Version 8.International Journal of Transgender Health, 23(sup1), S1–S259.doi:10.1080/26895269.2022.2100644使用箇所：声のしくみ：声はどこまで、どうやって変えられるか、無理をしないために"
+  },
+  "ref-huang": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Huang, T., Wang, X., Xu, T., Zhao, W., Cao, Y., Kim, H., & Yi, B. (2024). Acoustic analysis of Mandarin-speaking transgender women.Journal of Voice, advance online publication.doi:10.1016/j.jvoice.2024.08.037使用箇所：中国語の見本と練習の参考資料"
+  },
+  "ref-twvq": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌Wang, L., Zhang, J. H., Wang, C. X., Zhang, X., Ding, H. J., Jin, Y. K., Hu, R. Q., Zhang, Q. F., & Chen, Z. (2022). [Introduction and development of the Trans Woman Voice Questionnaire authorized simplified Chinese translation]（中国語）.中华耳鼻咽喉头颈外科杂志, 57(11), 1311–1318.doi:10.3760/cma.j.cn115330-20220217-00072使用箇所：中国語の声の質問票（TWVQ-SC）の参考資料"
+  },
+  "ref-voiceviewer": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "学会抄録王路・武执政・梁一晨・饶永辉・顾毅骋・张庆丰（2024）「自主研发 VoiceViewer APP 在跨性别患者嗓音评估中的应用」中国医师协会耳鼻咽喉头颈外科医师分会年会 论文汇编, p. 239.PDF。アプリ：VoiceViewer使用箇所：中国語圏の音声モニタリングとPraatとの比較の参考抄録のみで、査読論文ではありません。"
+  },
+  "ref-tvl": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "講座（動画）TransVoiceLessons（Zheanna Erose ほか）。英語のYouTubeチャンネルと講座.youtube.com/@TransVoiceLessons使用箇所：声のしくみ：声はどこまで、どうやって変えられるか、これから書く節練習者向けの教材で、査読を経た研究ではない。"
+  },
+  "ref-aogi": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料あおぎ葵（2021年7月12日）「MTF声音女性化练习手册」Bilibili.bilibili.com/opus/546442165017071774使用箇所：中国語の練習資料。声のしくみ：これから書く節コミュニティの練習資料で、査読を経た研究ではない。"
+  },
+  "ref-mtfwiki": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキMtF.wiki「嗓音女性化训练」（中国語）.mtf.wiki/zh-cn/docs/vocal-therapy使用箇所：中国語のトレーニング情報。声のしくみ：これから書く節コミュニティ編集のウィキ。"
+  },
+  "ref-transnavi": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Webとらんすナビ.transnavi.jp（声のページ）使用箇所：配色の参考。日本の医療機関の情報"
+  },
+  "tools": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "関連ツール"
+  },
+  "ref-ags": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェア（Web）Acoustic Gender Space.acousticgender.space使用箇所：聴ける分布図と再生中の移動点の設計の参考"
+  },
+  "ref-phonia": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェア（Web）Phonia.phonia.app使用箇所：波形・スペクトル・範囲選択の設計の参考"
+  },
+  "ref-informant": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェアInFormant.in-formant.app使用箇所：関連ツール"
+  },
+  "ref-transvoice": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェア（Web）TransVoice.transvoice.app使用箇所：読む練習とリアルタイム表示の参考"
+  },
+  "ref-streamlit": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェア（Web）発声タイプ判定（Streamlit）.streamlit.app使用箇所：レポート表示の参考。音響特徴・MFCCとランダムフォレストによる分類そのモデルや魅力度の採点は本アプリでは使っていません。2026年9月時点でログインが必要です。"
+  },
+  "ref-koehakaru": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェア（Web）こえ、はかる。voice-impression-checker.vercel.app（2026年9月16日閲覧）使用箇所：判定結果の共有（投稿文・結果リンク・参考文献ページ）の設計の参考"
+  },
+  "ref-mira": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ソフトウェア（Web）Mira Voice / Syn-Percept 音声スコアラー.app.mzk.moe（2026年9月16日閲覧）使用箇所：入力品質の確認を判定の前に置く設計と、指標ごとの説明の参考"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-tour": {
+    "done": true
+   },
+   "voice-theme": "system"
+  },
+  "idb": {}
+ },
+ "network": [],
+ "media": [],
+ "errors": []
+}

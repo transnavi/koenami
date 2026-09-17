@@ -151,16 +151,7 @@ test.describe('own audio', () => {
 		await studio.tick(300);
 		await studio.golden('own-range-reset');
 		// A selection whose analysis fails is reported.
-		await page.route(
-			'**/api/analyze',
-			(route) =>
-				route.fulfill({
-					status: 503,
-					contentType: 'text/plain; charset=utf-8',
-					body: '解析サーバーを準備しています。'
-				}),
-			{ times: 1 }
-		);
+		await studio.measure.fail('解析サーバーを準備しています。', 'take');
 		await dragSignal(page, 200, 500);
 		await studio.until(app.idle);
 		await studio.tick(300);

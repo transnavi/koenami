@@ -191,19 +191,17 @@ test.describe('verdict and sharing', () => {
 	});
 
 	test('a clipping take and an unstable resonance fail the gate', async ({ page, studio }) => {
-		let patch: Record<string, number> = { clipping_fraction: 0.02 };
-		await page.route('**/api/analyze', async (route) => {
-			const response = await route.fetch();
-			const json = await response.json();
-			await route.fulfill({ response, json: { ...json, ...patch } });
-		});
 		await studio.open('/ja/');
 		await studio.until(app.ready);
+		await studio.measure.patch('take', `(detail) => ({ ...detail, clipping_fraction: 0.02 })`);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.analysed);
 		await studio.tick(600);
 		await studio.golden('gate-clipping');
-		patch = { resonance_sensitivity_pct: 20 };
+		await studio.measure.patch(
+			'take',
+			`(detail) => ({ ...detail, resonance_sensitivity_pct: 20 })`
+		);
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
 		await studio.until(app.ownNameStartsWith('own-b'));
 		await studio.until(app.analysed);

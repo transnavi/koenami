@@ -49,18 +49,14 @@ test.describe('server and storage faults', () => {
 			[422, '音声を解析できませんでした。']
 		];
 		for (const [status, body] of statuses) {
-			await page.route(
-				'**/api/analyze',
-				(route) => route.fulfill({ status, contentType: 'text/plain; charset=utf-8', body }),
-				{ times: 1 }
-			);
+			await studio.measure.fail(body, 'take', { status });
 			await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 			await studio.until(app.idle);
 			await studio.tick(300);
 			await studio.golden(`analyze-${status}`);
 			await studio.tick(5000);
 		}
-		await page.route('**/api/analyze', (route) => route.abort('connectionfailed'), { times: 1 });
+		await studio.measure.fail('Failed to fetch', 'take', { network: true });
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.idle);
 		await studio.tick(300);
@@ -89,14 +85,6 @@ test.describe('server and storage faults', () => {
 	});
 
 	test('analysis responses without visuals or tracks still render', async ({ page, studio }) => {
-		await page.route('**/api/analyze', async (route) => {
-			const response = await route.fetch();
-			const detail = await response.json();
-			delete detail.visuals;
-			delete detail.track;
-			delete detail.features.f0;
-			await route.fulfill({ response, json: detail });
-		});
 		await page.route('**/api/detail/**', async (route) => {
 			const response = await route.fetch();
 			const detail = await response.json();
@@ -105,6 +93,10 @@ test.describe('server and storage faults', () => {
 		});
 		await studio.open('/ja/');
 		await studio.until(app.ready);
+		await studio.measure.patch(
+			'take',
+			`(detail) => { delete detail.visuals; delete detail.track; delete detail.features.f0; return detail; }`
+		);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.idle);
 		for (const view of ['pitch', 'spectrogram', 'spectrum', 'waveform']) {

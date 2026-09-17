@@ -1,30 +1,14 @@
 import { readFileSync } from 'node:fs';
 
-import { test, type Page } from '../fixtures';
+import { test } from '../fixtures';
 import { app } from '../hooks';
-
-// Holds the next analysis until released, so the busy state can be observed.
-async function hold(page: Page) {
-	let release: (() => void) | null = null;
-	const held = new Promise<void>((resolve) => {
-		release = resolve;
-	});
-	await page.route(
-		'**/api/analyze',
-		async (route) => {
-			await held;
-			await route.continue();
-		},
-		{ times: 1 }
-	);
-	return () => release!();
-}
 
 test.describe('busy and recording guards', () => {
 	test('controls ignore input while an upload is being analysed', async ({ page, studio }) => {
 		await studio.open('/ja/');
 		await studio.until(app.ready);
-		const release = await hold(page);
+		// The next analysis is held until released, so the busy state can be observed.
+		const release = await studio.measure.hold('take');
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.busy);
 		await studio.tick(100);
@@ -42,7 +26,7 @@ test.describe('busy and recording guards', () => {
 		await page.locator('#voice-map').click({ position: { x: 400, y: 300 } });
 		await studio.tick(200);
 		await studio.golden('still-busy-nothing-changed');
-		release();
+		await release();
 		await studio.until(app.analysed);
 		await studio.tick(300);
 		await studio.golden('released');

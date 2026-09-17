@@ -1,4 +1,4 @@
-import { test, type Page } from '../fixtures';
+import { liveIgnore, test, type Page } from '../fixtures';
 import { app } from '../hooks';
 
 // Requests that are superseded before they answer: a held response is released only
@@ -69,8 +69,7 @@ test.describe('superseded requests', () => {
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.analysed);
 		await studio.tick(300);
-		const range = holdOnce(page, '**/api/analyze');
-		await range.installed;
+		const releaseRange = await studio.measure.hold('take');
 		const box = (await page.locator('#signal-canvas').boundingBox())!;
 		await page.mouse.move(box.x + 200, box.y + 80);
 		await page.mouse.down();
@@ -79,7 +78,7 @@ test.describe('superseded requests', () => {
 		await studio.until(app.range('own'));
 		await page.locator('#range-reset').click();
 		await studio.until(app.noRange('own'));
-		range.release();
+		await releaseRange();
 		await studio.until(app.idle);
 		await studio.tick(600);
 		await studio.golden('stale-range-dropped');
@@ -163,23 +162,17 @@ test.describe('superseded requests', () => {
 
 test.describe('live tracks the analyzer could return', () => {
 	test('sparse, gapped, flat and empty measurements', async ({ page, studio }) => {
-		// The recorded three-second live response is reshaped on the way to the app.
-		let shape = 'sparse';
-		await page.route('**/api/analyze?live=1', async (route) => {
-			const response = await route.fetch();
-			const detail = await response.json();
-			const rows = detail.track as { t: number }[];
-			if (shape === 'sparse') detail.track = rows.filter((_, i) => i % 12 === 0);
-			else if (shape === 'gapped') detail.track = rows.filter((r) => r.t < 0.8 || r.t > 1.6);
+		// The live measurement is reshaped on the way to the app.
+		const shapes = {
+			sparse: `(detail) => ({ ...detail, track: detail.track.filter((_, i) => i % 12 === 0) })`,
+			gapped: `(detail) => ({ ...detail, track: detail.track.filter((r) => r.t < 0.8 || r.t > 1.6) })`,
 			// Every frame measures the same voice: the shape collapses to a point.
-			else if (shape === 'flat') {
-				const base = rows.find((r) => Object.values(r).every((v) => typeof v === 'number'))!;
-				detail.track = rows.map((r) => ({ ...base, t: r.t }));
-			} else if (shape === 'empty') detail.track = [];
-			await route.fulfill({ response, json: detail });
-		});
+			flat: `(detail) => { const base = detail.track.find((r) => Object.values(r).every((v) => typeof v === 'number')); return { ...detail, track: detail.track.map((r) => ({ ...base, t: r.t })) }; }`,
+			empty: `(detail) => ({ ...detail, track: [] })`
+		};
 		await studio.open('/ja/');
 		await studio.until(app.ready);
+		await studio.measure.patch('live', shapes.sparse);
 		await page.locator('#live-mode').click();
 		await studio.until(app.recording);
 		await studio.until(app.buffered(3.3));
@@ -188,53 +181,25 @@ test.describe('live tracks the analyzer could return', () => {
 		await studio.tick(1000);
 		await studio.golden('live-sparse', {
 			maskAudio: true,
-			ignore: [
-				'indicators',
-				'fit-value',
-				'report-button',
-				'quality-state',
-				'live-mode',
-				'live-time'
-			]
+			ignore: liveIgnore
 		});
-		shape = 'gapped';
+		await studio.measure.patch('live', shapes.gapped);
 		await studio.tick(1500);
 		await studio.golden('live-gapped', {
 			maskAudio: true,
-			ignore: [
-				'indicators',
-				'fit-value',
-				'report-button',
-				'quality-state',
-				'live-mode',
-				'live-time'
-			]
+			ignore: liveIgnore
 		});
-		shape = 'flat';
+		await studio.measure.patch('live', shapes.flat);
 		await studio.tick(1500);
 		await studio.golden('live-flat', {
 			maskAudio: true,
-			ignore: [
-				'indicators',
-				'fit-value',
-				'report-button',
-				'quality-state',
-				'live-mode',
-				'live-time'
-			]
+			ignore: liveIgnore
 		});
-		shape = 'empty';
+		await studio.measure.patch('live', shapes.empty);
 		await studio.tick(6000);
 		await studio.golden('live-empty', {
 			maskAudio: true,
-			ignore: [
-				'indicators',
-				'fit-value',
-				'report-button',
-				'quality-state',
-				'live-mode',
-				'live-time'
-			]
+			ignore: liveIgnore
 		});
 		await page.keyboard.press('r');
 		await studio.until(app.stopped + ' && ' + app.idle);

@@ -29,7 +29,20 @@ stay evidence when the SvelteKit tree replaces `web/`.
   `recording-index`, `recording:<uuid>`, `references`, `jvs-index`, `jvs-audio:<id>`.
   User data must survive the rewrite, so these are pinned exactly.
 - **Requests**: method, path, sorted query and body hash of every `/api/*` and
-  `/data/*` request, in order. The order is deliberate (catalog before library before
+  `/data/*` request, in order. The two trees differ here — the SvelteKit studio
+  measures the listener's own voice in the page — so each keeps its own set:
+  `tests/golden/e2e` and `tests/golden/canvas` are recorded against `web/`
+  (`KOENAMI_TREE=old`), `tests/golden/e2e-new` and `tests/golden/canvas-new`
+  against `src/` (`KOENAMI_TREE=new`), and a change to shared behaviour has to
+  appear in both. Everything else in this document applies to both sets.
+  A scenario that needs to hold, fail or reshape a measurement asks
+  `studio.measure` (`e2e/fixtures.ts`), which intercepts `/api/analyze` on the
+  old tree and drives `window.voiceApp.measure`, the engine's own gate, on the new.
+  The old tree's analyzer answered a captured take from a recording keyed by its
+  length, so its measurement was the same on every run; the new tree measures the
+  captured samples, so with `maskAudio` it also masks what derives from them
+  (`features`, `detail`, `measurement`, `quality` in storage and the readout,
+  fit, verdict and share elements — `measuredIgnore`). The order is deliberate (catalog before library before
   detail); a rewrite that fetches concurrently changes behaviour the user can see
   (which data arrives first) and must be a conscious golden change.
 - **Downloads**: file names and the bytes of exported WAV, JSON and HTML.
@@ -40,7 +53,7 @@ stay evidence when the SvelteKit tree replaces `web/`.
 - **Error and notice text**, in Japanese, exactly as today.
 - **The test hooks** in `e2e/hooks.ts`: `window.voiceApp` on the studio page with
   `state.{refFull, loadingLanguage, busy, analyzing (a Set), ownFull, ownPCM, ownName,
-  recording, selected, lang, ranges, words, liveTrack}`, `captureDebug()` returning
+  recording, selected, lang, ranges, words, liveTrack}`, `measure` (the engine's gate on the new tree: `hold`, `fail`, `restore`, `patch`), `captureDebug()` returning
   `{bufferSeconds, monitoring}` and `map.hit` (plotted points with `sample` and `xy`);
   `window.reviewApp` on the review page with `queue`, `at`, `mode`, `lang`;
   `window.pairsApp` on the pairs page with `queue` and `at`. These are the only
