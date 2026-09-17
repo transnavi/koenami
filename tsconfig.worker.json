@@ -1,8 +1,14 @@
 {
-  "compilerOptions": {
-    "target": "ES2022", "module": "ESNext", "moduleResolution": "bundler",
-    "lib": ["ES2022"], "strict": true, "noEmit": true, "skipLibCheck": true, "allowJs": true,
-    "types": ["./worker-configuration.d.ts"]
-  },
-  "include": ["worker.ts", "worker/analyzer.ts", "worker-configuration.d.ts", "worker-modules.d.ts"]
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"lib": ["ES2022"],
+		"strict": true,
+		"noEmit": true,
+		"skipLibCheck": true,
+		"allowJs": true,
+		"types": ["./worker-configuration.d.ts"]
+	},
+	"include": ["worker.ts", "worker/analyzer.ts", "worker-configuration.d.ts", "worker-modules.d.ts"]
 }

@@ -5,5 +5,11 @@ declare class AudioWorkletProcessor {
 }
 declare function registerProcessor(
 	name: string,
-	processor: new () => AudioWorkletProcessor & { process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean }
+	processor: new () => AudioWorkletProcessor & {
+		process(
+			inputs: Float32Array[][],
+			outputs: Float32Array[][],
+			parameters: Record<string, Float32Array>
+		): boolean;
+	}
 ): void;

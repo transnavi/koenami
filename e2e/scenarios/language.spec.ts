@@ -1,7 +1,6 @@
 import { test, expect } from '../fixtures';
 import { app } from '../hooks';
 
-
 test.describe('reference language', () => {
 	test('switching languages pushes the route and restores it on back', async ({ page, studio }) => {
 		await studio.open('/');
@@ -46,7 +45,14 @@ test.describe('reference language', () => {
 		const missing = await page.goto('/xx/');
 		expect(missing?.status()).toBe(404);
 		// The root keeps the language of the saved session.
-		await studio.open('/', async (p) => p.addInitScript(() => localStorage.setItem('koenami-session', JSON.stringify({ lang: 'ko', group: 'male', sort: 'name' }))));
+		await studio.open('/', async (p) =>
+			p.addInitScript(() =>
+				localStorage.setItem(
+					'koenami-session',
+					JSON.stringify({ lang: 'ko', group: 'male', sort: 'name' })
+				)
+			)
+		);
 		await studio.until(app.languageLoaded('ko') + ' && ' + app.notBusy);
 		await studio.tick(300);
 		await studio.golden('root-with-session');
@@ -55,7 +61,9 @@ test.describe('reference language', () => {
 });
 
 test('a saved session naming an unknown language falls back to Japanese', async ({ studio }) => {
-	await studio.open('/', async (p) => p.addInitScript(() => localStorage.setItem('koenami-session', JSON.stringify({ lang: 'xx' }))));
+	await studio.open('/', async (p) =>
+		p.addInitScript(() => localStorage.setItem('koenami-session', JSON.stringify({ lang: 'xx' })))
+	);
 	await studio.until(app.languageLoaded('ja') + ' && ' + app.notBusy);
 	await studio.tick(300);
 	await studio.golden('unknown-session-language');

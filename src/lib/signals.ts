@@ -8,7 +8,11 @@ export type SignalDetail = {
 	duration: number;
 	offset?: number;
 	track?: { t: number; f0?: number | null }[];
-	visuals?: { waveform?: [number, number][]; spectrogram?: { data: string; frames: number; bins: number }; spectrum?: { db: number[]; hz_step: number } };
+	visuals?: {
+		waveform?: [number, number][];
+		spectrogram?: { data: string; frames: number; bins: number };
+		spectrum?: { db: number[]; hz_step: number };
+	};
 };
 type Range = [number, number] | null;
 type Drag = { x: number; y: number; end?: number };
@@ -36,7 +40,11 @@ export class SignalView {
 	width = 0;
 	height = 0;
 	time: Partial<Record<Side, number>> & { animate?: boolean } = {};
-	constructor(canvas: HTMLCanvasElement, onRange: SignalView['onRange'], onSeek: SignalView['onSeek']) {
+	constructor(
+		canvas: HTMLCanvasElement,
+		onRange: SignalView['onRange'],
+		onSeek: SignalView['onSeek']
+	) {
 		this.canvas = canvas;
 		this.ctx = canvas.getContext('2d')!;
 		this.onRange = onRange;
@@ -74,7 +82,12 @@ export class SignalView {
 			this.drag = { x: e.offsetX, y: e.offsetY };
 		});
 		canvas.addEventListener('pointermove', (e) => {
-			canvas.style.cursor = e.offsetY < this.timelineHeight ? 'ew-resize' : this.mode === 'pitch' && e.offsetX < this.gutter ? 'pointer' : 'crosshair';
+			canvas.style.cursor =
+				e.offsetY < this.timelineHeight
+					? 'ew-resize'
+					: this.mode === 'pitch' && e.offsetX < this.gutter
+						? 'pointer'
+						: 'crosshair';
 			if (this.drag) {
 				this.drag.end = e.offsetX;
 				this.dirty = true;
@@ -117,14 +130,24 @@ export class SignalView {
 			ticks: { hz: number; y: number; label: string }[] = [];
 		for (let m = 36; m <= 72; m += step) {
 			const hz = 440 * Math.pow(2, (m - 69) / 12);
-			ticks.push({ hz, y: this.pitchY(hz, top, ph), label: this.pitchUnit === 'note' ? NOTE_NAMES[m % 12] + (Math.floor(m / 12) - 1) : `${Math.round(hz)} Hz` });
+			ticks.push({
+				hz,
+				y: this.pitchY(hz, top, ph),
+				label:
+					this.pitchUnit === 'note'
+						? NOTE_NAMES[m % 12] + (Math.floor(m / 12) - 1)
+						: `${Math.round(hz)} Hz`
+			});
 		}
 		return ticks;
 	}
 	timeAt(x: number, full = false) {
 		const duration = this.data[this.source]?.duration || 0,
 			range = full ? [0, duration] : this.ranges[this.source] || [0, duration];
-		return range[0] + clamp((x - this.gutter) / (this.width - this.gutter - 10), 0, 1) * (range[1] - range[0]);
+		return (
+			range[0] +
+			clamp((x - this.gutter) / (this.width - this.gutter - 10), 0, 1) * (range[1] - range[0])
+		);
 	}
 	set(side: Side, detail: SignalDetail | null) {
 		this.data[side] = detail;
@@ -194,7 +217,10 @@ export class SignalView {
 		const top = this.timelineHeight + 2,
 			ph = h - top - 17,
 			pitchTicks = this.mode === 'pitch' && ph > 5 ? this.pitchTicks(top, ph) : [];
-		this.gutter = Math.max(38, ...pitchTicks.map((t) => Math.ceil(c.measureText(t.label).width) + 18));
+		this.gutter = Math.max(
+			38,
+			...pitchTicks.map((t) => Math.ceil(c.measureText(t.label).width) + 18)
+		);
 		const x = this.gutter,
 			pw = w - x - 10;
 		const base = this.data[this.source],
@@ -211,7 +237,12 @@ export class SignalView {
 		}
 		c.stroke();
 		const selection =
-			this.drag && finite(this.drag.end) ? [this.timeAt(this.drag.x, this.drag.y < this.timelineHeight), this.timeAt(this.drag.end, this.drag.y < this.timelineHeight)] : this.ranges[this.source];
+			this.drag && finite(this.drag.end)
+				? [
+						this.timeAt(this.drag.x, this.drag.y < this.timelineHeight),
+						this.timeAt(this.drag.end, this.drag.y < this.timelineHeight)
+					]
+				: this.ranges[this.source];
 		if (selection) {
 			const [a, b] = selection;
 			c.fillStyle = colors[this.source];
@@ -219,7 +250,12 @@ export class SignalView {
 			c.fillRect(x + (a / dur) * pw, 0, ((b - a) / dur) * pw, this.timelineHeight);
 			c.globalAlpha = 1;
 			c.strokeStyle = colors[this.source];
-			c.strokeRect(x + (Math.min(a, b) / dur) * pw, 0.5, (Math.abs(b - a) / dur) * pw, this.timelineHeight - 1);
+			c.strokeRect(
+				x + (Math.min(a, b) / dur) * pw,
+				0.5,
+				(Math.abs(b - a) / dur) * pw,
+				this.timelineHeight - 1
+			);
 		}
 		c.strokeStyle = grid;
 		c.beginPath();
@@ -266,7 +302,10 @@ export class SignalView {
 					color = colors[side];
 				if (this.mode === 'pitch') {
 					const rows = original!.track || [],
-						r = this.live && side === 'own' ? [Math.max(0, original!.duration - 12), original!.duration] : active;
+						r =
+							this.live && side === 'own'
+								? [Math.max(0, original!.duration - 12), original!.duration]
+								: active;
 					const yy = (v: number) => this.pitchY(v, top, ph);
 					if (this.pitchBand?.every(finite) && side === sides[0]) {
 						c.fillStyle = colors.ref;
@@ -298,7 +337,17 @@ export class SignalView {
 							a = clamp((active[0] - offset) / detail.duration, 0, 1),
 							b = clamp((active[1] - offset) / detail.duration, 0, 1);
 						c.globalAlpha = this.overlay ? 0.78 : 1;
-						c.drawImage(im, a * im.width, 0, Math.max(1, (b - a) * im.width), im.height, x, top, pw, ph);
+						c.drawImage(
+							im,
+							a * im.width,
+							0,
+							Math.max(1, (b - a) * im.width),
+							im.height,
+							x,
+							top,
+							pw,
+							ph
+						);
 						c.globalAlpha = 1;
 					}
 				} else if (this.mode === 'spectrum') {
@@ -346,7 +395,15 @@ export class SignalView {
 		c.textAlign = 'left';
 		for (let i = 0; i <= 4; i++) {
 			c.textAlign = i === 0 ? 'left' : i === 4 ? 'right' : 'center';
-			c.fillText(this.mode === 'spectrum' ? `${i * 1.25}k` : this.overlay ? `${i * 25}%` : `${(range[0] + ((range[1] - range[0]) * i) / 4).toFixed(1)}s`, x + (pw * i) / 4, h - 3);
+			c.fillText(
+				this.mode === 'spectrum'
+					? `${i * 1.25}k`
+					: this.overlay
+						? `${i * 25}%`
+						: `${(range[0] + ((range[1] - range[0]) * i) / 4).toFixed(1)}s`,
+				x + (pw * i) / 4,
+				h - 3
+			);
 		}
 		c.textAlign = 'left';
 		for (const side of sides) {

@@ -1,6 +1,5 @@
-import { test, expect } from '../fixtures';
+import { test } from '../fixtures';
 import { app } from '../hooks';
-
 
 // The research library (KOENAMI_PUBLIC=0 only) replaces the gender groups by teacher
 // configurations.
@@ -36,7 +35,10 @@ test.describe('research library', () => {
 		await studio.choose('sort', 'name');
 		await studio.tick(200);
 		await studio.golden('teacher-all');
-		await page.locator('#sample-list details.speaker-folder[data-speaker*="003"] summary').first().click();
+		await page
+			.locator('#sample-list details.speaker-folder[data-speaker*="003"] summary')
+			.first()
+			.click();
 		await page.locator('.sample-row[data-id="lab-3"]').click();
 		await studio.until(app.selected('lab-3'));
 		await page.locator('#play-reference').click();

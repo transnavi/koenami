@@ -7,6 +7,7 @@
  * its answer through an `AbortSignal`, and the worker skips a call it has
  * not started yet. */
 import type { Detail, PCM } from '$lib/studio/types';
+
 import MeasureWorker from './worker?worker';
 import type { MeasureCall, MeasureResponse } from './worker';
 
@@ -27,7 +28,8 @@ function connect(): Worker {
 		else if ('cancelled' in data) waiting.reject(abortError());
 		else waiting.resolve('json' in data ? data.json : data.samples);
 	};
-	worker.onerror = (event) => fail(new Error(event.message || 'Measurement failed in the browser.'));
+	worker.onerror = (event) =>
+		fail(new Error(event.message || 'Measurement failed in the browser.'));
 	return worker;
 }
 
@@ -55,7 +57,7 @@ function send<T>(call: MeasureCall, transfer: Transferable[], signal?: AbortSign
 		};
 		pending.set(id, {
 			resolve: (value) => settle(() => resolve(value as T)),
-			reject: (error) => settle(() => reject(error)),
+			reject: (error) => settle(() => reject(error))
 		});
 		signal?.addEventListener('abort', abort, { once: true });
 		try {
@@ -92,11 +94,21 @@ export async function live(pcm: PCM, signal?: AbortSignal): Promise<Detail> {
 }
 
 /** Mixes interleaved samples to the mono 16 kHz the engine measures. */
-export async function mono16(samples: Float32Array, channels: number, rate: number, signal?: AbortSignal): Promise<PCM> {
-	if (!Number.isInteger(channels) || channels < 1) throw new Error('Audio must have a whole number of channels.');
+export async function mono16(
+	samples: Float32Array,
+	channels: number,
+	rate: number,
+	signal?: AbortSignal
+): Promise<PCM> {
+	if (!Number.isInteger(channels) || channels < 1)
+		throw new Error('Audio must have a whole number of channels.');
 	if (!Number.isFinite(rate) || rate <= 0) throw new Error('Audio must carry a sample rate.');
 	const owned = copy(samples);
-	return (await send<Float32Array>({ kind: 'mono16', samples: owned, channels, rate }, [owned.buffer], signal)) as PCM;
+	return (await send<Float32Array>(
+		{ kind: 'mono16', samples: owned, channels, rate },
+		[owned.buffer],
+		signal
+	)) as PCM;
 }
 
 /** The engine's measurement version, for comparing a stored take with it. */

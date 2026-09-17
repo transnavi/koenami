@@ -4,7 +4,10 @@ import { app, tour } from '../hooks';
 const card = 'dialog.tour-card';
 
 test.describe('first-visit guide', () => {
-	test('walks through the studio, pauses, resumes, finishes and restarts', async ({ page, studio }) => {
+	test('walks through the studio, pauses, resumes, finishes and restarts', async ({
+		page,
+		studio
+	}) => {
 		await studio.open('/ja/', undefined, { tour: true });
 		await studio.until(app.ready);
 		await studio.tick(700);
@@ -59,7 +62,10 @@ test.describe('first-visit guide', () => {
 		// The toolbar button starts a finished guide again; the last step finishes it.
 		await page.locator('#tour-restart').click();
 		await studio.until(tour.step(1));
-		for (let n = 2; n <= 9; n++) { await page.keyboard.press('ArrowRight'); await studio.until(tour.step(n)); }
+		for (let n = 2; n <= 9; n++) {
+			await page.keyboard.press('ArrowRight');
+			await studio.until(tour.step(n));
+		}
 		await studio.tick(100);
 		await studio.golden('last-step');
 		await page.keyboard.press('ArrowRight');
@@ -71,7 +77,12 @@ test.describe('first-visit guide', () => {
 
 	test('phone placement', async ({ page, studio }) => {
 		await page.setViewportSize({ width: 390, height: 844 });
-		await studio.open('/ja/', async (p) => p.addInitScript(() => localStorage.setItem('voice-tour', JSON.stringify({ step: 1 }))), { tour: true });
+		await studio.open(
+			'/ja/',
+			async (p) =>
+				p.addInitScript(() => localStorage.setItem('voice-tour', JSON.stringify({ step: 1 }))),
+			{ tour: true }
+		);
 		await studio.until(app.ready);
 		await studio.tick(700);
 		await studio.until(tour.open);
@@ -90,7 +101,11 @@ test.describe('first-visit guide', () => {
 	});
 
 	test('a corrupt saved state starts from the beginning', async ({ studio }) => {
-		await studio.open('/ja/', async (p) => p.addInitScript(() => localStorage.setItem('voice-tour', '{nope')), { tour: true });
+		await studio.open(
+			'/ja/',
+			async (p) => p.addInitScript(() => localStorage.setItem('voice-tour', '{nope')),
+			{ tour: true }
+		);
 		await studio.until(app.ready);
 		await studio.tick(700);
 		await studio.until(tour.open);

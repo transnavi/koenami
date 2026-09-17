@@ -1,6 +1,5 @@
-import { test, expect } from '../fixtures';
+import { test } from '../fixtures';
 import { app } from '../hooks';
-
 
 async function dragSignal(page: import('@playwright/test').Page, from: number, to: number, y = 80) {
 	const box = (await page.locator('#signal-canvas').boundingBox())!;
@@ -67,7 +66,13 @@ test.describe('own audio', () => {
 		await studio.tick(300);
 		await studio.golden('indicator-focus-kept');
 
-		for (const [i, view] of ['spectrogram', 'spectrum', 'waveform', 'spectrogram', 'pitch'].entries()) {
+		for (const [i, view] of [
+			'spectrogram',
+			'spectrum',
+			'waveform',
+			'spectrogram',
+			'pitch'
+		].entries()) {
 			await studio.choose('signal-view', view);
 			await studio.tick(300);
 			await studio.golden(`view-${i}-${view}`);
@@ -146,7 +151,16 @@ test.describe('own audio', () => {
 		await studio.tick(300);
 		await studio.golden('own-range-reset');
 		// A selection whose analysis fails is reported.
-		await page.route('**/api/analyze', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: '解析サーバーを準備しています。' }), { times: 1 });
+		await page.route(
+			'**/api/analyze',
+			(route) =>
+				route.fulfill({
+					status: 503,
+					contentType: 'text/plain; charset=utf-8',
+					body: '解析サーバーを準備しています。'
+				}),
+			{ times: 1 }
+		);
 		await dragSignal(page, 200, 500);
 		await studio.until(app.idle);
 		await studio.tick(300);
@@ -201,7 +215,13 @@ test.describe('own audio', () => {
 		await page.locator('#words-button').click();
 		await studio.tick(100);
 		await studio.golden('ref-words-again');
-		await page.route('**/api/words**', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: 'Word timing is unavailable.' }));
+		await page.route('**/api/words**', (route) =>
+			route.fulfill({
+				status: 503,
+				contentType: 'text/plain; charset=utf-8',
+				body: 'Word timing is unavailable.'
+			})
+		);
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
 		await studio.until(app.ownName('own-b.wav') + ' && ' + app.analysed);
 		await page.locator('#signal-own').click();
@@ -245,13 +265,17 @@ test.describe('own audio', () => {
 		await studio.tick(300);
 		await studio.golden('ab-reference-phase');
 		await page.locator('#compare-ab').click();
-		await studio.until('document.getElementById("reference-player").paused && document.getElementById("player").paused');
+		await studio.until(
+			'document.getElementById("reference-player").paused && document.getElementById("player").paused'
+		);
 		await studio.tick(100);
 		await studio.golden('ab-cancelled');
 		// A full comparison: the reference phase hands over to the own phase and ends.
 		await page.locator('#compare-ab').click();
 		await studio.untilTicking('!document.getElementById("player").paused');
-		await studio.untilTicking('document.getElementById("player").paused && document.getElementById("reference-player").paused');
+		await studio.untilTicking(
+			'document.getElementById("player").paused && document.getElementById("reference-player").paused'
+		);
 		await studio.tick(5000);
 		await studio.golden('ab-complete');
 		// Reference playback with a range stops at the range end.

@@ -1,13 +1,22 @@
-import { test, expect, type Page } from '../fixtures';
-import { app } from '../hooks';
 import { readFileSync } from 'node:fs';
 
+import { test, type Page } from '../fixtures';
+import { app } from '../hooks';
 
 // Holds the next analysis until released, so the busy state can be observed.
 async function hold(page: Page) {
 	let release: (() => void) | null = null;
-	const held = new Promise<void>((resolve) => { release = resolve; });
-	await page.route('**/api/analyze', async (route) => { await held; await route.continue(); }, { times: 1 });
+	const held = new Promise<void>((resolve) => {
+		release = resolve;
+	});
+	await page.route(
+		'**/api/analyze',
+		async (route) => {
+			await held;
+			await route.continue();
+		},
+		{ times: 1 }
+	);
 	return () => release!();
 }
 
@@ -39,7 +48,10 @@ test.describe('busy and recording guards', () => {
 		await studio.golden('released');
 	});
 
-	test('controls ignore input while recording, and a take chosen mid-recording cancels it', async ({ page, studio }) => {
+	test('controls ignore input while recording, and a take chosen mid-recording cancels it', async ({
+		page,
+		studio
+	}) => {
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
@@ -74,30 +86,44 @@ test.describe('busy and recording guards', () => {
 			catalog.capabilities.maxSeconds = 2;
 			await route.fulfill({ response, json: catalog });
 		});
-		await studio.open('/ja/', async (p) => p.addInitScript(() => {
-			const size = Object.getOwnPropertyDescriptor(Blob.prototype, 'size')!;
-			Object.defineProperty(File.prototype, 'size', { get() { return this.name === 'huge.wav' ? 200 * 1024 * 1024 : size.get!.call(this); } });
-		}));
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				const size = Object.getOwnPropertyDescriptor(Blob.prototype, 'size')!;
+				Object.defineProperty(File.prototype, 'size', {
+					get() {
+						return this.name === 'huge.wav' ? 200 * 1024 * 1024 : size.get!.call(this);
+					}
+				});
+			})
+		);
 		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('too-long-for-cap');
-		await page.locator('#upload').setInputFiles({ name: 'huge.wav', mimeType: 'audio/wav', buffer: Buffer.from('RIFF') });
+		await page
+			.locator('#upload')
+			.setInputFiles({ name: 'huge.wav', mimeType: 'audio/wav', buffer: Buffer.from('RIFF') });
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('too-large');
 	});
 
-	test('a retry that cannot save the take, and favourites that cannot be stored', async ({ page, studio }) => {
+	test('a retry that cannot save the take, and favourites that cannot be stored', async ({
+		page,
+		studio
+	}) => {
 		// A recording that cannot be stored is kept in memory with its analysis pending.
-		await studio.open('/ja/', async (p) => p.addInitScript(() => {
-			const put = IDBObjectStore.prototype.put;
-			IDBObjectStore.prototype.put = function (value: unknown, key?: IDBValidKey) {
-				if (typeof key === 'string' && (key.startsWith('recording:') || key === 'references')) throw new DOMException('quota', 'QuotaExceededError');
-				return put.call(this, value, key);
-			};
-		}));
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				const put = IDBObjectStore.prototype.put;
+				IDBObjectStore.prototype.put = function (value: unknown, key?: IDBValidKey) {
+					if (typeof key === 'string' && (key.startsWith('recording:') || key === 'references'))
+						throw new DOMException('quota', 'QuotaExceededError');
+					return put.call(this, value, key);
+				};
+			})
+		);
 		await studio.until(app.ready);
 		await page.locator('#record').click();
 		await studio.until(app.recording);
@@ -118,23 +144,37 @@ test.describe('busy and recording guards', () => {
 		await studio.golden('favourite-cannot-store', { maskAudio: true });
 	});
 
-	test('a stored take whose recording is gone, and an imported clip whose audio is gone', async ({ page, studio }) => {
+	test('a stored take whose recording is gone, and an imported clip whose audio is gone', async ({
+		page,
+		studio
+	}) => {
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.analysed);
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
 		await studio.until(app.ownName('own-b.wav') + ' && ' + app.analysed);
-		await page.locator('#upload').setInputFiles({ name: 'a<b>&"\'.wav', mimeType: 'audio/wav', buffer: readFileSync(studio.audio('own-a.wav')) });
+		await page.locator('#upload').setInputFiles({
+			name: 'a<b>&"\'.wav',
+			mimeType: 'audio/wav',
+			buffer: readFileSync(studio.audio('own-a.wav'))
+		});
 		await studio.until(app.ownNameStartsWith('a<b>') + ' && ' + app.analysed);
 		await studio.tick(300);
 		await studio.golden('three-takes-escaped-name');
 		// The oldest take is neither current nor previous, so it is read from storage; its
 		// recording is removed behind the app's back first.
-		await page.evaluate(() => new Promise<void>((resolve) => {
-			const open = indexedDB.open('koe-takes');
-			open.onsuccess = () => { const tx = open.result.transaction('session', 'readwrite'); tx.objectStore('session').delete('recording:00000000-0000-4000-8000-000000000001'); tx.oncomplete = () => resolve(); };
-		}));
+		await page.evaluate(
+			() =>
+				new Promise<void>((resolve) => {
+					const open = indexedDB.open('koe-takes');
+					open.onsuccess = () => {
+						const tx = open.result.transaction('session', 'readwrite');
+						tx.objectStore('session').delete('recording:00000000-0000-4000-8000-000000000001');
+						tx.oncomplete = () => resolve();
+					};
+				})
+		);
 		await studio.choose('take-select', '2');
 		await studio.until(app.idle);
 		await studio.tick(300);

@@ -1,5 +1,6 @@
-import { defineConfig } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
+
+import { defineConfig } from '@playwright/test';
 
 // Characterization runs: one worker, no retries, everything pinned. RECORD=1 rewrites
 // the goldens and, together with MOCK_API_RECORD on the mock server, the API fixtures.
@@ -55,5 +56,16 @@ export default defineConfig({
 	// One process, owned by Playwright, serves the site, the recorded API and the sample
 	// audio. MOCK_API_RECORD (set by tests/scripts/record-e2e.sh) makes it proxy API
 	// calls to a real analyzer and save the answers.
-	webServer: { command: 'node tests/mock-api/server.mjs', port, reuseExistingServer: false, env: { MOCK_API_PORT: String(port), MOCK_API_STATIC: site, ...(process.env.MOCK_API_RECORD ? { MOCK_API_RECORD: process.env.MOCK_API_RECORD } : {}) }, stdout: 'pipe', stderr: 'pipe' }
+	webServer: {
+		command: 'node tests/mock-api/server.mjs',
+		port,
+		reuseExistingServer: false,
+		env: {
+			MOCK_API_PORT: String(port),
+			MOCK_API_STATIC: site,
+			...(process.env.MOCK_API_RECORD ? { MOCK_API_RECORD: process.env.MOCK_API_RECORD } : {})
+		},
+		stdout: 'pipe',
+		stderr: 'pipe'
+	}
 });

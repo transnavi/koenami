@@ -57,5 +57,8 @@ self.onmessage = async ({ data }: MessageEvent<MeasureRequest>) => {
 };
 
 self.onmessageerror = ({ data }: MessageEvent<Partial<MeasureRequest>>) => {
-	self.postMessage({ id: data?.id ?? 0, error: 'The measurement request could not be read.' } satisfies MeasureResponse);
+	self.postMessage({
+		id: data?.id ?? 0,
+		error: 'The measurement request could not be read.'
+	} satisfies MeasureResponse);
 };

@@ -1,19 +1,38 @@
+import { DensityCloud } from './cloud';
 import { finite, quantile, clamp } from './math';
 import { AcousticSpace, type Features } from './space';
-import { DensityCloud } from './cloud';
 
 /* Measured sample positions and time-resolved trajectories share one transform. */
 type Vec = number[];
 export type TrackRow = { t: number } & Features;
 export type MapDetail = { track?: TrackRow[]; duration: number; features?: Features };
-export type MapSample = { id: string; features: Features; group?: string | null; speaker?: string; name?: string; recordingId?: string; synthetic?: boolean; [key: string]: unknown };
-type Mesh = { source: TrackRow[] | undefined; stamp: string; space: AcousticSpace | null; projection: string; points: Vec[]; faces: number[][] };
+export type MapSample = {
+	id: string;
+	features: Features;
+	group?: string | null;
+	speaker?: string;
+	name?: string;
+	recordingId?: string;
+	synthetic?: boolean;
+	[key: string]: unknown;
+};
+type Mesh = {
+	source: TrackRow[] | undefined;
+	stamp: string;
+	space: AcousticSpace | null;
+	projection: string;
+	points: Vec[];
+	faces: number[][];
+};
 type Drag = { x: number; y: number; lastX: number; lastY: number; moved: boolean; pan: boolean };
 
 function hull(points: (Vec | null)[]): Vec[] {
-	const p = points.filter((p): p is Vec => !!p && p.every(finite)).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+	const p = points
+		.filter((p): p is Vec => !!p && p.every(finite))
+		.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 	if (p.length < 3) return p;
-	const cross = (a: Vec, b: Vec, c: Vec) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+	const cross = (a: Vec, b: Vec, c: Vec) =>
+		(b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
 	const a: Vec[] = [],
 		b: Vec[] = [];
 	for (const v of p) {
@@ -82,7 +101,11 @@ export class VoiceMap {
 	headSeen: number | undefined;
 	headAt: number | undefined;
 	lastCursor: Vec | null = null;
-	constructor(canvas: HTMLCanvasElement, onSelect: (sample: MapSample) => void, { tooltip, onManual }: VoiceMapOptions) {
+	constructor(
+		canvas: HTMLCanvasElement,
+		onSelect: (sample: MapSample) => void,
+		{ tooltip, onManual }: VoiceMapOptions
+	) {
 		this.canvas = canvas;
 		this.ctx = canvas.getContext('2d')!;
 		this.onSelect = onSelect;
@@ -110,7 +133,10 @@ export class VoiceMap {
 			if (this.autoFit) this.fitDirty = true;
 			this.invalidate();
 		}).observe(canvas);
-		new MutationObserver(() => this.invalidate()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+		new MutationObserver(() => this.invalidate()).observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ['data-theme']
+		});
 		const position = (e: MouseEvent) => {
 			const r = canvas.getBoundingClientRect();
 			return [e.clientX - r.left, e.clientY - r.top];
@@ -120,7 +146,8 @@ export class VoiceMap {
 			'wheel',
 			(e) => {
 				e.preventDefault();
-				const delta = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? canvas.clientHeight : 1);
+				const delta =
+					e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? canvas.clientHeight : 1);
 				this.zoomBy(Math.exp(-clamp(delta, -160, 160) * 0.0025), position(e));
 			},
 			{ passive: false }
@@ -129,7 +156,14 @@ export class VoiceMap {
 			if (e.button > 2) return;
 			const [x, y] = position(e);
 			this.pointers.set(e.pointerId, [x, y]);
-			this.drag = { x, y, lastX: x, lastY: y, moved: false, pan: e.shiftKey || e.button === 1 || e.button === 2 };
+			this.drag = {
+				x,
+				y,
+				lastX: x,
+				lastY: y,
+				moved: false,
+				pan: e.shiftKey || e.button === 1 || e.button === 2
+			};
 			this.pinch = null;
 			canvas.setPointerCapture(e.pointerId);
 			this.tooltip.hidden = true;
@@ -248,7 +282,9 @@ export class VoiceMap {
 		const previous = this.zoom;
 		this.zoom = clamp(previous * f, 0.15, 12);
 		const ratio = this.zoom / previous;
-		this.pan = this.pan.map((p, k) => (anchor[k] - [this.width / 2, this.height / 2][k]) * (1 - ratio) + p * ratio);
+		this.pan = this.pan.map(
+			(p, k) => (anchor[k] - [this.width / 2, this.height / 2][k]) * (1 - ratio) + p * ratio
+		);
 		this.invalidate();
 	}
 	vector(f: Features | null | undefined): Vec | null {
@@ -269,7 +305,12 @@ export class VoiceMap {
 			h = this.height - 48,
 			cx = this.width / 2 + this.pan[0],
 			cy = this.height / 2 + this.pan[1];
-		if (this.dimension === 2) return [cx + (v[0] - this.center[0]) * w * this.zoom, cy - (v[1] - this.center[1]) * h * this.zoom, 0];
+		if (this.dimension === 2)
+			return [
+				cx + (v[0] - this.center[0]) * w * this.zoom,
+				cy - (v[1] - this.center[1]) * h * this.zoom,
+				0
+			];
 		const x = v[0] - (this.camera?.[0] ?? 0.5),
 			y = v[1] - (this.camera?.[1] ?? 0.5),
 			z = v[2] - (this.camera?.[2] ?? 0.5),
@@ -313,7 +354,11 @@ export class VoiceMap {
 				const f: TrackRow = { t: row.t };
 				for (const k of AcousticSpace.keys) {
 					let values = near.map((p) => p[k]).filter(finite);
-					if (hold && values.length < 4) values = held.map((p) => p[k]).filter(finite).slice(0, 4);
+					if (hold && values.length < 4)
+						values = held
+							.map((p) => p[k])
+							.filter(finite)
+							.slice(0, 4);
 					f[k] = values.length >= (hold && k === 'delta_f' ? 2 : 4) ? quantile(values, 0.5) : null;
 				}
 				return f;
@@ -339,7 +384,8 @@ export class VoiceMap {
 			const r = (t - a.t) / (b.t - a.t || 1);
 			return av.map((v, i) => v + (bv[i] - v) * r);
 		}
-		for (let i = lo; i >= 0 && t - track[i].t < 0.22; i--) if (track[i].t <= t && this.vector(track[i])) return this.vector(track[i]);
+		for (let i = lo; i >= 0 && t - track[i].t < 0.22; i--)
+			if (track[i].t <= t && this.vector(track[i])) return this.vector(track[i]);
 		return null;
 	}
 	draw(time: { own?: number; target?: number; animate?: boolean } = {}) {
@@ -359,7 +405,19 @@ export class VoiceMap {
 		g.clearRect(0, 0, this.width, this.height);
 		const css = getComputedStyle(document.documentElement),
 			color = (k: string) => css.getPropertyValue(k).trim();
-		this.colors = { female: color('--pink'), male: color('--sky'), synthetic: color('--purple'), research: color('--purple'), custom: color('--purple'), own: color('--self'), 'own-history': color('--self'), target: color('--reference'), grid: color('--grid'), text: color('--muted'), bg: color('--bg') };
+		this.colors = {
+			female: color('--pink'),
+			male: color('--sky'),
+			synthetic: color('--purple'),
+			research: color('--purple'),
+			custom: color('--purple'),
+			own: color('--self'),
+			'own-history': color('--self'),
+			target: color('--reference'),
+			grid: color('--grid'),
+			text: color('--muted'),
+			bg: color('--bg')
+		};
 		g.font = '10px "Segoe UI",sans-serif';
 		this.axes();
 		g.save();
@@ -368,7 +426,13 @@ export class VoiceMap {
 			.map((s) => ({ sample: s, xy: this.project(this.vector(s.features)) }))
 			.filter((p): p is { sample: MapSample; xy: Vec } => !!p.xy)
 			.sort((a, b) => a.xy[2] - b.xy[2]);
-		this.cloud.draw(g, samples as never, { width: this.width, height: this.height, scale: Math.min(this.width - 48, this.height - 48) * 0.86 * this.zoom, colors: this.colors, dark: document.documentElement.dataset.theme === 'dark' });
+		this.cloud.draw(g, samples as never, {
+			width: this.width,
+			height: this.height,
+			scale: Math.min(this.width - 48, this.height - 48) * 0.86 * this.zoom,
+			colors: this.colors,
+			dark: document.documentElement.dataset.theme === 'dark'
+		});
 		for (const p of samples) {
 			if (p.xy[0] < 0 || p.xy[0] > this.width || p.xy[1] < 0 || p.xy[1] > this.height) continue;
 			this.hit.push(p);
@@ -424,19 +488,38 @@ export class VoiceMap {
 			source = (own ? this.own : this.target)?.track,
 			stamp = track[0]?.t + ':' + track.at(-1)?.t;
 		let mesh = this.shapeCache[side];
-		if (!mesh || mesh.source !== source || mesh.stamp !== stamp || mesh.space !== this.space || mesh.projection !== this.projection) {
-			const rows = track.map((p) => ({ point: this.vector(p), z: this.space?.standardized(p) })).filter((r): r is { point: Vec; z: Vec } => !!r.point && !!r.z);
+		if (
+			!mesh ||
+			mesh.source !== source ||
+			mesh.stamp !== stamp ||
+			mesh.space !== this.space ||
+			mesh.projection !== this.projection
+		) {
+			const rows = track
+				.map((p) => ({ point: this.vector(p), z: this.space?.standardized(p) }))
+				.filter((r): r is { point: Vec; z: Vec } => !!r.point && !!r.z);
 			if (rows.length < 6) {
 				delete this.shapeCache[side];
 				return;
 			}
 			// Main 80% of voiced windows in the full feature space; no display-size cap.
-			const center = AcousticSpace.keys.map((_, k) => quantile(rows.map((r) => r.z[k]), 0.5));
-			rows.sort((a, b) => a.z.reduce((s, v, k) => s + (v - center[k]) ** 2, 0) - b.z.reduce((s, v, k) => s + (v - center[k]) ** 2, 0));
+			const center = AcousticSpace.keys.map((_, k) =>
+				quantile(
+					rows.map((r) => r.z[k]),
+					0.5
+				)
+			);
+			rows.sort(
+				(a, b) =>
+					a.z.reduce((s, v, k) => s + (v - center[k]) ** 2, 0) -
+					b.z.reduce((s, v, k) => s + (v - center[k]) ** 2, 0)
+			);
 			const inside = rows.slice(0, Math.max(6, Math.ceil(rows.length * 0.8))).map((r) => r.point),
 				points: Vec[] = [];
-			for (let i = 0; i < inside.length; i += Math.max(1, Math.floor(inside.length / 180))) points.push(inside[i]);
-			const anchor = this.live && own ? null : this.vector(own ? this.ownFeatures : this.selected?.features);
+			for (let i = 0; i < inside.length; i += Math.max(1, Math.floor(inside.length / 180)))
+				points.push(inside[i]);
+			const anchor =
+				this.live && own ? null : this.vector(own ? this.ownFeatures : this.selected?.features);
 			if (anchor) points.push(anchor);
 			for (let k = 0; k < 3; k++)
 				for (const sign of [-1, 1]) {
@@ -444,7 +527,14 @@ export class VoiceMap {
 					for (const p of inside) if (sign * p[k] > sign * best[k]) best = p;
 					if (best) points.push(best);
 				}
-			mesh = { source, stamp, space: this.space, projection: this.projection, points, faces: convex3(points) };
+			mesh = {
+				source,
+				stamp,
+				space: this.space,
+				projection: this.projection,
+				points,
+				faces: convex3(points)
+			};
 			this.shapeCache[side] = mesh;
 			this.fitDirty = true;
 		}
@@ -494,14 +584,32 @@ export class VoiceMap {
 			if (p) points.push(p);
 		}
 		if (this.fitScope !== 'voices' || points.length < 4) {
-			const background = this.samples.map((p) => this.vector(p.features)).filter((v): v is Vec => !!v),
-				limits = [0, 1, 2].map((k) => [quantile(background.map((v) => v[k]), 0.08), quantile(background.map((v) => v[k]), 0.92)]);
-			points = points.concat(background.filter((p) => p.every((v, k) => v >= limits[k][0] && v <= limits[k][1])));
+			const background = this.samples
+					.map((p) => this.vector(p.features))
+					.filter((v): v is Vec => !!v),
+				limits = [0, 1, 2].map((k) => [
+					quantile(
+						background.map((v) => v[k]),
+						0.08
+					),
+					quantile(
+						background.map((v) => v[k]),
+						0.92
+					)
+				]);
+			points = points.concat(
+				background.filter((p) => p.every((v, k) => v >= limits[k][0] && v <= limits[k][1]))
+			);
 		}
 		if (!points.length) return;
-		const center = [0, 1, 2].map((k) => (Math.min(...points.map((p) => p[k])) + Math.max(...points.map((p) => p[k]))) / 2);
+		const center = [0, 1, 2].map(
+			(k) => (Math.min(...points.map((p) => p[k])) + Math.max(...points.map((p) => p[k]))) / 2
+		);
 		// A bounding sphere has the same radius at every rotation: orbiting cannot rescale it.
-		const radius = Math.max(0.16, ...points.map((p) => Math.hypot(...p.map((v, k) => v - center[k]))));
+		const radius = Math.max(
+			0.16,
+			...points.map((p) => Math.hypot(...p.map((v, k) => v - center[k])))
+		);
 		this.camera = center;
 		this.pan = [0, 0];
 		this.zoom = clamp(0.49 / radius, 0.15, 6);
@@ -522,7 +630,13 @@ export class VoiceMap {
 		g.fillStyle = color;
 		g.fillText(text, x, y);
 	}
-	trajectory(detail: MapDetail | null, range: [number, number] | null, color: string, time: number | undefined, own: boolean) {
+	trajectory(
+		detail: MapDetail | null,
+		range: [number, number] | null,
+		color: string,
+		time: number | undefined,
+		own: boolean
+	) {
 		const live = this.live && own;
 		if (own && !live) {
 			this.headPos = this.headTarget = null;
@@ -653,7 +767,9 @@ export class VoiceMap {
 			return;
 		}
 		const k = 1 - Math.exp(-dt / 0.12);
-		this.headPos = this.headPos ? this.headPos.map((v, i) => v + (this.headTarget![i] - v) * k) : this.headTarget.slice(0, 2);
+		this.headPos = this.headPos
+			? this.headPos.map((v, i) => v + (this.headTarget![i] - v) * k)
+			: this.headTarget.slice(0, 2);
 		const p = this.headPos,
 			fade = clamp(1 - silent / seconds, 0, 1),
 			alpha = 0.35 + 0.65 * fade;
@@ -690,8 +806,54 @@ export class VoiceMap {
 			}
 		} else
 			for (const [a, b] of [
-				[[0, 0, 0], [1, 0, 0]], [[0, 0, 0], [0, 1, 0]], [[0, 0, 0], [0, 0, 1]], [[1, 0, 0], [1, 1, 0]], [[0, 1, 0], [1, 1, 0]], [[0, 0, 1], [1, 0, 1]],
-				[[1, 0, 0], [1, 0, 1]], [[0, 0, 1], [0, 1, 1]], [[0, 1, 0], [0, 1, 1]], [[1, 1, 0], [1, 1, 1]], [[0, 1, 1], [1, 1, 1]], [[1, 0, 1], [1, 1, 1]]
+				[
+					[0, 0, 0],
+					[1, 0, 0]
+				],
+				[
+					[0, 0, 0],
+					[0, 1, 0]
+				],
+				[
+					[0, 0, 0],
+					[0, 0, 1]
+				],
+				[
+					[1, 0, 0],
+					[1, 1, 0]
+				],
+				[
+					[0, 1, 0],
+					[1, 1, 0]
+				],
+				[
+					[0, 0, 1],
+					[1, 0, 1]
+				],
+				[
+					[1, 0, 0],
+					[1, 0, 1]
+				],
+				[
+					[0, 0, 1],
+					[0, 1, 1]
+				],
+				[
+					[0, 1, 0],
+					[0, 1, 1]
+				],
+				[
+					[1, 1, 0],
+					[1, 1, 1]
+				],
+				[
+					[0, 1, 1],
+					[1, 1, 1]
+				],
+				[
+					[1, 0, 1],
+					[1, 1, 1]
+				]
 			]) {
 				const p = this.project(a)!,
 					q = this.project(b)!;
@@ -708,23 +870,49 @@ export class VoiceMap {
 function convex3(p: Vec[]): number[][] {
 	if (p.length < 4) return [];
 	const sub = (a: Vec, b: Vec) => a.map((v, i) => v - b[i]),
-		cross = (a: Vec, b: Vec) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]],
+		cross = (a: Vec, b: Vec) => [
+			a[1] * b[2] - a[2] * b[1],
+			a[2] * b[0] - a[0] * b[2],
+			a[0] * b[1] - a[1] * b[0]
+		],
 		dot = (a: Vec, b: Vec) => a.reduce((s, v, i) => s + v * b[i], 0);
 	const a = 0,
-		b = p.reduce((best, v, i) => (dot(sub(v, p[a]), sub(v, p[a])) > dot(sub(p[best], p[a]), sub(p[best], p[a])) ? i : best), 1),
+		b = p.reduce(
+			(best, v, i) =>
+				dot(sub(v, p[a]), sub(v, p[a])) > dot(sub(p[best], p[a]), sub(p[best], p[a])) ? i : best,
+			1
+		),
 		ab = sub(p[b], p[a]);
-	const c = p.reduce((best, v, i) => (Math.hypot(...cross(ab, sub(v, p[a]))) > Math.hypot(...cross(ab, sub(p[best], p[a]))) ? i : best), 0),
+	const c = p.reduce(
+			(best, v, i) =>
+				Math.hypot(...cross(ab, sub(v, p[a]))) > Math.hypot(...cross(ab, sub(p[best], p[a])))
+					? i
+					: best,
+			0
+		),
 		normal = cross(ab, sub(p[c], p[a]));
-	const d = p.reduce((best, v, i) => (Math.abs(dot(normal, sub(v, p[a]))) > Math.abs(dot(normal, sub(p[best], p[a]))) ? i : best), 0);
+	const d = p.reduce(
+		(best, v, i) =>
+			Math.abs(dot(normal, sub(v, p[a]))) > Math.abs(dot(normal, sub(p[best], p[a]))) ? i : best,
+		0
+	);
 	if (new Set([a, b, c, d]).size < 4 || Math.abs(dot(normal, sub(p[d], p[a]))) < 1e-10) return [];
 	const interior = [0, 1, 2].map((k) => (p[a][k] + p[b][k] + p[c][k] + p[d][k]) / 4),
 		orient = (f: number[]) => {
-			if (dot(cross(sub(p[f[1]], p[f[0]]), sub(p[f[2]], p[f[0]])), sub(interior, p[f[0]])) > 0) [f[1], f[2]] = [f[2], f[1]];
+			if (dot(cross(sub(p[f[1]], p[f[0]]), sub(p[f[2]], p[f[0]])), sub(interior, p[f[0]])) > 0)
+				[f[1], f[2]] = [f[2], f[1]];
 			return f;
 		};
-	let faces = [[a, b, c], [a, b, d], [a, c, d], [b, c, d]].map(orient);
+	let faces = [
+		[a, b, c],
+		[a, b, d],
+		[a, c, d],
+		[b, c, d]
+	].map(orient);
 	for (let i = 0; i < p.length; i++) {
-		const visible = faces.filter((f) => dot(cross(sub(p[f[1]], p[f[0]]), sub(p[f[2]], p[f[0]])), sub(p[i], p[f[0]])) > 1e-9);
+		const visible = faces.filter(
+			(f) => dot(cross(sub(p[f[1]], p[f[0]]), sub(p[f[2]], p[f[0]])), sub(p[i], p[f[0]])) > 1e-9
+		);
 		if (!visible.length) continue;
 		const edges = new Map<string, number[]>();
 		for (const f of visible)

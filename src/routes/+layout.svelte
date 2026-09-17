@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+
 	import '../app.css';
 	let { children } = $props();
 	// Pages wire themselves on mount; the attribute tells the characterization harness

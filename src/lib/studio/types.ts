@@ -1,5 +1,5 @@
-import type { Features } from '$lib/space';
 import type { TrackRow } from '$lib/map';
+import type { Features } from '$lib/space';
 
 /* Mono 16 kHz samples; always backed by an ArrayBuffer so they can be posted as a request body. */
 export type PCM = Float32Array<ArrayBuffer>;
@@ -9,7 +9,11 @@ export type Detail = {
 	duration: number;
 	features: Features;
 	track?: TrackRow[];
-	visuals?: { waveform?: [number, number][]; spectrogram?: { data: string; frames: number; bins: number }; spectrum?: { db: number[]; hz_step: number } };
+	visuals?: {
+		waveform?: [number, number][];
+		spectrogram?: { data: string; frames: number; bins: number };
+		spectrum?: { db: number[]; hz_step: number };
+	};
 	analysisPending?: boolean;
 	reason?: string | null;
 	resonance_sensitivity_pct?: number;
@@ -58,7 +62,11 @@ export type Take = {
 	pcm?: PCM;
 	[key: string]: unknown;
 };
-export type Words = { words: { text: string; start: number; end: number }[]; pace?: number; pace_unit?: string };
+export type Words = {
+	words: { text: string; start: number; end: number }[];
+	pace?: number;
+	pace_unit?: string;
+};
 export type Snapshot = {
 	takeId: string | null;
 	detail: Detail;

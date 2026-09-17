@@ -1,5 +1,5 @@
-import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 
 // The SvelteKit app. The current studio under web/ builds with vite.web.config.js until

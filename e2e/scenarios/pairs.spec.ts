@@ -2,12 +2,19 @@ import { test, expect } from '../fixtures';
 import { pairs } from '../hooks';
 
 // Both sides loop A → B → A; pause before observing.
-async function paused(page: import('@playwright/test').Page, studio: { until: (e: string, ms?: number) => Promise<void>; tick: (ms?: number) => Promise<void> }) {
-	const playing = 'document.querySelector("#side-a[aria-pressed=true], #side-b[aria-pressed=true]") !== null';
+async function paused(
+	page: import('@playwright/test').Page,
+	studio: { until: (e: string, ms?: number) => Promise<void>; tick: (ms?: number) => Promise<void> }
+) {
+	const playing =
+		'document.querySelector("#side-a[aria-pressed=true], #side-b[aria-pressed=true]") !== null';
 	await studio.until(playing, 3000).catch(() => {});
 	// A clip can end between the check and the key; with the loop off that restarts
 	// playback, so pause again.
-	for (let i = 0; i < 3 && (await page.evaluate(playing)); i++) { await page.keyboard.press(' '); await page.waitForTimeout(300); }
+	for (let i = 0; i < 3 && (await page.evaluate(playing)); i++) {
+		await page.keyboard.press(' ');
+		await page.waitForTimeout(300);
+	}
 	await studio.until(`!(${playing})`);
 	await studio.tick(100);
 }
@@ -19,7 +26,10 @@ test.describe('pairwise comparison page', () => {
 		// The loop hands B the turn when A ends; a held side stops at its own end.
 		await studio.until('document.querySelector("#side-b[aria-pressed=true]") !== null', 20_000);
 		await page.keyboard.press('w');
-		await studio.until('document.querySelector("#side-a[aria-pressed=true], #side-b[aria-pressed=true]") === null', 20_000);
+		await studio.until(
+			'document.querySelector("#side-a[aria-pressed=true], #side-b[aria-pressed=true]") === null',
+			20_000
+		);
 		await studio.tick(100);
 		await studio.golden('loaded');
 		await page.keyboard.press('x');
@@ -90,20 +100,31 @@ test.describe('pairwise comparison page', () => {
 		await page.locator('#theme-button').click();
 		await studio.tick(100);
 		await studio.golden('light');
-		await page.route('**/api/pairs**', (route) => route.request().method() === 'POST' ? route.fulfill({ status: 422, contentType: 'text/plain', body: 'unknown clip' }) : route.continue());
+		await page.route('**/api/pairs**', (route) =>
+			route.request().method() === 'POST'
+				? route.fulfill({ status: 422, contentType: 'text/plain', body: 'unknown clip' })
+				: route.continue()
+		);
 		await page.keyboard.press('1');
 		await page.keyboard.press('Enter');
-		await studio.until('document.getElementById("status").textContent.includes("保存できませんでした")');
+		await studio.until(
+			'document.getElementById("status").textContent.includes("保存できませんでした")'
+		);
 		await studio.tick(100);
 		await studio.golden('save-failed');
 	});
 
-	test('a session that expired, a queue that fails to load, and keys on the empty page', async ({ page, studio }) => {
-		await studio.open('/pairs.html', async (p) => p.addInitScript(() => {
-			localStorage.setItem('voice-theme', 'dark');
-			localStorage.setItem('koenami-review-session', JSON.stringify({ id: 'stale', at: 0 }));
-			localStorage.setItem('koenami-pairs', '{broken');
-		}));
+	test('a session that expired, a queue that fails to load, and keys on the empty page', async ({
+		page,
+		studio
+	}) => {
+		await studio.open('/pairs.html', async (p) =>
+			p.addInitScript(() => {
+				localStorage.setItem('voice-theme', 'dark');
+				localStorage.setItem('koenami-review-session', JSON.stringify({ id: 'stale', at: 0 }));
+				localStorage.setItem('koenami-pairs', '{broken');
+			})
+		);
 		await studio.until(pairs.loaded);
 		await paused(page, studio);
 		await studio.golden('new-session');
@@ -121,7 +142,11 @@ test.describe('pairwise comparison page', () => {
 	});
 
 	test('the last pair of the queue', async ({ page, studio }) => {
-		await page.route('**/api/pairs?*', async (route) => { const response = await route.fetch(); const json = await response.json(); await route.fulfill({ response, json: { ...json, queue: json.queue.slice(0, 1) } }); });
+		await page.route('**/api/pairs?*', async (route) => {
+			const response = await route.fetch();
+			const json = await response.json();
+			await route.fulfill({ response, json: { ...json, queue: json.queue.slice(0, 1) } });
+		});
 		await studio.open('/pairs.html');
 		await studio.until(pairs.loaded);
 		await paused(page, studio);
