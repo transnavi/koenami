@@ -1,6 +1,7 @@
 import {finite,quantile,clamp,AXES} from './math.js';
 import {AcousticSpace} from './space.js';
 import {DensityCloud} from './cloud.js';
+import {t} from './i18n/index.js';
 /* Measured sample positions and time-resolved trajectories share one transform. */
 function hull(points){
  const p=points.filter(p=>p&&p.every(finite)).sort((a,b)=>a[0]-b[0]||a[1]-b[1]);if(p.length<3)return p;
@@ -72,7 +73,7 @@ export class VoiceMap{
   for(const p of samples){if(p.xy[0]<0||p.xy[0]>this.width||p.xy[1]<0||p.xy[1]>this.height)continue;this.hit.push(p);g.globalAlpha=p.sample.recordingId?.65:.3;g.fillStyle=this.colors[p.sample.group]||this.colors.research;g.beginPath();g.arc(p.xy[0],p.xy[1],p.sample.recordingId?4:2.2,0,Math.PI*2);g.fill();if(p.sample.recordingId){g.strokeStyle=this.colors.bg;g.lineWidth=1.5;g.stroke();}}g.globalAlpha=1;
   this.trajectory(this.target,this.targetRange,this.colors.target,time.target,false);
   this.trajectory(this.own,this.ownRange,this.colors.own,time.own,true);
-  for(const [m,color,own] of [[this.selected?.features,this.colors.target,false],[this.ownFeatures||this.own?.features,this.colors.own,true]]){const p=this.project(this.vector(m));if(p){const active=finite(own?time.own:time.target);this.ctx.globalAlpha=active?.25:1;this.marker(p,color,own?8:7,own);this.ctx.globalAlpha=1;if(!active)this.label(p,own?'自分':'見本',color);}}
+  for(const [m,color,own] of [[this.selected?.features,this.colors.target,false],[this.ownFeatures||this.own?.features,this.colors.own,true]]){const p=this.project(this.vector(m));if(p){const active=finite(own?time.own:time.target);this.ctx.globalAlpha=active?.25:1;this.marker(p,color,own?8:7,own);this.ctx.globalAlpha=1;if(!active)this.label(p,own?t('common.self'):t('common.reference'),color);}}
   g.restore();if(this.dimension===3)this.fitShapes();
  }
  polygon(p,color,alpha){if(p.length<3)return;const g=this.ctx;g.beginPath();p.forEach((v,i)=>i?g.lineTo(v[0],v[1]):g.moveTo(v[0],v[1]));g.closePath();g.fillStyle=color;g.globalAlpha=alpha;g.fill();g.globalAlpha=Math.min(.4,alpha*3);g.strokeStyle=color;g.lineWidth=1;g.stroke();g.globalAlpha=1;}
@@ -117,7 +118,7 @@ export class VoiceMap{
   for(const row of visible){if(row.t<time-1.4)continue;if(row.t>time)break;const p=this.project(this.vector(row));if(!p){last=null;continue;}const age=clamp(1-(time-row.t)/1.4,0,1);g.globalAlpha=age**1.5;g.strokeStyle=color;g.fillStyle=color;g.lineWidth=1+age*3;
    if(last&&row.t-last.t<.2){g.beginPath();g.moveTo(last.p[0],last.p[1]);g.lineTo(p[0],p[1]);g.stroke();}g.beginPath();g.arc(p[0],p[1],1+age*2.2,0,Math.PI*2);g.fill();last={p,t:row.t};
   }
-  g.globalAlpha=1;const cursor=this.project(this.cursor(track,time));if(cursor){g.fillStyle=color;g.globalAlpha=.15;g.beginPath();g.arc(cursor[0],cursor[1],17,0,Math.PI*2);g.fill();g.globalAlpha=1;this.marker(cursor,color,9,own);this.label(cursor,own?'自分':'見本',color);if(own)this.lastCursor=cursor;}else if(own)this.lastCursor=null;
+  g.globalAlpha=1;const cursor=this.project(this.cursor(track,time));if(cursor){g.fillStyle=color;g.globalAlpha=.15;g.beginPath();g.arc(cursor[0],cursor[1],17,0,Math.PI*2);g.fill();g.globalAlpha=1;this.marker(cursor,color,9,own);this.label(cursor,own?t('common.self'):t('common.reference'),color);if(own)this.lastCursor=cursor;}else if(own)this.lastCursor=null;
  }
  /* Live view: one trail over the whole window. Older speech fades and thins; a soft glow accumulates where the voice has been. */
  comet(rows,color,time,seconds){
@@ -139,7 +140,7 @@ export class VoiceMap{
   const silent=finite(this.headSeen)?time-this.headSeen:Infinity;if(!this.headTarget||silent>seconds){this.lastCursor=null;return;}
   const k=1-Math.exp(-dt/.12);this.headPos=this.headPos?this.headPos.map((v,i)=>v+(this.headTarget[i]-v)*k):this.headTarget.slice(0,2);
   const p=this.headPos,fade=clamp(1-silent/seconds,0,1),alpha=.35+.65*fade;
-  g.fillStyle=color;g.globalAlpha=.15*alpha;g.beginPath();g.arc(p[0],p[1],17,0,Math.PI*2);g.fill();g.globalAlpha=alpha;this.marker(p,color,9,true);g.globalAlpha=1;if(fade>.5)this.label(p,'自分',color);this.lastCursor=p;
+  g.fillStyle=color;g.globalAlpha=.15*alpha;g.beginPath();g.arc(p[0],p[1],17,0,Math.PI*2);g.fill();g.globalAlpha=alpha;this.marker(p,color,9,true);g.globalAlpha=1;if(fade>.5)this.label(p,t('common.self'),color);this.lastCursor=p;
  }
  axes(){const g=this.ctx,c=this.colors;g.strokeStyle=c.grid;g.fillStyle=c.text;g.lineWidth=1;
   if(this.dimension===2){for(let i=0;i<=4;i++){const t=i/4,a=this.project([t,0,.5]),b=this.project([t,1,.5]),d=this.project([0,t,.5]),e=this.project([1,t,.5]);g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.moveTo(d[0],d[1]);g.lineTo(e[0],e[1]);g.stroke();}}

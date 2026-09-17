@@ -3,10 +3,10 @@
 // pages and root files go network first so a deploy shows up immediately and
 // the last copy still opens offline. Audio samples and the analysis API are
 // never cached: they are large, and analysis needs the server anyway.
-const CACHE='koenami-v1';
-const SHELL=['/','/guide.html','/tutorial.html','/method.html','/site.webmanifest','/favicon.svg','/icon-192.png'];
-const LANG=/^\/(ja|zh-CN|en|ko)\/?$/;
-const pageKey=url=>url.pathname==='/'||LANG.test(url.pathname)?'/':url.pathname;
+const CACHE='koenami-v2';
+const SHELL=['/','/zh-CN/','/en/','/ko/','/guide.html','/tutorial.html','/method.html','/site.webmanifest','/favicon.svg','/icon-192.png'];
+// The studio is one document per language; /ja/ duplicates the root.
+const pageKey=url=>/^\/ja\/?$/.test(url.pathname)?'/':url.pathname.replace(/^\/(zh-CN|en|ko)$/,'/$1/');
 addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>skipWaiting()));});
 addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>clients.claim()));});
 // After a fresh page arrives, drop hashed assets that no cached page references any more.
