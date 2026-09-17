@@ -23,7 +23,7 @@ def session(name):
     if name not in _sessions:
         import onnxruntime as ort
         options = ort.SessionOptions()
-        options.intra_op_num_threads = 2
+        options.intra_op_num_threads = int(os.environ.get('KOENAMI_ORT_THREADS', 2))  # the public box keeps two; offline builds may lift it
         options.inter_op_num_threads = 1
         options.enable_cpu_mem_arena = False
         # CUDA can be selected for local inference; public containers have CPUs.
