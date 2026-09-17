@@ -91,7 +91,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[xu2025]] — Xu W 2025, Chinese Expert Consensus for Assessment of Vocal Function (2024): Guidelines of the Subspecialty Group of Voice, Society of Otorhinolaryngology Head and Neck Surgery, Chinese Medical Association; Subspecialty Group of Laryngopharyngology, Editorial Board of Chinese Journal of Otorhinolaryngology Head and Neck Surgery
 - [[adabi2026]] — Adabi Mohazzab FZ 2026, Voice Therapy in Mutational Falsetto: A Narrative Review
 - [[kalra2026]] — Kalra A 2026, Surgical Interventions for Voice Masculinization: A Scoping Review
-- [[socialstyrelsen-konsdysfori]] — Socialstyrelsen (National Board of Health and Welfare 2026, Vård vid könsdysfori (Care for gender dysphoria (Swedish National Board of Health and Welfare))
+- [[socialstyrelsen-konsdysfori]] — "Socialstyrelsen (National Board of Health and Welfare 2026, Vård vid könsdysfori (Care for gender dysphoria (Swedish National Board of Health and Welfare))
 
 ### medium (161)
 
