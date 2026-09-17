@@ -78,6 +78,12 @@
    "attrs": {},
    "text": "新規追加項目"
   },
+  "pass": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "全部性別・自然さ声質・話し方印象"
+  },
   "progress": {
    "tag": "span",
    "class": "",
@@ -99,7 +105,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "一覧L ▶‹› 問題この音声だけ話者の全音声A スキップS保存して次へEnter"
+   "text": "一覧L ▶‹› 基準 問題 スキップS保存して次へEnter"
   },
   "prev-speaker": {
    "tag": "button",
@@ -162,6 +168,14 @@
    },
    "text": "›"
   },
+  "anchors": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "基準"
+  },
   "scales": {
    "tag": "div",
    "class": "",
@@ -172,33 +186,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "問題この音声だけ話者の全音声A"
-  },
-  "scope": {
-   "tag": "span",
-   "class": "",
-   "attrs": {
-    "hidden": ""
-   },
-   "text": "この音声だけ話者の全音声A"
-  },
-  "scope-clip": {
-   "tag": "button",
-   "class": "",
-   "attrs": {
-    "type": "button",
-    "aria-pressed": "true"
-   },
-   "text": "この音声だけ"
-  },
-  "scope-speaker": {
-   "tag": "button",
-   "class": "",
-   "attrs": {
-    "type": "button",
-    "aria-pressed": "false"
-   },
-   "text": "話者の全音声A"
+   "text": "問題"
   },
   "note": {
    "tag": "input",
@@ -270,6 +258,9 @@
  },
  "storage": {
   "local": {
+   "voice-tour": {
+    "done": true
+   },
    "koenami-review": {
     "lang": "ja",
     "speaker": "23bbcff6f628",
@@ -293,7 +284,7 @@
    "seq": 1,
    "method": "GET",
    "path": "/api/review",
-   "query": "lang=ja&mode=new",
+   "query": "lang=ja&mode=new&session=w56cpow4mjuuxd6w",
    "status": 500
   }
  ],

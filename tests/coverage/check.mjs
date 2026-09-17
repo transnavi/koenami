@@ -73,8 +73,14 @@ for (const file of map.files()) {
 }
 // With --only, entries for other modules are simply out of scope.
 const stale = exclusions.filter((e, i) => !used.has(i) && wanted(e.file));
-if (stale.length) misses.push(...stale.map((e) => `stale exclusion ${e.file} ${e.kind} ${JSON.stringify(e.code)}`));
+if (stale.length) misses.push(...stale.map((e) => `stale exclusion ${e.file}:${e.line}:${e.column} ${e.kind} ${JSON.stringify(e.code)}`));
+// Every source file of the tree must appear in the data; a module no test loads would
+// otherwise pass unnoticed.
+const sourceFiles = [];
+const walk = (dir, deep) => { for (const name of readdirSync(dir)) { const p = join(dir, name); if (statSync(p).isDirectory()) { if (deep) walk(p, deep); } else if (/\.(js|ts|svelte)$/.test(name) && !name.endsWith('.d.ts')) sourceFiles.push(relative(root, p)); } };
+if (tree === 'new') walk(join(root, 'src/lib'), true); else { walk(join(root, 'web'), false); walk(join(root, 'web/public'), false); }
 const files = map.files().filter((f) => wanted(relative(root, f)));
+for (const rel of sourceFiles.filter(wanted)) if (!files.some((f) => relative(root, f) === rel)) misses.push(`${rel}: no coverage data (no test loads it)`);
 if (!files.length) misses.push(`no coverage data for ${prefix}`);
 console.log(`${files.length} files under ${prefix}: ${summary.statements.pct}% statements, ${summary.branches.pct}% branches, ${summary.functions.pct}% functions, ${summary.lines.pct}% lines before exclusions`);
 if (misses.length) {

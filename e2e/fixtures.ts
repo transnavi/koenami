@@ -40,8 +40,9 @@ type Studio = {
 	choose: (id: string, value: string) => Promise<void>;
 	/** Click a row action (download, delete) of a koe-select menu entry. */
 	rowAction: (id: string, value: string, action: string) => Promise<void>;
-	/** Full page navigation to the studio with the harness installed. */
-	open: (path?: string, before?: (page: Page) => Promise<unknown>) => Promise<void>;
+	/** Full page navigation to the studio with the harness installed. The first-visit
+	 *  guide is marked done unless `tour` asks for it. */
+	open: (path?: string, before?: (page: Page) => Promise<unknown>, options?: { tour?: boolean }) => Promise<void>;
 	/** History navigation with coverage preserved. */
 	back: () => Promise<void>;
 	forward: () => Promise<void>;
@@ -158,7 +159,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 					return value;
 				};
 				const storage = observation.storage as { idb: Record<string, unknown>; local: Record<string, unknown> };
-				for (const key of Object.keys(storage.idb)) if (key.startsWith('recording:') || key === 'takes') storage.idb[key] = strip(storage.idb[key]);
+				for (const key of Object.keys(storage.idb)) if (key.startsWith('recording') || key === 'takes') storage.idb[key] = strip(storage.idb[key]);
 				if (storage.local['koenami-session']) storage.local['koenami-session'] = strip(storage.local['koenami-session']);
 			}
 			const path = join(dir, `${name}.json`);
@@ -175,9 +176,13 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				expect.soft(JSON.parse(text), `golden ${file}/${name} (actual: ${out})`).toEqual(JSON.parse(expected));
 			}
 		};
+		// The canvas's own pixels, encoded by the page: a screenshot of the element would
+		// include the controls composited over it, whose rounded corners rasterise with
+		// ±1 differences between runs.
 		const canvas = async (name: string, selector: string) => {
 			await settle();
-			await expect(page.locator(selector)).toHaveScreenshot(`${name}.png`, { animations: 'disabled', caret: 'hide' });
+			const data = await page.locator(selector).evaluate((el) => (el as HTMLCanvasElement).toDataURL('image/png'));
+			expect(Buffer.from(data.slice(data.indexOf(',') + 1), 'base64')).toMatchSnapshot(`${name}.png`);
 		};
 		const download = async (action: () => Promise<void>) => {
 			const waiting = page.waitForEvent('download');
@@ -197,6 +202,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		// Init scripts stay attached to the page, so a test may install them once; a second
 		// `before` would silently stack on the first.
 		let prepared = false;
+		let tourAllowed = false;
 		const flush = async () => { await flushers.get(page)?.(); };
 		const back = async () => { await flush(); await page.goBack(); };
 		const forward = async () => { await flush(); await page.goForward(); };
@@ -205,9 +211,11 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			await page.locator(`#${id} button.row-action[data-value="${value}"][data-action="${action}"]`).click();
 			await page.locator(`#${id} button.trigger[aria-expanded="false"]`).waitFor();
 		};
-		const open = async (path = '/ja/', before?: (page: Page) => Promise<unknown>) => {
+		const open = async (path = '/ja/', before?: (page: Page) => Promise<unknown>, options: { tour?: boolean } = {}) => {
 			await flush();
 			await install(page);
+			// The guide starts on every first visit; scenarios that are not about it skip it.
+			if (!options.tour && !tourAllowed) { tourAllowed = true; await page.addInitScript(() => { try { if (!localStorage.getItem('voice-tour')) localStorage.setItem('voice-tour', JSON.stringify({ done: true })); } catch {} }); }
 			if (before) {
 				if (prepared) throw new Error('open(): only one before() per test; split the scenario');
 				prepared = true;

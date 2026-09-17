@@ -1,0 +1,200 @@
+{
+ "url": "/pairs.html",
+ "title": "Koenami · 比較",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "i-sun": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-moon": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "progress": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "済 61組 · 残り 59組"
+  },
+  "theme-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "明暗を切り替え",
+    "aria-label": "明暗を切り替え"
+   },
+   "text": ""
+  },
+  "card": {
+   "tag": "section",
+   "class": "",
+   "attrs": {},
+   "text": "AQそれから、宮廷で一番えらい学者が六人、この国の言葉を私に教えてくれることになりました。7.1 秒BW名前の由来は、ローマのサンティッシモ・クロチフィッソのオラトリオで発表したことに由来する。9.4 秒 A → B を繰り返すRSpace：一時停止／再開 どちらが女性らしいA1同じ2B3どちらが自然A1同じ2B3どちらを見本にしたいA1同じ2B3 スキップS保存して次へEnter"
+  },
+  "side-a": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "false"
+   },
+   "text": "AQそれから、宮廷で一番えらい学者が六人、この国の言葉を私に教えてくれることになりました。7.1 秒"
+  },
+  "text-a": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "それから、宮廷で一番えらい学者が六人、この国の言葉を私に教えてくれることになりました。"
+  },
+  "meta-a": {
+   "tag": "small",
+   "class": "",
+   "attrs": {},
+   "text": "7.1 秒"
+  },
+  "side-b": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "false"
+   },
+   "text": "BW名前の由来は、ローマのサンティッシモ・クロチフィッソのオラトリオで発表したことに由来する。9.4 秒"
+  },
+  "text-b": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "名前の由来は、ローマのサンティッシモ・クロチフィッソのオラトリオで発表したことに由来する。"
+  },
+  "meta-b": {
+   "tag": "small",
+   "class": "",
+   "attrs": {},
+   "text": "9.4 秒"
+  },
+  "loop": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "aria-pressed": "true"
+   },
+   "text": "A → B を繰り返すR"
+  },
+  "questions": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "どちらが女性らしいA1同じ2B3どちらが自然A1同じ2B3どちらを見本にしたいA1同じ2B3"
+  },
+  "note": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "placeholder": "メモ（違いを一言）"
+   },
+   "value": "",
+   "text": ""
+  },
+  "status": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "skip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "スキップS"
+  },
+  "save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "保存して次へEnter"
+  },
+  "done": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "比較できる組はありません。"
+  },
+  "log": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "№ 2642 vs № 2690 女性らしい A · 自然 同じ · Aのほうが息が多いjvs031-parallel100-VOICEACTRESS100_075 vs common_voice_ja_38916530 女性らしい B · 自然 同じ · 見本にしたい Ajvs089-nonpara30-BASIC5000_2526 vs jvs041-parallel100-VOICEACTRESS100_010 女性らしい B · 自然 同じ · 見本にしたい 同じjvs074-nonpara30-BASIC5000_0985 vs jvs012-parallel100-VOICEACTRESS100_080 女性らしい B · 自然 同じ · 見本にしたい 同じcommon_voice_ja_39036782 vs jvs032-nonpara30-BASIC5000_1476 女性らしい B · 自然 A · 見本にしたい Bjvs012-nonpara30-BASIC5000_1153 vs jvs004-nonpara30-TRAVEL1000_0409 女性らしい B · 自然 同じ · 見本にしたい 同じcommon_voice_ja_39380008 vs jvs091-nonpara30-BASIC5000_2904 女性らしい 同じ · 自然 同じ · 見本"
+  }
+ },
+ "storage": {
+  "local": {
+   "koenami-review-session": {
+    "id": "w56cpow4mjuuxd6w",
+    "at": 1767236405000
+   },
+   "voice-tour": {
+    "done": true
+   },
+   "koenami-pairs": {
+    "lang": "ja",
+    "key": "common_voice_ja_38841862|common_voice_ja_26011748",
+    "drafts": {
+     "common_voice_ja_21853976|common_voice_ja_23631898": {
+      "answers": {},
+      "note": "",
+      "active": 0
+     },
+     "common_voice_ja_38841862|common_voice_ja_26011748": {
+      "answers": {},
+      "note": "",
+      "active": 0
+     }
+    }
+   }
+  },
+  "idb": {}
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/pairs",
+   "query": "lang=ja&session=w56cpow4mjuuxd6w",
+   "status": 200
+  },
+  {
+   "seq": 2,
+   "method": "POST",
+   "path": "/api/pairs",
+   "query": "",
+   "body": "225b efc86f3645dccc768ff3fb3c3222f0dab548fbe753c84372c348d0d5dda81e20",
+   "status": 200
+  }
+ ],
+ "media": [
+  "/samples/common_voice_ja_21853976.mp3",
+  "/samples/common_voice_ja_23631898.mp3",
+  "/samples/common_voice_ja_26011748.mp3",
+  "/samples/common_voice_ja_38841862.mp3",
+  "/samples/common_voice_ja_38843897.mp3",
+  "/samples/common_voice_ja_38935383.mp3"
+ ],
+ "errors": []
+}

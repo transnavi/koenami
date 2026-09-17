@@ -62,6 +62,9 @@
  },
  "storage": {
   "local": {
+   "voice-tour": {
+    "done": true
+   },
    "voice-theme": "system"
   },
   "idb": {}

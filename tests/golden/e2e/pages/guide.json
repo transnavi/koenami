@@ -61,7 +61,11 @@
   }
  },
  "storage": {
-  "local": {},
+  "local": {
+   "voice-tour": {
+    "done": true
+   }
+  },
   "idb": {}
  },
  "network": [],

@@ -155,7 +155,7 @@ test.describe('JVS import', () => {
 		await studio.golden('import-in-progress');
 		await page.locator('#cancel-jvs').click();
 		await page.evaluate('window.__release()');
-		await studio.until(app.idle);
+		await studio.until('document.getElementById("cancel-jvs").hidden && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('cancelled');
 	});

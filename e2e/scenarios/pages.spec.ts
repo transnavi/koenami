@@ -76,7 +76,7 @@ test.describe('keyboard guard', () => {
 });
 
 test.describe('static pages', () => {
-	for (const path of ['/tutorial.html', '/guide.html']) {
+	for (const path of ['/tutorial.html', '/guide.html', '/references.html']) {
 		test(`${path} renders in both themes`, async ({ page, studio }) => {
 			await studio.open(path);
 			await studio.tick(100);

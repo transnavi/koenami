@@ -22,6 +22,13 @@ test.describe('own audio', () => {
 		await studio.canvas('uploaded-map', '#voice-map');
 		await studio.canvas('uploaded-profile', '#profile-canvas');
 		await studio.canvas('uploaded-signal-pitch', '#signal-canvas');
+		await page.locator('#signal-canvas').click({ position: { x: 12, y: 70 } });
+		await studio.tick(100);
+		await studio.golden('pitch-unit-hz');
+		await studio.canvas('uploaded-signal-pitch-hz', '#signal-canvas');
+		await page.locator('#signal-canvas').click({ position: { x: 12, y: 70 } });
+		await studio.tick(100);
+		await studio.canvas('uploaded-signal-pitch-notes', '#signal-canvas');
 
 		await page.locator('#report-button').click();
 		await studio.tick(100);
@@ -70,11 +77,15 @@ test.describe('own audio', () => {
 		await studio.tick(200);
 		await studio.golden('signal-ref');
 		await studio.canvas('signal-ref-pitch', '#signal-canvas');
-		await page.locator('#signal-overlay').uncheck();
+		// The three-way segment: own, both overlaid, reference.
+		await page.locator('#signal-both').click();
+		await studio.tick(200);
+		await studio.golden('overlay-on');
+		await studio.canvas('signal-both-overlay', '#signal-canvas');
+		await page.locator('#signal-ref').click();
 		await studio.tick(200);
 		await studio.golden('overlay-off');
 		await studio.canvas('signal-ref-no-overlay', '#signal-canvas');
-		await page.locator('#signal-overlay').check();
 		await page.locator('#signal-own').click();
 		await studio.tick(200);
 		await studio.golden('signal-own-again');

@@ -77,6 +77,18 @@
    "attrs": {},
    "text": ""
   },
+  "i-share": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-help": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
   "i-search": {
    "tag": "symbol",
    "class": "",
@@ -198,6 +210,24 @@
    "attrs": {},
    "text": "142音声 · 50人"
   },
+  "tour-restart": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "画面ガイド",
+    "aria-label": "画面ガイド"
+   },
+   "text": ""
+  },
+  "share-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "判定を共有",
+    "aria-label": "判定を共有"
+   },
+   "text": ""
+  },
   "settings-button": {
    "tag": "button",
    "class": "",
@@ -223,6 +253,60 @@
     "title": "明暗を切り替え",
     "aria-label": "明暗を切り替え"
    },
+   "text": ""
+  },
+  "verdict-readout": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "判定を共有"
+   },
+   "text": "声の判定中間的な声+14男性的中間女性的"
+  },
+  "verdict-main": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "data-verdict": "androgynous"
+   },
+   "text": "中間的な声+14"
+  },
+  "verdict-word": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "中間的な声"
+  },
+  "verdict-number": {
+   "tag": "b",
+   "class": "",
+   "attrs": {},
+   "text": "+14"
+  },
+  "verdict-gate": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "verdict-band-male": {
+   "tag": "i",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "verdict-band-female": {
+   "tag": "i",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "verdict-dot": {
+   "tag": "i",
+   "class": "",
+   "attrs": {},
    "text": ""
   },
   "profile-canvas": {
@@ -256,6 +340,15 @@
    "attrs": {},
    "text": "5.44"
   },
+  "voice-map": {
+   "tag": "canvas",
+   "class": "",
+   "attrs": {
+    "tabindex": "0",
+    "aria-label": "声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。形は1.2秒の移動中央値のうち中心に近い80%。"
+   },
+   "text": ""
+  },
   "projection-controls": {
    "tag": "div",
    "class": "",
@@ -285,7 +378,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "女性的な声男性的な声"
+   "text": "女性的な声男性的な声自分"
   },
   "show-female": {
    "tag": "input",
@@ -307,15 +400,6 @@
    },
    "value": "on",
    "checked": true,
-   "text": ""
-  },
-  "voice-map": {
-   "tag": "canvas",
-   "class": "",
-   "attrs": {
-    "tabindex": "0",
-    "aria-label": "声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。形は1.2秒の移動中央値のうち中心に近い80%。"
-   },
    "text": ""
   },
   "map-tooltip": {
@@ -415,6 +499,15 @@
    },
    "text": "自分"
   },
+  "signal-both": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "false",
+    "title": "長さをそろえて重ねて表示します"
+   },
+   "text": "重ねる"
+  },
   "signal-ref": {
    "tag": "button",
    "class": "",
@@ -422,17 +515,6 @@
     "aria-pressed": "false"
    },
    "text": "見本"
-  },
-  "signal-overlay": {
-   "tag": "input",
-   "class": "",
-   "attrs": {
-    "type": "checkbox",
-    "checked": ""
-   },
-   "value": "on",
-   "checked": true,
-   "text": ""
   },
   "words-button": {
    "tag": "button",
@@ -463,7 +545,7 @@
    "class": "",
    "attrs": {
     "tabindex": "0",
-    "aria-label": "波形をクリックして再生位置を移動、ドラッグして範囲を選択。左右キーで再生位置を移動。"
+    "aria-label": "波形をクリックして再生位置を移動、ドラッグして範囲を選択。左右キーで再生位置を移動。高さの目盛りをクリックするとHzと音名が切り替わります。"
    },
    "text": ""
   },
@@ -1308,7 +1390,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考： transnavi.jp"
+   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗参考文献 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考： transnavi.jp"
   },
   "report-dialog": {
    "tag": "dialog",
@@ -1334,7 +1416,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": ""
+   "text": "何で変わるか注意"
   },
   "metric-title": {
    "tag": "h2",
@@ -1353,11 +1435,111 @@
    "class": "",
    "attrs": {},
    "text": ""
+  },
+  "metric-factors": {
+   "tag": "ul",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "metric-caveats": {
+   "tag": "ul",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "声の判定 —共有…リンクをコピー画像を保存結果ページ ↗リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は測定方法と出典にあります。"
+  },
+  "verdict-help": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "判定の読み方",
+    "aria-label": "判定の読み方"
+   },
+   "text": ""
+  },
+  "share-verdict": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-score": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": "—"
+  },
+  "share-image": {
+   "tag": "img",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "share-status": {
+   "tag": "figcaption",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "share-intents": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-system": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "hidden": ""
+   },
+   "text": "共有…"
+  },
+  "share-copy": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "リンクをコピー"
+  },
+  "share-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "画像を保存"
+  },
+  "share-open": {
+   "tag": "a",
+   "class": "",
+   "attrs": {
+    "href": "/r",
+    "target": "_blank",
+    "rel": "noopener"
+   },
+   "text": "結果ページ ↗"
   }
  },
  "storage": {
   "local": {
    "voice-speed": 1,
+   "voice-tour": {
+    "done": true
+   },
    "koenami-session": {
     "lang": "ja",
     "group": "female",
@@ -1389,7 +1571,7 @@
     "autoRotate": false,
     "signal": "pitch",
     "signalSource": "own",
-    "overlay": true,
+    "overlay": false,
     "liveShapeSeconds": 5
    }
   },

@@ -78,6 +78,12 @@
    "attrs": {},
    "text": "新規追加項目"
   },
+  "pass": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "全部性別・自然さ声質・話し方印象"
+  },
   "progress": {
    "tag": "span",
    "class": "",
@@ -97,7 +103,7 @@
    "tag": "section",
    "class": "",
    "attrs": {},
-   "text": "03ebc9c1104d女性的な声 · 1音声一覧L ▶If not true, it is very ingenious.1/1 · 4.0 秒‹› 性別・発音女性らしさ0123456—感じない強く感じる男性らしさ0123456—感じない強く感じる自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる 問題無音EつぶやきのみU雑音Z歪みXこの音声だけ話者の全音声A no koスキップS保存して次へEnter"
+   "text": "033b81304fd71音声一覧L ▶Are you still using your computer for the research?1/1 · 3.6 秒‹› 基準 性別・発音女性らしさ0123456—感じない強く感じる男性らしさ0123456—感じない強く感じる自然さ0123456—不自然自然聞こえる年代10代以下20代30代40代50代60代以上—声質澄み0123456—かすれた澄んだ張り0123456—弱々しい張りのある太さ0123456—細い太い鼻声0123456—感じない強い話し方滑舌0123456—ろれつが回らないはっきり印象明るさ0123456—暗い明るい上品さ0123456—雑上品温かさ0123456—冷たい温かい甘さ0123456—感じない強く感じる 問題無音EつぶやきのみU雑音Z歪みX no koスキップS保存して次へEnter"
   },
   "prev-speaker": {
    "tag": "button",
@@ -112,13 +118,13 @@
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "03ebc9c1104d"
+   "text": "033b81304fd7"
   },
   "speaker-meta": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "女性的な声 · 1音声"
+   "text": "1音声"
   },
   "jump": {
    "tag": "button",
@@ -142,7 +148,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "If not true, it is very ingenious.1/1 · 4.0 秒"
+   "text": "Are you still using your computer for the research?1/1 · 3.6 秒"
   },
   "prev-clip": {
    "tag": "button",
@@ -160,6 +166,14 @@
    },
    "text": "›"
   },
+  "anchors": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "基準"
+  },
   "scales": {
    "tag": "div",
    "class": "",
@@ -170,33 +184,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "問題無音EつぶやきのみU雑音Z歪みXこの音声だけ話者の全音声A"
-  },
-  "scope": {
-   "tag": "span",
-   "class": "",
-   "attrs": {
-    "hidden": ""
-   },
-   "text": "この音声だけ話者の全音声A"
-  },
-  "scope-clip": {
-   "tag": "button",
-   "class": "",
-   "attrs": {
-    "type": "button",
-    "aria-pressed": "true"
-   },
-   "text": "この音声だけ"
-  },
-  "scope-speaker": {
-   "tag": "button",
-   "class": "",
-   "attrs": {
-    "type": "button",
-    "aria-pressed": "false"
-   },
-   "text": "話者の全音声A"
+   "text": "問題無音EつぶやきのみU雑音Z歪みX"
   },
   "note": {
    "tag": "input",
@@ -237,14 +225,14 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "F 2690 · memoF 2678 雑音（話者全体） · 澄み 1 · 太さ 3 · 鼻声 2 · 滑舌 6 · 明るさ 0 · 聞こえる年代 30代 · テストM 1 女性らしさ 1 · 男性らしさ 5F 2674 女性らしさ 3 · 男性らしさ 1 · 母語話者らしさ 6 · 自然さ 4 · 聞こえる年代 20代 · 澄み 1 · 張り 2 · 太さ 4 · 鼻声 2 · 滑舌 2 · 明るさ 1 · 上品さ 0 · 温かさ 0 · 甘さ 2F 2672 雑音 · 甘さ 3 · 女性らしさ 5 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 5 · 聞こえる年代 20代 · 澄み 3 · 張り 3 · 太さ 2 · 鼻声 1 · 滑舌 2 · 明るさ 4 · 上品さ 4 · 温かさ 2F 2668 女性らしさ 5 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 5 · 聞こえる年代 30代 · 澄み 2 · 張り 2 · 太さ 3 · 鼻声 1 · 滑舌 5 · 明るさ 1 · 上品さ 2 · 温かさ 3 · 甘さ 1F 2664 甘さ 3 · 女性らしさ 4 · 男性らしさ 1 · 母語話者らしさ 6 · 自然さ 5 · 聞こえる年代 20代 · 澄み 2 · 張り 2 · 太さ 1 · 鼻声 0 · 滑舌 1 · 明るさ 3 · 上品さ 3 · 温かさ "
+   "text": "M 2466 · memoM 2506 無音 · テストM 1 女性らしさ 1 · 男性らしさ 5F 3141 雑音M 2497 母語話者らしさ 0 · 男性らしさ 6 · 女性らしさ 0 · 聞こえる年代 20代 · 自然さ 3 · 澄み 3 · 張り 2 · 太さ 1 · 鼻声 1 · 滑舌 6 · 明るさ 4 · 上品さ 3 · 温かさ 5 · 甘さ 0M 2482 女性らしさ 0 · 男性らしさ 6 · 母語話者らしさ 1 · 自然さ 6 · 聞こえる年代 20代 · 澄み 4 · 張り 5 · 太さ 1 · 鼻声 0 · 滑舌 6 · 明るさ 4 · 上品さ 5 · 温かさ 2 · 甘さ 1F 2591 甘さ 1 · 女性らしさ 5 · 男性らしさ 0 · 母語話者らしさ 6 · 自然さ 6 · 聞こえる年代 30代 · 澄み 2 · 張り 1 · 太さ 2 · 鼻声 1 · 滑舌 6 · 明るさ 3 · 上品さ 3 · 温かさ 1M 3050 男性らしさ 6 · 女性らしさ 0 · 母語話者らしさ 6 · 自然さ 6 · 聞こえる年代 20代 · 滑舌 1 · 澄み 4 · 張り 1 · 太さ 2 · 鼻声 1 · 明るさ 5 · 上品さ 0 · 温かさ 3 · 甘さ 3"
   },
   "list-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "話者一覧 20人×03ebc9c1104dIf not true, it is very ingenious.bcb7c332cbfaThe more you stir, the more it stinks.a2b0960b9858Tell me whom you keep company with, and I' will tell you what you do.470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.0edcaafb8336Please, be humble.a2f52a649528Well, the merry-go-round wasn't exactly spectacular.033b81304fd7Are you still using your computer for the research?826c4a40b1c1During the epoch, a majority of the city's buildings were erected.6d06f0216c70What did you say your name was?1c1f78f06fdfRoll the dice, please.f65607943c"
+   "text": "話者一覧 20人×033b81304fd7Are you still using your computer for the research?6d06f0216c70What did you say your name was?470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.8668948d2438A group of people, one of them with a guitar, were sitting by the campfire and singing songs.7720658d3e86People sitting on a street while drinking.1c1f78f06fdfRoll the dice, please.bcb7c332cbfaThe more you stir, the more it stinks.f65607943cd8A scientist in a lab coat is using a microscope.1d796894b9eaShe has always been very kind and friendly to everyone, even strangers.fe7d54c"
   },
   "list-count": {
    "tag": "span",
@@ -265,41 +253,42 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "03ebc9c1104dIf not true, it is very ingenious.bcb7c332cbfaThe more you stir, the more it stinks.a2b0960b9858Tell me whom you keep company with, and I' will tell you what you do.470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.0edcaafb8336Please, be humble.a2f52a649528Well, the merry-go-round wasn't exactly spectacular.033b81304fd7Are you still using your computer for the research?826c4a40b1c1During the epoch, a majority of the city's buildings were erected.6d06f0216c70What did you say your name was?1c1f78f06fdfRoll the dice, please.f65607943cd8A scien"
+   "text": "033b81304fd7Are you still using your computer for the research?6d06f0216c70What did you say your name was?470a80e28937The computer was going insane, it displayed garbled nonsense and then shut down.8668948d2438A group of people, one of them with a guitar, were sitting by the campfire and singing songs.7720658d3e86People sitting on a street while drinking.1c1f78f06fdfRoll the dice, please.bcb7c332cbfaThe more you stir, the more it stinks.f65607943cd8A scientist in a lab coat is using a microscope.1d796894b9eaShe has always been very kind and friendly to everyone, even strangers.fe7d54c3d3a3Turn"
   }
  },
  "storage": {
   "local": {
+   "voice-tour": {
+    "done": true
+   },
    "koenami-review": {
     "lang": "en",
     "mode": "new",
+    "pass": "all",
     "skipped": {
      "ja:new": [],
      "en:new": []
     },
-    "speaker": "03ebc9c1104d",
+    "speaker": "033b81304fd7",
     "drafts": {
-     "940de57d1a26": {
-      "clip": "common_voice_ja_38929761",
+     "4c6431bfa9ba": {
+      "clip": "common_voice_ja_21853976",
       "ratings": {},
       "chosen": [],
-      "scope": "clip",
       "note": "",
       "active": 0
      },
-     "b66c552c4205": {
-      "clip": "common_voice_ja_38953576",
+     "93a5f4970c07": {
+      "clip": "common_voice_ja_21311538",
       "ratings": {},
       "chosen": [],
-      "scope": "clip",
       "note": "",
       "active": 0
      },
-     "03ebc9c1104d": {
-      "clip": "common_voice_en_17266327",
+     "033b81304fd7": {
+      "clip": "common_voice_en_17682905",
       "ratings": {},
       "chosen": [],
-      "scope": "clip",
       "note": "",
       "active": 0
      }
@@ -314,28 +303,28 @@
    "seq": 1,
    "method": "GET",
    "path": "/api/review",
-   "query": "lang=ja&mode=new",
+   "query": "lang=ja&mode=new&session=w56cpow4mjuuxd6w",
    "status": 200
   },
   {
    "seq": 2,
    "method": "GET",
    "path": "/api/review",
-   "query": "lang=en&mode=new",
+   "query": "lang=en&mode=new&session=w56cpow4mjuuxd6w",
    "status": 200
   },
   {
    "seq": 3,
    "method": "GET",
    "path": "/api/review",
-   "query": "lang=ko&mode=new",
+   "query": "lang=ko&mode=new&session=w56cpow4mjuuxd6w",
    "status": 404
   }
  ],
  "media": [
-  "/samples/common_voice_en_17266327.mp3",
-  "/samples/common_voice_ja_38929761.mp3",
-  "/samples/common_voice_ja_38953576.mp3"
+  "/samples/common_voice_en_17682905.mp3",
+  "/samples/common_voice_ja_21311538.mp3",
+  "/samples/common_voice_ja_21853976.mp3"
  ],
  "errors": []
 }

@@ -39,11 +39,17 @@ test.describe('listening review page', () => {
 		await studio.until(paused);
 		await studio.tick(100);
 		await studio.golden('replayed-then-paused');
-		// Modifier chords are left to the browser; A toggles the scope; L opens the list;
+		// Modifier chords are left to the browser; ⇧1 plays an anchor; L opens the list;
 		// a decade key outside the table does nothing.
 		await page.keyboard.press('Control+s');
-		await page.keyboard.press('a');
-		await page.keyboard.press('A');
+		await page.keyboard.press('Shift+Digit1');
+		await studio.until('document.querySelector("#anchors button[aria-pressed=true]") !== null');
+		await studio.tick(100);
+		await studio.golden('anchor-playing');
+		await studio.until('document.querySelector("#anchors button[aria-pressed=true]") === null', 30_000);
+		await page.locator('#anchors button').nth(1).click();
+		await studio.until('document.querySelector("#anchors button[aria-pressed=true]") !== null');
+		await page.keyboard.press('Shift+Digit9');
 		await page.keyboard.press('l');
 		await studio.tick(100);
 		await studio.golden('list-by-key');
@@ -65,7 +71,11 @@ test.describe('listening review page', () => {
 		await page.keyboard.press('x');
 		await studio.tick(100);
 		await studio.golden('rated-by-keyboard');
-		await page.locator('#scope-speaker').click();
+		// Quality flags replace the scales; clearing them brings the scales back.
+		await page.keyboard.press('e');
+		await page.keyboard.press('z');
+		await studio.tick(100);
+		await studio.golden('flags-cleared-scales-back');
 		await page.locator('#scales .scale').nth(4).click();
 		await page.locator('#scales .scale').nth(4).locator('button').nth(2).click();
 		await page.locator('#scales .scale').nth(4).locator('button').nth(2).click();
@@ -92,9 +102,12 @@ test.describe('listening review page', () => {
 		await studio.until(review.at(2));
 		await settle(page, studio);
 		await studio.golden('saved-from-note');
-		await page.keyboard.press('z');
-		await page.locator('#scope-speaker').click();
-		await page.locator('#scope-clip').click();
+		// A pass narrows the scales to one group.
+		await page.locator('#pass button[data-pass="声質"]').click();
+		await studio.tick(100);
+		await studio.golden('pass-voice-quality');
+		await page.keyboard.press('3');
+		await page.locator('#pass button[data-pass="all"]').click();
 		await page.keyboard.press('4');
 		await page.locator('#prev-speaker').click();
 		await settle(page, studio);
@@ -186,7 +199,7 @@ test.describe('listening review page', () => {
 		await studio.until(review.mode('update'));
 		await studio.tick(200);
 		await studio.golden('update-mode-remembered');
-		await page.route('**/api/review?lang=ja&mode=new', (route) => route.fulfill({ status: 500, contentType: 'text/plain', body: 'broken' }));
+		await page.route('**/api/review?lang=ja&mode=new&*', (route) => route.fulfill({ status: 500, contentType: 'text/plain', body: 'broken' }));
 		await page.locator('#mode button[data-mode="new"]').click();
 		await studio.until('document.getElementById("status").textContent === "broken"');
 		await studio.tick(200);

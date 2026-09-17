@@ -11,6 +11,12 @@
   "--accent": "#74bbf2"
  },
  "elements": {
+  "verdict": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "声の判定と共有"
+  },
   "review": {
    "tag": "h2",
    "class": "",
@@ -20,6 +26,9 @@
  },
  "storage": {
   "local": {
+   "voice-tour": {
+    "done": true
+   },
    "voice-theme": "dark"
   },
   "idb": {}

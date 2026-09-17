@@ -23,7 +23,7 @@ export default defineConfig({
 	timeout: 90_000,
 	reporter: process.env.CI ? 'github' : 'list',
 	snapshotPathTemplate: 'tests/golden/canvas/{testFilePath}/{arg}{ext}',
-	expect: { toHaveScreenshot: { maxDiffPixels: 0, threshold: 0 }, timeout: 15_000 },
+	expect: { toMatchSnapshot: { maxDiffPixels: 0, threshold: 0 }, timeout: 15_000 },
 	use: {
 		baseURL: `http://127.0.0.1:${port}`,
 		channel: 'chromium',

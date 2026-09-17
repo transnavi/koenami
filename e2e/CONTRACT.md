@@ -33,15 +33,21 @@ stay evidence when the SvelteKit tree replaces `web/`.
   detail); a rewrite that fetches concurrently changes behaviour the user can see
   (which data arrives first) and must be a conscious golden change.
 - **Downloads**: file names and the bytes of exported WAV, JSON and HTML.
-- **Canvases**: pixel-exact on this machine's Chromium build (`tests/golden/META.json`
-  records the Playwright version and browser); the drawing code is ported as it is.
+- **Canvases**: the PNG each canvas encodes itself (`toDataURL`), pixel-exact on this
+  machine's Chromium build (`tests/golden/META.json` records the Playwright version and
+  browser); the drawing code is ported as it is. Controls laid over a canvas are not
+  part of its golden.
 - **Error and notice text**, in Japanese, exactly as today.
 - **The test hooks** in `e2e/hooks.ts`: `window.voiceApp` on the studio page with
   `state.{refFull, loadingLanguage, busy, analyzing (a Set), ownFull, ownPCM, ownName,
   recording, selected, lang, ranges, words, liveTrack}`, `captureDebug()` returning
   `{bufferSeconds, monitoring}` and `map.hit` (plotted points with `sample` and `xy`);
-  `window.reviewApp` on the review page with `queue`, `at`, `mode`, `lang`. These are
-  the only internals the suite reads.
+  `window.reviewApp` on the review page with `queue`, `at`, `mode`, `lang`;
+  `window.pairsApp` on the pairs page with `queue` and `at`. These are the only
+  internals the suite reads.
+- **The first-visit guide** keeps its `voice-tour` storage key (`{step}` while
+  paused, `{done: true}` after); the harness marks it done before every scenario that
+  is not about it.
 
 ## Incidental (not compared)
 

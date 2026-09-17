@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '../fixtures';
-import { app } from '../hooks';
+import { app, tour } from '../hooks';
 
 const preset = (values: Record<string, unknown>) => async (page: Page) => page.addInitScript((v) => { for (const [k, val] of Object.entries(v)) localStorage.setItem(k, typeof val === 'string' ? val : JSON.stringify(val)); }, values);
 
@@ -65,6 +65,8 @@ test.describe('session and settings', () => {
 		await studio.until(app.ready);
 		await studio.tick(1200);
 		await studio.golden('storage-throws');
+		await page.locator('dialog.tour-card [data-act=skip]').click();
+		await studio.until(tour.closed);
 		await page.locator('#favorite-selected').click();
 		await studio.tick(300);
 		await studio.golden('favourite-with-storage-throwing');
@@ -74,6 +76,7 @@ test.describe('session and settings', () => {
 		await studio.open('/ja/', preset({
 			'voice-favorites': ['common_voice_ja_36363165'],
 			'voice-speed': '1.25',
+			'voice-pitch-unit': 'hz',
 			'koenami-session': {
 				lang: 'ja', group: 'all', sort: 'low', search: '2624', reference: 'common_voice_ja_36363165', referenceRange: [0.5, 2],
 				openSpeakers: ['ja:Common Voice:50a288fb7fb3'], dimension: 2, projection: 'contrast', yaw: 0.4, tilt: 0.2, zoom: 1.3, camera: [0.1, 0.2, 0.3], center: [0.5, 0.5, 0.5], pan: [10, -5],

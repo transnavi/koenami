@@ -39,9 +39,23 @@ export const app = {
 	/** Seconds of microphone audio captured so far. */
 	buffered: (seconds: number) => `window.voiceApp.captureDebug().bufferSeconds >= ${seconds}`,
 	monitoring: 'window.voiceApp.captureDebug().monitoring',
+	/** The verdict can be shared: the scorer is available and the take passed the gate. */
+	shareReady: '!document.getElementById("share-button").disabled',
+	shareImage: '!document.getElementById("share-image").hidden',
 	/** Canvas position of a plotted sample, or null. */
 	hit: (id: string) => `(() => { const p = window.voiceApp.map.hit.find(h => h.sample.id === ${JSON.stringify(id)}); return p ? [p.xy[0], p.xy[1]] : null; })()`,
 	historyHit: '(() => { const p = window.voiceApp.map.hit.find(h => h.sample.recordingId); return p ? [p.xy[0], p.xy[1]] : null; })()'
+};
+
+export const tour = {
+	open: 'document.querySelector("dialog.tour-card[open]") !== null',
+	closed: 'document.querySelector("dialog.tour-card[open]") === null',
+	step: (n: number) => `document.getElementById("tour-count")?.textContent?.startsWith(${JSON.stringify(String(n) + ' /')})`
+};
+
+export const pairs = {
+	loaded: 'window.pairsApp && window.pairsApp.queue.length > 0',
+	at: (index: number) => `window.pairsApp.at === ${index}`
 };
 
 export const review = {

@@ -121,7 +121,7 @@ test.describe('superseded requests', () => {
 });
 
 test.describe('live tracks the analyzer could return', () => {
-	test('sparse, gapped and empty measurements', async ({ page, studio }) => {
+	test('sparse, gapped, flat and empty measurements', async ({ page, studio }) => {
 		// The recorded three-second live response is reshaped on the way to the app.
 		let shape = 'sparse';
 		await page.route('**/api/analyze?live=1', async (route) => {
@@ -130,6 +130,8 @@ test.describe('live tracks the analyzer could return', () => {
 			const rows = detail.track as { t: number }[];
 			if (shape === 'sparse') detail.track = rows.filter((_, i) => i % 12 === 0);
 			else if (shape === 'gapped') detail.track = rows.filter((r) => r.t < 0.8 || r.t > 1.6);
+			// Every frame measures the same voice: the shape collapses to a point.
+			else if (shape === 'flat') { const base = rows.find((r) => Object.values(r).every((v) => typeof v === 'number'))!; detail.track = rows.map((r) => ({ ...base, t: r.t })); }
 			else if (shape === 'empty') detail.track = [];
 			await route.fulfill({ response, json: detail });
 		});
@@ -145,6 +147,9 @@ test.describe('live tracks the analyzer could return', () => {
 		shape = 'gapped';
 		await studio.tick(1500);
 		await studio.golden('live-gapped', { maskAudio: true, ignore: ['indicators', 'fit-value', 'report-button', 'quality-state', 'live-mode', 'live-time'] });
+		shape = 'flat';
+		await studio.tick(1500);
+		await studio.golden('live-flat', { maskAudio: true, ignore: ['indicators', 'fit-value', 'report-button', 'quality-state', 'live-mode', 'live-time'] });
 		shape = 'empty';
 		await studio.tick(6000);
 		await studio.golden('live-empty', { maskAudio: true, ignore: ['indicators', 'fit-value', 'report-button', 'quality-state', 'live-mode', 'live-time'] });

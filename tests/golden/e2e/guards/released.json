@@ -77,6 +77,18 @@
    "attrs": {},
    "text": ""
   },
+  "i-share": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-help": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
   "i-search": {
    "tag": "symbol",
    "class": "",
@@ -198,6 +210,24 @@
    "attrs": {},
    "text": "142音声 · 50人"
   },
+  "tour-restart": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "画面ガイド",
+    "aria-label": "画面ガイド"
+   },
+   "text": ""
+  },
+  "share-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "判定を共有",
+    "aria-label": "判定を共有"
+   },
+   "text": ""
+  },
   "settings-button": {
    "tag": "button",
    "class": "",
@@ -225,6 +255,60 @@
    },
    "text": ""
   },
+  "verdict-readout": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "判定を共有"
+   },
+   "text": "声の判定中間的な声+14男性的中間女性的"
+  },
+  "verdict-main": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "data-verdict": "androgynous"
+   },
+   "text": "中間的な声+14"
+  },
+  "verdict-word": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "中間的な声"
+  },
+  "verdict-number": {
+   "tag": "b",
+   "class": "",
+   "attrs": {},
+   "text": "+14"
+  },
+  "verdict-gate": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "verdict-band-male": {
+   "tag": "i",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "verdict-band-female": {
+   "tag": "i",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "verdict-dot": {
+   "tag": "i",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
   "profile-canvas": {
    "tag": "canvas",
    "class": "",
@@ -240,7 +324,7 @@
     "role": "group",
     "aria-label": "声の指標"
    },
-   "text": "高さ226Hz198響き1097Hz ΔF1150質感9.3dB17.7明るさ-15.1dB-24.7抑揚7.5半音3.2"
+   "text": "高さ226Hz219響き1097Hz ΔF1061質感9.3dB15.5明るさ-15.1dB-22.6抑揚7.5半音12.9"
   },
   "report-button": {
    "tag": "button",
@@ -248,13 +332,22 @@
    "attrs": {
     "title": "見本との5指標の標準化距離。0が一致。比較レポートを開く。"
    },
-   "text": "見本との差3.91"
+   "text": "見本との差3.43"
   },
   "fit-value": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "3.91"
+   "text": "3.43"
+  },
+  "voice-map": {
+   "tag": "canvas",
+   "class": "",
+   "attrs": {
+    "tabindex": "0",
+    "aria-label": "声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。形は1.2秒の移動中央値のうち中心に近い80%。"
+   },
+   "text": ""
   },
   "projection-controls": {
    "tag": "div",
@@ -285,7 +378,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "女性的な声男性的な声"
+   "text": "女性的な声男性的な声自分"
   },
   "show-female": {
    "tag": "input",
@@ -309,22 +402,13 @@
    "checked": true,
    "text": ""
   },
-  "voice-map": {
-   "tag": "canvas",
-   "class": "",
-   "attrs": {
-    "tabindex": "0",
-    "aria-label": "声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。形は1.2秒の移動中央値のうち中心に近い80%。"
-   },
-   "text": ""
-  },
   "map-tooltip": {
    "tag": "div",
    "class": "",
    "attrs": {
     "hidden": ""
    },
-   "text": "CV 6BE005 · 198 Hz"
+   "text": ""
   },
   "zoom-in": {
    "tag": "button",
@@ -411,9 +495,18 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "aria-pressed": "true"
+    "aria-pressed": "false"
    },
    "text": "自分"
+  },
+  "signal-both": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "true",
+    "title": "各範囲の長さを0〜100%にそろえます。単語の位置は一致しません。"
+   },
+   "text": "重ねる"
   },
   "signal-ref": {
    "tag": "button",
@@ -422,17 +515,6 @@
     "aria-pressed": "false"
    },
    "text": "見本"
-  },
-  "signal-overlay": {
-   "tag": "input",
-   "class": "",
-   "attrs": {
-    "type": "checkbox",
-    "checked": ""
-   },
-   "value": "on",
-   "checked": true,
-   "text": ""
   },
   "words-button": {
    "tag": "button",
@@ -463,7 +545,7 @@
    "class": "",
    "attrs": {
     "tabindex": "0",
-    "aria-label": "波形をクリックして再生位置を移動、ドラッグして範囲を選択。左右キーで再生位置を移動。"
+    "aria-label": "波形をクリックして再生位置を移動、ドラッグして範囲を選択。左右キーで再生位置を移動。高さの目盛りをクリックするとHzと音名が切り替わります。"
    },
    "text": ""
   },
@@ -483,7 +565,7 @@
     "aria-label": "見本を選ぶ"
    },
    "open": false,
-   "text": "見本の声26女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641彼等がものを言いだしたとき、私は犬や牛がものを言いだしたように、全く変な気持にさせられました。198 Hz · 0:06☆F 25873F 26732F 26581もっと見る"
+   "text": "見本の声26女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641F 25873F 26732F 26581もっと見る"
   },
   "library-count": {
    "tag": "span",
@@ -777,7 +859,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641彼等がものを言いだしたとき、私は犬や牛がものを言いだしたように、全く変な気持にさせられました。198 Hz · 0:06☆F 25873F 26732F 26581もっと見る"
+   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10☆環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06☆VOICEVOX:四国めたんAI4F 26232F 27053F 26323F 27081F 26003F 26603F 27002F 255633F 26572F 26962F 26983F 26913F 26882F 26673F 26792F 26763F 25943F 27123F 26403F 26282F 26641F 25873F 26732F 26581もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
@@ -807,13 +889,13 @@
    "class": "",
    "attrs": {},
    "rows": {
-    "count": 60,
+    "count": 58,
     "head": [
      "details#ja:Common Voice:50a288fb7fb3|speaker-folder||true|F 26243今日もカレーよ423 Hz · 0:02☆かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:1",
      "summary#||||F 26243",
      "button#common_voice_ja_36363162|sample-row|false||今日もカレーよ423 Hz · 0:02",
      "button#|favorite|false||☆",
-     "button#common_voice_ja_36363165|sample-row|false||かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10",
+     "button#common_voice_ja_36363165|sample-row|true||かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、219 Hz · 0:10",
      "button#|favorite|false||☆",
      "button#common_voice_ja_36363168|sample-row|false||環境というものも、どこまでも歴史的に作られたものでなければならない。201 Hz · 0:06",
      "button#|favorite|false||☆",
@@ -882,19 +964,19 @@
    "attrs": {
     "title": "見本を選ぶ"
    },
-   "text": "F 2664198 Hz · 1150 ΔF"
+   "text": "F 2625219 Hz · 1061 ΔF"
   },
   "selected-name": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "F 2664"
+   "text": "F 2625"
   },
   "selected-meta": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "198 Hz · 1150 ΔF"
+   "text": "219 Hz · 1061 ΔF"
   },
   "favorite-selected": {
    "tag": "button",
@@ -914,7 +996,7 @@
     "aria-label": "出典",
     "target": "_blank",
     "rel": "noreferrer",
-    "href": "https://huggingface.co/datasets/FluidInference/cv-corpus-25.0-ja/resolve/365b7654cd582e20e8000921ef7b0e32caa1906a/ja_01/clips/common_voice_ja_38896297.mp3"
+    "href": "https://huggingface.co/datasets/FluidInference/cv-corpus-25.0-ja/resolve/365b7654cd582e20e8000921ef7b0e32caa1906a/ja_01/clips/common_voice_ja_36363165.mp3"
    },
    "text": ""
   },
@@ -930,7 +1012,7 @@
    "attrs": {
     "lang": "ja"
    },
-   "text": "彼等がものを言いだしたとき、私は犬や牛がものを言いだしたように、全く変な気持にさせられました。"
+   "text": "かかる個物的自己として行為的直観的に即ちポイエシス的に物を把握するということは、"
   },
   "record": {
    "tag": "button",
@@ -1080,10 +1162,10 @@
    "tag": "audio",
    "class": "",
    "attrs": {
-    "src": "/samples/common_voice_ja_38896297.mp3"
+    "src": "/samples/common_voice_ja_36363165.mp3"
    },
    "media": {
-    "src": "/samples/common_voice_ja_38896297.mp3",
+    "src": "/samples/common_voice_ja_36363165.mp3",
     "paused": true,
     "rate": 1,
     "volume": 1,
@@ -1308,7 +1390,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考： transnavi.jp"
+   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗参考文献 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考： transnavi.jp"
   },
   "report-dialog": {
    "tag": "dialog",
@@ -1334,7 +1416,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": ""
+   "text": "何で変わるか注意"
   },
   "metric-title": {
    "tag": "h2",
@@ -1353,11 +1435,111 @@
    "class": "",
    "attrs": {},
    "text": ""
+  },
+  "metric-factors": {
+   "tag": "ul",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "metric-caveats": {
+   "tag": "ul",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "声の判定 —共有…リンクをコピー画像を保存結果ページ ↗リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は測定方法と出典にあります。"
+  },
+  "verdict-help": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "判定の読み方",
+    "aria-label": "判定の読み方"
+   },
+   "text": ""
+  },
+  "share-verdict": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-score": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": "—"
+  },
+  "share-image": {
+   "tag": "img",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "share-status": {
+   "tag": "figcaption",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "share-intents": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-system": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "hidden": ""
+   },
+   "text": "共有…"
+  },
+  "share-copy": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "リンクをコピー"
+  },
+  "share-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "画像を保存"
+  },
+  "share-open": {
+   "tag": "a",
+   "class": "",
+   "attrs": {
+    "href": "/r",
+    "target": "_blank",
+    "rel": "noopener"
+   },
+   "text": "結果ページ ↗"
   }
  },
  "storage": {
   "local": {
-   "voice-speed": 1
+   "voice-speed": 1,
+   "voice-tour": {
+    "done": true
+   }
   },
   "idb": {
    "recording-index": [
@@ -9703,13 +9885,6 @@
    "seq": 5,
    "method": "GET",
    "path": "/api/detail/common_voice_ja_36363165",
-   "query": "",
-   "status": 200
-  },
-  {
-   "seq": 6,
-   "method": "GET",
-   "path": "/api/detail/common_voice_ja_38896297",
    "query": "",
    "status": 200
   }
