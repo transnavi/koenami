@@ -175,7 +175,7 @@ dependencies = [
 [[package]]
 name = "phx-audio"
 version = "0.0.1"
-source = "git+https://github.com/mkpoli/phonia?rev=076bcea0e7f38a6d90b059bf05b4bd5fa70aced9#076bcea0e7f38a6d90b059bf05b4bd5fa70aced9"
+source = "git+https://github.com/mkpoli/phonia?rev=25a7a5fb16d627c3a21da623364bf7782838094f#25a7a5fb16d627c3a21da623364bf7782838094f"
 dependencies = [
  "hound",
  "phx-dsp",
@@ -186,7 +186,7 @@ dependencies = [
 [[package]]
 name = "phx-dsp"
 version = "0.0.1"
-source = "git+https://github.com/mkpoli/phonia?rev=076bcea0e7f38a6d90b059bf05b4bd5fa70aced9#076bcea0e7f38a6d90b059bf05b4bd5fa70aced9"
+source = "git+https://github.com/mkpoli/phonia?rev=25a7a5fb16d627c3a21da623364bf7782838094f#25a7a5fb16d627c3a21da623364bf7782838094f"
 dependencies = [
  "realfft",
 ]
@@ -194,7 +194,7 @@ dependencies = [
 [[package]]
 name = "phx-formant"
 version = "0.0.1"
-source = "git+https://github.com/mkpoli/phonia?rev=076bcea0e7f38a6d90b059bf05b4bd5fa70aced9#076bcea0e7f38a6d90b059bf05b4bd5fa70aced9"
+source = "git+https://github.com/mkpoli/phonia?rev=25a7a5fb16d627c3a21da623364bf7782838094f#25a7a5fb16d627c3a21da623364bf7782838094f"
 dependencies = [
  "phx-audio",
  "phx-dsp",
@@ -203,7 +203,7 @@ dependencies = [
 [[package]]
 name = "phx-pitch"
 version = "0.0.1"
-source = "git+https://github.com/mkpoli/phonia?rev=076bcea0e7f38a6d90b059bf05b4bd5fa70aced9#076bcea0e7f38a6d90b059bf05b4bd5fa70aced9"
+source = "git+https://github.com/mkpoli/phonia?rev=25a7a5fb16d627c3a21da623364bf7782838094f#25a7a5fb16d627c3a21da623364bf7782838094f"
 dependencies = [
  "phx-audio",
  "phx-dsp",
@@ -212,7 +212,7 @@ dependencies = [
 [[package]]
 name = "phx-voice"
 version = "0.0.1"
-source = "git+https://github.com/mkpoli/phonia?rev=076bcea0e7f38a6d90b059bf05b4bd5fa70aced9#076bcea0e7f38a6d90b059bf05b4bd5fa70aced9"
+source = "git+https://github.com/mkpoli/phonia?rev=25a7a5fb16d627c3a21da623364bf7782838094f#25a7a5fb16d627c3a21da623364bf7782838094f"
 dependencies = [
  "phx-audio",
  "phx-dsp",
