@@ -45,8 +45,8 @@ afterEach(() => engine?.stop());
 
 describe.skipIf(process.env.KOENAMI_TREE !== 'new')('the measurement engine', () => {
 	it('answers each call with its own result', async () => {
-		const first = engine.analyze(samples() as never);
-		const second = engine.analyze(samples() as never);
+		const first = engine.analyze(samples());
+		const second = engine.analyze(samples());
 		const [a, b] = current().posted;
 		current().answer({ id: b.id, json: '{"duration":2}' });
 		current().answer({ id: a.id, json: '{"duration":1}' });
@@ -56,36 +56,43 @@ describe.skipIf(process.env.KOENAMI_TREE !== 'new')('the measurement engine', ()
 
 	it('starts one worker and keeps it', async () => {
 		const call = engine.version();
-		engine.analyze(samples() as never);
+		const second = engine.analyze(samples());
 		expect(FakeWorker.live).toHaveLength(1);
 		current().answer({ id: current().posted[0].id, json: '4.0.1' });
 		expect(await call).toBe('4.0.1');
+		// The second call is answered too, so stopping the engine afterwards rejects nothing.
+		current().answer({ id: current().posted[1].id, json: '{}' });
+		await second;
 	});
 
 	it('cancels a call the caller has abandoned', async () => {
 		const controller = new AbortController();
-		const call = engine.live(samples() as never, controller.signal);
+		const call = engine.live(samples(), controller.signal);
 		const { id } = current().posted[0];
 		controller.abort();
 		await expect(call).rejects.toMatchObject({ name: 'AbortError' });
-		expect(current().posted.some((message) => message.kind === 'cancel' && message.cancel === id)).toBe(true);
+		expect(
+			current().posted.some((message) => message.kind === 'cancel' && message.cancel === id)
+		).toBe(true);
 		// The answer to a cancelled call is dropped rather than resolving it.
 		expect(() => current().answer({ id, json: '{}' })).not.toThrow();
 	});
 
 	it('refuses a call whose signal has already been aborted', async () => {
-		await expect(engine.analyze(samples() as never, AbortSignal.abort())).rejects.toMatchObject({ name: 'AbortError' });
+		await expect(engine.analyze(samples() as never, AbortSignal.abort())).rejects.toMatchObject({
+			name: 'AbortError'
+		});
 	});
 
 	it('rejects a call the worker reports as cancelled', async () => {
-		const call = engine.live(samples() as never);
+		const call = engine.live(samples());
 		current().answer({ id: current().posted[0].id, cancelled: true });
 		await expect(call).rejects.toMatchObject({ name: 'AbortError' });
 	});
 
 	it('fails every call in flight when the worker does, and starts a new one after', async () => {
-		const first = engine.analyze(samples() as never);
-		const second = engine.live(samples() as never);
+		const first = engine.analyze(samples());
+		const second = engine.live(samples());
 		const failed = current();
 		failed.onerror?.({ message: 'wasm failed to start' });
 		await expect(first).rejects.toThrow('wasm failed to start');
@@ -98,20 +105,20 @@ describe.skipIf(process.env.KOENAMI_TREE !== 'new')('the measurement engine', ()
 	});
 
 	it('reports what the worker could not measure', async () => {
-		const call = engine.analyze(samples() as never);
+		const call = engine.analyze(samples());
 		current().answer({ id: current().posted[0].id, error: 'Audio must contain finite samples.' });
 		await expect(call).rejects.toThrow('Audio must contain finite samples.');
 	});
 
 	it('fails calls in flight when it is stopped', async () => {
-		const call = engine.analyze(samples() as never);
+		const call = engine.analyze(samples());
 		engine.stop();
 		await expect(call).rejects.toMatchObject({ name: 'AbortError' });
 	});
 
 	it('keeps the caller’s samples', async () => {
 		const pcm = samples();
-		const call = engine.analyze(pcm as never);
+		const call = engine.analyze(pcm);
 		current().answer({ id: current().posted[0].id, json: '{}' });
 		await call;
 		expect(Array.from(pcm)).toEqual([0, 0.5, -0.5, 0]);
