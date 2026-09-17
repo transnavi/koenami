@@ -25,11 +25,11 @@ Breathiness had mixed results across studies [[leung2018]]; noise did nothing in
 
 ## Consonants and words
 
-The boundary between "s" and "sh" moves when listeners believe the talker is a woman or a man, so sibilants are heard through an assumed gender [[munson2017]]; sibilant spectra shift gender ratings even in children's voices [[funk2025]], and gender-expansive listeners perceive them differently [[hope2023]]. Articulation contributes to gender perception in the meta-analysis [[leung2018]]. See [[articulation]].
+The boundary between "s" and "sh" moves when listeners believe the talker is a woman or a man, so sibilants are heard through an assumed gender [[munson2017]]; sibilant spectra shifted gender ratings of children's voices in morphed stimuli but not in natural speech [[funk2025]], and gender-expansive listeners perceive them differently [[hope2023]]. Articulation contributes to gender perception in the meta-analysis [[leung2018]]. See [[articulation]].
 
 ## Perceived femininity is not the same as "is a woman"
 
-Masculinity and femininity ratings are correlated with, yet separable from, binary judgements and from perceived sexual orientation, and different acoustic sets predict each [[munson2007]]. Listeners rate trans and non-binary speakers toward the middle of the scale and are confident in proportion to how typical, not how correct, their judgement is [[taylor2026]]. Across 45 recent studies, gender-diverse voices are often perceived as between the categories, and the field's binary methods may bias that picture [[rosi2025]]. Listener age and being gender-diverse barely changed group ratings of one trans man's voice over a year of testosterone: consistently female through week 14, consistently male after week 28 [[brown2021]]. See [[gender-perception]] and [[nonbinary-voice]].
+Masculinity and femininity ratings are correlated with, yet separable from, perceived sexual orientation, and different acoustic sets predict each [[munson2007]]. Listeners rate trans and non-binary speakers toward the middle of the scale and are confident in proportion to how typical, not how correct, their judgement is [[taylor2026]]. Across 45 recent studies, gender-diverse voices are often perceived as between the categories, and the field's binary methods may bias that picture [[rosi2025]]. Listener age and being gender-diverse barely changed group ratings of one trans man's voice over a year of testosterone: consistently female through week 14, consistently male after week 28 [[brown2021]]. See [[gender-perception]] and [[nonbinary-voice]].
 
 ## The speaker's own ear
 
