@@ -45,11 +45,11 @@ Languages: ja 日本語 · zh 中文 · ko 한국어 · es español · pt portug
 
 ## Acoustics and measurement
 
-- **Fundamental frequency** [[fundamental-frequency]] — F0, the rate of vocal-fold vibration in hertz; heard as pitch. Koenami reports its median as 高さ.
+- **Fundamental frequency** [[fundamental-frequency]] — F0, the rate of vocal-fold vibration in hertz; heard as pitch. Koenami reports its median as 高さ. The Francophone work writes it **fréquence fondamentale** [[arnold2015]] [[remacle2018]], abbreviated fo in the Liège results [[gillot2020]].
   ja 基本周波数 · zh 基本頻率 · ko 기본 주파수 · es Frecuencia fundamental · pt Frequência fundamental · de Grundfrequenz · fr Fréquence fondamentale
 - **Pitch (music)** [[pitch-and-scales]] — the perceived height of a sound; equal perceived steps, equal musical intervals and equal hertz are three different rulers.
   ja 音高 · zh 音高 · ko 음높이 · es Altura · de Tonhöhe · fr Hauteur
-- **Semitone** [[pitch-and-scales]] — one twelfth of an octave, a frequency ratio of about 1.059; 12 semitones double the frequency.
+- **Semitone** [[pitch-and-scales]] — one twelfth of an octave, a frequency ratio of about 1.059; 12 semitones double the frequency. The German surgical series report their pitch gains in Halbtöne, a mean 5–6 of them [[neumann2005]] [[welzel2002]].
   ja 半音 · zh 半音 · ko 반음 · es Semitono · de Halbton · fr Demi-ton
 - **Harmonic** [[harmonics-and-spectrum]] — a component of the voice source at a whole-number multiple of F0; formants are not harmonics but shape which harmonics come through.
   ja 高調波 · zh 谐波 · ko 고조파 · es Armónico · de Harmonische · fr Harmonique
@@ -69,6 +69,10 @@ Languages: ja 日本語 · zh 中文 · ko 한국어 · es español · pt portug
   ja メル尺度 · zh 梅尔刻度 · ko 멜 척도 · es Escala Mel · fr Échelle des mels
 - **Praat** [[tools]] — the free phonetics program whose pitch and HNR algorithms Koenami reuses.
   ja Praat · zh Praat语音学软件 · ko 프라트 · es Praat · de Praat · fr Praat
+- **MDVP / Multi-Dimensional Voice Program** (en, proprietary) — an acoustic analysis package named beside Praat in the Rome hormone-therapy protocol, the second instrument in that battery rather than an Italian term [[caruso2026]]. → [[patient-reported-outcomes]] · [[tools]]
+- **Prosogram** (en, proprietary) — Mertens's prosody stylisation tool, built at KU Leuven and used at Liège to draw a melodic profile where F0 and formant averages show nothing about intonation [[blanckaert2019]] [[gillot2020]]. → [[intonation]] · [[tools]]
+- **VoxLog** (en, proprietary) — the ambulatory dosimeter that logged F0 and delivered the vibrotactile alert in the Liège biofeedback cases [[remacle2018]] [[jacquet2017]]. → [[voice-therapy-techniques]] · [[tools]]
+- **PA-VAS** (en) — the femininity rating on a visual analogue scale in the Salerno glottoplasty cohort, moving from 4.4 to 1.9 after surgery [[scarpa2025]]. → [[gender-perception]] · [[patient-reported-outcomes]]
 - **Jitter** [[voice-quality]] — cycle-to-cycle variation of the period; with shimmer (amplitude variation) a perturbation measure used in clinical voice assessment.
   ja ジッター · zh 抖动 · ko 지터 · es Jitter · de Jitter · fr Gigue
 - **Cepstrum** [[voice-quality]] — a spectrum of the log spectrum; cepstral peak prominence (CPP) is a robust measure of periodicity used alongside HNR.
@@ -116,7 +120,7 @@ Languages: ja 日本語 · zh 中文 · ko 한국어 · es español · pt portug
   ja 変声 · zh 變聲 · ko 변성기 · es Mutación · de Stimmwechsel · fr Mue
 - **Intonation (linguistics)** [[intonation]] — the pitch movement over a phrase; Koenami's 抑揚 is the 10–90 percentile F0 span in semitones.
   ja イントネーション · zh 語調 · ko 억양 · es Entonación · de Intonation · fr Intonation prosodique
-- **Prosody (linguistics)** [[intonation]] — rhythm, stress and intonation together.
+- **Prosody (linguistics)** [[intonation]] — rhythm, stress and intonation together. The Liège work calls its assessment «l'évaluation de la prosodie», «un parent pauvre» beside the F0 measures, and proposes an automatic prosodic profile to replace the listener's impression [[blanckaert2019]].
   ja 韻律 · zh 韵律 · ko 운율 · es Prosodia · de Prosodie · fr Prosodie
 - **Sibilant** [[articulation]] — the hissing consonants (s, sh); in English studies their spectrum is heard through the listener's assumption about the speaker's gender.
   ja 歯擦音 · zh 咝音 · ko 치찰음 · es Consonante sibilante · de Zischlaut · fr Consonne sibilante
@@ -128,6 +132,8 @@ Languages: ja 日本語 · zh 中文 · ko 한국어 · es español · pt portug
 ## Training, therapy and health
 
 - **Voice therapy** [[speech-language-pathology]] — behavioural treatment of voice by a speech-language pathologist or phoniatrician.
+- **URICA-Voice** (en) — the stage-of-change instrument used to stage a patient's readiness for voice training; the Chinese studies take its stages as the outcome and regress income, occupation, sex and travel distance on them [[liuc2025]] [[chenw2026]]. → [[voice-therapy-techniques]]
+- **VCT / voice and communication training** (en) — the Belgian survey's umbrella term, wider than "voice therapy": 57.4% of 197 trans and gender-diverse respondents had taken it up, and non-binary people presumed female at birth reported the most barriers to reaching it [[papeleu2025b]]. → [[voice-feminization-therapy]] · [[speech-language-pathology]]
 - **Vocal pedagogy** [[singing-and-voice]] — the teaching of singing; the source of much training vocabulary (registers, support, placement).
   ja ボイストレーニング · es Pedagogía vocal · de Gesangspädagogik
 - **Vocal warm-up** [[voice-health]] — gentle exercises before demanding use, such as humming, lip trills and straw phonation.
@@ -241,7 +247,7 @@ The Voice Resource Project wiki's own working vocabulary, as its pages define it
 - **小嗓** (zh) — the opera-derived name for the high register that 伪声 targets [[bili-liujiu2023]]. → [[vocal-registers]]
 - **夹子音** (zh) — a pinched, cutesy extreme voice, named partly in parody [[bili-zhizhiya2023]]. → [[vocal-registers]]
 - **中性音** (zh) — the neutral intermediate voice trained before a cross-gender one [[moegirl-weisheng]]. → [[chinese-community]]
-- **男声女调** (zh clinical) — the persistently high-pitched male voice, mutational falsetto, in mainland voice medicine [[yao2025]] [[wang2009]] [[liang2017]]. → [[voice-health]]
+- **男声女调** (zh clinical) — the persistently high-pitched male voice, mutational falsetto, in mainland voice medicine [[yao2025]] [[wang2009]] [[liang2017]]; it sits inside 音调异常, the abnormal-pitch category whose stated mechanisms — 声带张力、质量的变化以及喉神经肌肉功能的异常 — contain no gender at all [[zhuang2025]]. → [[voice-health]]
 - **嗓音女性化 / 嗓音男性化** (zh) — voice feminization, the term of the community wiki and clinics [[mtfwiki-vocal-therapy]] [[voicedoctor-tw]], and voice masculinization as a translated video titles it [[bili-fledence2025]]. → [[voice-feminization-therapy]] · [[voice-masculinization]]
 - **声带截短术 · 环甲接近术** (zh) — vocal-fold shortening (Wendler-type glottoplasty), the mainland default, and cricothyroid approximation [[mtfwiki-vocal-surgery]] [[zhang2023cn]]. → [[voice-surgery]]
 - **药娘** (zh community) — a person feminizing through hormones, often self-administered; MtF.wiki's slang table marks it as possibly offensive from outsiders [[mtfwiki-slang]] [[baike-yaoniang]]. → [[chinese-community]] · [[hormones-and-voice]]
@@ -249,6 +255,20 @@ The Voice Resource Project wiki's own working vocabulary, as its pages define it
 - **pass · 天赋党 / 天残党** (zh community) — being gendered correctly by others; those whose anatomy starts close to the goal versus far from it [[mtfwiki-slang]]. → [[gender-perception]]
 - **言语治疗 / 語言治療 / 言語治療** (zh, by region) — speech-language pathology on the mainland, in Taiwan and in Hong Kong [[wikipedia-zh-yanliao-zhiliao]]. → [[speech-language-pathology]]
 - **變聲期** (zh) — the pubertal voice-change period, which the community treats as off-limits for training [[wikipedia-zh-biansheng]] [[moegirl-weisheng]]. → [[puberty-voice-change]]
+
+Terms from the mainland and Taiwanese clinical voice literature, as the Chinese ENT journals write them:
+
+- **音调异常** (zh) — abnormal pitch, the heading a pitch complaint arrives under in mainland voice medicine: 音调异常是多种嗓音疾病的常见表现 [[zhuang2025]]. → [[fundamental-frequency]]
+- **嗓音障碍指数** (zh) — the Voice Handicap Index; the mainland long form characterised on 1,766 dysphonic patients [[li2009cn]], the traditional-character 嗓音障礙指數量表 of the Taiwanese VHI-10 [[wang2011tw]], and the score the 男声女调 workflow takes before planning graded training [[yao2025]]. → [[patient-reported-outcomes]]
+- **喉框架手术** (zh) — laryngeal framework surgery: the Chinese name for the Isshiki-derived family that the European Laryngological Society's phonosurgery committee classified in 2001, in a three-centre Chinese review [[luo2018]]; ja 喉頭枠組み手術. → [[voice-surgery]]
+- **嗓音显微外科技术** (zh) — phonomicrosurgery, one of the four operations the 2025 assessment survey reports as yielding «改善发声及吞咽功能取得良好效果» [[xu2025a]]; the standardisation editorial counts 嗓音显微外科手术技术的创新 among the advances of the field [[xu2023cn]]. → [[voice-surgery]]
+- **声带注射喉成形术** (zh) — injection laryngoplasty, the second of those four [[xu2025a]], its development also counted in the editorial's list of advances [[xu2023cn]]. → [[voice-surgery]]
+- **神经修复手术** (zh) — laryngeal reinnervation, the last of them [[xu2025a]]. → [[voice-surgery]]
+- **主观听感知评估 / 客观声学检测 / 嗓音相关生活质量评估** (zh) — subjective audio-perceptual assessment, objective acoustic measurement and voice-related quality-of-life assessment: the three-part assessment vocabulary the standardisation editorial names first [[xu2023cn]], matching the 主观听感知、客观声学、生活质量量表 multi-dimensional framework of the same journal's 2025 survey [[xu2025a]]. → [[patient-reported-outcomes]]
+- **依从性** (zh) — adherence, the outcome the URICA-Voice scale stages; 嗓音训练依从性 is adherence to voice training, and the Chinese studies find it tracks income, occupation, sex and distance to the hospital rather than vocal technique [[liuc2025]] [[chenw2026]]. → [[voice-therapy-techniques]]
+- **意向期 / 行动期 / 维持期** (zh) — contemplation, action and maintenance: the three stages of the transtheoretical model as the URICA-Voice scale reports them [[liuc2025]]. → [[voice-therapy-techniques]]
+- **远程交互式嗓音训练** (zh) — remote interactive voice training; the 2022 arm of the Sun Yat-sen comparison, which raised out-of-town patients' adherence from 5% and 0 to 45.45% with equivalent efficacy, also written 远程嗓音训练 [[chenw2026]]. → [[voice-therapy-techniques]]
+- **医疗服务的可及性** (zh) — the accessibility of healthcare services, named as what remote delivery improves, alongside 克服嗓音康复的时空限制 [[chenw2026]]. → [[transgender-care-context]]
 
 ## European-language terms (es, pt, fr, de, it, nl, ru)
 
@@ -278,8 +298,8 @@ Terms as the Spanish-, Portuguese-, French-, German-, Italian-, Dutch- and Russi
 - **qualidade de vida em voz, QVV** (pt) — voice-related quality of life, the Brazilian questionnaire; the study that used it found its socio-emotional domain correlated with how participants rated their own voice [[santana2022]]. → [[patient-reported-outcomes]]
 - **TWVQ · TVQ:MtF** (pt/en) — the Trans Woman Voice Questionnaire and the Brazilian Portuguese version of its male-to-female form, translated with a reconciliation committee and reported at ICC = 0.957 test–retest on 13 participants [[santos2015]]; the later Brazilian work treats the TWVQ as the standard self-report outcome [[martinho2025]] [[santana2022]]. → [[patient-reported-outcomes]]
 - **féminisation de la voix** (fr) — voice feminization; the French Wikipedia title for the field, which names orthophonie as its route [[wikipedia-fr-feminisation-de-la-voix]]. → [[voice-feminization-therapy]]
-- **orthophonie / orthophoniste** (fr) — the French profession delivering voice work; **prise en charge** is its word for a course of care, and **plainte** the presenting complaint [[loret2019]]. → [[speech-language-pathology]]
-- **Stimmfeminisierung** (de) — voice feminization in the German clinical register; **Stimmtraining** is the community's word for the exercises, and "Stimmfeminisierung ohne OP" the no-surgery route [[heydrich2023]] [[leonie2025]]. → [[voice-feminization-therapy]]
+- **orthophonie / orthophoniste** (fr) — the profession and its practitioner in France and Québec [[wikitrans-voix]] [[laval2016]]; a study of what its members do in feminisation is titled «les pratiques orthophoniques», while **prise en charge** is the word for a course of care and **plainte** the presenting complaint [[loret2019]]. → [[speech-language-pathology]]
+- **Stimmfeminisierung** (de) — voice feminization in the German clinical register; **Stimmtraining** is the community's word for the exercises, and "Stimmfeminisierung ohne OP" the no-surgery route [[heydrich2023]] [[leonie2025]]; it is the search word the German ENT trade press prints in a title [[hess2022]] and the label the Hamburg centre builds its whole package on [[medical-voice-center]], while the Charité group's review takes it apart into «Chirurgische Feminisierung und Maskulinisierung der Stimme» [[pieper2025]]. → [[voice-feminization-therapy]]
 - **Logopädie / Logopädin** (de) — the German speech-therapy profession named in the transition-pathway paper [[heydrich2023]]. → [[speech-language-pathology]]
 - **femminilizzazione della voce** (it) — voice feminization; **logopedia / logopedista** the profession, and **affermazione di genere** gender affirmation, in the Italian sources [[iula2023]] [[robotti2022]]. → [[voice-feminization-therapy]] · [[speech-language-pathology]]
 - **kopstem / falset(stem)** (nl) — Dutch Wikipedia titles its M2-register article Kopstem (head voice) with falset as a synonym — naming by felt location rather than mechanism [[wikipedia-nl-kopstem]]. → [[vocal-registers]]
@@ -352,10 +372,29 @@ Terms as the Spanish-, Portuguese-, French-, German-, Italian-, Dutch- and Russi
 - **Glottoplastik · Crico-Thyreoid-Approximation · LAVA** (de) — glottoplasty (also Web-Glottoplastik nach Wendler), cricothyroid approximation, laser-assisted fold thinning [[dgti-stimmanpassung]] [[charite-stimme-trans]] [[medical-voice-center]]. → [[voice-surgery]]
 - **Logopädie / Logopädin · Heilmittel-Verordnung** (de) — speech-language therapy and its practitioner; the prescription by which statutory insurance pays for it [[dgti-stimmanpassung]] [[charite-stimme-trans]]. → [[speech-language-pathology]] · [[transgender-care-context]]
 - **Falsett · Kopfstimme · Bruststimme** (de) — falsetto, head voice (folded into the Falsett article) and chest voice (redirected to Gesangsregister) [[wikipedia-de-falsett]]. → [[vocal-registers]]
-- **orthophonie / orthophoniste** (fr) — the profession and its practitioner in France and Québec [[wikitrans-voix]] [[laval2016]]. → [[speech-language-pathology]]
+- **Stimmerhöhung** (de) — pitch elevation; one word for the operation across trans and non-trans indications, in the titles «Zufriedenheit nach Stimmerhöhung bei Transsexualität» [[meister2016]] and «Die operative Stimmerhöhung bei Mann-zu-Frau-Transsexualismus» [[neumann2005]], in the limit «keine dauerhafte Stimmerhöhung» from hormones or speech therapy alone [[welzel2002]], and in a university centre's list of what it treats, «Transgender-Stimmerhöhungen» [[ukw-izss]]. → [[voice-surgery]] · [[fundamental-frequency]]
+- **Stimmangleichung** (de) — voice adaptation; the word the German assessment and funding pathway uses, as in a phoniatric opinion written «vor der Stimmangleichung» [[rosanowski1999]] and the Charité's «operative Verfahren zur Stimmangleichung» [[charite-stimme-trans]]. → [[voice-feminization-therapy]]
+- **logopädische Behandlung inkl. Stimmtherapie** (de) — speech-therapy treatment including voice therapy; one of six disciplines in an internists' care map, kept separate from the ENT item «HNO-Mitbetreuung mit Phonochirurgie» [[athanasoulia2020]]. → [[speech-language-pathology]]
+- **Phonochirurgie / phonochirurgische Zentren** (de) — phonosurgery and the specialised centres that perform it: the ENT item in an internists' six-discipline care map [[athanasoulia2020]] and the setting for gender-«bekräftigende» laryngeal operations [[pieper2025]], while the Halle thesis argues «dass die Phonochirurgie als fester Bestandteil mit in das therapeutische Gesamtkonzept bei Transsexuellen einbezogen werden muss» [[neumann2005]]. → [[voice-surgery]]
+- **Cricothyroidopexie** (de) — cricothyroidopexy; the Berghaus/Neumann modification of Isshiki type IV, which maximally approximates cricoid and thyroid and fixes the sutures over miniplates to stop them pulling out [[neumann2005]], reported in a 59-patient series [[welzel2002]]. → [[voice-surgery]] · [[larynx-anatomy]]
+- **Stimmlippenspannung** (de) — vocal-fold tension; the mechanism the cricothyroidopexy series gives for the permanent rise of the speaking pitch [[neumann2005]], and the parameter type III thyroplasty reduces to bring a voice down [[charite-stimme-trans]]. → [[phonation]] · [[vocal-folds]]
+- **Sprechstimmlage** (de) — speaking pitch; the measure the surgical series report changing — «Anhebung der mittleren Sprechstimmlage um durchschnittlich 5-6 Halbtöne» [[neumann2005]] [[welzel2002]]. → [[fundamental-frequency]]
+- **Stimmklang** (de) — voice timbre: «Eine Identifikation mit der Stimme bzw. dem eigenen Stimmklang spielt für viele Transgender-Personen eine wesentliche Rolle», and the target that functional voice therapy and hormones approach before any operation is considered [[pieper2025]]; the German patient guides use it where the clinical literature writes Timbre [[dgti-stimmanpassung]]. → [[voice-quality]]
+- **Geschlechts-„bekräftigende"** (de) — gender-"affirming", with the authors' own quotation marks around the borrowed word, for the laryngeal operations done in phonosurgical centres [[pieper2025]]. → [[transgender-care-context]]
+- **geschlechtsangleichende Operation** (de) — the gender-affirming operation, named in the same sentence as the voice problem it can leave behind: «nach erfolgreicher geschlechtsangleichender Operation sehr häufig unter der unverändert männlichen Stimme» [[neumann2005]] [[welzel2002]]. → [[transgender-care-context]]
+- **doing gender** (de/en) — gender not as a biological given but «ein individuell nicht kontrollierbarer Effekt kommunikativen Handelns», an effect of communicative action the individual does not control; the theory a German-language article proposes as the ground on which voice work with trans clients should be re-founded [[azul2013]]. → [[gender-perception]]
 - **fausset · voix de tête · registre léger · mécanisme 2 · voix de poitrine** (fr) — the French register names, the first four given as one thing against chest voice [[wikipedia-fr-fausset]]. → [[vocal-registers]]
 - **ALD · mutuelle · tiers payant** (fr) — long-term-condition status, complementary insurer and third-party payment, the French funding instruments for orthophonie [[wikitrans-voix]] [[alloortho-voix]]. → [[transgender-care-context]]
 - **glottoplastie · cricothyropexie · pomme d'Adam** (fr) — glottoplasty, cricothyroidopexy, Adam's apple [[wikitrans-voix]]. → [[voice-surgery]] · [[larynx-anatomy]]
+- **fréquences de résonance** (fr) — resonance frequencies; the French term for what the English sources call formants, the second of the two parameters that study has trans speakers use to make their gender identities intelligible [[arnold2015]], and reported as fR in the Liège case work, which measured no change in them [[gillot2020]]. → [[formants]]
+- **logopédie / logopédique** (fr, Belgium) — the speech-therapy profession and its adjective, against the French «orthophonie»; the Liège work writes «traitement logopédique», «prise en charge logopédique» and «rééducation logopédique» [[jacquet2017]] [[gillot2020]] [[remacle2018]]. → [[speech-language-pathology]]
+- **biofeedback / BF** (fr, borrowed from English) — «Le Biofeedback (BF) informe en temps réel un individu sur le fonctionnement de son organisme, et ce via un capteur mesurant une activité physiologique»; the Liège case work uses it on a VoxLog dosimeter to carry a raised F0 out of the clinic [[remacle2018]] [[jacquet2017]]. → [[voice-therapy-techniques]]
+- **comportement moteur vocal** (fr) — vocal motor behaviour; what the biofeedback reports on — «un comportement moteur vocal inadéquat» — and what the participant is read as having learned when her activation rate falls [[remacle2018]]. → [[voice-therapy-techniques]]
+- **alerte vibratoire** (fr) — vibrotactile alert; the VoxLog dosimeter's signal to the wearer whenever F0 dropped below 150 Hz [[remacle2018]]. → [[voice-therapy-techniques]]
+- **non-passing** (fr, borrowed from English) — not being read as one's gender, used in the French abstract without translation; the paper's finding is that it can come from «un conflit entre l'identité de genre» a speaker wants the voice to convey and «les attitudes, postures ou autres identités que cette même voix indexe» [[arnold2015]]. → [[gender-perception]]
+- **rendre intelligible son identité de genre** (fr) — to make one's gender identity intelligible; the paper's framing of what a voice does, with la fréquence fondamentale and les fréquences de résonance as the two means [[arnold2015]]. → [[gender-perception]]
+- **I-TVQMtF** (it) — the Italian Transsexual Voice Questionnaire for male-to-female transsexuals, the trans-specific instrument in the Salerno glottoplasty cohort, where it fell from 71.6 to 24.9 after surgery [[scarpa2025]]. → [[patient-reported-outcomes]]
+- **I-VHI** (it) — the Italian Voice Handicap Index, the generic instrument used beside it in the same cohort, falling from 59.2 to 19.8 [[scarpa2025]]. → [[patient-reported-outcomes]]
 - **röstträning · logoped · röstläge · rösttrötthet · röstdysfori** (sv) — voice training (also röstterapi, röstbehandling, logopedisk behandling), the speech-language pathologist, pitch level, vocal fatigue as the safety criterion, voice dysphoria [[transformering]]. → [[voice-feminization-therapy]] · [[vocal-fatigue]]
 - **falsett · bröströst · målbrottet** (sv) — falsetto, chest voice, the voice break (Danish and Norwegian stemmeskifte, Finnish äänenmurros) [[wikipedia-sv-falsett]] [[wikipedia-sv-malbrott]]. → [[vocal-registers]] · [[puberty-voice-change]]
 - **logopedie / logopedist · basisverzekering** (nl) — the profession and the basic insurance that covers it after referral [[transvisie]] [[jessiemaya2017]]. → [[speech-language-pathology]] · [[transgender-care-context]]
