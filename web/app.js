@@ -6,7 +6,7 @@ import {SignalView} from './signals.js';
 import {TakeStore} from './storage.js';
 import {t,lang as uiLang} from './i18n/index.js';
 import {loadImported,importedAudio,importJVS} from './corpus-import.js';
-import {Scorer,verdictLabel,leaningLabel,formatScore,gateFailure,representatives,ageText} from './score.js';
+import {Scorer,verdictLabel,leaningLabel,formatScore,gateFailure,representatives,ageText,SCALE_LIMIT} from './score.js';
 import {shareBundle,cardImage,systemShare,labelled} from './share.js';
 'use strict';
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -332,7 +332,7 @@ function restoreCamera(){if(!recordCamera)return;if(map.navigationVersion===reco
 /* The share dialog scores whatever the indicators show: the whole recording, or the selected range. */
 function activeMeasurement(){return state.own||state.ownFull;}
 function shareResult(){const m=activeMeasurement();return state.scorer?.available&&m&&!m.analysisPending&&!gateFailure(m,uiLang)?state.scorer.score(m.features||{}):null;}
-const scalePos=s=>`${clamp((s+60)/120,0,1)*100}%`;
+const scalePos=s=>`${clamp((s+120)/240,0,1)*100}%`;
 function updateVerdict(){const result=shareResult(),scorer=state.scorer;const readout=$('verdict-readout');readout.disabled=!result;$('verdict-main').dataset.verdict=result?.verdict||'';const m=activeMeasurement(),gate=m&&!m.analysisPending&&scorer?.available?gateFailure(m,uiLang):null;
  $('verdict-word').textContent=result?verdictLabel(result.verdict,uiLang):t(!scorer?.available?'verdict.unavailable':!m?'verdict.record':m.analysisPending?'verdict.analyzing':'verdict.not_yet');
  $('verdict-number').textContent=result?formatScore(result.display):'';
@@ -342,11 +342,11 @@ function historyRows(){const scorer=state.scorer,lang=state.lang==='lab'?'en':st
  return state.takes.filter(t=>t.stored&&t.language===lang&&t.features&&!(t.quality&&gateFailure(t.quality,uiLang))).map(t=>({take:t,result:scorer.score(t.features),unchecked:!t.quality})).filter(r=>r.result).sort((a,b)=>a.take.date.localeCompare(b.take.date));}
 function renderHistory(current){
  const rows=historyRows(),section=$('share-history');section.hidden=rows.length<2;if(section.hidden)return;
- const bands=state.scorer.bands,W=480,H=110,L=30,R=8,T=8,B=18,y=s=>T+(H-T-B)*(1-(clamp(s,-50,50)+50)/100),x=i=>L+(W-L-R)*(rows.length>1?i/(rows.length-1):.5);
+ const bands=state.scorer.bands,W=480,H=110,L=30,R=8,T=8,B=18,y=s=>T+(H-T-B)*(1-(clamp(s,-SCALE_LIMIT,SCALE_LIMIT)+SCALE_LIMIT)/(2*SCALE_LIMIT)),x=i=>L+(W-L-R)*(rows.length>1?i/(rows.length-1):.5);
  const band=(g,color)=>`<rect x="${L}" y="${y(bands[g][1])}" width="${W-L-R}" height="${Math.max(1,y(bands[g][0])-y(bands[g][1]))}" fill="${color}" opacity=".18"/>`;
  const points=rows.map((r,i)=>[x(i),y(r.result.score)]);
  const day=d=>new Date(d).toLocaleDateString(uiLang,{month:'numeric',day:'numeric'});
- $('history-chart').innerHTML=`${band('male','var(--sky)')}${band('female','var(--pink)')}<line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>${[50,0,-50].map(v=>`<text x="${L-6}" y="${y(v)+3}" font-size="8" text-anchor="end" fill="var(--muted)">${formatScore(v)}</text>`).join('')}<polyline points="${points.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--self)" stroke-width="1.5"/>${points.map(([px,py],i)=>`<circle cx="${px}" cy="${py}" r="${rows[i].take.id===state.ownTakeId?4:2.5}" fill="var(--self)" stroke="var(--surface)" stroke-width="1"/>`).join('')}<text x="${L}" y="${H-4}" font-size="8" fill="var(--muted)">${day(rows[0].take.date)}</text><text x="${W-R}" y="${H-4}" font-size="8" text-anchor="end" fill="var(--muted)">${day(rows.at(-1).take.date)}</text>`;
+ $('history-chart').innerHTML=`${band('male','var(--sky)')}${band('female','var(--pink)')}<line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>${[100,50,0,-50,-100].map(v=>`<text x="${L-6}" y="${y(v)+3}" font-size="8" text-anchor="end" fill="var(--muted)">${formatScore(v)}</text>`).join('')}<polyline points="${points.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--self)" stroke-width="1.5"/>${points.map(([px,py],i)=>`<circle cx="${px}" cy="${py}" r="${rows[i].take.id===state.ownTakeId?4:2.5}" fill="var(--self)" stroke="var(--surface)" stroke-width="1"/>`).join('')}<text x="${L}" y="${H-4}" font-size="8" fill="var(--muted)">${day(rows[0].take.date)}</text><text x="${W-R}" y="${H-4}" font-size="8" text-anchor="end" fill="var(--muted)">${day(rows.at(-1).take.date)}</text>`;
  $('history-list').replaceChildren(...[...rows].reverse().map(r=>{const li=document.createElement('li');li.setAttribute('aria-current',String(r.take.id===state.ownTakeId));const when=new Date(r.take.date);li.innerHTML=`<span class="history-name">${esc(r.take.name)}</span><time datetime="${esc(r.take.date)}">${when.toLocaleDateString(uiLang,{month:'numeric',day:'numeric'})} ${when.toLocaleTimeString(uiLang,{hour:'2-digit',minute:'2-digit'})}</time><span class="history-verdict" data-verdict="${r.result.verdict}">${verdictLabel(r.result.verdict,uiLang)}</span><b>${formatScore(r.result.display)}</b>`;const b=document.createElement('button');if(r.take.id===state.ownTakeId){b.textContent=t('history.current');b.disabled=true;}else{b.textContent=t('history.open');b.title=t('history.open_title');b.onclick=()=>{$('share-dialog').close();restoreTake({storedId:r.take.id}).catch(e=>notify(e.message,true));};}li.append(b);return li;}));
  $('history-note').hidden=!rows.some(r=>r.unchecked);
 }

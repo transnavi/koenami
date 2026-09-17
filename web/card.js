@@ -11,7 +11,7 @@ const COLORS={bg:'#f9fbff',surface:'#ffffff',ink:'#3f4a62',heading:'#27374c',mut
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(v,n=0)=>finite(v)?v.toFixed(n).replace('-','−'):'—';
 function slider(x,y,w,result,bands,t){
- const pos=s=>x+w*clamp((s+60)/120,0,1);
+ const pos=s=>x+w*clamp((s+120)/240,0,1);
  const band=(g,color)=>bands?.[g]?`<rect x="${pos(bands[g][0])}" y="${y-7}" width="${Math.max(2,pos(bands[g][1])-pos(bands[g][0]))}" height="14" rx="7" fill="${color}" opacity=".28"/>`:'';
  return `<rect x="${x}" y="${y-3}" width="${w}" height="6" rx="3" fill="${COLORS.grid}"/>${band('male',COLORS.sky)}${band('female',COLORS.pink)}<line x1="${pos(0)}" y1="${y-14}" x2="${pos(0)}" y2="${y+14}" stroke="${COLORS.muted}" stroke-width="2"/><circle cx="${pos(result.score)}" cy="${y}" r="13" fill="${COLORS.self}" stroke="#fff" stroke-width="4"/><text x="${x}" y="${y+40}" font-size="20" fill="${COLORS.sky}">${esc(t('card.male'))}</text><text x="${pos(0)}" y="${y+40}" font-size="18" fill="${COLORS.muted}" text-anchor="middle">${esc(t('card.center'))}</text><text x="${x+w}" y="${y+40}" font-size="20" fill="${COLORS.pink}" text-anchor="end">${esc(t('card.female'))}</text>`;
 }
