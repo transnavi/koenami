@@ -35,7 +35,7 @@ Where it breaks: noise did not shift gender judgements in morphing [[skuk2014]],
 
 What it is: energy in 1–4 kHz relative to 0.1–1 kHz, in dB; the page says it depends on vowel, phonation, microphone and processing [[koenami-method]].
 
-What it stands for: spectral slope, which the source sets along with F0 [[bozeman2022]]; a breathier (steeper) tilt helps a female judgement when the implied tract is already short [[neuhaus2026]], and some trained trans women shift their harmonic balance [[sodersten2026]]. A brighter voice can also come from a shorter tract, since formants rise and carry energy upward [[fant1960]].
+What it stands for: spectral slope, which the source sets along with F0 [[bozeman2022]]; a breathier (steeper) tilt helps a female judgement when the implied tract is already short [[neuhaus2026]], and some trained trans women shift their harmonic balance [[sodersten2026]]. A brighter voice can also come from a shorter tract, whose formants sit higher (see [[formants]]); in the source–filter theory the tract's shape and length are what set those resonances [[fant1960]].
 
 Where it breaks: the microphone and the room change it as much as the voice does. Use it to compare recordings made the same way. See [[voice-quality]].
 

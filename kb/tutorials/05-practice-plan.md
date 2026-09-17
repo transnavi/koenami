@@ -17,7 +17,7 @@ The randomised trial used two blocks of 4–5 weeks, one for pitch, one for arti
 2. **Resonance.** Lip spreading and forward tongue carriage raised F1–F3 and, unasked, F0 [[carew2007]]; a visual target for F2 moved it in one session [[kawitzky2020]]. Formant spacing shifts judgements on its own [[cartei2013]]. "Big dog / little dog" panting is one community way to feel the tract size change [[yoxon2023]]. Track 響き on the same sentence each time [[koenami-method]].
 3. **Weight and tilt.** Some trained speakers shift their harmonic balance [[sodersten2026]]; a breathier tilt helps a female judgement only when the tract is already short [[neuhaus2026]]. Treat this as the third lever, after the first two.
 4. **Intonation and articulation.** Both contribute [[leung2018]]; intonation has its own clinical literature [[hancock2014]]. In Japanese, remember that the span also carries pitch accent [[koenami-method]].
-5. **Loudness.** Loudness helped listener ratings of femininity in the largest cohort [[sodersten2026]] and predicted naturalness in another [[hardy2020]]; a feminized voice that is also quiet is a common early pattern to correct.
+5. **Loudness.** Loudness predicted female-sounding ratings in the largest cohort [[sodersten2026]] and masculinity–femininity ratings in another, where naturalness tracked F0, formants and speech rate [[hardy2020]]; a feminized voice that is also quiet is a common early pattern to correct.
 
 ## Targets and what they rest on
 

@@ -41,13 +41,23 @@ class AgeModel(Wav2Vec2PreTrainedModel):
         return self.age(self.wav2vec2(values).last_hidden_state.mean(dim=1)) * 100
 
 
+TIMBRE_LAYER = 3
+SPECS = {'wavlm': dict(outputs=['embedding', 'timbre_frames'], timbre_layer=TIMBRE_LAYER), 'age': dict(outputs=['age'])}
+
+
 class VoiceEncoder(nn.Module):
+    """Speaker-verification x-vector plus the frames of encoder layer TIMBRE_LAYER, which
+    `perception.timbre` pools over speech frames. The JVS listener-similarity benchmark
+    (research/jvs-benchmark) found layers 2–3 order speakers closest to listener ratings, and
+    that the pooling must skip silent frames while the model still sees them as context; the
+    x-vector head is unchanged."""
     def __init__(self, path):
         super().__init__()
         self.model = WavLMForXVector.from_pretrained(path).eval()
 
     def forward(self, values):
-        return nn.functional.normalize(self.model(values).embeddings, dim=-1)
+        out = self.model(values, output_hidden_states=True)
+        return nn.functional.normalize(out.embeddings, dim=-1), out.hidden_states[TIMBRE_LAYER]
 
 
 def main():
@@ -66,13 +76,15 @@ def main():
                           allow_patterns=['config.json', 'model.safetensors', 'README.md', 'LICENSE', 'preprocessor_config.json'])
         settings = json.loads((source / 'preprocessor_config.json').read_text())
         assert settings['sampling_rate'] == 16000 and settings['do_normalize'] == (name == 'age')
-        if not target.exists() or prepared.get(name, {}).get('revision') != revision:
+        entry = dict(name=name, source='https://huggingface.co/' + repo, revision=revision, license=license_id, **SPECS[name])
+        if not target.exists() or prepared.get(name) != entry:
             model = VoiceEncoder(source) if name == 'wavlm' else AgeModel.from_pretrained(source)
             model.eval()
             full = OUT / (name + '.onnx')
             torch.onnx.export(model, (torch.zeros(1, 64000),), str(full),
-                              input_names=['values'], output_names=['embedding' if name == 'wavlm' else 'age'],
-                              dynamic_axes={'values': {1: 'samples'}}, opset_version=17, dynamo=False)
+                              input_names=['values'], output_names=SPECS[name]['outputs'],
+                              dynamic_axes={'values': {1: 'samples'}, **{o: {1: 'frames'} for o in SPECS[name]['outputs'] if o.endswith('_frames')}},
+                              opset_version=17, dynamo=False)
             del model
             gc.collect()
             quantize_dynamic(str(full), str(target), weight_type=QuantType.QInt8,
@@ -87,7 +99,7 @@ def main():
         with urllib.request.urlopen('https://raw.githubusercontent.com/microsoft/unilm/0e31c7c09737df491e7ff74ded19614b884c52b4/LICENSE', timeout=30) as response:
             license_path.write_bytes(response.read())
     (OUT / 'manifest.json').write_text(json.dumps([
-        dict(name=n, source='https://huggingface.co/' + r, revision=v, license=l)
+        dict(name=n, source='https://huggingface.co/' + r, revision=v, license=l, **SPECS[n])
         for n, r, v, l in items], indent=2))
 
 

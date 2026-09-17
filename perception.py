@@ -5,6 +5,12 @@ import numpy as np
 
 RATE = 16000
 VERSION = 'wavlm-sv-int8-v2'
+# Second output of the same ONNX graph: the frames of WavLM encoder layer 3, pooled by timbre()
+# over speech frames of one centre crop. Cosine distance between two of these ranks reference
+# speakers closest to JVS listener similarity ratings (see README); the x-vector remains the
+# identity descriptor. The version covers the pooling rule as well as the graph: a different
+# crop length, layer or energy threshold changes every vector and must change this string.
+TIMBRE_VERSION = 'wavlm-l3-int8-v2'
 MODEL_DIR = Path(os.environ.get('KOENAMI_MODELS', Path(__file__).parent / '.models/perception'))
 _sessions = {}
 
@@ -29,17 +35,41 @@ def session(name):
     return _sessions[name]
 
 
-def windows(x):
-    """Raw windows for WavLM; age-model normalization is applied separately."""
-    if len(x) < 2 * RATE: raise ValueError('2秒以上の音声を選んでください。')
-    # Trim only quiet edges, retaining internal pauses and the order of speech.
+FLOOR = .001  # rms of a 20 ms frame below which nothing counts as audible, in span() and in the pooling
+
+
+def frame_rms(x):
+    """Root-mean-square per 20 ms frame on WavLM's 320-sample grid."""
     step = RATE // 50
     frames = np.pad(x, (0, (-len(x)) % step)).reshape(-1, step)
-    rms = np.sqrt(np.mean(frames * frames, axis=1))
-    active = np.flatnonzero(rms > max(.001, float(rms.max()) * .02))
+    return np.sqrt(np.mean(frames * frames, axis=1))
+
+
+def audible(rms):
+    """Frames that locate speech within a whole recording: above the floor and within 2% of the loudest frame."""
+    return rms > max(FLOOR, float(rms.max()) * .02)
+
+
+def span(x):
+    """Sample range from the first to the last audible 20 ms frame; at least two seconds long."""
+    if len(x) < 2 * RATE: raise ValueError('2秒以上の音声を選んでください。')
+    step = RATE // 50
+    active = np.flatnonzero(audible(frame_rms(x)))
     if not len(active): raise ValueError('声が小さすぎます。別の音声を選んでください。')
-    x = x[max(0, int(active[0]) * step - step):min(len(x), (int(active[-1]) + 2) * step)]
-    if len(x) < 2 * RATE: raise ValueError('2秒以上、話した音声を選んでください。')
+    start, end = max(0, int(active[0]) * step - step), min(len(x), (int(active[-1]) + 2) * step)
+    if end - start < 2 * RATE: raise ValueError('2秒以上、話した音声を選んでください。')
+    return start, end
+
+
+def trimmed(x):
+    """Quiet edges removed, internal pauses and the order of speech retained."""
+    start, end = span(x)
+    return x[start:end]
+
+
+def windows(x):
+    """Raw windows for WavLM; age-model normalization is applied separately."""
+    x = trimmed(x)
     width = min(4 * RATE, len(x))
     count = min(3, max(1, int(np.ceil(len(x) / width))))
     starts = np.unique(np.linspace(0, len(x) - width, count, dtype=int))
@@ -51,6 +81,32 @@ def windows(x):
 
 def age_input(part):
     return (part - part.mean()) / np.sqrt(part.var() + 1e-7)
+
+
+def timbre(x):
+    """Layer-3 timbre vector: one pass over the eight seconds holding the most audible frames (ties
+    toward the centre of the audible span), pooled over speech frames only: within 40 dB of the
+    crop's loudest 20 ms frame and above the level floor.
+
+    The quiet edges are kept as context for the model and left out of the mean; the README records
+    what each choice was worth on the JVS ratings. Not unit-normalised; compare with cosine distance."""
+    start, end = span(x)
+    step, n = RATE // 50, 8 * 50
+    rms = frame_rms(x)
+    if len(x) > 8 * RATE:
+        counts = np.cumsum(np.r_[0, audible(rms)]); counts = counts[n:] - counts[:-n]
+        best = np.flatnonzero(counts == counts.max()); centre = ((start + end) // 2 - 4 * RATE) // step
+        c = min(int(best[np.abs(best - centre).argmin()]) * step, len(x) - 8 * RATE)
+        x = x[c:c + 8 * RATE]; rms = frame_rms(x)
+    if 'timbre_frames' not in [o.name for o in session('wavlm').get_outputs()]:
+        raise ValueError('The prepared WavLM model predates the timbre output; run prepare_voice_models.py.')
+    frames = session('wavlm').run(['timbre_frames'], {'values': x.astype(np.float32)[None, :]})[0][0]
+    energy = 20 * np.log10(rms[:len(frames)] + 1e-12)
+    speech = (energy > energy.max() - 40) & (rms[:len(frames)] > FLOOR)
+    if speech.sum() < 75: raise ValueError('2秒以上、話した音声を選んでください。')  # 1.5 s of speech frames
+    v = frames[speech].mean(axis=0)
+    if v.shape != (768,) or not np.isfinite(v).all(): raise ValueError('この音声の推定に失敗しました。')
+    return v
 
 
 def describe(x):

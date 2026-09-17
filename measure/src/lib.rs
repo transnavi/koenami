@@ -19,9 +19,9 @@ use phx_voice::{HarmonicityParams, HnrTrack, hnr_track_cc};
 use serde::{Deserialize, Serialize};
 
 /// Measurement standard. Every stored feature carries it; a change here
-/// means every library and every saved take is re-measured. The libraries
-/// stay at 3.0.0 (the Python engine) until they are rebuilt with this one.
-pub const VERSION: &str = "4.0.0";
+/// means every library and every saved take is re-measured. A library keeps
+/// the version of the engine that built it until it is rebuilt.
+pub const VERSION: &str = "4.0.1";
 /// Analysis rate in hertz; every input is resampled to it.
 pub const RATE: f64 = 16_000.0;
 /// Frame step in seconds.
@@ -133,12 +133,25 @@ pub struct Features {
     pub pitch_span: Option<f64>,
 }
 
+/// How much of the speech-level signal was voiced, and whether that is too
+/// little for pitch, resonance and harmonicity medians to describe a voice.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Voicing {
+    pub voiced_fraction: f64,
+    pub sparse: bool,
+}
+
 /// Everything [`measure`] reports.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Measurement {
     pub version: String,
     pub duration: f64,
     pub voiced_seconds: f64,
+    /// Seconds of speech-level frames: within 20 dB of the loudest 5 %.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active_seconds: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub voicing: Option<Voicing>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clipping_fraction: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -158,6 +171,11 @@ pub struct Measurement {
     pub formant_sensitivity_pct: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resonance_sensitivity_pct: Option<f64>,
+    /// Share of voiced frames with energy at the even multiples of the tracked
+    /// pitch and none at the odd ones: a track an octave low, or period-doubled
+    /// creak, which looks the same.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pitch_halving_pct: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub peak: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -208,6 +226,8 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         version: VERSION.to_string(),
         duration: round(duration, 3),
         voiced_seconds: 0.0,
+        active_seconds: None,
+        voicing: None,
         clipping_fraction: None,
         level_dbfs: None,
         features: Features::default(),
@@ -219,6 +239,7 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         pitch_p90: None,
         formant_sensitivity_pct: None,
         resonance_sensitivity_pct: None,
+        pitch_halving_pct: None,
         peak: None,
         visuals: None,
     };
@@ -267,13 +288,72 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         .map(|i| f0[i] > 0.0 && strength[i] >= 0.65 && db[i] > threshold)
         .collect();
     let count = voiced.iter().filter(|&&v| v).count();
+    // Speech-level frames: within 20 dB of the loudest 5 %. A noisy microphone
+    // floor can sit above the silence threshold, so the floor itself cannot be
+    // the reference for "how much of the speech was voiced".
+    let speech_level = threshold.max(quantile(&db, 0.95) - 20.0);
+    let speech: Vec<bool> = db.iter().map(|&v| v > speech_level).collect();
+    let active = speech.iter().filter(|&&s| s).count();
 
     result.voiced_seconds = round(count as f64 * STEP, 3);
+    result.active_seconds = Some(round(active as f64 * STEP, 3));
     result.clipping_fraction =
         Some(signal.iter().filter(|v| v.abs() >= 0.999).count() as f64 / signal.len() as f64);
     let level = (signal.iter().map(|v| v * v).sum::<f64>() / signal.len() as f64).sqrt();
     result.level_dbfs = Some(20.0 * (level + 1e-12).log10());
-    if count < 5 {
+    result.peak = Some(signal.iter().fold(0.0_f64, |m, v| m.max(v.abs())));
+
+    // Low-energy intervals longer than 250 ms, distinct from unvoiced
+    // consonants. They depend on level only, so they are reported whether or
+    // not pitch can be measured.
+    let mut intervals = Vec::new();
+    let mut begin: Option<usize> = None;
+    for j in 0..=db.len() {
+        let quiet = j < db.len() && db[j] <= threshold;
+        match (quiet, begin) {
+            (true, None) => begin = Some(j),
+            (false, Some(b)) => {
+                if (j - b) as f64 * STEP >= 0.25 {
+                    let last = (j - 1).min(times.len() - 1);
+                    intervals.push(QuietInterval {
+                        start: round((times[b] - STEP / 2.0).max(0.0), 3),
+                        end: round((times[last] + STEP / 2.0).min(duration), 3),
+                    });
+                }
+                begin = None;
+            }
+            _ => {}
+        }
+    }
+    let quiet_total: f64 = intervals.iter().map(|p| p.end - p.start).sum();
+    let quiet_mean = if intervals.is_empty() {
+        0.0
+    } else {
+        quiet_total / intervals.len() as f64
+    };
+    result.quiet_intervals = Some(intervals);
+
+    // Pitch, resonance and harmonicity are measured on voiced frames only.
+    // Whispered or mostly unvoiced input can still pass a handful of frames
+    // through the strength gate; those medians would describe noise, so they
+    // are withheld when voicing is sparse.
+    // The reported fraction counts voiced frames inside the speech-level
+    // frames, so it stays within 0–1 when a quiet but periodic tail is voiced
+    // without reaching speech level. The gate keeps comparing every reliable
+    // voiced frame with the speech-level count: a loud non-speech burst (a
+    // cough, handling noise) then shrinks neither the numerator nor the
+    // verdict, which the intersection would.
+    let voiced_in_speech = voiced
+        .iter()
+        .zip(&speech)
+        .filter(|&(&v, &s)| v && s)
+        .count();
+    let sparse = count < 10 || (count as f64) < 0.1 * active as f64;
+    result.voicing = Some(Voicing {
+        voiced_fraction: round(voiced_in_speech as f64 / active.max(1) as f64, 3),
+        sparse,
+    });
+    if sparse {
         result.reason =
             Some("No reliable voiced speech. Check the microphone and speak normally.".to_string());
         return result;
@@ -376,6 +456,28 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
             let balance = 10.0 * ((hi + 1e-20) / (lo + 1e-20)).log10();
             data.balance.push(balance);
             row.balance = Some(balance);
+            // Octave check against the harmonic pattern: a voice tracked at half
+            // its pitch has energy at the even multiples of the tracked value and
+            // none at the odd ones. Voices above the 500 Hz ceiling (falsetto,
+            // children) are tracked that way by design, and period-doubled creak
+            // looks the same, so the share is reported, never corrected.
+            // Calibration on JVS: modal reading at most 3.3 % of frames, halved
+            // falsetto 20 % and up.
+            let peak = |hz: f64| -> f64 {
+                let half_width = (0.06 * hz).max(hz_per_bin);
+                let first = ((hz - half_width) / hz_per_bin).ceil().max(0.0) as usize;
+                let last =
+                    (((hz + half_width) / hz_per_bin).floor() as usize).min(spectrum.len() - 1);
+                let best = spectrum[first.min(last)..=last]
+                    .iter()
+                    .map(|bin| bin.norm_sqr())
+                    .fold(0.0_f64, f64::max);
+                10.0 * (best + 1e-20).log10()
+            };
+            let harmonics: Vec<f64> = (1..=6).map(|k| peak(k as f64 * f0[i])).collect();
+            let odd = (harmonics[0] + harmonics[2] + harmonics[4]) / 3.0;
+            let even = (harmonics[1] + harmonics[3] + harmonics[5]) / 3.0;
+            data.halved.push(even - odd > 10.0);
             if detailed && i % 2 == 0 {
                 let from = i.saturating_sub(74);
                 let recent: Vec<f64> = (from..=i).filter(|&k| voiced[k]).map(|k| f0[k]).collect();
@@ -416,35 +518,13 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         pitch_span: Some(12.0 * (quantile(&data.f0, 0.9) / quantile(&data.f0, 0.1)).log2()),
     };
 
-    // Low-energy intervals longer than 250 ms, distinct from unvoiced
-    // consonants.
-    let mut intervals = Vec::new();
-    let mut begin: Option<usize> = None;
-    for j in 0..=db.len() {
-        let quiet = j < db.len() && db[j] <= threshold;
-        match (quiet, begin) {
-            (true, None) => begin = Some(j),
-            (false, Some(b)) => {
-                if (j - b) as f64 * STEP >= 0.25 {
-                    let last = (j - 1).min(times.len() - 1);
-                    intervals.push(QuietInterval {
-                        start: round((times[b] - STEP / 2.0).max(0.0), 3),
-                        end: round((times[last] + STEP / 2.0).min(duration), 3),
-                    });
-                }
-                begin = None;
-            }
-            _ => {}
-        }
-    }
-    let quiet_total: f64 = intervals.iter().map(|p| p.end - p.start).sum();
     features.quiet_pct = Some(100.0 * quiet_total / duration);
-    features.quiet_mean = Some(if intervals.is_empty() {
-        0.0
-    } else {
-        quiet_total / intervals.len() as f64
-    });
+    features.quiet_mean = Some(quiet_mean);
 
+    result.pitch_halving_pct = Some(round(
+        100.0 * data.halved.iter().filter(|&&h| h).count() as f64 / data.halved.len() as f64,
+        1,
+    ));
     result.formant_seconds = Some(round(data.f3.len() as f64 * STEP, 3));
     result.pitch_p10 = Some(quantile(&data.f0, 0.1));
     result.pitch_p90 = Some(quantile(&data.f0, 0.9));
@@ -454,8 +534,6 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
     if let (Some(d), Some(alt)) = (features.delta_f, features.delta_f_alternative) {
         result.resonance_sensitivity_pct = Some(round(100.0 * (d / alt - 1.0).abs(), 1));
     }
-    result.peak = Some(signal.iter().fold(0.0_f64, |m, v| m.max(v.abs())));
-    result.quiet_intervals = Some(intervals);
     result.features = features;
     result.track = track;
     result
@@ -471,6 +549,7 @@ struct Series {
     f4: Vec<f64>,
     hnr: Vec<f64>,
     balance: Vec<f64>,
+    halved: Vec<bool>,
     f3_alternative: Vec<f64>,
     delta_f: Vec<f64>,
     delta_f_alternative: Vec<f64>,
@@ -827,6 +906,49 @@ mod tests {
         assert!(m.features.hnr.is_some());
         assert!(m.track.iter().any(|r| r.f0.is_some()));
         assert_eq!(m.version, VERSION);
+    }
+
+    #[test]
+    fn voiced_fraction_stays_within_one_when_a_quiet_tail_is_voiced() {
+        let mut x: Vec<f32> = tone(180.0, 3.0).iter().map(|v| v * 0.5).collect();
+        let quiet = 10f32.powf(-26.0 / 20.0);
+        for v in &mut x[16_000..] {
+            *v *= quiet;
+        }
+        let m = measure(&x, false);
+        let voicing = m.voicing.unwrap();
+        assert!(
+            voicing.voiced_fraction <= 1.0 && voicing.voiced_fraction > 0.9,
+            "{}",
+            voicing.voiced_fraction
+        );
+        assert!(!voicing.sparse);
+        assert!(m.voiced_seconds > 2.0);
+    }
+
+    #[test]
+    fn halving_share_flags_missing_odd_harmonics_of_the_tracked_pitch() {
+        for f0 in [170.0, 340.0] {
+            let m = measure(&tone(f0, 3.0), false);
+            assert!((m.features.f0.unwrap() - f0).abs() < 2.0);
+            assert!(
+                m.pitch_halving_pct.unwrap() < 5.0,
+                "{:?}",
+                m.pitch_halving_pct
+            );
+        }
+        // Alternating 300 ms blocks of 340 and 170 Hz: the path finder stays at
+        // 170 Hz throughout, as Praat does, so the 340 Hz blocks lack odd
+        // harmonics of the tracked value and about half the frames flag.
+        let high = tone(340.0, 3.0);
+        let low = tone(170.0, 3.0);
+        let mixed: Vec<f32> = (0..high.len())
+            .map(|i| if (i / 4800) % 2 == 1 { low[i] } else { high[i] })
+            .collect();
+        let m = measure(&mixed, false);
+        assert!(m.features.f0.unwrap() < 200.0, "{:?}", m.features.f0);
+        let pct = m.pitch_halving_pct.unwrap();
+        assert!((35.0..=65.0).contains(&pct), "{pct}");
     }
 
     #[test]
