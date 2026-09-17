@@ -32,10 +32,22 @@ test.describe('bulk actions on saved recordings', () => {
 		// The zip writer is loaded on first use (the only script the click fetches, in either
 		// tree); while it loads, a second download and a delete are both ignored as busy.
 		let release!: () => void;
-		const held = new Promise<void>((resolve) => { release = resolve; });
+		const held = new Promise<void>((resolve) => {
+			release = resolve;
+		});
 		let intercepted!: () => void;
-		const paused = new Promise<void>((resolve) => { intercepted = resolve; });
-		await page.route('**/*.js', async (route) => { intercepted(); await held; await route.continue(); }, { times: 1 });
+		const paused = new Promise<void>((resolve) => {
+			intercepted = resolve;
+		});
+		await page.route(
+			'**/*.js',
+			async (route) => {
+				intercepted();
+				await held;
+				await route.continue();
+			},
+			{ times: 1 }
+		);
 		const zip = studio.download(async () => {
 			await page.locator('#download-all').click();
 			await paused;

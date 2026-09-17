@@ -2,11 +2,36 @@ import type { Features } from './space';
 
 /* Two complete takes are committed together, so an interrupted write keeps the old pair. The
    index entries are the caller's records; a method that returns the index takes their type. */
-export type TakeMetadata = { id: string; features?: Features; duration?: number; quality?: Record<string, number>; [key: string]: unknown };
-export type TakeSnapshot = { range?: unknown; measurement?: unknown; detail?: unknown; [key: string]: unknown };
-export type TakePair = { current?: { takeId?: string } | null; previous?: { takeId?: string } | null };
-export type AnalysisDetail = { features: Features; duration: number; voiced_seconds?: number; formant_seconds?: number; clipping_fraction?: number; resonance_sensitivity_pct?: number; [key: string]: unknown };
-type Change<M extends TakeMetadata> = (snapshot: TakeSnapshot | undefined, metadata: M | undefined) => { snapshot: TakeSnapshot; metadata: M } | null;
+export type TakeMetadata = {
+	id: string;
+	features?: Features;
+	duration?: number;
+	quality?: Record<string, number>;
+	[key: string]: unknown;
+};
+export type TakeSnapshot = {
+	range?: unknown;
+	measurement?: unknown;
+	detail?: unknown;
+	[key: string]: unknown;
+};
+export type TakePair = {
+	current?: { takeId?: string } | null;
+	previous?: { takeId?: string } | null;
+};
+export type AnalysisDetail = {
+	features: Features;
+	duration: number;
+	voiced_seconds?: number;
+	formant_seconds?: number;
+	clipping_fraction?: number;
+	resonance_sensitivity_pct?: number;
+	[key: string]: unknown;
+};
+type Change<M extends TakeMetadata> = (
+	snapshot: TakeSnapshot | undefined,
+	metadata: M | undefined
+) => { snapshot: TakeSnapshot; metadata: M } | null;
 
 export const TakeStore = {
 	db: null as IDBDatabase | null,
@@ -67,7 +92,10 @@ export const TakeStore = {
 						store.put(index, 'recording-index');
 						if (pair)
 							store.put(
-								{ current: pair.current?.takeId === id ? null : pair.current, previous: pair.previous?.takeId === id ? null : pair.previous },
+								{
+									current: pair.current?.takeId === id ? null : pair.current,
+									previous: pair.previous?.takeId === id ? null : pair.previous
+								},
 								'takes'
 							);
 					};
@@ -92,15 +120,24 @@ export const TakeStore = {
 		return this.recordingTransaction<M>(id, (snapshot, metadata) => {
 			if (!snapshot || !metadata) return null;
 			const quality = Object.fromEntries(
-				['voiced_seconds', 'formant_seconds', 'clipping_fraction', 'resonance_sensitivity_pct'].map((k) => [k, detail[k] as number])
+				['voiced_seconds', 'formant_seconds', 'clipping_fraction', 'resonance_sensitivity_pct'].map(
+					(k) => [k, detail[k] as number]
+				)
 			);
 			return {
-				snapshot: { ...snapshot, detail, measurement: snapshot.range ? snapshot.measurement : detail },
+				snapshot: {
+					...snapshot,
+					detail,
+					measurement: snapshot.range ? snapshot.measurement : detail
+				},
 				metadata: { ...metadata, features: detail.features, duration: detail.duration, quality }
 			};
 		});
 	},
-	recordingTransaction<M extends TakeMetadata = TakeMetadata>(id: string, change: Change<M>): Promise<{ snapshot: TakeSnapshot; index: M[] } | null> {
+	recordingTransaction<M extends TakeMetadata = TakeMetadata>(
+		id: string,
+		change: Change<M>
+	): Promise<{ snapshot: TakeSnapshot; index: M[] } | null> {
 		const operation = this.queue
 			.catch(() => {})
 			.then(async () => {
@@ -122,7 +159,9 @@ export const TakeStore = {
 							result = null;
 							return;
 						}
-						const next = index.some((t) => t.id === id) ? index.map((t) => (t.id === id ? changed.metadata : t)) : [changed.metadata, ...index];
+						const next = index.some((t) => t.id === id)
+							? index.map((t) => (t.id === id ? changed.metadata : t))
+							: [changed.metadata, ...index];
 						store.put(changed.snapshot, 'recording:' + id);
 						store.put(next, 'recording-index');
 						result = { snapshot: changed.snapshot, index: next };

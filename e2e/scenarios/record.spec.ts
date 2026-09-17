@@ -1,30 +1,43 @@
 import { test, expect, type Page } from '../fixtures';
 import { app } from '../hooks';
 
-
 // A two-second cap keeps takes short. Manual stops happen between 1.4 s and 1.7 s of
 // capture, so their sample count always rounds to the 1.5 s fixture bucket of the mock
 // API; the cap itself trims automatic stops to exactly two seconds.
-const shortCap = async (page: Page) => page.route('**/api/catalog', async (route: import('@playwright/test').Route) => {
-	const response = await route.fetch();
-	const catalog = await response.json();
-	catalog.capabilities.maxSeconds = 2;
-	await route.fulfill({ response, json: catalog });
-});
+const shortCap = async (page: Page) =>
+	page.route('**/api/catalog', async (route: import('@playwright/test').Route) => {
+		const response = await route.fetch();
+		const catalog = await response.json();
+		catalog.capabilities.maxSeconds = 2;
+		await route.fulfill({ response, json: catalog });
+	});
 const manualStop = 1.4;
 const audio = { maskAudio: true } as const;
 // Live readouts summarise the pitch track over a time window measured in captured
 // samples, so their numbers shift with real capture timing.
-const live = { maskAudio: true, ignore: ['indicators', 'fit-value', 'report-button', 'quality-state', 'live-mode', 'live-time'] } as const;
+const live = {
+	maskAudio: true,
+	ignore: ['indicators', 'fit-value', 'report-button', 'quality-state', 'live-mode', 'live-time']
+} as const;
 
 test.describe('recording', () => {
-	test('record with R, stop, analyse in the background, and the take menu', async ({ page, studio }) => {
+	test('record with R, stop, analyse in the background, and the take menu', async ({
+		page,
+		studio
+	}) => {
 		// The first analysis is held back so the saved-but-unanalysed state can be observed.
 		let release: (() => void) | null = null;
-		await page.route('**/api/analyze', async (route) => {
-			if (!release) await new Promise<void>((resolve) => { release = resolve; });
-			await route.continue();
-		}, { times: 1 });
+		await page.route(
+			'**/api/analyze',
+			async (route) => {
+				if (!release)
+					await new Promise<void>((resolve) => {
+						release = resolve;
+					});
+				await route.continue();
+			},
+			{ times: 1 }
+		);
 		await studio.open('/ja/', shortCap);
 		await studio.until(app.ready);
 		await page.keyboard.press('r');
@@ -103,7 +116,12 @@ test.describe('recording', () => {
 	test('a failed analysis keeps the take and offers a retry', async ({ page, studio }) => {
 		let fail = true;
 		await page.route('**/api/analyze', async (route) => {
-			if (fail) return route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: '解析サーバーを準備しています。' });
+			if (fail)
+				return route.fulfill({
+					status: 503,
+					contentType: 'text/plain; charset=utf-8',
+					body: '解析サーバーを準備しています。'
+				});
 			return route.continue();
 		});
 		await studio.open('/ja/', shortCap);
@@ -132,7 +150,10 @@ test.describe('recording', () => {
 		await studio.golden('live-started', live);
 		await page.locator('#loopback').click();
 		await studio.tick(100);
-		await studio.golden('loopback-on', { ...live, extra: { monitoring: await page.evaluate(app.monitoring) } });
+		await studio.golden('loopback-on', {
+			...live,
+			extra: { monitoring: await page.evaluate(app.monitoring) }
+		});
 		await page.locator('#loopback').click();
 		await studio.until(app.buffered(3.3));
 		await studio.tick(500);
@@ -145,7 +166,9 @@ test.describe('recording', () => {
 		await studio.tick(500);
 		await studio.golden('live-shape-window', live);
 		// Measurements that stop arriving leave the live head to fade out.
-		await page.route('**/api/analyze?live=1', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: 'busy' }));
+		await page.route('**/api/analyze?live=1', (route) =>
+			route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: 'busy' })
+		);
 		await studio.tick(4000);
 		await studio.golden('live-silent', live);
 		// Measurements that resume after a gap draw the trail with a pause.
@@ -165,7 +188,16 @@ test.describe('recording', () => {
 		// A measurement still in flight when live mode stops is discarded, and the buffer
 		// is trimmed once more than twelve seconds have been captured.
 		let release: (() => void) | null = null;
-		await page.route('**/api/analyze?live=1', async (route) => { await new Promise<void>((resolve) => { release = resolve; }); await route.continue(); }, { times: 1 });
+		await page.route(
+			'**/api/analyze?live=1',
+			async (route) => {
+				await new Promise<void>((resolve) => {
+					release = resolve;
+				});
+				await route.continue();
+			},
+			{ times: 1 }
+		);
 		// The live buffer is trimmed to about twelve seconds, so it never reads more.
 		await studio.until(app.buffered(12), 40_000);
 		await page.waitForTimeout(1500);
@@ -185,9 +217,12 @@ test.describe('recording', () => {
 	});
 
 	test('microphone refused', async ({ page, studio }) => {
-		await studio.open('/ja/', async (p) => p.addInitScript(() => {
-			navigator.mediaDevices.getUserMedia = () => Promise.reject(Object.assign(new Error('denied'), { name: 'NotAllowedError' }));
-		}));
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				navigator.mediaDevices.getUserMedia = () =>
+					Promise.reject(Object.assign(new Error('denied'), { name: 'NotAllowedError' }));
+			})
+		);
 		await studio.until(app.ready);
 		await page.locator('#record').click();
 		await studio.until(app.idle);
@@ -196,7 +231,11 @@ test.describe('recording', () => {
 	});
 
 	test('no media devices at all', async ({ page, studio }) => {
-		await studio.open('/ja/', async (p) => p.addInitScript(() => { Object.defineProperty(navigator, 'mediaDevices', { value: undefined }); }));
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				Object.defineProperty(navigator, 'mediaDevices', { value: undefined });
+			})
+		);
 		await studio.until(app.ready);
 		await page.locator('#live-mode').click();
 		await studio.until(app.idle);
@@ -205,10 +244,15 @@ test.describe('recording', () => {
 	});
 
 	test('a worklet that fails to load', async ({ page, studio }) => {
-		await studio.open('/ja/', async (p) => p.addInitScript(() => {
-			const original = AudioWorklet.prototype.addModule;
-			AudioWorklet.prototype.addModule = function () { void original; return Promise.reject(new Error('worklet unavailable')); };
-		}));
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				const original = AudioWorklet.prototype.addModule;
+				AudioWorklet.prototype.addModule = function () {
+					void original;
+					return Promise.reject(new Error('worklet unavailable'));
+				};
+			})
+		);
 		await studio.until(app.ready);
 		await page.locator('#record').click();
 		await studio.until(app.idle);

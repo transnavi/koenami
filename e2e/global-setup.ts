@@ -1,5 +1,6 @@
 import { rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+
 import checkoutOld from '../tests/unit/global-setup';
 
 // The browser layer serves the same pinned tree as the unit layer (KOENAMI_TREE=old),
@@ -9,5 +10,8 @@ import checkoutOld from '../tests/unit/global-setup';
 export default function setup() {
 	checkoutOld();
 	if (process.env.E2E_KEEP_COVERAGE === '1') return;
-	rmSync(fileURLToPath(new URL('../coverage/e2e/raw', import.meta.url)), { recursive: true, force: true });
+	rmSync(fileURLToPath(new URL('../coverage/e2e/raw', import.meta.url)), {
+		recursive: true,
+		force: true
+	});
 }

@@ -1,7 +1,6 @@
 import { test, expect } from '../fixtures';
 import { app } from '../hooks';
 
-
 test.describe('sample library', () => {
 	test('groups, sort, search and folders', async ({ page, studio }) => {
 		await studio.open('/ja/');
@@ -83,7 +82,10 @@ test.describe('sample library', () => {
 		await studio.golden('folder-closed');
 	});
 
-	test('load more: speaker folders beyond thirty, and rows beyond thirty inside a folder', async ({ page, studio }) => {
+	test('load more: speaker folders beyond thirty, and rows beyond thirty inside a folder', async ({
+		page,
+		studio
+	}) => {
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await studio.choose('library-group', 'all');
@@ -95,9 +97,9 @@ test.describe('sample library', () => {
 		await studio.golden('load-more-clicked');
 		// Folders fill lazily; open them until one shows its もっと見る row.
 		const folders = page.locator('#sample-list details.speaker-folder');
-		for (let i = 0; i < await folders.count(); i++) {
+		for (let i = 0; i < (await folders.count()); i++) {
 			const folder = folders.nth(i);
-			if (await folder.getAttribute('open') === null) await folder.locator('summary').click();
+			if ((await folder.getAttribute('open')) === null) await folder.locator('summary').click();
 			if (await folder.locator('.speaker-more').count()) break;
 		}
 		const big = folders.filter({ has: page.locator('.speaker-more') }).first();
@@ -138,7 +140,9 @@ test.describe('sample library', () => {
 		await studio.tick(100);
 		await studio.golden('reference-paused');
 		await page.locator('#reference-seek').fill('50');
-		await studio.until('(() => { const r = document.getElementById("reference-player"); return Math.abs(r.currentTime - r.duration / 2) < 0.05; })()');
+		await studio.until(
+			'(() => { const r = document.getElementById("reference-player"); return Math.abs(r.currentTime - r.duration / 2) < 0.05; })()'
+		);
 		await studio.tick(100);
 		await expect(page.locator('#reference-seek')).toHaveValue('50');
 		await expect(page.locator('#reference-time')).toHaveText('0:05');
@@ -166,8 +170,14 @@ test.describe('sample library', () => {
 		await studio.choose('library-group', 'all');
 		await page.fill('#search', 'VOICEVOX');
 		await studio.tick(300);
-		await page.locator('#sample-list details.speaker-folder[data-speaker*="voicevox"] summary').first().click();
-		await page.locator('#sample-list details.speaker-folder[data-speaker*="voicevox"] .sample-row').first().click();
+		await page
+			.locator('#sample-list details.speaker-folder[data-speaker*="voicevox"] summary')
+			.first()
+			.click();
+		await page
+			.locator('#sample-list details.speaker-folder[data-speaker*="voicevox"] .sample-row')
+			.first()
+			.click();
 		await studio.until(app.selectedSynthetic + ' && ' + app.notBusy);
 		await studio.tick(300);
 		await studio.golden('synthetic-selected');

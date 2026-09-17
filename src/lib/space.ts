@@ -84,15 +84,23 @@ export class AcousticSpace {
 	/* Pitch in semitones, the rest as given: a missing or null feature passes through and
 	   fails every(finite) downstream. */
 	static raw(f: Features | null | undefined): (number | null | undefined)[] {
-		return AcousticSpace.keys.map((k) => (k === 'f0' ? ((f?.[k] ?? 0) > 0 ? 12 * Math.log2(f![k]!) : NaN) : f?.[k]));
+		return AcousticSpace.keys.map((k) =>
+			k === 'f0' ? ((f?.[k] ?? 0) > 0 ? 12 * Math.log2(f![k]!) : NaN) : f?.[k]
+		);
 	}
 	static mean(rows: number[][]): number[] {
-		return AcousticSpace.keys.map((_, k) => rows.reduce((s, v) => s + v[k], 0) / Math.max(1, rows.length));
+		return AcousticSpace.keys.map(
+			(_, k) => rows.reduce((s, v) => s + v[k], 0) / Math.max(1, rows.length)
+		);
 	}
 	static covariance(rows: number[][]): number[][] {
 		const mean = AcousticSpace.mean(rows);
 		return AcousticSpace.keys.map((_, i) =>
-			AcousticSpace.keys.map((_, j) => rows.reduce((s, v) => s + (v[i] - mean[i]) * (v[j] - mean[j]), 0) / Math.max(1, rows.length - 1))
+			AcousticSpace.keys.map(
+				(_, j) =>
+					rows.reduce((s, v) => s + (v[i] - mean[i]) * (v[j] - mean[j]), 0) /
+					Math.max(1, rows.length - 1)
+			)
 		);
 	}
 	center: number[];
@@ -109,12 +117,31 @@ export class AcousticSpace {
 				labels.push(s.group === 'female' ? 1 : s.group === 'male' ? 0 : -1);
 			}
 		}
-		this.center = AcousticSpace.keys.map((_, k) => quantile(rows.map((v) => v[k]), 0.5) || 0);
+		this.center = AcousticSpace.keys.map(
+			(_, k) =>
+				quantile(
+					rows.map((v) => v[k]),
+					0.5
+				) || 0
+		);
 		this.scale = AcousticSpace.keys.map((_, k) =>
-			Math.max([1, 30, 2, 2, 1][k], (quantile(rows.map((v) => v[k]), 0.75) - quantile(rows.map((v) => v[k]), 0.25)) / 1.349 || 0)
+			Math.max(
+				[1, 30, 2, 2, 1][k],
+				(quantile(
+					rows.map((v) => v[k]),
+					0.75
+				) -
+					quantile(
+						rows.map((v) => v[k]),
+						0.25
+					)) /
+					1.349 || 0
+			)
 		);
 		const z = rows.map((v) => v.map((x, k) => (x - this.center[k]) / this.scale[k]));
-		this.mean = AcousticSpace.keys.map((_, k) => z.reduce((s, v) => s + v[k], 0) / Math.max(1, z.length));
+		this.mean = AcousticSpace.keys.map(
+			(_, k) => z.reduce((s, v) => s + v[k], 0) / Math.max(1, z.length)
+		);
 		const centered = z.map((v) => v.map((x, k) => x - this.mean[k]));
 		const covariance = AcousticSpace.covariance(centered);
 		this.projections = { variance: { axes: eigen(covariance), values: [], bounds: [] } };
@@ -125,14 +152,19 @@ export class AcousticSpace {
 			if (difference.reduce((s, x) => s + x * x, 0) > 1e-12) {
 				const covF = AcousticSpace.covariance(female),
 					covM = AcousticSpace.covariance(male);
-				const within = covF.map((row, i) => row.map((v, j) => (v + covM[i][j]) / 2 + (i === j ? 1e-6 : 0)));
+				const within = covF.map((row, i) =>
+					row.map((v, j) => (v + covM[i][j]) / 2 + (i === j ? 1e-6 : 0))
+				);
 				let fisher = solve(within, difference);
 				const norm = Math.sqrt(fisher.reduce((s, x) => s + x * x, 0));
 				if (finite(norm) && norm > 0) {
 					fisher = fisher.map((x) => x / norm);
-					if (fisher.reduce((s, x, k) => s + x * difference[k], 0) < 0) fisher = fisher.map((x) => -x);
+					if (fisher.reduce((s, x, k) => s + x * difference[k], 0) < 0)
+						fisher = fisher.map((x) => -x);
 					const axes = [fisher],
-						candidates = eigen(within).concat(AcousticSpace.keys.map((_, i) => AcousticSpace.keys.map((_, j) => +(i === j))));
+						candidates = eigen(within).concat(
+							AcousticSpace.keys.map((_, i) => AcousticSpace.keys.map((_, j) => +(i === j)))
+						);
 					for (const vector of candidates) {
 						const o = orthogonalize(vector, axes);
 						if (o) axes.push(o);
@@ -143,7 +175,12 @@ export class AcousticSpace {
 			}
 		}
 		for (const p of Object.values(this.projections)) {
-			p.values = p.axes.map((axis) => axis.reduce((sum, x, i) => sum + x * axis.reduce((s, y, j) => s + y * covariance[i][j], 0), 0));
+			p.values = p.axes.map((axis) =>
+				axis.reduce(
+					(sum, x, i) => sum + x * axis.reduce((s, y, j) => s + y * covariance[i][j], 0),
+					0
+				)
+			);
 			const projected = rows.map((r) => this.projectRaw(r, p.axes));
 			p.bounds = [0, 1, 2].map((k) => {
 				const vals = projected.map((v) => v[k]);
@@ -159,7 +196,9 @@ export class AcousticSpace {
 		return v.every(finite) ? v.map((x, k) => (x - this.center[k]) / this.scale[k]) : null;
 	}
 	projection(name: 'variance' | 'contrast' | (string & {})): Projection {
-		return this.projections[name as keyof AcousticSpace['projections']] || this.projections.variance;
+		return (
+			this.projections[name as keyof AcousticSpace['projections']] || this.projections.variance
+		);
 	}
 	projectRaw(raw: number[], axes: number[][]): number[] {
 		const z = raw.map((x, k) => (x - this.center[k]) / this.scale[k] - this.mean[k]);
@@ -178,7 +217,12 @@ export class AcousticSpace {
 			y = this.standardized(b);
 		return x && y ? Math.sqrt(x.reduce((s, v, k) => s + (v - y[k]) ** 2, 0)) : Infinity;
 	}
-	comparison(a: Features, b: Features, dimensions = 3, name = 'variance'): { distance: number; displayedShare: number } | null {
+	comparison(
+		a: Features,
+		b: Features,
+		dimensions = 3,
+		name = 'variance'
+	): { distance: number; displayedShare: number } | null {
 		const p = this.projection(name),
 			x = AcousticSpace.raw(a),
 			y = AcousticSpace.raw(b);
@@ -187,10 +231,17 @@ export class AcousticSpace {
 			right = this.projectRaw(y, p.axes),
 			squares = left.map((v, k) => (v - right[k]) ** 2),
 			total = squares.reduce((sum, v) => sum + v, 0);
-		return { distance: Math.sqrt(total), displayedShare: total > 1e-12 ? squares.slice(0, dimensions).reduce((sum, v) => sum + v, 0) / total : 1 };
+		return {
+			distance: Math.sqrt(total),
+			displayedShare:
+				total > 1e-12 ? squares.slice(0, dimensions).reduce((sum, v) => sum + v, 0) / total : 1
+		};
 	}
 	explained(n = 2, name = 'variance'): number {
 		const p = this.projection(name);
-		return p.values.slice(0, n).reduce((a, b) => a + b, 0) / (this.projections.variance.values.reduce((a, b) => a + b, 0) || 1);
+		return (
+			p.values.slice(0, n).reduce((a, b) => a + b, 0) /
+			(this.projections.variance.values.reduce((a, b) => a + b, 0) || 1)
+		);
 	}
 }

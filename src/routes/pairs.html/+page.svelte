@@ -1,8 +1,8 @@
 <script lang="ts">
 	import '$lib/studio/studio.css';
 	import '$lib/studio/pairs.css';
-	import { onMount } from 'svelte';
 	import { mountPairs } from '$lib/pairs';
+	import { onMount } from 'svelte';
 
 	onMount(mountPairs);
 </script>
@@ -12,16 +12,53 @@
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
-<svg aria-hidden="true" style="display:none"><defs><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.7 13.2A9 9 0 0 1 10.8 3.3 9 9 0 1 0 20.7 13.2Z"/></symbol></defs></svg>
+<svg aria-hidden="true" style="display:none"
+	><defs
+		><symbol id="i-sun" viewBox="0 0 24 24"
+			><circle cx="12" cy="12" r="4" /><path
+				d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"
+			/></symbol
+		><symbol id="i-moon" viewBox="0 0 24 24"
+			><path d="M20.7 13.2A9 9 0 0 1 10.8 3.3 9 9 0 1 0 20.7 13.2Z" /></symbol
+		></defs
+	></svg
+>
 <main class="review">
-<div class="review-head"><h1>比較</h1><a href="./review.html">聴取レビューへ</a><span class="progress" id="progress"></span><button id="theme-button" class="icon-button" title="明暗を切り替え" aria-label="明暗を切り替え"><svg aria-hidden="true"><use href="#i-moon"></use></svg></button></div>
-<section class="card" id="card" hidden>
- <div class="sides"><button class="side" id="side-a" type="button" aria-pressed="false"><span class="tag">A<kbd>Q</kbd></span><span class="text" id="text-a"></span><small id="meta-a"></small></button><button class="side" id="side-b" type="button" aria-pressed="false"><span class="tag">B<kbd>W</kbd></span><span class="text" id="text-b"></span><small id="meta-b"></small></button></div>
- <div class="loop"><button id="loop" type="button" aria-pressed="true">A → B を繰り返す<kbd>R</kbd></button><span>Space：一時停止／再開</span></div>
- <div id="questions"></div>
- <input class="note" id="note" placeholder="メモ（違いを一言）">
- <div class="actions"><span class="status" id="status"></span><button id="skip">スキップ<kbd>S</kbd></button><button class="primary" id="save">保存して次へ<kbd>Enter</kbd></button></div>
-</section>
-<p class="done" id="done" hidden>比較できる組はありません。</p>
-<div class="log" id="log"></div>
+	<div class="review-head">
+		<h1>比較</h1>
+		<a href="./review.html">聴取レビューへ</a><span class="progress" id="progress"></span><button
+			id="theme-button"
+			class="icon-button"
+			title="明暗を切り替え"
+			aria-label="明暗を切り替え"><svg aria-hidden="true"><use href="#i-moon"></use></svg></button
+		>
+	</div>
+	<section class="card" id="card" hidden>
+		<div class="sides">
+			<button class="side" id="side-a" type="button" aria-pressed="false"
+				><span class="tag">A<kbd>Q</kbd></span><span class="text" id="text-a"></span><small
+					id="meta-a"
+				></small></button
+			><button class="side" id="side-b" type="button" aria-pressed="false"
+				><span class="tag">B<kbd>W</kbd></span><span class="text" id="text-b"></span><small
+					id="meta-b"
+				></small></button
+			>
+		</div>
+		<div class="loop">
+			<button id="loop" type="button" aria-pressed="true">A → B を繰り返す<kbd>R</kbd></button><span
+				>Space：一時停止／再開</span
+			>
+		</div>
+		<div id="questions"></div>
+		<input class="note" id="note" placeholder="メモ（違いを一言）" />
+		<div class="actions">
+			<span class="status" id="status"></span><button id="skip">スキップ<kbd>S</kbd></button><button
+				class="primary"
+				id="save">保存して次へ<kbd>Enter</kbd></button
+			>
+		</div>
+	</section>
+	<p class="done" id="done" hidden>比較できる組はありません。</p>
+	<div class="log" id="log"></div>
 </main>

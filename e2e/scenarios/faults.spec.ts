@@ -1,10 +1,11 @@
 import { test } from '../fixtures';
 import { app } from '../hooks';
 
-
 test.describe('server and storage faults', () => {
 	test('catalog and library failures', async ({ page, studio }) => {
-		await page.route('**/api/catalog', (route) => route.fulfill({ status: 500, contentType: 'text/plain', body: '' }));
+		await page.route('**/api/catalog', (route) =>
+			route.fulfill({ status: 500, contentType: 'text/plain', body: '' })
+		);
 		await studio.open('/ja/');
 		await studio.tick(600);
 		await studio.golden('catalog-500');
@@ -16,7 +17,9 @@ test.describe('server and storage faults', () => {
 			catalog.languages = catalog.languages.filter((l: { id: string }) => l.id !== 'lab');
 			await route.fulfill({ response, json: catalog });
 		});
-		await page.route('**/api/library?lang=ko', (route) => route.fulfill({ status: 404, contentType: 'text/plain; charset=utf-8', body: 'Not found' }));
+		await page.route('**/api/library?lang=ko', (route) =>
+			route.fulfill({ status: 404, contentType: 'text/plain; charset=utf-8', body: 'Not found' })
+		);
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await studio.choose('language', 'ko');
@@ -24,7 +27,9 @@ test.describe('server and storage faults', () => {
 		await studio.tick(300);
 		await studio.golden('library-404-keeps-current');
 		// Reference audio that cannot be fetched reports a playback error.
-		await page.route('**/samples/common_voice_ja_36363165.mp3', (route) => route.fulfill({ status: 404, body: '' }));
+		await page.route('**/samples/common_voice_ja_36363165.mp3', (route) =>
+			route.fulfill({ status: 404, body: '' })
+		);
 		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
 		await studio.until(app.selected('common_voice_ja_36363165'));
 		await studio.until('document.getElementById("reference-player").error !== null');
@@ -32,12 +37,23 @@ test.describe('server and storage faults', () => {
 		await studio.golden('reference-audio-missing');
 	});
 
-	test('analysis failures for uploads: 413, 429, 422 and a network error', async ({ page, studio }) => {
+	test('analysis failures for uploads: 413, 429, 422 and a network error', async ({
+		page,
+		studio
+	}) => {
 		await studio.open('/ja/');
 		await studio.until(app.ready);
-		const statuses: [number, string][] = [[413, '1分以内の音声を選んでください。'], [429, '少し待ってからお試しください。'], [422, '音声を解析できませんでした。']];
+		const statuses: [number, string][] = [
+			[413, '1分以内の音声を選んでください。'],
+			[429, '少し待ってからお試しください。'],
+			[422, '音声を解析できませんでした。']
+		];
 		for (const [status, body] of statuses) {
-			await page.route('**/api/analyze', (route) => route.fulfill({ status, contentType: 'text/plain; charset=utf-8', body }), { times: 1 });
+			await page.route(
+				'**/api/analyze',
+				(route) => route.fulfill({ status, contentType: 'text/plain; charset=utf-8', body }),
+				{ times: 1 }
+			);
 			await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 			await studio.until(app.idle);
 			await studio.tick(300);
@@ -49,7 +65,16 @@ test.describe('server and storage faults', () => {
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('analyze-network-error');
-		await page.route('**/api/detail/**', (route) => route.fulfill({ status: 503, contentType: 'text/plain; charset=utf-8', body: '解析サーバーを準備しています。' }), { times: 1 });
+		await page.route(
+			'**/api/detail/**',
+			(route) =>
+				route.fulfill({
+					status: 503,
+					contentType: 'text/plain; charset=utf-8',
+					body: '解析サーバーを準備しています。'
+				}),
+			{ times: 1 }
+		);
 		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
 		await studio.until(app.selectedId('common_voice_ja_36363165'));
 		await studio.until(app.idle);
@@ -67,7 +92,9 @@ test.describe('server and storage faults', () => {
 		await page.route('**/api/analyze', async (route) => {
 			const response = await route.fetch();
 			const detail = await response.json();
-			delete detail.visuals; delete detail.track; delete detail.features.f0;
+			delete detail.visuals;
+			delete detail.track;
+			delete detail.features.f0;
 			await route.fulfill({ response, json: detail });
 		});
 		await page.route('**/api/detail/**', async (route) => {
@@ -100,12 +127,22 @@ test.describe('server and storage faults', () => {
 	});
 
 	test('playback that fails and a delete that fails', async ({ page, studio }) => {
-		await studio.open('/ja/', async (p) => p.addInitScript(() => {
-			const play = HTMLMediaElement.prototype.play;
-			HTMLMediaElement.prototype.play = function () { return (window as unknown as { __failPlay?: boolean }).__failPlay ? Promise.reject(new DOMException('blocked', 'NotAllowedError')) : play.call(this); };
-			const del = IDBObjectStore.prototype.delete;
-			IDBObjectStore.prototype.delete = function (key: IDBValidKey | IDBKeyRange) { if ((window as unknown as { __failDelete?: boolean }).__failDelete) throw new DOMException('gone', 'InvalidStateError'); return del.call(this, key); };
-		}));
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				const play = HTMLMediaElement.prototype.play;
+				HTMLMediaElement.prototype.play = function () {
+					return (window as unknown as { __failPlay?: boolean }).__failPlay
+						? Promise.reject(new DOMException('blocked', 'NotAllowedError'))
+						: play.call(this);
+				};
+				const del = IDBObjectStore.prototype.delete;
+				IDBObjectStore.prototype.delete = function (key: IDBValidKey | IDBKeyRange) {
+					if ((window as unknown as { __failDelete?: boolean }).__failDelete)
+						throw new DOMException('gone', 'InvalidStateError');
+					return del.call(this, key);
+				};
+			})
+		);
 		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.idle);
@@ -128,11 +165,20 @@ test.describe('server and storage faults', () => {
 	});
 
 	test('storage that cannot open', async ({ page, studio }) => {
-		await studio.open('/ja/', async (p) => p.addInitScript(() => {
-			// A microtask, since timers are under the test clock.
-			const open = () => { const r: Record<string, unknown> = {}; Promise.resolve().then(() => { r.error = new DOMException('blocked', 'InvalidStateError'); (r.onerror as () => void)?.(); }); return r; };
-			Object.defineProperty(window, 'indexedDB', { value: { open, databases: async () => [] } });
-		}));
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				// A microtask, since timers are under the test clock.
+				const open = () => {
+					const r: Record<string, unknown> = {};
+					void Promise.resolve().then(() => {
+						r.error = new DOMException('blocked', 'InvalidStateError');
+						(r.onerror as () => void)?.();
+					});
+					return r;
+				};
+				Object.defineProperty(window, 'indexedDB', { value: { open, databases: async () => [] } });
+			})
+		);
 		await studio.until(app.ready);
 		await studio.tick(300);
 		await studio.golden('indexeddb-blocked');
@@ -143,13 +189,16 @@ test.describe('server and storage faults', () => {
 	});
 
 	test('a quota that overflows while saving a take', async ({ page, studio }) => {
-		await studio.open('/ja/', async (p) => p.addInitScript(() => {
-			const put = IDBObjectStore.prototype.put;
-			IDBObjectStore.prototype.put = function (value: unknown, key?: IDBValidKey) {
-				if (typeof key === 'string' && key.startsWith('recording:')) throw new DOMException('quota', 'QuotaExceededError');
-				return put.call(this, value, key);
-			};
-		}));
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				const put = IDBObjectStore.prototype.put;
+				IDBObjectStore.prototype.put = function (value: unknown, key?: IDBValidKey) {
+					if (typeof key === 'string' && key.startsWith('recording:'))
+						throw new DOMException('quota', 'QuotaExceededError');
+					return put.call(this, value, key);
+				};
+			})
+		);
 		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.idle);

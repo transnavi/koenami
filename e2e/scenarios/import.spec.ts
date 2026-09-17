@@ -1,19 +1,24 @@
-import { test, expect, type Page } from '../fixtures';
-import { app } from '../hooks';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+
 import { ZipWriter, BlobWriter, BlobReader } from '@zip.js/zip.js/index-native.js';
 
+import { test, expect } from '../fixtures';
+import { app } from '../hooks';
 
 // The index fixture names three archive members backed by generated tones; the archive
 // and folder are rebuilt from them on every run.
-const index = JSON.parse(readFileSync(new URL('../../tests/fixtures/data/jvs-import-index.json', import.meta.url), 'utf8')) as { clips: { id: string; member: string; fixture: string }[] };
-const tone = (name: string) => readFileSync(new URL(`../../tests/fixtures/audio/jvs/${name}`, import.meta.url));
+const index = JSON.parse(
+	readFileSync(new URL('../../tests/fixtures/data/jvs-import-index.json', import.meta.url), 'utf8')
+) as { clips: { id: string; member: string; fixture: string }[] };
+const tone = (name: string) =>
+	readFileSync(new URL(`../../tests/fixtures/audio/jvs/${name}`, import.meta.url));
 
 async function archive(dir: string, clips = index.clips, name = 'jvs_ver1.zip') {
 	const writer = new ZipWriter(new BlobWriter('application/zip'), { useWebWorkers: false });
 	await writer.add('jvs_ver1/README.txt', new BlobReader(new Blob(['stand-in'])));
-	for (const clip of clips) await writer.add(clip.member, new BlobReader(new Blob([tone(clip.fixture)])));
+	for (const clip of clips)
+		await writer.add(clip.member, new BlobReader(new Blob([tone(clip.fixture)])));
 	const path = join(dir, name);
 	writeFileSync(path, Buffer.from(await (await writer.close()).arrayBuffer()));
 	return path;
@@ -49,7 +54,10 @@ test.describe('JVS import', () => {
 		await studio.tick(200);
 		await studio.golden('imported-in-library');
 		const first = index.clips[0].id;
-		await page.locator(`#sample-list details.speaker-folder[data-speaker*="${speakerOf(first)}"] summary`).first().click();
+		await page
+			.locator(`#sample-list details.speaker-folder[data-speaker*="${speakerOf(first)}"] summary`)
+			.first()
+			.click();
 		await page.locator(`.sample-row[data-id="${first}"]`).click();
 		await studio.until(app.selected(first));
 		await page.locator('#play-reference').click();
@@ -83,12 +91,17 @@ test.describe('JVS import', () => {
 		await studio.golden('zip-again-adds-nothing');
 	});
 
-	test('folder import, a single speaker folder and an unrelated folder', async ({ page, studio }, info) => {
+	test('folder import, a single speaker folder and an unrelated folder', async ({
+		page,
+		studio
+	}, info) => {
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await page.locator('#add-reference').click();
 		await page.locator('#choose-jvs-folder').click();
-		await page.locator('#jvs-folder').setInputFiles(folder(join(info.outputPath(), 'one'), index.clips.slice(2)));
+		await page
+			.locator('#jvs-folder')
+			.setInputFiles(folder(join(info.outputPath(), 'one'), index.clips.slice(2)));
 		await studio.until('document.getElementById("jvs-status").textContent.includes("追加済み")');
 		await studio.until(app.idle);
 		await studio.tick(300);
@@ -115,7 +128,9 @@ test.describe('JVS import', () => {
 		await studio.until(app.ready);
 		await page.locator('#add-reference').click();
 		const wrong = { ...index.clips[0], fixture: 'clip2.wav' };
-		await page.locator('#jvs-zip').setInputFiles(await archive(info.outputPath(), [wrong], 'wrong.zip'));
+		await page
+			.locator('#jvs-zip')
+			.setInputFiles(await archive(info.outputPath(), [wrong], 'wrong.zip'));
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('digest-mismatch');
@@ -128,25 +143,44 @@ test.describe('JVS import', () => {
 		await studio.until('document.getElementById("jvs-status").textContent.includes("追加済み")');
 		await studio.until(app.idle);
 		await page.locator('#import-dialog [data-close]').click();
-		await page.evaluate((id) => new Promise<void>((resolve) => {
-			const open = indexedDB.open('koe-takes');
-			open.onsuccess = () => { const tx = open.result.transaction('session', 'readwrite'); tx.objectStore('session').delete('jvs-audio:' + id); tx.oncomplete = () => resolve(); };
-		}), index.clips[0].id);
+		await page.evaluate(
+			(id) =>
+				new Promise<void>((resolve) => {
+					const open = indexedDB.open('koe-takes');
+					open.onsuccess = () => {
+						const tx = open.result.transaction('session', 'readwrite');
+						tx.objectStore('session').delete('jvs-audio:' + id);
+						tx.oncomplete = () => resolve();
+					};
+				}),
+			index.clips[0].id
+		);
 		await studio.choose('library-group', 'all');
-		await page.locator(`#sample-list details.speaker-folder[data-speaker*="${speakerOf(index.clips[0].id)}"] summary`).first().click();
+		await page
+			.locator(
+				`#sample-list details.speaker-folder[data-speaker*="${speakerOf(index.clips[0].id)}"] summary`
+			)
+			.first()
+			.click();
 		await page.locator(`.sample-row[data-id="${index.clips[0].id}"]`).click();
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('imported-audio-missing');
-
 	});
 
 	test('cancel while the first digest is being computed', async ({ page, studio }, info) => {
-		await studio.open('/ja/', async (p) => p.addInitScript(() => {
-			const original = crypto.subtle.digest.bind(crypto.subtle);
-			(window as unknown as { __release?: () => void }).__release = undefined;
-			crypto.subtle.digest = async (alg, data) => { await new Promise<void>((resolve) => { (window as unknown as { __release?: () => void }).__release = resolve; }); return original(alg, data); };
-		}));
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				const original = crypto.subtle.digest.bind(crypto.subtle);
+				(window as unknown as { __release?: () => void }).__release = undefined;
+				crypto.subtle.digest = async (alg, data) => {
+					await new Promise<void>((resolve) => {
+						(window as unknown as { __release?: () => void }).__release = resolve;
+					});
+					return original(alg, data);
+				};
+			})
+		);
 		await studio.until(app.ready);
 		await page.locator('#add-reference').click();
 		await page.locator('#jvs-zip').setInputFiles(await archive(info.outputPath()));
@@ -172,7 +206,9 @@ test.describe('JVS import', () => {
 	});
 
 	test('index unavailable', async ({ page, studio }, info) => {
-		await page.route('**/api/import-index/jvs', (route) => route.fulfill({ status: 503, contentType: 'text/plain', body: 'down' }));
+		await page.route('**/api/import-index/jvs', (route) =>
+			route.fulfill({ status: 503, contentType: 'text/plain', body: 'down' })
+		);
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await studio.tick(300);

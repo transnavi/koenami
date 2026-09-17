@@ -1,9 +1,25 @@
 // A shared density field, diffused before colour is applied. Every speaker has
 // equal total weight, regardless of how many of their clips are in the library.
-export type CloudPoint = { xy: [number, number]; sample: { synthetic?: boolean; group: string; speaker: string } };
-export type CloudOptions = { width: number; height: number; scale: number; colors: Record<string, string>; dark: boolean };
+export type CloudPoint = {
+	xy: [number, number];
+	sample: { synthetic?: boolean; group: string; speaker: string };
+};
+export type CloudOptions = {
+	width: number;
+	height: number;
+	scale: number;
+	colors: Record<string, string>;
+	dark: boolean;
+};
 
-function blur(source: Float32Array, target: Float32Array, w: number, h: number, r: number, horizontal: boolean) {
+function blur(
+	source: Float32Array,
+	target: Float32Array,
+	w: number,
+	h: number,
+	r: number,
+	horizontal: boolean
+) {
 	const outer = horizontal ? h : w,
 		inner = horizontal ? w : h,
 		step = horizontal ? 1 : w,
@@ -30,7 +46,11 @@ export class DensityCloud {
 		this.canvas = document.createElement('canvas');
 		this.ctx = this.canvas.getContext('2d')!;
 	}
-	draw(ctx: CanvasRenderingContext2D, points: CloudPoint[], { width, height, scale, colors, dark }: CloudOptions) {
+	draw(
+		ctx: CanvasRenderingContext2D,
+		points: CloudPoint[],
+		{ width, height, scale, colors, dark }: CloudOptions
+	) {
 		const pixel = 6,
 			sigma = Math.max(36, Math.min(180, scale * 0.15)),
 			r = Math.max(2, Math.round(sigma / pixel)),
@@ -79,7 +99,9 @@ export class DensityCloud {
 			let peak = 0;
 			for (let i = 0; i < a.length; i++) peak = Math.max(peak, a[i]);
 			if (!peak) continue;
-			const rgb = colors[group].match(/[a-f\d]{2}/gi)?.map((v) => parseInt(v, 16)) || [180, 150, 200],
+			const rgb = colors[group].match(/[a-f\d]{2}/gi)?.map((v) => parseInt(v, 16)) || [
+					180, 150, 200
+				],
 				rgba = this.image.data,
 				opacity = dark ? 0.32 : 0.23;
 			for (let y = 0; y < h; y++)
@@ -88,11 +110,15 @@ export class DensityCloud {
 						at = i * 4,
 						sx = (x - pad) * pixel,
 						sy = (y - pad) * pixel;
-					const edge = Math.max(0, Math.min(1, sx / 22, sy / 22, (width - sx) / 22, (height - sy) / 22));
+					const edge = Math.max(
+						0,
+						Math.min(1, sx / 22, sy / 22, (width - sx) / 22, (height - sy) / 22)
+					);
 					rgba[at] = rgb[0];
 					rgba[at + 1] = rgb[1];
 					rgba[at + 2] = rgb[2];
-					rgba[at + 3] = 255 * opacity * Math.pow(Math.max(0, a[i]) / peak, 0.68) * edge * edge * (3 - 2 * edge);
+					rgba[at + 3] =
+						255 * opacity * Math.pow(Math.max(0, a[i]) / peak, 0.68) * edge * edge * (3 - 2 * edge);
 				}
 			this.ctx.putImageData(this.image, 0, 0);
 			ctx.drawImage(this.canvas, -pad * pixel, -pad * pixel, w * pixel, h * pixel);

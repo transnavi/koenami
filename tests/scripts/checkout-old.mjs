@@ -9,6 +9,8 @@ const { commit } = JSON.parse(readFileSync(`${root}tests/golden/META.json`, 'utf
 const out = `${root}tests/old-tree`;
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
-execFileSync('sh', ['-c', `git -C "${root}" archive ${commit} web | tar -x -C "${out}"`], { stdio: 'inherit' });
+execFileSync('sh', ['-c', `git -C "${root}" archive ${commit} web | tar -x -C "${out}"`], {
+	stdio: 'inherit'
+});
 writeFileSync(`${out}/COMMIT`, commit + '\n');
 console.log(`old tree ${commit} → tests/old-tree/web`);
