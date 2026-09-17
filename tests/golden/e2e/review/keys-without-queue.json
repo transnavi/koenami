@@ -70,19 +70,19 @@
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어"
+   "text": "日本語 普通话 English 한국어"
   },
   "mode": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "新規追加項目"
+   "text": "新規 追加項目"
   },
   "pass": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "全部性別・自然さ声質・話し方印象"
+   "text": "全部 性別・自然さ 声質・話し方 印象"
   },
   "progress": {
    "tag": "span",
@@ -105,7 +105,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "一覧L▶‹›基準問題スキップS保存して次へEnter"
+   "text": "一覧 L ▶ ‹ › 基準 問題 スキップ S 保存して次へ Enter"
   },
   "prev-speaker": {
    "tag": "button",
@@ -134,7 +134,7 @@
    "attrs": {
     "type": "button"
    },
-   "text": "一覧L"
+   "text": "一覧 L"
   },
   "play": {
    "tag": "button",
@@ -207,13 +207,13 @@
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "スキップS"
+   "text": "スキップ S"
   },
   "save": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "保存して次へEnter"
+   "text": "保存して次へ Enter"
   },
   "done": {
    "tag": "p",
@@ -232,7 +232,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "話者一覧×"
+   "text": "話者一覧 ×"
   },
   "list-count": {
    "tag": "span",

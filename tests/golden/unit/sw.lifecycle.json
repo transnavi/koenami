@@ -23,7 +23,7 @@
  [
   "activated",
   [
-   "koenami-v1"
+   "koenami-v2"
   ],
   1
  ],
@@ -41,7 +41,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  7
+  14
  ],
  [
   "GET",
@@ -57,7 +57,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  7
+  14
  ],
  [
   "GET",
@@ -73,7 +73,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  7
+  14
  ],
  [
   "GET",
@@ -89,7 +89,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  7
+  14
  ],
  [
   "GET",
@@ -106,7 +106,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  8
+  15
  ],
  [
   "GET",
@@ -123,7 +123,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  8
+  15
  ],
  [
   "GET",
@@ -141,7 +141,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  9
+  16
  ],
  [
   "GET",
@@ -159,7 +159,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  10
+  17
  ],
  [
   "GET",
@@ -176,7 +176,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  11
+  18
  ],
  [
   "GET",
@@ -193,7 +193,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  12
+  19
  ],
  [
   "GET",
@@ -210,7 +210,7 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  13
+  20
  ],
  [
   "GET",
@@ -227,13 +227,13 @@
    "/site.webmanifest",
    "/tutorial.html"
   ],
-  14
+  21
  ],
  [
   "offline",
   "/en/",
   "navigate",
-  "200",
+  "error: offline",
   [
    "/",
    "/assets/app-abc.js",

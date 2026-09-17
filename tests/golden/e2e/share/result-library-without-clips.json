@@ -25,6 +25,14 @@
    },
    "text": "—"
   },
+  "result-age": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "聞こえる年齢のめやす： 年齢の推定モデルの参考値。日本語や練習中の声については未検証です。"
+  },
   "result-image": {
    "tag": "img",
    "class": "",
@@ -47,13 +55,13 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "自分の声も測るリンクをコピー画像を保存"
+   "text": "自分の声も測る リンクをコピー 画像を保存"
   },
   "result-try": {
    "tag": "a",
    "class": "",
    "attrs": {
-    "href": "/ja/"
+    "href": "/"
    },
    "text": "自分の声も測る"
   },
@@ -85,7 +93,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "5つの指標自分の値と、見本の話者の中央80%（女性的な声・男性的な声）を並べています。指標この声女性的な声の見本男性的な声の見本"
+   "text": "5つの指標 自分の値と、見本の話者の中央80%（女性的な声・男性的な声）を並べています。 指標 この声 女性的な声の見本 男性的な声の見本"
   },
   "result-metric-rows": {
    "tag": "tbody",
@@ -99,7 +107,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "この判定の読み方数値は、見本の話者から求めた「男女差」の方向（女性的な声と男性的な声が最も離れる向き）に、この声の5つの指標を投影した位置です。男性的な見本の中央値と女性的な見本の中央値のちょうど中間を0とし、男性的な見本の中央値を−25、女性的な見本の中央値を+25とする直線の目盛りで、−50〜+50の範囲で表示します。+15以上を「女性的な声」、−15以下を「男性的な声」、その間を「中間的な声」と呼んでいます。どちらの向きも目標になります。女声を目指すなら＋の方向、男声を目指すなら−の方向、性別の印象を薄くしたい・中性的な声を目指すなら0に近づくことが目安です。聞き手がどう感じるかを測ったものではなく、5つの音響指標の位置です。同じ人でも文章、話し方、マイク、周囲の音で変わります。見本の分布は一般人口の標準値ではありません。言語ごとに見本が違うため、言語をまたいで数値を比べることはできません。短い録音や雑音の多い録音では、響きや抑揚の値が安定しません。同じ文をいくつか録音して見比べてください。判定の計算方法は測定方法と出典にあります。判定の方式を変えたときは、この番号（v1）が変わります。"
+   "text": "この判定の読み方 数値は、見本の話者から求めた「男女差」の方向（女性的な声と男性的な声が最も離れる向き）に、この声の5つの指標を投影した位置です。男性的な見本の中央値と女性的な見本の中央値のちょうど中間を0とし、男性的な見本の中央値を−25、女性的な見本の中央値を+25とする直線の目盛りで、−50〜+50の範囲で表示します。+15以上を「女性的な声」、−15以下を「男性的な声」、その間を「中間的な声」と呼んでいます。 どちらの向きも目標になります。女声を目指すなら＋の方向、男声を目指すなら−の方向、性別の印象を薄くしたい・中性的な声を目指すなら0に近づくことが目安です。 聞き手がどう感じるかを測ったものではなく、5つの音響指標の位置です。同じ人でも文章、話し方、マイク、周囲の音で変わります。 見本の分布は一般人口の標準値ではありません。言語ごとに見本が違うため、言語をまたいで数値を比べることはできません。 短い録音や雑音の多い録音では、響きや抑揚の値が安定しません。同じ文をいくつか録音して見比べてください。 判定の計算方法は 測定方法と出典 にあります。判定の方式を変えたときは、この番号（ v1 ）が変わります。"
   },
   "result-version": {
    "tag": "span",
@@ -175,6 +183,72 @@
      "id": "00000000-0000-4000-8000-000000000001",
      "language": "ja",
      "name": "own-a.wav",
+     "peaks": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0.01,
+      0.01,
+      0,
+      0,
+      0,
+      0.01,
+      0.83,
+      0.93,
+      0.18,
+      0.87,
+      0.65,
+      1,
+      0.83,
+      0.93,
+      0.95,
+      0.94,
+      0.95,
+      0.9,
+      0.78,
+      0.14,
+      0.82,
+      0.63,
+      0.7,
+      0.99,
+      0.92,
+      0.8,
+      0.6,
+      0.96,
+      1,
+      0.96,
+      0.83,
+      0.88,
+      0.28,
+      0.77,
+      0.32,
+      0.92,
+      0.55,
+      0.81,
+      0.99,
+      0.93,
+      0.59,
+      0.66,
+      0.84,
+      0.96,
+      0.95,
+      0.97,
+      0.98,
+      0.94,
+      0.87,
+      0.39,
+      0.05,
+      0.74,
+      0.17,
+      0,
+      0.13,
+      0,
+      0,
+      0,
+      0
+     ],
      "quality": {
       "clipping_fraction": 0,
       "formant_seconds": 1.98,
@@ -186,6 +260,7 @@
    ],
    "recording:00000000-0000-4000-8000-000000000001": {
     "detail": {
+     "active_seconds": 4.08,
      "clipping_fraction": 0,
      "duration": 6.696,
      "features": {
@@ -210,6 +285,7 @@
      "formant_sensitivity_pct": 1.9,
      "level_dbfs": -14.46429916099856,
      "peak": 0.8627919554710388,
+     "pitch_halving_pct": 0.6,
      "pitch_p10": 167.92642399550678,
      "pitch_p90": 258.6940640785254,
      "quiet_intervals": [
@@ -2218,7 +2294,7 @@
        "t": 6.648
       }
      ],
-     "version": "3.0.0",
+     "version": "3.1.1",
      "visuals": {
       "duration": 6.696,
       "spectrogram": {
@@ -2245,11 +2321,16 @@
        "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
       }
      },
-     "voiced_seconds": 3.22
+     "voiced_seconds": 3.22,
+     "voicing": {
+      "sparse": false,
+      "voiced_fraction": 0.765
+     }
     },
     "id": null,
     "language": "ja",
     "measurement": {
+     "active_seconds": 4.08,
      "clipping_fraction": 0,
      "duration": 6.696,
      "features": {
@@ -2274,6 +2355,7 @@
      "formant_sensitivity_pct": 1.9,
      "level_dbfs": -14.46429916099856,
      "peak": 0.8627919554710388,
+     "pitch_halving_pct": 0.6,
      "pitch_p10": 167.92642399550678,
      "pitch_p90": 258.6940640785254,
      "quiet_intervals": [
@@ -4282,7 +4364,7 @@
        "t": 6.648
       }
      ],
-     "version": "3.0.0",
+     "version": "3.1.1",
      "visuals": {
       "duration": 6.696,
       "spectrogram": {
@@ -4309,7 +4391,11 @@
        "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
       }
      },
-     "voiced_seconds": 3.22
+     "voiced_seconds": 3.22,
+     "voicing": {
+      "sparse": false,
+      "voiced_fraction": 0.765
+     }
     },
     "name": "own-a.wav",
     "pcm": {
@@ -4325,6 +4411,7 @@
    "takes": {
     "current": {
      "detail": {
+      "active_seconds": 4.08,
       "clipping_fraction": 0,
       "duration": 6.696,
       "features": {
@@ -4349,6 +4436,7 @@
       "formant_sensitivity_pct": 1.9,
       "level_dbfs": -14.46429916099856,
       "peak": 0.8627919554710388,
+      "pitch_halving_pct": 0.6,
       "pitch_p10": 167.92642399550678,
       "pitch_p90": 258.6940640785254,
       "quiet_intervals": [
@@ -6357,7 +6445,7 @@
         "t": 6.648
        }
       ],
-      "version": "3.0.0",
+      "version": "3.1.1",
       "visuals": {
        "duration": 6.696,
        "spectrogram": {
@@ -6384,11 +6472,16 @@
         "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
        }
       },
-      "voiced_seconds": 3.22
+      "voiced_seconds": 3.22,
+      "voicing": {
+       "sparse": false,
+       "voiced_fraction": 0.765
+      }
      },
      "id": null,
      "language": "ja",
      "measurement": {
+      "active_seconds": 4.08,
       "clipping_fraction": 0,
       "duration": 6.696,
       "features": {
@@ -6413,6 +6506,7 @@
       "formant_sensitivity_pct": 1.9,
       "level_dbfs": -14.46429916099856,
       "peak": 0.8627919554710388,
+      "pitch_halving_pct": 0.6,
       "pitch_p10": 167.92642399550678,
       "pitch_p90": 258.6940640785254,
       "quiet_intervals": [
@@ -8421,7 +8515,7 @@
         "t": 6.648
        }
       ],
-      "version": "3.0.0",
+      "version": "3.1.1",
       "visuals": {
        "duration": 6.696,
        "spectrogram": {
@@ -8448,7 +8542,11 @@
         "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
        }
       },
-      "voiced_seconds": 3.22
+      "voiced_seconds": 3.22,
+      "voicing": {
+       "sparse": false,
+       "voiced_fraction": 0.765
+      }
      },
      "name": "own-a.wav",
      "pcm": {
@@ -8520,7 +8618,7 @@
    "seq": 8,
    "method": "GET",
    "path": "/api/library",
-   "query": "lang=ko",
+   "query": "lang=ja",
    "status": 200
   },
   {
@@ -8528,10 +8626,24 @@
    "method": "GET",
    "path": "/api/library",
    "query": "lang=ja",
-   "status": 500
+   "status": 200
   },
   {
    "seq": 10,
+   "method": "GET",
+   "path": "/api/library",
+   "query": "lang=ko",
+   "status": 200
+  },
+  {
+   "seq": 11,
+   "method": "GET",
+   "path": "/api/library",
+   "query": "lang=ja",
+   "status": 500
+  },
+  {
+   "seq": 12,
    "method": "GET",
    "path": "/api/library",
    "query": "lang=ja",
