@@ -308,6 +308,15 @@ the crop length and the pooling threshold were chosen on these ratings.
   processes.
 - Open: a full-rank or nonlinear probe on the x-vector; within-speaker
   listener judgements; the reliability ceiling of the JVS ratings.
+- Cepstral peak prominence in the engines: Phonia's per-frame CPP
+  (amplitude cepstrum, straight trend through 1–20 ms) does not track the
+  Praat CPPS the expanded set used (Spearman −0.08 over 4,998 modal JVS
+  clips); a power-cepstrum variant with an exponential-decay trend over
+  1–50 ms reaches 0.76 on 120 clips, still short of the 0.94–0.997 that
+  H1–H2, jitter and shimmer reach against their Praat counterparts. The
+  engines ship without CPP until a definition tracks CPPS; the remaining
+  measures of the expanded set (H1–H2, the spreads, jitter, shimmer) are in
+  engine 4.1.0.
 
 ## Sources used
 

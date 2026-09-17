@@ -69,6 +69,27 @@ class AcousticTests(unittest.TestCase):
         m=measure(mixed)
         self.assertLess(m['features']['f0'],200);self.assertTrue(35<=m['pitch_halving_pct']<=65,m['pitch_halving_pct'])
 
+    def test_voice_quality_measures_follow_the_signal(self):
+        t=np.arange(RATE*3)/RATE
+        tone=lambda f:sum(np.sin(2*np.pi*f*n*t)/n for n in range(1,8))*.08
+        f=measure(tone(180))['features']
+        self.assertAlmostEqual(f['h1h2'],6,delta=1)  # harmonics fall as 1/n: H1 is 6 dB above H2
+        self.assertLess(f['jitter'],.005);self.assertLess(f['shimmer'],.02)
+        for key in ['h1h2_sd','hnr_sd','balance_sd']:self.assertIn(key,f)
+        # A steady 330 Hz signal with fifteen harmonics, cycles at every position on the sampling grid: the
+        # sampled peak alone reads 3.8 % shimmer, the band-limited peak under 0.1 %.
+        steady=.05*sum(np.sin(2*np.pi*330*k*t)/k for k in range(1,16));self.assertLess(measure(steady)['features']['shimmer'],.001)
+        # Every frame of a 600 Hz signal is tracked at half its pitch: no H1–H2 observation, neither field.
+        m=measure(sum(np.sin(2*np.pi*600*k*t)/k for k in range(1,8))*.08);self.assertGreater(m['pitch_halving_pct'],90)
+        self.assertNotIn('h1h2',m['features']);self.assertNotIn('h1h2_sd',m['features'])
+        self.assertNotIn('delta_f_sd',f)  # a tone has no formants to spread
+        self.assertIn('delta_f_sd',self.original['features'])
+        # Cycle lengths drawn at random within ±8 % (a strict alternation would itself be periodic): jitter rises.
+        rng=np.random.default_rng(9);cycles=[]
+        while sum(len(c) for c in cycles)<RATE*3:
+            n=int(round(RATE/180*rng.uniform(.92,1.08)));ph=2*np.pi*np.arange(n)/n;cycles.append(.6*np.sin(ph)+.3*np.sin(2*ph)+.2*np.sin(3*ph))
+        self.assertGreater(measure(np.concatenate(cycles))['features']['jitter'],.02)
+
     def test_known_pitch(self):
         t=np.arange(RATE*3)/RATE
         for hz in [110,180,260]:
@@ -77,7 +98,7 @@ class AcousticTests(unittest.TestCase):
 
     def test_gain_does_not_move_the_voice_on_any_view(self):
         quiet=measure(self.x*.3,self.rate)
-        for key in ['f0','delta_f','hnr','balance']:
+        for key in ['f0','delta_f','hnr','balance','h1h2','h1h2_sd','delta_f_sd','hnr_sd','balance_sd','jitter','shimmer']:
             self.assertAlmostEqual(self.original['features'][key],quiet['features'][key],delta=.1)
 
     def test_resonance_shift_moves_right_at_similar_pitch(self):
