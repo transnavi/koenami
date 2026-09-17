@@ -32,7 +32,7 @@ export const app = {
 	selectedSynthetic: 'window.voiceApp.state.selected?.synthetic === true',
 	languageLoaded: (id: string) =>
 		`window.voiceApp?.state.lang === ${JSON.stringify(id)} && !window.voiceApp.state.loadingLanguage && !!window.voiceApp.state.refFull`,
-	libraryLoaded: '!window.voiceApp.state.loadingLanguage',
+	libraryLoaded: '!!window.voiceApp && !window.voiceApp.state.loadingLanguage',
 	range: (side: 'own' | 'ref') => `!!window.voiceApp.state.ranges.${side}`,
 	/** A selection exists and its analysis has replaced the displayed measurement. */
 	rangeApplied: (side: 'own' | 'ref') =>

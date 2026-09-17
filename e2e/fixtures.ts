@@ -21,7 +21,7 @@ type NetEntry = {
 	path: string;
 	query: string;
 	body?: string;
-	status?: number;
+	status?: number | 'failed';
 };
 const masked = '<audio>';
 type Studio = {
@@ -86,7 +86,90 @@ async function install(page: Page) {
 	await page.clock.pauseAt(START + 5000);
 }
 
+const port = Number(process.env.E2E_PORT || 8776);
 const sha = (buffer: Buffer) => createHash('sha256').update(buffer).digest('hex');
+
+type Entry = Awaited<ReturnType<Page['coverage']['stopJSCoverage']>>[number];
+type Fn = Entry['functions'][number];
+// Coverage is taken in windows (after every golden and before every navigation), and each
+// window reports the counts since it opened, as V8 block ranges: a function's range and,
+// nested in it, the parts that ran a different number of times. Two windows cannot be
+// added range by range, since a part that ran as often as its function has no range of
+// its own in that window. Each window is laid out as a count per byte instead, the
+// windows of one URL are summed (the instances that successive documents compile share
+// the source), and one entry per URL is emitted with a range per stretch of equal counts.
+const flat = new Set<string>();
+function combine(entries: Entry[]): Entry[] {
+	const byUrl = new Map<
+		string,
+		{ entry: Entry; fns: Map<string, { fn: Fn; counts: Int32Array; blocks: boolean }> }
+	>();
+	for (const entry of entries) {
+		let kept = byUrl.get(entry.url);
+		if (!kept) {
+			kept = { entry, fns: new Map() };
+			byUrl.set(entry.url, kept);
+		}
+		for (const fn of entry.functions) {
+			const [outer] = fn.ranges;
+			const id = `${outer.startOffset}-${outer.endOffset}`;
+			let slot = kept.fns.get(id);
+			if (!slot) {
+				slot = { fn, counts: new Int32Array(outer.endOffset - outer.startOffset), blocks: false };
+				kept.fns.set(id, slot);
+			}
+			// A window may report a function with its call count only, no block ranges. Laid
+			// over the body, that count would credit every branch with runs it did not have,
+			// so only the function's first byte (its call count) takes it; the branches inside
+			// keep the counts of the windows that had block data, and the function is listed
+			// so an exclusion inside it can say why its branches cannot be told apart.
+			if (!fn.isBlockCoverage) {
+				slot.counts[0] += outer.count;
+				if (outer.count > 0)
+					flat.add(`${entry.url.replace(/^.*\//, '')}:${fn.functionName || outer.startOffset}`);
+				continue;
+			}
+			slot.blocks = true;
+			// Ranges nest and come outermost first; a later range overrides the bytes it spans.
+			const window = new Int32Array(outer.endOffset - outer.startOffset);
+			for (const range of fn.ranges)
+				window.fill(
+					range.count,
+					range.startOffset - outer.startOffset,
+					range.endOffset - outer.startOffset
+				);
+			for (let i = 0; i < window.length; i++) slot.counts[i] += window[i];
+		}
+	}
+	return [...byUrl.values()].map(({ entry, fns }) => ({
+		...entry,
+		functions: [...fns.values()].map(({ fn, counts, blocks }) => {
+			const base = fn.ranges[0].startOffset;
+			// A function no window saw with block data keeps the call count only.
+			if (!blocks)
+				return {
+					...fn,
+					ranges: [{ startOffset: base, endOffset: base + counts.length, count: counts[0] }],
+					isBlockCoverage: false
+				};
+			const ranges: Fn['ranges'] = [
+				{ startOffset: base, endOffset: base + counts.length, count: counts[0] }
+			];
+			// The outer range carries the count of the function's first byte (its calls); every
+			// later stretch with another count becomes a nested range.
+			let from = 1;
+			for (let i = 2; i <= counts.length; i++) {
+				if (i < counts.length && counts[i] === counts[from]) continue;
+				if (counts[from] !== counts[0])
+					ranges.push({ startOffset: base + from, endOffset: base + i, count: counts[from] });
+				from = i;
+			}
+			// The per-byte layout is block data whatever the windows reported: a window that
+			// gave the function's count only has it laid over the whole body.
+			return { ...fn, ranges, isBlockCoverage: true };
+		})
+	}));
+}
 const flushers = new WeakMap<Page, () => Promise<void>>();
 
 export const test = base.extend<{ studio: Studio; coverage: void }>({
@@ -94,19 +177,49 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 	// navigation (see `flush` in the studio fixture) and written once per test.
 	coverage: [
 		async ({ page }, use) => {
-			await page.coverage.startJSCoverage({ resetOnNavigation: false });
-			const entries: Awaited<ReturnType<typeof page.coverage.stopJSCoverage>> = [];
-			flushers.set(page, async () => {
-				entries.push(...(await page.coverage.stopJSCoverage()));
-				await page.coverage.startJSCoverage({ resetOnNavigation: false });
+			// Precise coverage is started once per page and read with Profiler.takePreciseCoverage,
+			// which returns the counts since the last read and keeps the instrumentation: a stop
+			// and restart (page.coverage's only way to read) puts functions compiled before the
+			// restart back on call counts without block ranges. Script sources are collected as
+			// the debugger reports them, since the converter needs them.
+			const cdp = await page.context().newCDPSession(page);
+			const sources = new Map<string, { url: string; source?: string }>();
+			cdp.on('Debugger.scriptParsed', (event) => {
+				if (event.url) sources.set(event.scriptId, { url: event.url });
 			});
+			await cdp.send('Debugger.enable');
+			await cdp.send('Profiler.enable');
+			await cdp.send('Profiler.startPreciseCoverage', { callCount: true, detailed: true });
+			const entries: Entry[] = [];
+			const take = async () => {
+				const { result } = await cdp.send('Profiler.takePreciseCoverage');
+				for (const script of result) {
+					const known = sources.get(script.scriptId);
+					if (!known || !known.url) continue;
+					if (known.source === undefined)
+						known.source = await cdp
+							.send('Debugger.getScriptSource', { scriptId: script.scriptId })
+							.then((r) => r.scriptSource)
+							.catch(() => '');
+					entries.push({
+						url: known.url,
+						scriptId: script.scriptId,
+						source: known.source,
+						functions: script.functions
+					});
+				}
+			};
+			flushers.set(page, take);
 			await use();
-			entries.push(...(await page.coverage.stopJSCoverage()));
+			await take().catch(() => {});
+			await cdp.detach().catch(() => {});
 			flushers.delete(page);
 			const dir = join(root, 'coverage/e2e/raw');
 			mkdirSync(dir, { recursive: true });
 			const name = `${sha(Buffer.from(test.info().titlePath.join(' > ')))}.json`;
-			writeFileSync(join(dir, name), JSON.stringify({ result: entries }));
+			const result = combine(entries);
+			writeFileSync(join(dir, name), JSON.stringify({ result, flat: [...flat].sort() }));
+			flat.clear();
 		},
 		{ auto: true }
 	],
@@ -146,6 +259,19 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		page.on('response', (response) => {
 			const entry = entries.get(response.request());
 			if (entry) entry.status = response.status();
+		});
+		// A request the browser abandons gets no response, and one a document navigation
+		// cancels may report nothing at all: both are logged as failed so the log settles.
+		page.on('requestfailed', (request) => {
+			const entry = entries.get(request);
+			if (entry && entry.status === undefined) entry.status = 'failed';
+		});
+		// The entries in flight when a document navigation starts are the ones it abandons.
+		// (Taking the leaving document's coverage here, with the document request held, was
+		// tried: the coverage call waits on the renderer, which waits on the request.)
+		page.on('request', (request) => {
+			if (!request.isNavigationRequest() || request.frame() !== page.mainFrame()) return;
+			for (const entry of log) if (entry.status === undefined) entry.status = 'failed';
 		});
 		const errors: string[] = [];
 		page.on('pageerror', (error) => errors.push(String(error)));
@@ -214,7 +340,8 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			};
 			// Microphone audio differs between runs (the fake device loops its file from
 			// launch). Only what derives from the captured samples is masked: the bodies of
-			// analysis requests and the sample-dependent fields of stored recordings.
+			// analysis requests, the sample-dependent fields of stored recordings and the
+			// waveform previews of the take menu.
 			if (maskAudio) {
 				for (const entry of observation.network)
 					if (entry.method === 'POST' && entry.path === '/api/analyze' && entry.body)
@@ -226,6 +353,8 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 							Object.entries(value).map(([k, v]) => [
 								k,
 								k === 'waveform' ||
+								k === 'peaks' ||
+								k === 'data-peaks' ||
 								(['sha256', 'duration', 'length'].includes(k) &&
 									v !== null &&
 									typeof v !== 'object')
@@ -242,11 +371,25 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				for (const key of Object.keys(storage.idb))
 					if (key.startsWith('recording') || key === 'takes')
 						storage.idb[key] = strip(storage.idb[key]);
+				// The waveform previews of the take menu are computed from the samples too.
+				const elements = observation.elements;
+				if (elements['take-select']) elements['take-select'] = strip(elements['take-select']);
 				if (storage.local['koenami-session'])
 					storage.local['koenami-session'] = strip(storage.local['koenami-session']);
 			}
 			const path = join(dir, `${name}.json`);
-			const text = JSON.stringify(observation, null, 1) + '\n';
+			// The pages build absolute links from their origin; the goldens name it by a
+			// placeholder so the port the suite runs on is not part of them.
+			const text =
+				JSON.stringify(observation, null, 1).replaceAll(
+					`http://127.0.0.1:${port}`,
+					'http://test-origin'
+				) + '\n';
+			// The counts so far are taken with every golden: V8 drops the block counters of a
+			// function that sits idle through the rest of a long scenario, and a count already
+			// collected cannot be lost. Taking them is a round trip, so it comes after the
+			// observation, which stays as it was recorded.
+			await flush();
 			if (record) {
 				writeFileSync(path, text);
 				return;
@@ -288,6 +431,10 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		};
 		const choose = async (id: string, value: string) => {
 			await page.locator(`#${id} button.trigger`).click();
+			// Choosing a language navigates to its page; the coverage of the document that
+			// leaves is taken first, since it is gone once the next one commits. The handler
+			// itself runs after this point and is in no window (an exclusion names it).
+			if (id === 'language') await flush();
 			await page.locator(`#${id} button.item[data-value="${value}"]`).click();
 			await page
 				.locator(`#${id} button.trigger`)

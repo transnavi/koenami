@@ -7,14 +7,15 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSy
 //   node tests/mock-api/server.mjs                 replay
 //   MOCK_API_RECORD=http://127.0.0.1:35512 node tests/mock-api/server.mjs
 //                                                  proxy API calls to a real server.py and save every answer
-//   MOCK_API_STATIC=web                            directory served for page and script requests (default web)
+//   MOCK_API_STATIC=web                            directory served for page and script requests (default web;
+//                                                  a templated tree's pages are rendered per language)
 //
 // Fixture key: METHOD path?sorted-query [sha256(body)]. Recordings of the microphone
 // vary with capture timing, so POST /api/analyze also stores a copy keyed by the
 // sample count rounded to half a second, which replay falls back to.
 import { createServer } from 'node:http';
 import { join, basename } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 const fixtures = join(root, 'tests/fixtures/api');
@@ -22,6 +23,11 @@ const samples = join(root, 'tests/fixtures/data/samples');
 const upstream = process.env.MOCK_API_RECORD;
 const port = Number(process.env.MOCK_API_PORT || 35511);
 const site = join(root, process.env.MOCK_API_STATIC || 'web');
+// The pinned tree's pages are templates that its build renders into one document per
+// language; served raw, the server renders them the same way with the tree's own module.
+// A Kit build has no templates and no such module.
+const i18nModule = join(site, 'i18n/index.js');
+const i18n = existsSync(i18nModule) ? await import(pathToFileURL(i18nModule).href) : null;
 const types = {
 	html: 'text/html; charset=utf-8',
 	js: 'text/javascript; charset=utf-8',
@@ -41,6 +47,11 @@ const types = {
 function staticFile(pathname, search = '') {
 	const name = pathname.replace(/^\/|\/$/g, '');
 	if (name.includes('..')) return null;
+	// The service worker is never served. The pinned pages do not register it (their
+	// import.meta.env.PROD is false here, see below); a built tree served through
+	// MOCK_API_STATIC would, and a registered worker answers later loads from its cache
+	// and hides them from the recorded request log. The registration swallows the 404.
+	if (name === 'sw.js') return null;
 	const candidates = name
 		? [
 				join(site, name),
@@ -49,7 +60,9 @@ function staticFile(pathname, search = '') {
 				join(site, 'public', name)
 			]
 		: [join(site, 'index.html')];
-	if (/^(ja|zh-CN|en|ko)$/.test(name)) candidates.push(join(site, 'index.html'));
+	// A language page; the research library (`lab`, KOENAMI_PUBLIC=0 only) has no document
+	// of its own and gets the Japanese one, as the dev server gives it.
+	if (/^(ja|zh-CN|en|ko|lab)$/.test(name)) candidates.push(join(site, 'index.html'));
 	// worker.ts serves the shared-result page at /r (the query carries the measurements) in
 	// the language of its `l`, where the build has one.
 	if (name === 'r') {
@@ -140,6 +153,11 @@ const server = createServer(async (req, res) => {
 			return res.end('not found');
 		}
 		let body = readFileSync(path);
+		if (i18n && path.endsWith('.html') && body.includes('{{')) {
+			const lang = i18n.languageOf(url.pathname + url.search);
+			const page = path.endsWith('result.html') ? '/r' : i18n.home(lang);
+			body = Buffer.from(i18n.renderPage(body.toString('utf8'), lang, page));
+		}
 		if (path.endsWith('.html'))
 			body = Buffer.from(
 				body

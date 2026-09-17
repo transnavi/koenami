@@ -32,15 +32,18 @@ export function domProjection(): Observation {
 		'scale-group'
 	]);
 	const collapse = (s: string | null) => (s || '').replace(/\s+/g, ' ').trim();
-	// The text of a node is its text nodes, each collapsed and trimmed, joined without the
-	// whitespace between them: the same string whether the markup is written on one line or
-	// formatted, since only whitespace inside a text node is content.
+	// The text of a node is its non-empty text nodes, each collapsed and trimmed, joined by
+	// one space: the same string whether the markup is written on one line or formatted,
+	// since the whitespace between text nodes is not content.
 	const text = (node: Node | null | undefined) => {
 		if (!node) return '';
 		const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
-		let out = '';
-		for (let n = walker.nextNode(); n; n = walker.nextNode()) out += collapse(n.textContent);
-		return out;
+		const parts: string[] = [];
+		for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+			const part = collapse(n.textContent);
+			if (part) parts.push(part);
+		}
+		return parts.join(' ');
 	};
 	const attrs = (el: Element) => {
 		const out: Record<string, string> = {};
@@ -103,6 +106,15 @@ export function domProjection(): Observation {
 			}));
 			entry.trigger = text(el.shadowRoot?.querySelector('.trigger'));
 			entry.expanded = el.shadowRoot?.querySelector('.trigger')?.getAttribute('aria-expanded');
+			// Row actions of an open menu (the recording history): each button's action, value,
+			// title and disabled state, so a replay in progress shows as its stop button.
+			if (entry.expanded === 'true') {
+				const actions = [...(el.shadowRoot?.querySelectorAll('.row-action') || [])].map(
+					(b) =>
+						`${(b as HTMLElement).dataset.value}:${(b as HTMLElement).dataset.action}:${b.getAttribute('title')}${(b as HTMLButtonElement).disabled ? ':disabled' : ''}`
+				);
+				if (actions.length) entry.rowActions = actions;
+			}
 		}
 		const rows = el.querySelectorAll(':scope > *');
 		if (id === 'sample-list') {
@@ -110,7 +122,7 @@ export function domProjection(): Observation {
 				...el.querySelectorAll('.speaker-folder, .sample-row, button, details, summary')
 			].map(
 				(r) =>
-					`${r.tagName.toLowerCase()}#${(r as HTMLElement).dataset.id || (r as HTMLElement).dataset.speaker || ''}|${r.className}|${r.getAttribute('aria-pressed') || ''}|${(r as HTMLDetailsElement).open ?? ''}|${collapse(r.textContent).slice(0, 80)}`
+					`${r.tagName.toLowerCase()}#${(r as HTMLElement).dataset.id || (r as HTMLElement).dataset.speaker || ''}|${r.className}|${r.getAttribute('aria-pressed') || ''}|${(r as HTMLDetailsElement).open ?? ''}|${text(r).slice(0, 80)}`
 			);
 			entry.rows = { count: lines.length, head: lines.slice(0, 40), tail: lines.slice(-5) };
 		} else if (rows.length > 40) entry.children = rows.length;
