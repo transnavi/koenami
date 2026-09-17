@@ -11,11 +11,18 @@ How the folds close and how much noise mixes with the periodic source: breathy v
 
 ## What is known
 - The meta-analysis found mixed results for breathiness as a gender cue [[leung2018]]; morphing found aperiodicity (noise) had no systematic effect on perceived gender [[skuk2014]].
+- In 30 Brazilian trans women and 31 cis women, 14 MDVP measures on a sustained /a/ differed between the groups, with voice turbulence index lower and soft phonation index higher in the trans women, whose voices the authors describe as less aperiodic and softer than the cis women's [[villasboas2021]].
+- Perceptual rating in a trans-women cohort found F0 between 80 and 150 Hz more often, hypernasal resonance focus more frequent, and absence of roughness more frequent among the controls [[schwarz2018]].
 - In synthesis, breathier spectral tilt raised female judgements mainly when the implied tract was already short — tilt interacts with F0 and VTL rather than acting alone [[neuhaus2026]]; spectral level ranked third after F0 and formants [[skuk2014]].
 - Contact quotient from EGG tracks the "weight" dimension a voice teacher controls [[netzorg2025]]; teacher datasets model texture as pitch, resonance and weight [[netzorg2024]].
 - After training, some trans women increased L1–L2 (shifted tilt) and many increased loudness [[sodersten2026]]; after glottoplasty, jitter, shimmer and NHR increased [[yilmaz2021]] and roughness rose [[mora2018]].
 - Creaky voice, once described as a masculinity marker, is now frequent among young American women and read as informal yet educated; Japanese women in the same study used it far less [[yuasa2010]].
 - Japanese everyday voice-quality words load on three factors — clarity, power and pitch/youth — with nasality as one axis [[kido2001]]; voice-actor descriptors cluster into pairs such as 大人っぽい–幼い, 上品な–荒々しい [[yasuda2023]].
+- After feminisation therapy F2 rose and the low-to-high spectral ratio increased, but HNR and CPP did not change — no acoustic sign of added breathiness [[mckenna2026]].
+- The English-language wiki's "clarity" scale overlaps a lot with harmonic-to-noise ratio, and it notes that HNR refers to noise only, missing nasality and tongue-root effects that also make a voice sound out of place [[sumi-clarity]].
+- The wiki argues brightness is resonance multiplied by tone clarity, so a high-resonance voice can sound dark and a low-resonance voice bright [[sumi-questionable-terms]].
+- The wiki gives open quotient as related to low vocal weight and closed quotient to high, usually measured with electroglottography, and calls the correlation with weight a good but not perfect one [[sumi-glossary]].
+- The wiki lays out a closure scale from glottal stop through pressed phonation, slight adduction, flow phonation, darkening abduction, breathy and overblown to no closure at all [[sumi-breathiness]].
 
 ## Contested or unclear
 - Whether breathiness helps a feminine impression: some training material recommends a lighter closure, the research is mixed [[leung2018]] [[dahl2018]] [[neuhaus2026]].
