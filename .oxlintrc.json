@@ -1,12 +1,9 @@
 {
 	"$schema": "./node_modules/oxlint/configuration_schema.json",
-	// Svelte files are checked by svelte-check; oxlint reads the ld+json string the pages emit as a
-	// script block and cannot parse it.
 	"ignorePatterns": [
 		"web/**",
 		"tests/old-tree/**",
 		"tests/fixtures/**",
-		"**/*.svelte",
 		"worker-configuration.d.ts",
 		"scripts/kb-*.mjs",
 		"src/lib/measure/pkg/**"

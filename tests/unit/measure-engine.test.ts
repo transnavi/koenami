@@ -79,7 +79,7 @@ describe.skipIf(process.env.KOENAMI_TREE !== 'new')('the measurement engine', ()
 	});
 
 	it('refuses a call whose signal has already been aborted', async () => {
-		await expect(engine.analyze(samples() as never, AbortSignal.abort())).rejects.toMatchObject({
+		await expect(engine.analyze(samples(), AbortSignal.abort())).rejects.toMatchObject({
 			name: 'AbortError'
 		});
 	});

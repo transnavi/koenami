@@ -23,7 +23,7 @@
 		"check:unit": "bun run test:unit:coverage && bun run coverage:report && bun run coverage:check:unit",
 		"check:all": "bun run test:unit:coverage && bun run test:e2e && bun run coverage:report && bun run coverage:check",
 		"check:kit": "bun run build:kit:coverage && KOENAMI_TREE=new E2E_STATIC=.svelte-kit/cloudflare bun run check:all",
-		"lint": "oxlint && oxfmt --check",
+		"lint": "oxlint --deny-warnings && oxfmt --check",
 		"format": "oxfmt",
 		"prepare": "svelte-kit sync || echo ''",
 		"deploy": "bun run build:public && wrangler deploy",

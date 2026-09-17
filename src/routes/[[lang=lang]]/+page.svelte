@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { jsonLd } from '$lib/structured-data';
 	import { mountStudio } from '$lib/studio/app';
 
 	import '$lib/studio/studio.css';
@@ -45,7 +46,7 @@
 	<meta name="mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-title" content="Koenami" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-	{@html `<script type="application/ld+json">${structuredData}</script>`}
+	{@html jsonLd(structuredData)}
 </svelte:head>
 
 <svg class="sprite" aria-hidden="true"

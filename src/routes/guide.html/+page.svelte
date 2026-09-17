@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '$lib/studio/studio.css';
+	import { jsonLd } from '$lib/structured-data';
 	const structuredData = `{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://koe.transnavi.jp/#website","url":"https://koe.transnavi.jp/","name":"Koenami","inLanguage":"ja","publisher":{"@id":"https://transnavi.jp/#organization"}},{"@type":"Organization","@id":"https://transnavi.jp/#organization","name":"とらんすナビ","url":"https://transnavi.jp/","logo":"https://transnavi.jp/favicon.svg"},{"@type":"TechArticle","@id":"https://koe.transnavi.jp/guide.html#article","url":"https://koe.transnavi.jp/guide.html","headline":"使い方","name":"Koenami · 使い方","description":"Koenamiの使い方。画面の見方、見本を選んで録音し見比べる練習の流れ、リアルタイム測定、録音の保存、見本の追加、設定、うまく測れないときの対処、ショートカット。","inLanguage":"ja","mainEntityOfPage":"https://koe.transnavi.jp/guide.html","image":"https://koe.transnavi.jp/og-guide.png","author":{"@id":"https://transnavi.jp/#organization"},"publisher":{"@id":"https://transnavi.jp/#organization"},"isPartOf":{"@id":"https://koe.transnavi.jp/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Koenami","item":"https://koe.transnavi.jp/"},{"@type":"ListItem","position":2,"name":"使い方","item":"https://koe.transnavi.jp/guide.html"}]}]}`;
 </script>
 
@@ -31,7 +32,7 @@
 	/>
 	<meta name="twitter:image" content="https://koe.transnavi.jp/og-guide.png" />
 	<link rel="sitemap" href="/sitemap.xml" />
-	{@html `<script type="application/ld+json">${structuredData}</script>`}
+	{@html jsonLd(structuredData)}
 </svelte:head>
 
 <header class="method-header">
