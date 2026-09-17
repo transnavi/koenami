@@ -25,7 +25,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 
 ## Gaps the notes make visible
 
-- No Japanese-listener study of trans or 両声類 voices; no validated Japanese TVQ/TWVQ; no Japanese trial of voice training.
+- One Japanese listener study of trans voices exists ([[sakuraba2009]], 2009) but none of 両声類 voices and none measuring laryngeal posture during 女声 production; no validated Japanese TVQ/TWVQ; no Japanese trial of voice training.
 - Practice-level evidence exists only for resonance exercises ([[carew2007]], [[kawitzky2020]]); pitch-elevation protocols are undocumented.
 - Non-binary targets and behavioural masculinization without testosterone have no outcome studies here.
 - The ASHA practice-portal page and r/transvoice wiki could not be fetched and are absent.
@@ -43,17 +43,17 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 
 ## All concepts
 
-[[articulation]] · [[breathing-and-support]] · [[chinese-community]] · [[chinese-voice]] · [[clinical-guidelines]] · [[community-training]] · [[english-community]] · [[european-languages-voice]] · [[female-voice]] · [[formants]] · [[fundamental-frequency]] · [[gender-perception]] · [[harmonics-and-spectrum]] · [[hormones-and-voice]] · [[intonation]] · [[japanese-voice]] · [[korean-voice]] · [[larynx-anatomy]] · [[machine-gender-scoring]] · [[male-voice]] · [[nonbinary-voice]] · [[patient-reported-outcomes]] · [[phonation]] · [[pitch-and-scales]] · [[puberty-voice-change]] · [[sex-differences]] · [[singing-and-voice]] · [[source-filter-model]] · [[spanish-voice]] · [[speech-language-pathology]] · [[thai-voice]] · [[tools]] · [[transgender-care-context]] · [[vocal-fatigue]] · [[vocal-folds]] · [[vocal-registers]] · [[vocal-tract-anatomy]] · [[vocal-weight]] · [[voice-across-languages]] · [[voice-feminization-therapy]] · [[voice-health]] · [[voice-impressions]] · [[voice-masculinization]] · [[voice-quality]] · [[voice-surgery]] · [[voice-therapy-techniques]]
+[[articulation]] · [[breathing-and-support]] · [[chinese-community]] · [[chinese-voice]] · [[clinical-guidelines]] · [[community-training]] · [[english-community]] · [[european-languages-voice]] · [[female-voice]] · [[formants]] · [[fundamental-frequency]] · [[gender-perception]] · [[harmonics-and-spectrum]] · [[hormones-and-voice]] · [[intonation]] · [[japanese-community]] · [[japanese-voice]] · [[korean-voice]] · [[larynx-anatomy]] · [[machine-gender-scoring]] · [[male-voice]] · [[nonbinary-voice]] · [[patient-reported-outcomes]] · [[phonation]] · [[pitch-and-scales]] · [[puberty-voice-change]] · [[sex-differences]] · [[singing-and-voice]] · [[source-filter-model]] · [[spanish-voice]] · [[speech-language-pathology]] · [[thai-voice]] · [[tools]] · [[transgender-care-context]] · [[vocal-fatigue]] · [[vocal-folds]] · [[vocal-registers]] · [[vocal-tract-anatomy]] · [[vocal-weight]] · [[voice-across-languages]] · [[voice-feminization-therapy]] · [[voice-health]] · [[voice-impressions]] · [[voice-masculinization]] · [[voice-quality]] · [[voice-surgery]] · [[voice-therapy-techniques]]
 
 ## Tools and communities
 
 [[acoustic-gender-space]] · [[christella-voiceup]] · [[informant]] · [[phonia]] · [[praat]] · [[voice-tools-devextras]] · [[voicelab]]
 
-[[digital-transchinese-mtf-voice]] · [[dr-ornouma]] · [[eruseora]] · [[femivoz]] · [[genderfluent]] · [[kamol-hospital]] · [[r-transvoice]] · [[renee-yoxon]] · [[seattle-voice-lab]] · [[sumianvoice]] · [[transvoice-app]] · [[transvoice-discord]] · [[transvoicelessons]] · [[voicedoctor-tw]] · [[voiceschool-kr]] · [[yanhee-voice-surgery]] · [[yeson-voice-center]]
+[[digital-transchinese-mtf-voice]] · [[dr-ornouma]] · [[eruseora]] · [[femivoz]] · [[genderfluent]] · [[gi-society]] · [[jslp]] · [[kamol-hospital]] · [[r-transvoice]] · [[renee-yoxon]] · [[satsukipon]] · [[seattle-voice-lab]] · [[sumianvoice]] · [[transvoice-app]] · [[transvoice-discord]] · [[transvoicelessons]] · [[voicedoctor-tw]] · [[voiceschool-kr]] · [[yanhee-voice-surgery]] · [[yeson-voice-center]]
 
 ## Sources by evidence grade
 
-### high (33)
+### high (35)
 
 - [[fant1960]] — Fant G 1960, Acoustic Theory of Speech Production
 - [[hixon1987]] — Hixon TJ 1987, Respiratory Function in Speech and Song
@@ -71,6 +71,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[hembree2017]] — Hembree WC 2017, Endocrine Treatment of Gender-Dysphoric/Gender-Incongruent Persons: An Endocrine Society Clinical Practice Guideline
 - [[irwig2017]] — Irwig MS 2017, Testosterone therapy for transgender men
 - [[song2017]] — Song TE 2017, Transgender Phonosurgery: A Systematic Review and Meta-analysis
+- [[jspn-guideline2018]] — 日本精神神経学会 性同一性障害に関する委員会 2018, 性同一性障害に関する診断と治療のガイドライン（第4版改） (Guideline for diagnosis and treatment of gender identity disorder, 4th edition revised (Japanese Society of Psychiatry and Neurology))
 - [[leung2018]] — Leung Y 2018, Voice, articulation, and prosody contribute to listener perceptions of speaker gender: a systematic review and meta-analysis
 - [[mendes2018]] — Mendes ALF 2018, The Effects of Phonation Into Glass, Plastic, and LaxVox Tubes in Singers: A Systematic Review
 - [[ziegler2018]] — Ziegler A 2018, Effectiveness of testosterone therapy for masculinizing voice in transgender patients: a meta-analytic review
@@ -82,6 +83,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[nhse1719]] — NHS England 2022, Gender Identity Services for Adults (Non-Surgical Interventions): Service Specification No. 1719
 - [[aires2023]] — Aires MM 2023, Effect of Endoscopic Glottoplasty on Acoustic Measures and Quality of Voice: A Systematic Review and Meta-Analysis
 - [[ley4-2023]] — "Jefatura del Estado (España)" 2023, Ley 4/2023, de 28 de febrero, para la igualdad real y efectiva de las personas trans y para la garantía de los derechos de las personas LGTBI (Law 4/2023, of 28 February, for the real and effective equality of trans people and for the guarantee of the rights of LGBTI people (Spain))
+- [[jspn-guideline2024]] — 日本精神神経学会 性別不合に関する委員会 2024, 性別不合に関する診断と治療のガイドライン（第5版） (Guideline for diagnosis and treatment of gender incongruence, 5th edition (Japanese Society of Psychiatry and Neurology / Japanese Society of Gender Incongruence))
 - [[asadollahpour2025]] — Asadollahpour F 2025, Investigating the Effect of Semi-Occluded Vocal Tract Training With a Free-End Tube on Acoustic Characteristics and Glottal Performance in Dysphonic Adults: A Systematic Review
 - [[chowdhury2025]] — Chowdhury R 2025, Pitch Alteration Techniques for Transgender Women: A Systematic Review of Surgical and Nonsurgical Approaches
 - [[rosi2025]] — Rosi V 2025, Voice gender diversity: expression, perception and acoustics
@@ -89,7 +91,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[xu2025]] — Xu W 2025, Chinese Expert Consensus for Assessment of Vocal Function (2024): Guidelines of the Subspecialty Group of Voice, Society of Otorhinolaryngology Head and Neck Surgery, Chinese Medical Association; Subspecialty Group of Laryngopharyngology, Editorial Board of Chinese Journal of Otorhinolaryngology Head and Neck Surgery
 - [[kalra2026]] — Kalra A 2026, Surgical Interventions for Voice Masculinization: A Scoping Review
 
-### medium (161)
+### medium (162)
 
 - [[stevens1937]] — Stevens SS 1937, A Scale for the Measurement of the Psychological Magnitude Pitch
 - [[peterson1952]] — Peterson GE 1952, Control Methods Used in a Study of the Vowels
@@ -135,6 +137,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[vanborsel2008]] — Van Borsel J 2008, Feminine after cricothyroid approximation?
 - [[hillenbrand2009]] — Hillenbrand JM 2009, The role of f0 and formant frequencies in distinguishing the voices of men and women
 - [[roubeau2009]] — Roubeau B 2009, Laryngeal Vibratory Mechanisms: The Notion of Vocal Register Revisited
+- [[sakuraba2009]] — 櫻庭京子 2009, 女性と判定される声の特徴 —性同一性障害者の話声位— (Features of voices judged to be female: speaking fundamental frequency in people with gender identity disorder)
 - [[simpson2009]] — Simpson AP 2009, Phonetic differences between male and female speech
 - [[wang2009]] — Wang LP 2009, Relaxation laryngoplasty in the management of mutational falsetto（松弛性喉成形术治疗男声女调） (Relaxation laryngoplasty in the management of mutational falsetto)
 - [[echternach2010]] — Echternach M 2010, High-speed imaging and electroglottography measurements of the open quotient in untrained male voices' register transitions
@@ -253,10 +256,12 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[taylor2026]] — Taylor J 2026, Perceiving Gender in the Voice: Accuracy, Confidence, and Reasoning in Listener Attributions
 - [[zhang2026]] — Zhang Z 2026, Perceiving Physiology from the Voice: Evidence for Physiological Coupling Between Laryngeal and Epilaryngeal Adjustments
 
-### low (33)
+### low (39)
 
 - [[oates1983]] — Oates JM 1983, Speech Pathology Considerations in the Management of Transsexualism—A Review
 - [[verdolinimarston1995]] — Verdolini-Marston K 1995, Preliminary study of two methods of treatment for laryngeal nodules
+- [[imaizumi2003]] — 今泉敏 2003, 女声と聴取された性同一性障害者(MtF)の音声の音響分析 (Acoustic analysis of the voices of MtF gender identity disorder speakers who were heard as female)
+- [[maruyama2007]] — 丸山和孝 2007, 話者認識技術に基づく知覚的女声度の自動推定 (Automatic femininity estimation of speech based on speaker recognition techniques)
 - [[titze2008]] — Titze IR 2008, The Human Instrument
 - [[sundberg2010]] — Sundberg J 2010, What is \"Twang\"?
 - [[echternach2014]] — Echternach M 2014, Vocal tract configurations in tenors' passaggio in different vowel conditions—a real-time magnetic resonance imaging study
@@ -273,12 +278,16 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[titze2020]] — Titze IR 2020, Vocal Tradeoffs in Anterior Glottoplasty for Voice Feminization
 - [[dornelas2021]] — Dornelas R 2021, Atendimento vocal à pessoa trans: uma apresentação do Protocolo de Atendimento Vocal do Ambulatório Trans e do Programa de Redesignação Vocal Trans (PRV-Trans) (Voice care for trans people: presenting the Trans Outpatient Clinic Voice Care Protocol and the Trans Vocal Reassignment Programme)
 - [[malebran2021]] — Malebrán Bezerra de Mello MC 2021, Efectividad de la terapia vocal versus tiroplastía en la voz de mujeres transgénero: una revisión integrativa (Effectiveness of voice therapy versus thyroplasty in the voice of transgender women: an integrative review)
+- [[nakamura2021]] — 中村一博 2021, 変声障害と性同一性障害に対する喉頭枠組み手術 (Laryngeal framework surgery for mutational disorder and gender identity disorder)
 - [[oguz2021]] — Oğuz Ö 2021, Clinical Considerations in Speech and Language Therapy in Turkish Transgender Population
 - [[accetta2022]] — Accetta V 2022, Estill Voice Training and the Gender Non-binary Singer
 - [[bozeman2022]] — Bozeman KW 2022, The Case for Acoustic Registers
+- [[matsumoto2022]] — 松本洋輔 2022, なぜトランスジェンダー当事者はジェンダークリニックを受診するのか？ (Why do transgender people attend a gender clinic?)
+- [[nakamura2022]] — 中村一博 2022, 男性から女性型性同一性障害症例の話声位とQOLを上昇させる甲状軟骨形成術4型 (Type 4 thyroplasty raises speaking fundamental frequency and quality of life in male-to-female gender identity disorder)
 - [[chen2023]] — Chen FL 2023, Acoustic characterization and machine prediction of perceived masculinity and femininity in adults
 - [[heydrich2023]] — Heydrich K 2023, [Schnittstelle Logopädie im Prozess der Geschlechtsangleichung von Mann zu Frau] ([Interface of speech-language pathology in the process of gender reassignment from male to female])
 - [[hope2023]] — Hope D 2023, Differences in Sibilant Perception between Gender Expansive and Cisgender Individuals
+- [[kunieda2023]] — 國枝千嘉子 2023, 機能性発声障害を伴うホルモン音声障害に対し，音声治療と理学療法と甲状軟骨形成術4型を併用した症例 (A case combining voice therapy, physical therapy and type 4 thyroplasty for hormone-induced voice disorder with functional dysphonia)
 - [[yasuda2023]] — Yasuda M 2023, 女性声優の声質表現語抽出の試み (An attempt to extract descriptive terms for female voice-actor voice quality)
 - [[ferreira2025]] — Ferreira F 2025, Protocolo de abordagem da voz para afirmação de género: revisão sistemática (Protocol for the voice approach in gender affirmation: a systematic review)
 - [[funk2025]] — Funk R 2025, How sibilant spectra shape gender perception in prepubertal children: A voice morphing study
@@ -289,18 +298,24 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[fujita2026]] — Fujita K 2026, Investigation for relative voice impression estimation
 - [[traser2026]] — Traser L 2026, Dynamic 3D MRI of vocal fold oscillations: In vivo assessment of vocal fold thickness, contact area, and glottal area waveform across phonation types in comparison with high-speed imaging
 
-### community (128)
+### community (159)
 
+- [[nicovideo-ribbonmatch2007]] — リボンマッチ (uploader) 2007, アラジンのテーマソングの男女のパートを1人で歌いこなす男性 (A man who sings both the male and female parts of the Aladdin theme alone (Niconico video))
 - [[nicodic-ryoseirui]] — ニコニコ大百科 editors 2008, 両声類（ニコニコ大百科・単語記事） (Ryōseirui (Niconico Pedia word article))
+- [[nicovideo-akapiko2009]] — 赤飯 (uploader); ピコ (singer) 2009, 【赤飯×ピコ】magnet歌いました【赤ピコ飯まー☆】 (Akapiko: 'We sang magnet' (Niconico video))
 - [[phillips2010]] — Melanie Anne Phillips 2010, How to Develop a Female Voice
 - [[transvoice-wiki]] — r/transvoice wiki editors 2016, r/transvoice wiki index
+- [[brushvoice-joseigoe]] — ブラッシュボイス (Brush Voice) trainers 2018, 女声の出し方｜男性が自然な女性の声を出すコツ・メラニー法・練習方法 (How to produce a female voice: tips for men, the Melanie method, and practice (Brush Voice))
+- [[harashina2018]] — 原科孝雄（埼玉医科大学名誉教授） 2018, SRS事始め（埼玉医科大学での性別適合手術から20年） (How SRS began: twenty years after the first gender-affirming surgery at Saitama Medical University)
 - [[bili-jiangfeng2019]] — 姜峰真的苟 (uploader 2019, 【男伪女音（人体自带变声器-咽腔教学）】伪音教学 (Male-to-female voice: pharyngeal-cavity teaching, the body's built-in voice changer (Bilibili video))
 - [[erose2019]] — Zheanna erose 2019, TransVoiceTech: Ear Training for X-Y Resonance vs Pitch [demonstration of ALL vocal sexes]
 - [[tornero2019]] — Jordi Tornero (interviewee) 2019, Feminización de la voz. Dr Jordi Tornero. (Voice feminization. Dr Jordi Tornero.)
 - [[bili-qiancang2020]] — 千沧MONSTER (uploader) 2020, 每个男孩子都可以学会的伪声教程 (A weisheng tutorial every boy can learn (Bilibili video))
 - [[erose2020]] — Zheanna erose 2020, The Single MOST Powerful Element of Voice Feminization: Meta Resonance | Exercises & Lecture
 - [[erose2020a]] — Zheanna erose 2020, FEMINIZE YOUR VOICE: 8 Exercises to Reduce Vocal Fold Mass | Exercises, Demonstration, & Document
+- [[noroda2020]] — 牛乳大魔王のろだ 2020, 【両声類】私流！男声の出し方講座【彼は女性です】 ('Ryōseirui: my own way of producing a male voice' (YouTube video))
 - [[ssal2020]] — 쌀이없어요 (uploader) 2020, 트젠 음성여성화 목소리 수술 [쌀쓸신잡] | 트랜스젠더 (Trans voice-feminization surgery [miscellaneous] | transgender (YouTube video))
+- [[anime-academy-ryoseirui2021]] — 東京アニメ・声優＆eスポーツ専門学校 2021, 【男女】両声類のなり方は？おすすめの練習方法や声の出し方の注意点を解説 ('How to become a ryōseirui: recommended practice and cautions' (Tokyo College of Anime & E-sports))
 - [[aogi2021]] — あおぎ葵 2021, MTF声音女性化练习手册 (MTF Voice Feminization Practice Handbook)
 - [[erose2021]] — Zheanna erose 2021, HEARING VOCAL RESONANCE
 - [[longi2021]] — Julieta Longi 2021, Tips para feminizar la voz | Trans | Julieta Longi (Tips to feminize the voice | Trans | Julieta Longi)
@@ -308,9 +323,11 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[dasilva2022]] — Selene Da Silva 2022, Gender Voice Ear Training: Size and Weight
 - [[erose2022]] — Zheanna erose 2022, Is Your Voice Too Buzzy or Too Hollow?
 - [[erose2022a]] — Zheanna erose 2022, Voice Essentials: Vocal Weight for Beginners
+- [[jura2022]] — じゅら 2022, 100万回再生された両声類の過去最短の女声講座 ('The shortest female-voice lesson ever, by a ryōseirui whose earlier video passed a million views' (YouTube video))
 - [[bili-liujiu2023]] — 柳九不是69 (uploader) 2023, [全程女声教学]小嗓教学 伪声必练 (All-female-voice teaching: xiaosao ('small voice') practice, required for weisheng (Bilibili video))
 - [[bili-luna2023]] — 露娜姐姐与棒棒虎 (uploader) 2023, 分享一个跨性别嗓音女性化声带手术成功的案例，男跨女mtf伪音 (A successful transgender voice-feminization vocal-cord surgery case, Mtf (Bilibili video))
 - [[bili-zhizhiya2023]] — 吱吱吖- (uploader) 2023, 【拒绝不科学伪声】为什么你发不出女声 (Rejecting unscientific weisheng: why you cannot produce a female voice (Bilibili video))
+- [[gidjp-opinion2023]] — 日本性同一性障害・性別違和と共に生きる人々の会（gid.jp）運営委員一同 2023, 2023年（令和5年）10月25日、性同一性障害特例法の手術要件に関する意見表明 (Statement of 25 October 2023 on the surgical requirements of the special-cases law (gid.jp))
 - [[iula2023]] — Bianca Iula 2023, Percorso di affermazione di genere per persone transgender: femminilizzazione voce (Gender-affirmation pathway for transgender people: voice feminization)
 - [[lucy2023]] — FairyPrincessLucy 2023, An Actually Simple Trans MTF Voice Tutorial: The Larynx ( great for beginners! )
 - [[yoxon2023]] — Renée Yoxon 2023, Big Dog Little Dog Resonance Exercise
@@ -319,19 +336,28 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[tapcpr-friendly-2024]] — 伴盟 (TAPCPR — 聯伴盟/伴侶權益推動聯盟 2024, 友善醫師與諮商資源整理 (Friendly physicians and counselling resources list (TAPCPR transgender information platform))
 - [[bili-chenzhen2025]] — 陈臻谈嗓音 (uploader) 2025, 跨性别嗓音训练，5周效果 (Transgender voice training: 5-week results (Bilibili video))
 - [[bili-fledence2025]] — FLEDENCE (translator-uploader); original by Ama Rose (AmaRoseLessons) 2025, 【授翻】以最快的速度讲解嗓音男性化/How to Masculinize Your Voice: As Fast As Possible（中英双语） (Authorised translation: How to Masculinize Your Voice — As Fast As Possible, bilingual (Bilibili video))
+- [[fujimine2025]] — 藤峰まりあ 2025, 【女声講座】最強のお姉さん声の出し方を徹底解説!!【両声類】 ('Female-voice course: a full explanation of how to make the strongest onee-san voice' (YouTube video))
 - [[ganda2025]] — Letícia Ganda 2025, Como Feminizar Sua Voz (De Verdade!) | Feminização Vocal para Mulheres Trans e Travestis #1 (How to feminize your voice (for real!) | Vocal feminization for trans women and travestis #1)
 - [[leonie2025]] — LEONIE.404 2025, Tipps für das Stimmtraining als Transfrau (Tips for voice training as a trans woman)
 - [[sutherland2025]] — Rose Sutherland 2025, Whisper Sirens
+- [[yomedanchii-voice]] — ちぃ (yomedan_chii) 2025, 俺の嫁ちゃん、元男子。「声パス・ボイトレ」カテゴリ ('My wife used to be a man': the voice-passing and voice-training category (yomedan-chii blog))
 - [[yoxon2025]] — Renée Yoxon 2025, 3 Simple Vocal Weight Exercises for Trans and Nonbinary Voices
 - [[asha-gender-affirming-voice]] — American Speech-Language-Hearing Association 2026, Gender Affirming Voice and Communication (ASHA Practice Portal)
 - [[baike-yaoniang]] — 百度百科编者 (Baidu Baike contributors) 2026, 药娘（百度百科） (Yaoniang ('hormone girl') (Baidu Baike))
 - [[koenami-method]] — transnavi 2026, Koenami — 測定方法と出典 (method page) (Koenami — measurement method and sources)
+- [[kyoto-ent-clinic]] — 医療法人顕夢会 京都耳鼻咽喉音聲手術医院 2026, 性別違和・性別不合・GIDの方々へ（京都耳鼻咽喉音聲手術医院） (For people with gender dysphoria / gender incongruence / GID (Kyoto ENT & Voice Surgery Clinic))
 - [[lucero2026]] — Jorge C. Lucero 2026, Gender-Affirming Voice Therapy: Why Pitch Is Only Part of the Story
+- [[met-ent-tokyo]] — メトロポリタンENTサージクリニック東京（翔和仁誠会） 2026, 声（喉）の手術（メトロポリタンENTサージクリニック東京） (Voice (laryngeal) surgery (Metropolitan ENT Surgery Clinic Tokyo))
 - [[moegirl-weisheng]] — 萌娘百科编者 (Moegirlpedia contributors) 2026, 伪声（萌娘百科） (Weisheng (fake voice) (Moegirlpedia))
 - [[mtfwiki-chenzhen]] — MtF.wiki contributors 2026, 上海市长宁区精神卫生中心｜陈臻（MtF.wiki） (Chen Zhen, Shanghai Changning Mental Health Centre (MtF.wiki))
 - [[mtfwiki-slang]] — MtF.wiki contributors 2026, 通俗用语表（MtF.wiki） (Colloquial glossary (MtF.wiki))
 - [[mtfwiki-vocal-confirmed]] — MtF.wiki contributors 2026, 嗓音训练已知资源（MtF.wiki） (Confirmed voice-training resources (MtF.wiki))
 - [[mtfwiki-vocal-surgery]] — MtF.wiki contributors 2026, 声带手术综述（MtF.wiki） (Vocal-cord surgery overview (MtF.wiki))
+- [[nicovideo-ryoseirui-tag]] — ニコニコ動画 uploaders 2026, ニコニコ動画「両声類」タグの動画群 (The 両声類 tag corpus on Niconico)
+- [[note-formant-app]] — きゃなる (note: kyanaru_vrc) 2026, フォルマントを使った声判定アプリについて (On voice-judging apps that use formants)
+- [[note-kirkas]] — ゆず｜kirkas (note: n321) 2026, 女声を練習するためのツールを作りました (I made a tool for practising a female voice (Kirkas))
+- [[note-maru2blog]] — MTF日記@まるまる (note: maru2blog) 2026, 【実態】トランスジェンダー医療の保険適用基準｜SRS・ホルモン・声の手術における混合診療問題 (The reality of insurance criteria for transgender medicine: the mixed-treatment problem in SRS, hormones and voice surgery)
+- [[pixiv-ryoseirui]] — ピクシブ百科事典 editors 2026, 両声類（ピクシブ百科事典） (Ryōseirui (Pixiv Encyclopedia))
 - [[sumi-vocal-weight]] — Sumi 2026, Vocal Weight (Voice Resource Project wiki)
 - [[wikipedia-adams-apple]] — Wikipedia contributors 2026, Adam's apple (English Wikipedia)
 - [[wikipedia-arytenoid-cartilage]] — Wikipedia contributors 2026, Arytenoid cartilage (English Wikipedia)
@@ -354,6 +380,19 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[wikipedia-harmonic]] — Wikipedia contributors 2026, Harmonic (English Wikipedia)
 - [[wikipedia-head-voice]] — Wikipedia contributors 2026, Head voice (English Wikipedia)
 - [[wikipedia-human-voice]] — Wikipedia contributors 2026, Human voice (English Wikipedia)
+- [[wikipedia-ja-formant]] — Wikipedia contributors 2026, フォルマント (Formant (Japanese Wikipedia))
+- [[wikipedia-ja-gi-society]] — Wikipedia contributors 2026, 日本GI（性別不合）学会 (Japanese Society of Gender Incongruence (Japanese Wikipedia))
+- [[wikipedia-ja-hensei]] — Wikipedia contributors 2026, 変声 (Voice change (Japanese Wikipedia))
+- [[wikipedia-ja-kihonshuuhasuu]] — Wikipedia contributors 2026, 基本周波数 (Fundamental frequency (Japanese Wikipedia))
+- [[wikipedia-ja-koe]] — Wikipedia contributors 2026, 声 (Voice (Japanese Wikipedia))
+- [[wikipedia-ja-kotou]] — Wikipedia contributors 2026, 喉頭 (Larynx (Japanese Wikipedia))
+- [[wikipedia-ja-ryouseirui]] — Wikipedia contributors 2026, 両声類 (Ryōseirui (Japanese Wikipedia))
+- [[wikipedia-ja-seibetsufugou]] — Wikipedia contributors 2026, 性別不合 (Gender incongruence (Japanese Wikipedia))
+- [[wikipedia-ja-seibetsutekigoushujutsu]] — Wikipedia contributors 2026, 性別適合手術 (Gender-affirming surgery (Japanese Wikipedia))
+- [[wikipedia-ja-seiku]] — Wikipedia contributors 2026, 声区 (Vocal register (Japanese Wikipedia))
+- [[wikipedia-ja-seitai]] — Wikipedia contributors 2026, 声帯 (Vocal cords (Japanese Wikipedia))
+- [[wikipedia-ja-tokureiho]] — Wikipedia contributors 2026, 性同一性障害者の性別の取扱いの特例に関する法律 (Act on Special Cases in Handling Gender for People with Gender Identity Disorder (Japanese Wikipedia))
+- [[wikipedia-ja-uragoe]] — Wikipedia contributors 2026, 裏声 (Uragoe (falsetto) (Japanese Wikipedia))
 - [[wikipedia-ko-byeonseonggi]] — 한국어 위키백과 편집자 (Korean Wikipedia contributors) 2026, 변성기（한국어 위키백과） (Voice change / puberty (Korean Wikipedia))
 - [[wikipedia-ko-duseong]] — 한국어 위키백과 편집자 (Korean Wikipedia contributors) 2026, 두성（한국어 위키백과） (Head voice (Korean Wikipedia))
 - [[wikipedia-ko-eumseong]] — 한국어 위키백과 편집자 (Korean Wikipedia contributors) 2026, 음성（한국어 위키백과） (Voice (Korean Wikipedia; 목소리 redirects here))
@@ -368,6 +407,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[wikipedia-larynx]] — Wikipedia contributors 2026, Larynx (English Wikipedia)
 - [[wikipedia-masculinizing-hormone-therapy]] — Wikipedia contributors 2026, Masculinizing hormone therapy (English Wikipedia)
 - [[wikipedia-mel-scale]] — Wikipedia contributors 2026, Mel scale (English Wikipedia)
+- [[wikipedia-melanie-ho]] — Wikipedia contributors 2026, メラニー法 (Melanie method (Japanese Wikipedia))
 - [[wikipedia-modal-voice]] — Wikipedia contributors 2026, Modal voice (English Wikipedia)
 - [[wikipedia-muscle-tension-dysphonia]] — Wikipedia contributors 2026, Muscle tension dysphonia (English Wikipedia)
 - [[wikipedia-nl-kopstem]] — Auteurs van de Nederlandstalige Wikipedia (Dutch Wikipedia contributors) 2026, Kopstem (Nederlandstalige Wikipedia) (Head voice / falsetto (Dutch Wikipedia))
@@ -423,8 +463,8 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 ## Sources by language
 
 - **en** (262): [[accetta2022]] · [[adabi2026]] · [[adessa2023]] · [[adler2019]] · [[aires2023]] · [[anderson2014]] · [[asadollahpour2025]] · [[asha-gender-affirming-voice]] · [[azul2015]] · [[azul2018]] · [[barone2021]] · [[barra2020]] · [[boogers2025]] · [[bozeman2022]] · [[brown2021]] · [[carew2007]] · [[cartei2012]] · [[cartei2013]] · [[cartei2014]] · [[casado2017]] · [[casadomorente2024]] · [[catani2024]] · [[chen2021]] · [[chen2023]] · [[chowdhury2025]] · [[ciancia2026]] · [[coelho2020]] · [[coleman2022]] · [[cosyns2014]] · [[dacakis2013]] · [[dahl2018]] · [[dasilva2022]] · [[davies2015]] · [[dhaeseleer2023]] · [[diamant2021]] · [[diwan2025]] · [[dominguezriscart2025]] · [[doukhan2024]] · [[eagen2025]] · [[echternach2010]] · [[echternach2014]] · [[erose2019]] · [[erose2020]] · [[erose2020a]] · [[erose2021]] · [[erose2022]] · [[erose2022a]] · [[fant1960]] · [[fantini2017]] · [[fitch1999]] · [[fujiki2024]] · [[fujita2026]] · [[funk2025]] · [[garellek2013]] · [[gelfer2000]] · [[gelfer2013]] · [[grillo2021]] · [[hacki1999]] · [[hancock2011]] · [[hancock2014]] · [[hancock2017]] · [[hancock2017a]] · [[hanson1997]] · [[hanson1999]] · [[hardy2020]] · [[harries1997]] · [[harries1998]] · [[hembree2017]] · [[henrich2006]] · [[herbst2020]] · [[hillenbrand1995]] · [[hillenbrand2009]] · [[hirano1974]] · [[hixon1976]] · [[hixon1987]] · [[hollien1974]] · [[hollien1994]] · [[holmberg1988]] · [[holmberg2023]] · [[hope2023]] · [[huang2024]] · [[irwig2017]] · [[irwig2017a]] · [[iwarsson1998]] · [[kahane1978]] · [[kahane1982]] · [[kalra2026]] · [[kawitzky2020]] · [[keating2015]] · [[kim2017]] · [[kim2020]] · [[kim2024]] · [[kissel2023]] · [[koberlein2021]] · [[kreiman2007]] · [[kreiman2010]] · [[kunachak2000]] · [[laohakittikul2025]] · [[lass1976]] · [[lee1999]] · [[lee2023]] · [[lee2025]] · [[leung2018]] · [[leyns2021]] · [[leyns2023]] · [[leyns2024]] · [[leyns2025]] · [[liang2017]] · [[lin2026]] · [[litosseliti2019]] · [[lucero2026]] · [[lucy2023]] · [[maeda2025]] · [[malkidou2026]] · [[maryn2016]] · [[mcaleer2014]] · [[meister2017]] · [[mendes2018]] · [[mills2017]] · [[moore2003]] · [[mora2018]] · [[mora2018a]] · [[morsomme2019]] · [[munson2007]] · [[munson2017]] · [[myers2022]] · [[nasir2021]] · [[netzorg2024]] · [[netzorg2025]] · [[neuhaus2026]] · [[nhse1719]] · [[nygren2016]] · [[oates1983]] · [[oguz2021]] · [[paltura2019]] · [[papeleu2026]] · [[parchem2025]] · [[park2024]] · [[pedersen1990]] · [[peterson1952]] · [[phillips2010]] · [[pisanski2014]] · [[pisanski2016]] · [[pozzali2021]] · [[quinn2021]] · [[rcslt2019]] · [[robotti2022]] · [[rosi2025]] · [[roubeau2009]] · [[saldias2019]] · [[saldias2020]] · [[salm2020]] · [[schwarz2017]] · [[schwarz2024]] · [[shen2026]] · [[simpson2009]] · [[sirin2021]] · [[skuk2014]] · [[sodersten1990]] · [[sodersten2026]] · [[son2026]] · [[song2017]] · [[steinhauer2019]] · [[stemple1994]] · [[stevens1937]] · [[stevens1998]] · [[story1996]] · [[sumi-vocal-weight]] · [[sumi2021]] · [[sundberg1974]] · [[sundberg1987]] · [[sundberg2010]] · [[sutherland2025]] · [[takamichi2019]] · [[taskin2022]] · [[taylor2026]] · [[titze1988]] · [[titze1989]] · [[titze1989a]] · [[titze1994]] · [[titze2006]] · [[titze2008]] · [[titze2020]] · [[transvoice-wiki]] · [[traser2026]] · [[ucsf2016]] · [[vanbezooijen1995]] · [[vanborsel2008]] · [[vandenberg1958]] · [[vandenbroek2016]] · [[vanhoutte2011]] · [[vendramini2025]] · [[verdolini1994]] · [[verdolini1998]] · [[verdolinimarston1995]] · [[viana2025]] · [[watanabe2023]] · [[whiteside2001]] · [[wierzbicka2015]] · [[wikipedia-adams-apple]] · [[wikipedia-arytenoid-cartilage]] · [[wikipedia-belting-music]] · [[wikipedia-breathing]] · [[wikipedia-cent]] · [[wikipedia-chest-voice]] · [[wikipedia-cricoid-cartilage]] · [[wikipedia-cricothyroid-muscle]] · [[wikipedia-equal-temperament]] · [[wikipedia-estill-voice-training]] · [[wikipedia-falsetto]] · [[wikipedia-feminizing-hormone-therapy]] · [[wikipedia-formant]] · [[wikipedia-gender-affirming-hormone-therapy]] · [[wikipedia-glottis]] · [[wikipedia-harmonic]] · [[wikipedia-head-voice]] · [[wikipedia-human-voice]] · [[wikipedia-larynx]] · [[wikipedia-masculinizing-hormone-therapy]] · [[wikipedia-mel-scale]] · [[wikipedia-modal-voice]] · [[wikipedia-muscle-tension-dysphonia]] · [[wikipedia-octave]] · [[wikipedia-overtone]] · [[wikipedia-passaggio]] · [[wikipedia-passing-gender]] · [[wikipedia-pharynx]] · [[wikipedia-phonation]] · [[wikipedia-pitch-music]] · [[wikipedia-puberphonia]] · [[wikipedia-semitone]] · [[wikipedia-soft-palate]] · [[wikipedia-spectrogram]] · [[wikipedia-speech-language-pathology]] · [[wikipedia-thoracic-diaphragm]] · [[wikipedia-thyroarytenoid-muscle]] · [[wikipedia-thyroid-cartilage]] · [[wikipedia-transgender-health-care]] · [[wikipedia-transgender-voice-surgery]] · [[wikipedia-transgender-voice-therapy]] · [[wikipedia-vocal-cord-nodule]] · [[wikipedia-vocal-cords]] · [[wikipedia-vocal-fry-register]] · [[wikipedia-vocal-pedagogy]] · [[wikipedia-vocal-register]] · [[wikipedia-vocal-tract]] · [[wikipedia-vocal-warm-up]] · [[wikipedia-vocal-weight]] · [[wikipedia-voice-change]] · [[wikipedia-voice-therapy]] · [[wikipedia-whistle-register]] · [[wolk2012]] · [[xu2025]] · [[yang2023]] · [[yilmaz2021]] · [[young2021]] · [[yoxon2023]] · [[yoxon2025]] · [[yuasa2010]] · [[zhang2026]] · [[ziegler2018]] · [[ziltzer2023]]
+- **ja** (55): [[anime-academy-ryoseirui2021]] · [[brushvoice-joseigoe]] · [[fujimine2025]] · [[gidjp-opinion2023]] · [[harashina2018]] · [[hasegawa2017]] · [[hayashi2026]] · [[hiroshiba2024]] · [[imaizumi2003]] · [[jspn-guideline2018]] · [[jspn-guideline2024]] · [[jura2022]] · [[kanato2016]] · [[kido2001]] · [[kobayashi2022]] · [[koenami-method]] · [[kunieda2023]] · [[kyoto-ent-clinic]] · [[maruyama2007]] · [[matsumoto2022]] · [[met-ent-tokyo]] · [[nakamura2007]] · [[nakamura2021]] · [[nakamura2022]] · [[nicodic-ryoseirui]] · [[nicovideo-akapiko2009]] · [[nicovideo-ribbonmatch2007]] · [[nicovideo-ryoseirui-tag]] · [[nimura2015]] · [[nimura2022]] · [[noroda2020]] · [[note-formant-app]] · [[note-kirkas]] · [[note-maru2blog]] · [[pixiv-ryoseirui]] · [[sakuraba2009]] · [[sanuki2007]] · [[tanaka2022]] · [[wikipedia-ja-formant]] · [[wikipedia-ja-gi-society]] · [[wikipedia-ja-hensei]] · [[wikipedia-ja-kihonshuuhasuu]] · [[wikipedia-ja-koe]] · [[wikipedia-ja-kotou]] · [[wikipedia-ja-ryouseirui]] · [[wikipedia-ja-seibetsufugou]] · [[wikipedia-ja-seibetsutekigoushujutsu]] · [[wikipedia-ja-seiku]] · [[wikipedia-ja-seitai]] · [[wikipedia-ja-tokureiho]] · [[wikipedia-ja-uragoe]] · [[wikipedia-melanie-ho]] · [[yanagi2015]] · [[yasuda2023]] · [[yomedanchii-voice]]
 - **zh** (32): [[aogi2021]] · [[baike-yaoniang]] · [[bili-chenzhen2025]] · [[bili-fledence2025]] · [[bili-jiangfeng2019]] · [[bili-liujiu2023]] · [[bili-luna2023]] · [[bili-qiancang2020]] · [[bili-zhizhiya2023]] · [[chen2024cn]] · [[moegirl-weisheng]] · [[mtfwiki-chenzhen]] · [[mtfwiki-slang]] · [[mtfwiki-vocal-confirmed]] · [[mtfwiki-vocal-surgery]] · [[mtfwiki-vocal-therapy]] · [[sun2025]] · [[wang2009]] · [[wang2022]] · [[wikipedia-zh-biansheng]] · [[wikipedia-zh-gongzhenfeng]] · [[wikipedia-zh-hou]] · [[wikipedia-zh-jiasheng]] · [[wikipedia-zh-jipin]] · [[wikipedia-zh-kuaxingbie-yuyin-liaofa]] · [[wikipedia-zh-kuaxingbie]] · [[wikipedia-zh-sangyin]] · [[wikipedia-zh-shengdai]] · [[wikipedia-zh-xingbiekending-shoushu]] · [[wikipedia-zh-yanliao-zhiliao]] · [[yao2025]] · [[zhang2023cn]]
-- **ja** (15): [[hasegawa2017]] · [[hayashi2026]] · [[hiroshiba2024]] · [[kanato2016]] · [[kido2001]] · [[kobayashi2022]] · [[koenami-method]] · [[nakamura2007]] · [[nicodic-ryoseirui]] · [[nimura2015]] · [[nimura2022]] · [[sanuki2007]] · [[tanaka2022]] · [[yanagi2015]] · [[yasuda2023]]
 - **es** (12): [[casadomorente2021]] · [[ley26743]] · [[ley4-2023]] · [[longi2021]] · [[malebran2021]] · [[mendez2025]] · [[munoz2025]] · [[orellana2021]] · [[ramirez2022]] · [[tornero2019]] · [[viales2025]] · [[wikipedia-es-laringoplastia-feminizacion]]
 - **ko** (12): [[ssal2020]] · [[wikipedia-ko-byeonseonggi]] · [[wikipedia-ko-duseong]] · [[wikipedia-ko-eumseong]] · [[wikipedia-ko-gaseong]] · [[wikipedia-ko-hudu]] · [[wikipedia-ko-hyeongseong]] · [[wikipedia-ko-pomeonteu]] · [[wikipedia-ko-seongdae]] · [[wikipedia-ko-seonggu]] · [[wikipedia-ko-seongjeonhwan-susul]] · [[wikipedia-ko-teurenseujendeo]]
 - **th** (6): [[wikipedia-th-khonkhamplet]] · [[wikipedia-th-khwamsanphongden]] · [[wikipedia-th-klotsiang]] · [[wikipedia-th-sensiang]] · [[wikipedia-th-siangphut]] · [[wikipedia-th-yingkhamplet]]
