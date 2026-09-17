@@ -19,9 +19,9 @@ use phx_voice::{HarmonicityParams, HnrTrack, hnr_track_cc};
 use serde::{Deserialize, Serialize};
 
 /// Measurement standard. Every stored feature carries it; a change here
-/// means every library and every saved take is re-measured. The libraries
-/// stay at 3.0.0 (the Python engine) until they are rebuilt with this one.
-pub const VERSION: &str = "4.0.0";
+/// means every library and every saved take is re-measured. A library keeps
+/// the version of the engine that built it until it is rebuilt.
+pub const VERSION: &str = "4.0.1";
 /// Analysis rate in hertz; every input is resampled to it.
 pub const RATE: f64 = 16_000.0;
 /// Frame step in seconds.
@@ -286,7 +286,8 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
     // floor can sit above the silence threshold, so the floor itself cannot be
     // the reference for "how much of the speech was voiced".
     let speech_level = threshold.max(quantile(&db, 0.95) - 20.0);
-    let active = db.iter().filter(|&&v| v > speech_level).count();
+    let speech: Vec<bool> = db.iter().map(|&v| v > speech_level).collect();
+    let active = speech.iter().filter(|&&s| s).count();
 
     result.voiced_seconds = round(count as f64 * STEP, 3);
     result.active_seconds = Some(round(active as f64 * STEP, 3));
@@ -330,9 +331,20 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
     // Whispered or mostly unvoiced input can still pass a handful of frames
     // through the strength gate; those medians would describe noise, so they
     // are withheld when voicing is sparse.
+    // The reported fraction counts voiced frames inside the speech-level
+    // frames, so it stays within 0–1 when a quiet but periodic tail is voiced
+    // without reaching speech level. The gate keeps comparing every reliable
+    // voiced frame with the speech-level count: a loud non-speech burst (a
+    // cough, handling noise) then shrinks neither the numerator nor the
+    // verdict, which the intersection would.
+    let voiced_in_speech = voiced
+        .iter()
+        .zip(&speech)
+        .filter(|&(&v, &s)| v && s)
+        .count();
     let sparse = count < 10 || (count as f64) < 0.1 * active as f64;
     result.voicing = Some(Voicing {
-        voiced_fraction: round(count as f64 / active.max(1) as f64, 3),
+        voiced_fraction: round(voiced_in_speech as f64 / active.max(1) as f64, 3),
         sparse,
     });
     if sparse {
@@ -861,6 +873,24 @@ mod tests {
         assert!(m.features.hnr.is_some());
         assert!(m.track.iter().any(|r| r.f0.is_some()));
         assert_eq!(m.version, VERSION);
+    }
+
+    #[test]
+    fn voiced_fraction_stays_within_one_when_a_quiet_tail_is_voiced() {
+        let mut x: Vec<f32> = tone(180.0, 3.0).iter().map(|v| v * 0.5).collect();
+        let quiet = 10f32.powf(-26.0 / 20.0);
+        for v in &mut x[16_000..] {
+            *v *= quiet;
+        }
+        let m = measure(&x, false);
+        let voicing = m.voicing.unwrap();
+        assert!(
+            voicing.voiced_fraction <= 1.0 && voicing.voiced_fraction > 0.9,
+            "{}",
+            voicing.voiced_fraction
+        );
+        assert!(!voicing.sparse);
+        assert!(m.voiced_seconds > 2.0);
     }
 
     #[test]
