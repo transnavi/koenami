@@ -32,20 +32,26 @@ def analyze(x):
     return result
 
 
-def load_timbre_index(data, version):
+def load_timbre_index(data, version, known=None):
     """The timbre vectors build_timbre_index.py wrote for this descriptor version, arranged per language:
-    unit vectors per clip, one centroid per speaker, and the clip rows of each speaker. None when absent."""
+    unit vectors per clip, one centroid per speaker (the mean of the raw vectors, as in the benchmark,
+    normalised once), and the clip rows of each speaker. Rows whose clip the app no longer serves are
+    dropped. None when the file is absent, for another version, or empty."""
     path = data / f'timbre-index-{version}.npz'
     if not path.is_file(): return None
     raw = np.load(path, allow_pickle=False)
     if str(raw['version']) != version: return None
-    vectors = raw['vectors'].astype('float32'); vectors /= np.maximum(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-8)
+    ids, language, speaker, group, synthetic = (raw[k] for k in ['ids', 'language', 'speaker', 'group', 'synthetic'])
+    keep = np.isin(ids, list(known)) if known is not None else np.ones(len(ids), bool)
+    if raw['vectors'].ndim != 2 or not keep.any(): return None
+    raw_vectors = raw['vectors'][keep].astype('float32'); ids, language, speaker, group, synthetic = ids[keep], language[keep], speaker[keep], group[keep], synthetic[keep]
+    vectors = raw_vectors / np.maximum(np.linalg.norm(raw_vectors, axis=1, keepdims=True), 1e-8)
     index = {}
-    for lang in np.unique(raw['language']):
-        rows = np.flatnonzero(raw['language'] == lang); speakers = sorted(set(raw['speaker'][rows].tolist()))
-        by_speaker = {s: rows[raw['speaker'][rows] == s] for s in speakers}
-        centroids = np.array([vectors[by_speaker[s]].mean(axis=0) for s in speakers]); centroids /= np.maximum(np.linalg.norm(centroids, axis=1, keepdims=True), 1e-8)
-        index[str(lang)] = {'ids': raw['ids'], 'vectors': vectors, 'group': raw['group'], 'synthetic': raw['synthetic'],
+    for lang in np.unique(language):
+        rows = np.flatnonzero(language == lang); speakers = sorted(set(speaker[rows].tolist()))
+        by_speaker = {s: rows[speaker[rows] == s] for s in speakers}
+        centroids = np.array([raw_vectors[by_speaker[s]].mean(axis=0) for s in speakers]); centroids /= np.maximum(np.linalg.norm(centroids, axis=1, keepdims=True), 1e-8)
+        index[str(lang)] = {'ids': ids, 'vectors': vectors, 'group': group, 'synthetic': synthetic,
                             'speakers': speakers, 'centroids': centroids, 'rows': by_speaker, 'clips': len(rows)}
     return index
 
@@ -79,8 +85,11 @@ def create_app():
     clips.update({c['id']: c for c in own_clips})
     gate, asr_gate = asyncio.Semaphore(1), asyncio.Semaphore(1)
     neural_gate = asyncio.Semaphore(1)
-    # Reference ranking needs the prepared WavLM graph and an index built for the same descriptor version.
-    timbre_index = load_timbre_index(DATA, perception.TIMBRE_VERSION) if perception and perception.available(['wavlm']) else None
+    # Reference ranking needs a prepared WavLM graph that carries the timbre output, opened here so the
+    # first request does not pay for it, and an index built for the same descriptor version.
+    timbre_index = None
+    if perception and perception.available(['wavlm']) and 'timbre_frames' in [o.name for o in perception.session('wavlm').get_outputs()]:
+        timbre_index = load_timbre_index(DATA, perception.TIMBRE_VERSION, known=clips)
     cache = OrderedDict()
     pcm_cache = OrderedDict()
 
@@ -170,6 +179,23 @@ def create_app():
         async with neural_gate:
             try: return respond(await asyncio.to_thread(perception.age, x))
             except ValueError as error: raise web.HTTPUnprocessableEntity(text=str(error))
+
+    async def similar(request):
+        """Reference speakers whose voices sit closest to the recording, by the layer-3 timbre descriptor."""
+        lang = request.query.get('lang', 'ja')
+        if not timbre_index or lang not in timbre_index: raise web.HTTPNotFound(text='この言語の参照声のインデックスがありません。')
+        try: limit = max(1, min(int(request.query.get('limit', '12')), 50))
+        except (ValueError, TypeError): raise web.HTTPBadRequest(text='limit must be a number.')
+        if PUBLIC and neural_gate.locked(): raise web.HTTPServiceUnavailable(text='解析が混み合っています。少し待ってからお試しください。', headers={'Retry-After': '2'})
+        x = await read_audio(request)
+        async with neural_gate:
+            try: vector = await asyncio.to_thread(perception.timbre, x)
+            except ValueError as e: raise web.HTTPUnprocessableEntity(text=str(e))
+            except RuntimeError:
+                logging.exception('timbre inference failed'); raise web.HTTPServiceUnavailable(text='声の比較に失敗しました。もう一度お試しください。')
+        index = timbre_index[lang]
+        return respond({'version': perception.TIMBRE_VERSION, 'language': lang, 'speakers': rank_similar(index, vector, limit),
+                        'indexed': {'clips': index['clips'], 'speakers': len(index['speakers'])}})
 
     async def detail(request):
         name = request.match_info['name']
@@ -405,20 +431,6 @@ def create_app():
     app.router.add_get('/api/pairs', pairs_get)
     app.router.add_post('/api/pairs', pairs_post)
     app.router.add_post('/api/review', review_post)
-    async def similar(request):
-        """Reference speakers whose voices sit closest to the recording, by the layer-3 timbre descriptor."""
-        lang = request.query.get('lang', 'ja')
-        if not timbre_index or lang not in timbre_index: raise web.HTTPNotFound(text='この言語の参照声のインデックスがありません。')
-        limit = max(1, min(int(request.query.get('limit', '12')), 50))
-        if PUBLIC and neural_gate.locked(): raise web.HTTPServiceUnavailable(text='解析が混み合っています。少し待ってからお試しください。', headers={'Retry-After': '2'})
-        x = await read_audio(request)
-        async with neural_gate:
-            try: vector = await asyncio.to_thread(perception.timbre, x)
-            except ValueError as e: raise web.HTTPUnprocessableEntity(text=str(e))
-        index = timbre_index[lang]
-        return respond({'version': perception.TIMBRE_VERSION, 'language': lang, 'speakers': rank_similar(index, vector, limit),
-                        'indexed': {'clips': index['clips'], 'speakers': len(index['speakers'])}})
-
     async def health(request):
         return respond({'ok': True})
 
