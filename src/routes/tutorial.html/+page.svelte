@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '$lib/studio/studio.css';
+	import { jsonLd } from '$lib/structured-data';
 	const structuredData = `{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://koe.transnavi.jp/#website","url":"https://koe.transnavi.jp/","name":"Koenami","inLanguage":"ja","publisher":{"@id":"https://transnavi.jp/#organization"}},{"@type":"Organization","@id":"https://transnavi.jp/#organization","name":"とらんすナビ","url":"https://transnavi.jp/","logo":"https://transnavi.jp/favicon.svg"},{"@type":"Article","@id":"https://koe.transnavi.jp/tutorial.html#article","url":"https://koe.transnavi.jp/tutorial.html","headline":"声のしくみと練習の手引き","name":"Koenami · 声のしくみと練習の手引き","description":"声はどう作られ、聞き手は何で性別を判断し、どうすれば変えられるか。音源とフィルター、発声のしくみ、性別知覚の研究、女性化・男性化・中性化の練習の要点を、出典付きでまとめた執筆中の手引き。","inLanguage":"ja","mainEntityOfPage":"https://koe.transnavi.jp/tutorial.html","image":"https://koe.transnavi.jp/og-tutorial.png","author":{"@id":"https://transnavi.jp/#organization"},"publisher":{"@id":"https://transnavi.jp/#organization"},"isPartOf":{"@id":"https://koe.transnavi.jp/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Koenami","item":"https://koe.transnavi.jp/"},{"@type":"ListItem","position":2,"name":"声のしくみと練習の手引き","item":"https://koe.transnavi.jp/tutorial.html"}]}]}`;
 </script>
 
@@ -31,7 +32,7 @@
 	/>
 	<meta name="twitter:image" content="https://koe.transnavi.jp/og-tutorial.png" />
 	<link rel="sitemap" href="/sitemap.xml" />
-	{@html `<script type="application/ld+json">${structuredData}</script>`}
+	{@html jsonLd(structuredData)}
 </svelte:head>
 
 <header class="method-header">
