@@ -171,6 +171,11 @@ pub struct Measurement {
     pub formant_sensitivity_pct: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resonance_sensitivity_pct: Option<f64>,
+    /// Share of voiced frames with energy at the even multiples of the tracked
+    /// pitch and none at the odd ones: a track an octave low, or period-doubled
+    /// creak, which looks the same.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pitch_halving_pct: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub peak: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -234,6 +239,7 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         pitch_p90: None,
         formant_sensitivity_pct: None,
         resonance_sensitivity_pct: None,
+        pitch_halving_pct: None,
         peak: None,
         visuals: None,
     };
@@ -450,6 +456,28 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
             let balance = 10.0 * ((hi + 1e-20) / (lo + 1e-20)).log10();
             data.balance.push(balance);
             row.balance = Some(balance);
+            // Octave check against the harmonic pattern: a voice tracked at half
+            // its pitch has energy at the even multiples of the tracked value and
+            // none at the odd ones. Voices above the 500 Hz ceiling (falsetto,
+            // children) are tracked that way by design, and period-doubled creak
+            // looks the same, so the share is reported, never corrected.
+            // Calibration on JVS: modal reading at most 3.3 % of frames, halved
+            // falsetto 20 % and up.
+            let peak = |hz: f64| -> f64 {
+                let half_width = (0.06 * hz).max(hz_per_bin);
+                let first = ((hz - half_width) / hz_per_bin).ceil().max(0.0) as usize;
+                let last =
+                    (((hz + half_width) / hz_per_bin).floor() as usize).min(spectrum.len() - 1);
+                let best = spectrum[first.min(last)..=last]
+                    .iter()
+                    .map(|bin| bin.norm_sqr())
+                    .fold(0.0_f64, f64::max);
+                10.0 * (best + 1e-20).log10()
+            };
+            let harmonics: Vec<f64> = (1..=6).map(|k| peak(k as f64 * f0[i])).collect();
+            let odd = (harmonics[0] + harmonics[2] + harmonics[4]) / 3.0;
+            let even = (harmonics[1] + harmonics[3] + harmonics[5]) / 3.0;
+            data.halved.push(even - odd > 10.0);
             if detailed && i % 2 == 0 {
                 let from = i.saturating_sub(74);
                 let recent: Vec<f64> = (from..=i).filter(|&k| voiced[k]).map(|k| f0[k]).collect();
@@ -493,6 +521,10 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
     features.quiet_pct = Some(100.0 * quiet_total / duration);
     features.quiet_mean = Some(quiet_mean);
 
+    result.pitch_halving_pct = Some(round(
+        100.0 * data.halved.iter().filter(|&&h| h).count() as f64 / data.halved.len() as f64,
+        1,
+    ));
     result.formant_seconds = Some(round(data.f3.len() as f64 * STEP, 3));
     result.pitch_p10 = Some(quantile(&data.f0, 0.1));
     result.pitch_p90 = Some(quantile(&data.f0, 0.9));
@@ -517,6 +549,7 @@ struct Series {
     f4: Vec<f64>,
     hnr: Vec<f64>,
     balance: Vec<f64>,
+    halved: Vec<bool>,
     f3_alternative: Vec<f64>,
     delta_f: Vec<f64>,
     delta_f_alternative: Vec<f64>,
@@ -891,6 +924,31 @@ mod tests {
         );
         assert!(!voicing.sparse);
         assert!(m.voiced_seconds > 2.0);
+    }
+
+    #[test]
+    fn halving_share_flags_missing_odd_harmonics_of_the_tracked_pitch() {
+        for f0 in [170.0, 340.0] {
+            let m = measure(&tone(f0, 3.0), false);
+            assert!((m.features.f0.unwrap() - f0).abs() < 2.0);
+            assert!(
+                m.pitch_halving_pct.unwrap() < 5.0,
+                "{:?}",
+                m.pitch_halving_pct
+            );
+        }
+        // Alternating 300 ms blocks of 340 and 170 Hz: the path finder stays at
+        // 170 Hz throughout, as Praat does, so the 340 Hz blocks lack odd
+        // harmonics of the tracked value and about half the frames flag.
+        let high = tone(340.0, 3.0);
+        let low = tone(170.0, 3.0);
+        let mixed: Vec<f32> = (0..high.len())
+            .map(|i| if (i / 4800) % 2 == 1 { low[i] } else { high[i] })
+            .collect();
+        let m = measure(&mixed, false);
+        assert!(m.features.f0.unwrap() < 200.0, "{:?}", m.features.f0);
+        let pct = m.pitch_halving_pct.unwrap();
+        assert!((35.0..=65.0).contains(&pct), "{pct}");
     }
 
     #[test]

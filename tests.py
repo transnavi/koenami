@@ -51,6 +51,18 @@ class AcousticTests(unittest.TestCase):
         self.assertFalse(m['voicing']['sparse']);self.assertGreater(m['voicing']['voiced_fraction'],.5)
         self.assertAlmostEqual(m['features']['f0'],180,delta=2);self.assertLess(m['active_seconds'],1.5)
 
+    def test_halving_share_reports_missing_odd_harmonics_without_correcting(self):
+        t=np.arange(RATE*3)/RATE
+        tone=lambda hz:sum(np.sin(2*np.pi*hz*n*t)/n for n in range(1,8))*.08
+        for hz in [170,340]:
+            steady=measure(tone(hz))
+            self.assertAlmostEqual(steady['features']['f0'],hz,delta=2);self.assertLess(steady['pitch_halving_pct'],5)
+        # Praat follows the alternating 340/170 Hz signal at 170 Hz throughout (octave-jump cost
+        # against 300 ms blocks); the 340 Hz stretches then lack odd harmonics of the tracked value.
+        mixed=tone(340);half=(np.arange(len(t))//int(RATE*.3))%2==1;mixed[half]=tone(170)[half]
+        m=measure(mixed)
+        self.assertLess(m['features']['f0'],200);self.assertTrue(35<=m['pitch_halving_pct']<=65,m['pitch_halving_pct'])
+
     def test_known_pitch(self):
         t=np.arange(RATE*3)/RATE
         for hz in [110,180,260]:
