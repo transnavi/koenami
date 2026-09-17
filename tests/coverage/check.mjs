@@ -7,6 +7,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import libCoverage from 'istanbul-lib-coverage';
+import ts from 'typescript';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 const args = process.argv.slice(2);
@@ -78,7 +79,9 @@ if (stale.length) misses.push(...stale.map((e) => `stale exclusion ${e.file}:${e
 // Every source file of the tree must appear in the data; a module no test loads would
 // otherwise pass unnoticed.
 const sourceFiles = [];
-const walk = (dir, deep) => { for (const name of readdirSync(dir)) { const p = join(dir, name); if (statSync(p).isDirectory()) { if (deep) walk(p, deep); } else if (/\.(js|ts|svelte)$/.test(name) && !name.endsWith('.d.ts')) sourceFiles.push(normalize(relative(root, p))); } };
+// A .ts module that erases to nothing (types only) has no runtime for either layer to see.
+const typesOnly = (p) => p.endsWith('.ts') && !/\S/.test(ts.transpileModule(readFileSync(p, 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ESNext, verbatimModuleSyntax: true } }).outputText.replace(/^export \{\};$/m, ''));
+const walk = (dir, deep) => { for (const name of readdirSync(dir)) { const p = join(dir, name); if (statSync(p).isDirectory()) { if (deep) walk(p, deep); } else if (/\.(js|ts|svelte)$/.test(name) && !name.endsWith('.d.ts') && !typesOnly(p)) sourceFiles.push(normalize(relative(root, p))); } };
 if (tree === 'new') walk(join(root, 'src/lib'), true); else { walk(join(sourceRoot, 'web'), false); walk(join(sourceRoot, 'web/public'), false); }
 const files = map.files().filter((f) => wanted(relative(root, f)));
 for (const rel of sourceFiles.filter(wanted)) if (!files.some((f) => relative(root, f) === rel)) misses.push(`${rel}: no coverage data (no test loads it)`);
