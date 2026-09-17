@@ -19,6 +19,11 @@ def available(names=('wavlm', 'age')):
     return all((MODEL_DIR / f'{name}.int8.onnx').is_file() for name in names)
 
 
+def timbre_ready():
+    """The prepared WavLM graph is present and carries the timbre output; opening the session warms it."""
+    return available(['wavlm']) and 'timbre_frames' in [o.name for o in session('wavlm').get_outputs()]
+
+
 def session(name):
     if name not in _sessions:
         import onnxruntime as ort
@@ -98,8 +103,7 @@ def timbre(x):
         best = np.flatnonzero(counts == counts.max()); centre = ((start + end) // 2 - 4 * RATE) // step
         c = min(int(best[np.abs(best - centre).argmin()]) * step, len(x) - 8 * RATE)
         x = x[c:c + 8 * RATE]; rms = frame_rms(x)
-    if 'timbre_frames' not in [o.name for o in session('wavlm').get_outputs()]:
-        raise ValueError('The prepared WavLM model predates the timbre output; run prepare_voice_models.py.')
+    if not timbre_ready(): raise ValueError('The prepared WavLM model predates the timbre output; run prepare_voice_models.py.')
     frames = session('wavlm').run(['timbre_frames'], {'values': x.astype(np.float32)[None, :]})[0][0]
     energy = 20 * np.log10(rms[:len(frames)] + 1e-12)
     speech = (energy > energy.max() - 40) & (rms[:len(frames)] > FLOOR)
