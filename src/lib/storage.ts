@@ -1,11 +1,12 @@
 import type { Features } from './space';
 
-/* Two complete takes are committed together, so an interrupted write keeps the old pair. */
+/* Two complete takes are committed together, so an interrupted write keeps the old pair. The
+   index entries are the caller's records; a method that returns the index takes their type. */
 export type TakeMetadata = { id: string; features?: Features; duration?: number; quality?: Record<string, number>; [key: string]: unknown };
 export type TakeSnapshot = { range?: unknown; measurement?: unknown; detail?: unknown; [key: string]: unknown };
 export type TakePair = { current?: { takeId?: string } | null; previous?: { takeId?: string } | null };
 export type AnalysisDetail = { features: Features; duration: number; voiced_seconds?: number; formant_seconds?: number; clipping_fraction?: number; resonance_sensitivity_pct?: number; [key: string]: unknown };
-type Change = (snapshot: TakeSnapshot | undefined, metadata: TakeMetadata | undefined) => { snapshot: TakeSnapshot; metadata: TakeMetadata } | null;
+type Change<M extends TakeMetadata> = (snapshot: TakeSnapshot | undefined, metadata: M | undefined) => { snapshot: TakeSnapshot; metadata: M } | null;
 
 export const TakeStore = {
 	db: null as IDBDatabase | null,
@@ -45,18 +46,18 @@ export const TakeStore = {
 			});
 		return this.queue;
 	},
-	saveRecording(snapshot: TakeSnapshot, metadata: TakeMetadata) {
-		return this.recordingTransaction(metadata.id, () => ({ snapshot, metadata }));
+	saveRecording<M extends TakeMetadata>(snapshot: TakeSnapshot, metadata: M) {
+		return this.recordingTransaction<M>(metadata.id, () => ({ snapshot, metadata }));
 	},
-	deleteRecording(id: string): Promise<TakeMetadata[]> {
+	deleteRecording<M extends TakeMetadata = TakeMetadata>(id: string): Promise<M[]> {
 		const operation = this.queue
 			.catch(() => {})
 			.then(async () => {
 				const db = await this.open();
-				return new Promise<TakeMetadata[]>((resolve, reject) => {
+				return new Promise<M[]>((resolve, reject) => {
 					const tx = db.transaction('session', 'readwrite'),
 						store = tx.objectStore('session');
-					let index: TakeMetadata[] = [],
+					let index: M[] = [],
 						pair: TakePair | undefined,
 						remaining = 2;
 					const remove = () => {
@@ -87,8 +88,8 @@ export const TakeStore = {
 		this.queue = operation;
 		return operation;
 	},
-	finishRecording(id: string, detail: AnalysisDetail) {
-		return this.recordingTransaction(id, (snapshot, metadata) => {
+	finishRecording<M extends TakeMetadata = TakeMetadata>(id: string, detail: AnalysisDetail) {
+		return this.recordingTransaction<M>(id, (snapshot, metadata) => {
 			if (!snapshot || !metadata) return null;
 			const quality = Object.fromEntries(
 				['voiced_seconds', 'formant_seconds', 'clipping_fraction', 'resonance_sensitivity_pct'].map((k) => [k, detail[k] as number])
@@ -99,17 +100,17 @@ export const TakeStore = {
 			};
 		});
 	},
-	recordingTransaction(id: string, change: Change): Promise<{ snapshot: TakeSnapshot; index: TakeMetadata[] } | null> {
+	recordingTransaction<M extends TakeMetadata = TakeMetadata>(id: string, change: Change<M>): Promise<{ snapshot: TakeSnapshot; index: M[] } | null> {
 		const operation = this.queue
 			.catch(() => {})
 			.then(async () => {
 				const db = await this.open();
-				return new Promise<{ snapshot: TakeSnapshot; index: TakeMetadata[] } | null>((resolve, reject) => {
+				return new Promise<{ snapshot: TakeSnapshot; index: M[] } | null>((resolve, reject) => {
 					const tx = db.transaction('session', 'readwrite'),
 						store = tx.objectStore('session');
-					let index: TakeMetadata[] = [],
+					let index: M[] = [],
 						snapshot: TakeSnapshot | undefined,
-						result: { snapshot: TakeSnapshot; index: TakeMetadata[] } | null | undefined,
+						result: { snapshot: TakeSnapshot; index: M[] } | null | undefined,
 						remaining = 2;
 					const update = () => {
 						if (--remaining) return;
@@ -136,7 +137,7 @@ export const TakeStore = {
 						index = list.result || [];
 						update();
 					};
-					tx.oncomplete = () => resolve(result as { snapshot: TakeSnapshot; index: TakeMetadata[] } | null);
+					tx.oncomplete = () => resolve(result as { snapshot: TakeSnapshot; index: M[] } | null);
 					tx.onabort = tx.onerror = () => reject(tx.error || new Error('Storage failed'));
 				});
 			});

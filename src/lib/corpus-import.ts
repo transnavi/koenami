@@ -19,11 +19,13 @@ async function index(): Promise<Map<string, ImportClip>> {
 	return indexPromise;
 }
 
-export async function loadImported(): Promise<ImportedClip[]> {
+/* The index records are the library's clip records with the archive fields; the caller names
+   the record type it reads them as. */
+export async function loadImported<C extends ImportClip = ImportClip>(): Promise<(C & { localLibrary: true })[]> {
 	const ids = (await TakeStore.read<string[] | undefined>('jvs-index')) || [];
 	if (!ids.length) return [];
-	const entries = await index();
-	return ids.filter((id) => entries.has(id)).map((id) => ({ ...entries.get(id)!, localLibrary: true }));
+	const entries = (await index()) as Map<string, C>;
+	return ids.filter((id) => entries.has(id)).map((id) => ({ ...entries.get(id)!, localLibrary: true as const }));
 }
 
 export async function importedAudio(id: string): Promise<Blob> {

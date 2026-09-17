@@ -51,7 +51,7 @@ stay evidence when the SvelteKit tree replaces `web/`.
 
 ## Incidental (not compared)
 
-- Class names outside the contract list, inline styles other than custom properties,
+- Elements the framework owns (SvelteKit's `#svelte-announcer` live region), class names outside the contract list, inline styles other than custom properties,
   attribute order, whitespace, the number of range requests for media files
   (`media` lists the files touched), and the exact request timing.
 - Values that follow real media time or microphone content: seek positions and clocks,
