@@ -18,7 +18,7 @@ Voice and communication services are one component of gender-affirming care: def
 - No Cochrane review covers voice or communication interventions for transgender people: a PubMed search restricted to the Cochrane Database returned zero hits on 2026-09-17, leaving [[leyns2021]] as the top of the evidence pile.
 
 ## Contested or unclear
-- Where voice services belong: inside the gender clinic (the NHS GIC-specialised lane) or in general speech-language pathology services (the NHS referral-on lane, and most Brazilian practice) — both models run in parallel [[nhse1719]], [[viana2025]].
+- Where voice services belong: inside the gender clinic (the NHS GIC-specialised lane) or in general speech-language pathology services (the NHS referral-on lane) — both models run in parallel [[nhse1719]]; a Brazilian survey of 52 SLPs describes session content without recording the setting [[viana2025]].
 - How people should enter the pathway: the NHS specification protects self-referral alongside GP referral [[nhse1719]], yet in survey data most transgender and nonbinary adults had never seen a speech-language pathologist at all [[ziltzer2023]] — referral routes and self-referral rights are not, by themselves, producing access.
 
 ## Open questions
