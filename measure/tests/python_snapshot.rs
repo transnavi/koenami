@@ -62,6 +62,17 @@ fn matches_the_python_engine_on_the_excerpt() {
     relative("f1", f.f1.unwrap(), 0.01);
     relative("f2", f.f2.unwrap(), 0.02);
     relative("f3", f.f3.unwrap(), 0.01);
+    // Voice-quality measures added with 4.1.0 / 3.2.0. Recorded on 2026-09-17:
+    // H1–H2 and its spread agree to 3·10⁻³ dB, the balance spread to 10⁻³ dB,
+    // the formant-spacing spread to 0.01 Hz, jitter and shimmer to 3·10⁻³
+    // (each engine runs its own pulse search over the same pitch track).
+    absolute("h1h2", f.h1h2.unwrap(), 0.1);
+    absolute("h1h2_sd", f.h1h2_sd.unwrap(), 0.1);
+    absolute("hnr_sd", f.hnr_sd.unwrap(), 0.1);
+    absolute("balance_sd", f.balance_sd.unwrap(), 0.1);
+    relative("delta_f_sd", f.delta_f_sd.unwrap(), 0.02);
+    absolute("jitter", f.jitter.unwrap(), 0.005);
+    absolute("shimmer", f.shimmer.unwrap(), 0.01);
     let level = snapshot["level_dbfs"].as_f64().unwrap();
     assert!(
         (m.level_dbfs.unwrap() - level).abs() <= 0.03,

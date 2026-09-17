@@ -15,7 +15,7 @@ use phx_audio::{Audio, ResampleQuality};
 use phx_dsp::RealFftPlan;
 use phx_formant::{FormantParams, FormantTrack, formant_track};
 use phx_pitch::{PitchParams, pitch_track};
-use phx_voice::{HarmonicityParams, HnrTrack, hnr_track_cc};
+use phx_voice::{HarmonicityParams, HnrTrack, PulseParams, hnr_track_cc, pulses};
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "wasm")]
@@ -24,7 +24,7 @@ mod wasm;
 /// Measurement standard. Every stored feature carries it; a change here
 /// means every library and every saved take is re-measured. A library keeps
 /// the version of the engine that built it until it is rebuilt.
-pub const VERSION: &str = "4.0.1";
+pub const VERSION: &str = "4.1.0";
 /// Analysis rate in hertz; every input is resampled to it.
 pub const RATE: f64 = 16_000.0;
 /// Frame step in seconds.
@@ -134,6 +134,32 @@ pub struct Features {
     /// Semitones between the 10th and 90th percentiles of F0.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pitch_span: Option<f64>,
+    /// Level of the first harmonic above the second, in decibels, median over
+    /// the voiced frames whose harmonic pattern agrees with the tracked pitch.
+    /// Uncorrected for formants.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h1h2: Option<f64>,
+    /// Spread of H1–H2 across those frames.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h1h2_sd: Option<f64>,
+    /// Spread of the formant spacing across the frames with accepted formants.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delta_f_sd: Option<f64>,
+    /// Spread of harmonicity across voiced frames.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hnr_sd: Option<f64>,
+    /// Spread of spectral balance across voiced frames.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance_sd: Option<f64>,
+    /// Local jitter over the glottal pulses of the whole recording: mean
+    /// absolute difference of consecutive periods over the mean period, with
+    /// Praat's bounds (see [`perturbation`]).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jitter: Option<f64>,
+    /// Local shimmer: mean absolute difference of consecutive pulse amplitudes
+    /// over the mean amplitude, with the same bounds (see [`perturbation`]).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shimmer: Option<f64>,
 }
 
 /// How much of the speech-level signal was voiced, and whether that is too
@@ -369,7 +395,7 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         formant_track(view.clone(), &formant_params(5500.0)),
         formant_track(view.clone(), &formant_params(5000.0)),
     ];
-    let hn = hnr_track_cc(view, &harmonicity_params());
+    let hn = hnr_track_cc(view.clone(), &harmonicity_params());
 
     let mut data = Series::default();
     let mut track = Vec::new();
@@ -480,7 +506,13 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
             let harmonics: Vec<f64> = (1..=6).map(|k| peak(k as f64 * f0[i])).collect();
             let odd = (harmonics[0] + harmonics[2] + harmonics[4]) / 3.0;
             let even = (harmonics[1] + harmonics[3] + harmonics[5]) / 3.0;
-            data.halved.push(even - odd > 10.0);
+            let halved = even - odd > 10.0;
+            data.halved.push(halved);
+            // In a halved frame "H1" is the absent subharmonic, so H1–H2 is measured
+            // only where the tracked pitch and the harmonic pattern agree.
+            if !halved {
+                data.h1h2.push(harmonics[0] - harmonics[1]);
+            }
             if detailed && i % 2 == 0 {
                 let from = i.saturating_sub(74);
                 let recent: Vec<f64> = (from..=i).filter(|&k| voiced[k]).map(|k| f0[k]).collect();
@@ -495,6 +527,10 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         }
     }
 
+    let perturbation = perturbation(
+        &signal,
+        pulses(view.clone(), &pitch, &PulseParams::default()).times(),
+    );
     let mut features = Features {
         f0: median(&data.f0),
         f1: median(&data.f1),
@@ -519,6 +555,13 @@ pub fn measure(x: &[f32], detailed: bool) -> Measurement {
         quiet_pct: None,
         quiet_mean: None,
         pitch_span: Some(12.0 * (quantile(&data.f0, 0.9) / quantile(&data.f0, 0.1)).log2()),
+        h1h2: median(&data.h1h2),
+        h1h2_sd: (!data.h1h2.is_empty()).then(|| std(&data.h1h2)),
+        delta_f_sd: (!data.delta_f.is_empty()).then(|| std(&data.delta_f)),
+        hnr_sd: (!data.hnr.is_empty()).then(|| std(&data.hnr)),
+        balance_sd: Some(std(&data.balance)),
+        jitter: perturbation.0,
+        shimmer: perturbation.1,
     };
 
     features.quiet_pct = Some(100.0 * quiet_total / duration);
@@ -552,6 +595,7 @@ struct Series {
     f4: Vec<f64>,
     hnr: Vec<f64>,
     balance: Vec<f64>,
+    h1h2: Vec<f64>,
     halved: Vec<bool>,
     f3_alternative: Vec<f64>,
     delta_f: Vec<f64>,
@@ -682,7 +726,104 @@ fn harmonicity_value(track: &HnrTrack, time: f64) -> Option<f64> {
     )
 }
 
+/// Local jitter and local shimmer from glottal pulse times. The bounds are
+/// Praat's voice-report defaults; the amplitude and the means are this
+/// engine's own definition, shared with `acoustics.perturbation`:
+///
+/// - a period counts when it lies between 0.1 and 20 ms;
+/// - a pair of consecutive periods enters jitter when both count and their
+///   ratio stays under 1.3; jitter is the mean absolute difference over
+///   the mean of the periods in those pairs;
+/// - a pulse's amplitude is the band-limited peak ([`interpolated_peak`])
+///   within half a period on either side of it; a pair of consecutive amplitudes enters
+///   shimmer when the two periods around them pass the jitter gate and the
+///   amplitude ratio stays under 1.6; shimmer is the mean absolute
+///   difference over the mean of the amplitudes in those pairs.
+///
+/// `None` with fewer than two usable pairs.
+fn perturbation(signal: &[f64], pulses: &[f64]) -> (Option<f64>, Option<f64>) {
+    let periods: Vec<f64> = pulses.windows(2).map(|p| p[1] - p[0]).collect();
+    let usable = |t: f64| (1e-4..=0.02).contains(&t);
+    // Pulse i sits between periods[i - 1] and periods[i].
+    let amplitude = |i: usize| -> f64 {
+        let before = if i > 0 { periods[i - 1] } else { periods[i] };
+        let after = if i < periods.len() {
+            periods[i]
+        } else {
+            periods[i - 1]
+        };
+        let start = ((pulses[i] - before / 2.0) * RATE).round().max(0.0) as usize;
+        let end = (((pulses[i] + after / 2.0) * RATE).round() as usize).min(signal.len());
+        if end <= start {
+            return 0.0;
+        }
+        let k = (start..end)
+            .max_by(|&a, &b| signal[a].abs().total_cmp(&signal[b].abs()))
+            .unwrap_or(start);
+        interpolated_peak(signal, k)
+    };
+    let mut period_diffs = Vec::new();
+    let mut period_sum = 0.0;
+    let mut amp_diffs = Vec::new();
+    let mut amp_sum = 0.0;
+    for i in 1..periods.len() {
+        let (a, b) = (periods[i - 1], periods[i]);
+        if !(usable(a) && usable(b)) || (a / b).max(b / a) >= 1.3 {
+            continue;
+        }
+        period_diffs.push((a - b).abs());
+        period_sum += a + b;
+        // Pulses i and i + 1 bound period b; both need the periods around them.
+        if i + 1 < periods.len()
+            && usable(periods[i + 1])
+            && (b / periods[i + 1]).max(periods[i + 1] / b) < 1.3
+        {
+            let (x, y) = (amplitude(i), amplitude(i + 1));
+            if x > 0.0 && y > 0.0 && (x / y).max(y / x) < 1.6 {
+                amp_diffs.push((x - y).abs());
+                amp_sum += x + y;
+            }
+        }
+    }
+    let ratio = |diffs: &[f64], sum: f64| {
+        (diffs.len() >= 2).then(|| {
+            let mean = sum / (2 * diffs.len()) as f64;
+            diffs.iter().sum::<f64>() / diffs.len() as f64 / mean
+        })
+    };
+    (ratio(&period_diffs, period_sum), ratio(&amp_diffs, amp_sum))
+}
+
 /// `0.5 − 0.5·cos(2πn/(N−1))`, the symmetric Hann window.
+/// Largest absolute value of the band-limited signal within a sample of the
+/// sampled maximum at `k`: a Hann-windowed sinc interpolant over the 17
+/// samples around `k`, evaluated every 1/16 sample. The sampled maximum alone
+/// shifts with the sampling grid from cycle to cycle and reads as shimmer on
+/// a steady voice. Same arithmetic as `acoustics.interpolated_peak`.
+fn interpolated_peak(signal: &[f64], k: usize) -> f64 {
+    const HALF: usize = 8;
+    const STEPS: i64 = 16;
+    let lo = k.saturating_sub(HALF);
+    let hi = (k + HALF + 1).min(signal.len());
+    let mut best = signal[k].abs();
+    for j in (1 - STEPS)..STEPS {
+        let pos = k as f64 + j as f64 / STEPS as f64;
+        let value: f64 = (lo..hi)
+            .map(|i| {
+                let d = pos - i as f64;
+                let sinc = if d == 0.0 {
+                    1.0
+                } else {
+                    (PI * d).sin() / (PI * d)
+                };
+                signal[i] * sinc * (0.5 + 0.5 * (PI * d / (HALF + 1) as f64).cos())
+            })
+            .sum();
+        best = best.max(value.abs());
+    }
+    best
+}
+
 fn hanning(n: usize) -> Vec<f64> {
     if n == 1 {
         return vec![1.0];
@@ -952,6 +1093,64 @@ mod tests {
         assert!(m.features.f0.unwrap() < 200.0, "{:?}", m.features.f0);
         let pct = m.pitch_halving_pct.unwrap();
         assert!((35.0..=65.0).contains(&pct), "{pct}");
+    }
+
+    #[test]
+    fn voice_quality_measures_follow_the_signal() {
+        // A steady four-harmonic tone: first harmonic above the second by its
+        // 0.6 : 0.3 amplitude ratio (6 dB), and no perturbation.
+        let m = measure(&tone(180.0, 3.0), false);
+        let f = &m.features;
+        assert!((f.h1h2.unwrap() - 6.0).abs() < 1.0, "{:?}", f.h1h2);
+        assert!(f.h1h2_sd.unwrap() < 1.0);
+        assert!(f.jitter.unwrap() < 0.005, "{:?}", f.jitter);
+        assert!(f.shimmer.unwrap() < 0.02, "{:?}", f.shimmer);
+        // A steady 330 Hz voice-like signal with fifteen harmonics, whose cycles
+        // fall at every position on the sampling grid: the sampled peak alone
+        // reads 3.8 % shimmer here, the band-limited peak under 0.1 %.
+        let steady: Vec<f32> = (0..48_000)
+            .map(|i| {
+                let t = i as f64 / RATE;
+                (0.05
+                    * (1..16)
+                        .map(|k| (2.0 * PI * 330.0 * k as f64 * t).sin() / k as f64)
+                        .sum::<f64>()) as f32
+            })
+            .collect();
+        let sh = measure(&steady, false).features.shimmer.unwrap();
+        assert!(sh < 0.001, "{sh}");
+        // Every frame of a 600 Hz signal is tracked at half its pitch: no H1–H2
+        // observation exists, so neither field appears (never a NaN spread).
+        let high: Vec<f32> = (0..48_000)
+            .map(|i| {
+                let t = i as f64 / RATE;
+                (0.08
+                    * (1..8)
+                        .map(|k| (2.0 * PI * 600.0 * k as f64 * t).sin() / k as f64)
+                        .sum::<f64>()) as f32
+            })
+            .collect();
+        let halved = measure(&high, false);
+        assert!(halved.pitch_halving_pct.unwrap() > 90.0);
+        assert!(halved.features.h1h2.is_none() && halved.features.h1h2_sd.is_none());
+        assert!(!serde_json::to_string(&halved).unwrap().contains("h1h2"));
+        assert!(f.balance_sd.is_some() && f.hnr_sd.is_some());
+        assert!(f.delta_f_sd.is_none(), "a tone has no formants to spread");
+        // Cycle lengths drawn within ±8 % by a small linear congruential
+        // generator (a strict alternation would itself be periodic): jitter rises.
+        let mut x: Vec<f32> = Vec::with_capacity(48_000);
+        let mut seed: u32 = 9;
+        while x.len() < 48_000 {
+            seed = seed.wrapping_mul(1_664_525).wrapping_add(1_013_904_223);
+            let factor = 0.92 + 0.16 * f64::from(seed >> 8) / f64::from(1u32 << 24);
+            let n = (RATE / 180.0 * factor).round() as usize;
+            for i in 0..n {
+                let ph = 2.0 * PI * i as f64 / n as f64;
+                x.push((0.6 * ph.sin() + 0.3 * (2.0 * ph).sin() + 0.2 * (3.0 * ph).sin()) as f32);
+            }
+        }
+        let j = measure(&x, false).features.jitter.unwrap();
+        assert!(j > 0.02, "{j}");
     }
 
     #[test]

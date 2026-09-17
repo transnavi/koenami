@@ -38,11 +38,13 @@ sys.path.insert(0, str(ROOT))
 from acoustics import measure, mono16  # noqa: E402
 from signals import visualise  # noqa: E402
 
-ABSOLUTE = {"hnr", "balance", "pitch_span", "pitch_sd_st", "quiet_pct", "quiet_mean"}
+ABSOLUTE = {"hnr", "balance", "pitch_span", "pitch_sd_st", "quiet_pct", "quiet_mean",
+            "h1h2", "h1h2_sd", "hnr_sd", "balance_sd", "jitter", "shimmer"}
 FEATURES = [
     "f0", "f1", "f2", "f3", "f4", "hnr", "balance", "delta_f", "delta_f_alternative",
     "f3_alternative", "f0_mean", "pitch_sd_hz", "pitch_sd_st", "pitch_span",
     "quiet_pct", "quiet_mean",
+    "h1h2", "h1h2_sd", "delta_f_sd", "hnr_sd", "balance_sd", "jitter", "shimmer",
 ]
 SCALARS = [
     "duration", "voiced_seconds", "active_seconds", "clipping_fraction", "level_dbfs", "formant_seconds",
