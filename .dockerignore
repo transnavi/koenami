@@ -3,6 +3,8 @@
 !requirements.txt
 !server.py
 !curation.py
+!perception.py
+!own_voice.py
 !acoustics.py
 !signals.py
 !perception.py
