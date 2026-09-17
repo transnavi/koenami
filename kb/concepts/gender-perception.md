@@ -24,7 +24,6 @@ What listeners use when they assign a gender, or a degree of masculinity/feminin
 - Cisgender and TGD listeners agreed strongly on the masculine and feminine recordings drawn from r/transvoice (r(s) = 0.72 and 0.75) but not on the gender-neutral ones, where agreement was weak and non-significant [[kenny2025]].
 - Telling listeners that a speaker is trans changes how they categorise /s/, in opposite directions for trans women and trans men [[jessee2025]].
 - The Voice Resource Project wiki's example list sorts public voices under feminine and masculine headings, tags each entry with vocal weight, resonance, a pitch range in Hz and a difficulty rating, and the feminine list read is far longer than the masculine one, the pitch figures being the wiki's own ranges [[sumi-voice-examples]].
-
 - A French-language sociophonetic design put acoustic analysis and perceptual experiments together and then used interviews with the speakers themselves to explain the results, from which the author reads non-passing as a conflict between the gender identity a speaker means their voice to convey and the attitudes, postures or other identities the same voice indexes [[arnold2015]].
 
 ## Contested or unclear
