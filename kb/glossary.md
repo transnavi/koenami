@@ -276,6 +276,28 @@ Terms as the Spanish-, Portuguese-, French-, German-, Italian-, Dutch- and Russi
 - **กล่องเสียง · เส้นเสียง · ความสั่นพ้องเด่น** (th) — larynx ("voice box"), vocal cords, formant ("prominent resonance") [[wikipedia-th-klotsiang]] [[wikipedia-th-sensiang]] [[wikipedia-th-khwamsanphongden]]. → [[thai-voice]]
 - **คนข้ามเพศ · หญิงข้ามเพศ · ที-เกิร์ล** (th) — transgender person, trans woman, and the community term T-girl [[wikipedia-th-khonkhamplet]] [[wikipedia-th-yingkhamplet]]. → [[thai-voice]]
 
+- **科学伪声 · 不毁音** (zh community) — "scientific 伪声" and "voice-preserving", the self-critique labels adopted from 2019 against folk methods [[bili-heyishouwu]] [[bili-zhizhiya2023]]. → [[chinese-community]]
+- **声线** (zh) — a "voice line", a named target voice; the unit the tutorials teach [[bili-cv5924045]] [[bili-yedou]]. → [[vocal-registers]]
+- **本音** (zh) — one's own base voice, which some creators report losing after years of 伪声 [[bili-mena]] [[bili-yixiaoman]]. → [[voice-quality]]
+- **毁嗓 · 紧嗓子 · 夹着嗓子** (zh community) — "ruining the throat", squeezing it, pinching it: the failure modes the tutorials warn about [[bili-cv460384]] [[bili-cv8487280]] [[bili-qingyantianmeipai]]. → [[voice-health]]
+- **太监音** (zh community) — "eunuch voice", the over-falsetto beginner stage; one creator reframes it as a normal step [[bili-cv460384]] [[bili-tonghuaqiuye]]. → [[vocal-registers]]
+- **萝莉音 · 少萝音 · 少女音 · 少御音 · 御姐音** (zh) — the female 声线 taxonomy from childlike to mature; 御姐音 is the most-taught target [[bili-cv5924045]] [[bili-huanjinxueyuan]] [[bili-cv10585868]]. → [[vocal-registers]]
+- **正太音 · 少年音 · 青年音 · 叔音** (zh) — the male 声线 taxonomy from boy to older man [[bili-ningyunwenhua]] [[bili-kongtiaoliangsong2019]] [[bili-wuming]] [[bili-xiacanglan]]. → [[vocal-registers]]
+- **攻音 · 受音 / 奶狗音** (zh community) — the assertive and the receptive male lines named after BL roles, "puppy voice" for the latter [[bili-muronyunlei]] [[bili-xiaofeng]]. → [[vocal-registers]]
+- **低音炮** (zh community) — "bass cannon", the deep loud male voice a 女伪男 creator sings to prove the method [[bili-xiacanglan]] [[bili-mena]]. → [[vocal-registers]]
+- **大嗓 / 小嗓 · 喊嗓** (zh) — the "big" and "small" voice of singing and Peking opera, with 小嗓 the light high register of 小生 and 旦 roles and 喊嗓 the daily calling practice [[bili-hebingxin]] [[bili-jingjupan]] [[bili-liujiubushi69]]. → [[vocal-registers]]
+- **咽腔共鸣 · 口腔共鸣 · 鼻腔共鸣** (zh) — pharyngeal, oral and nasal resonance; pharyngeal resonance is the load-bearing skill of most 男伪女 teaching [[bili-laxiaojiao2020]] [[bili-cv7530256]] [[bili-cv9417414]]. → [[formants]]
+- **男虚音 · 女虚音 · 女实音** (zh community) — the transition voices of one nine-lesson course: a male voice with laryngeal component reduced, a breathy female voice, and the same with a set onset [[bili-cv9417414]]. → [[vocal-registers]]
+- **压音** (zh) — pressing the speaking pitch down, the core 女伪男 drill [[bili-qiyaomichiyo2018]] [[bili-cv8487280]]. → [[voice-masculinization]]
+- **爬音阶 · 一个半八度** (zh) — climbing scales as the range-mapping drill, with an octave and a half as one course's stated pass mark [[bili-cv9623302]] [[bili-cv460384]]. → [[pitch-and-scales]]
+- **哈音 · 狗喘气 · 打嘟噜 · 猫叫** (zh) — the breathy 哈 onset, "dog panting", lip trills and the cat call: entry drills for breath and onset [[bili-shaojinalitao]] [[bili-cv460384]] [[bili-cv9417414]]. → [[voice-therapy-techniques]]
+- **咬字 · 字头/字腹/字尾 · 尾音** (zh) — articulation by initial, nucleus and coda, and the lengthened final release taught as feminine [[bili-cv9417414]] [[bili-cv10585868]]. → [[articulation]] · [[intonation]]
+- **端腔** (zh community) — an affected oral posture that listeners read as put-on [[bili-cv8487280]]. → [[articulation]]
+- **底层逻辑** (zh community) — "underlying logic", the 2025–2026 framing for a method's theory [[bili-weiyinchenhai]] [[bili-laxiaojiao]]. → [[chinese-community]]
+- **伪声班 · 有偿教程 · 一对一教学** (zh) — paid class, paid course and one-to-one teaching, the market's tiers around the free videos [[bili-liujiubushi69]] [[bili-jixi]] [[bili-baishu2019]]. → [[community-training]]
+- **男娘 · 南梁** (zh community) — a feminine-presenting boy and the homophone euphemism that slips censorship [[bili-pusuxueweisheng]] [[bili-dahuang]]. → [[chinese-community]]
+- **医疗陪诊师 · 医疗翻译** (zh) — the escort and interpreter tier around surgery abroad, tagged on a post-surgical voice record [[bili-weimengxiangxingdong]]. → [[transgender-care-context]]
+
 <!-- lane-terms: entries from the language collectors' reports are merged below this line -->
 
 ### Japanese (ja)
