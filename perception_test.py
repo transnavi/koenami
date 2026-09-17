@@ -48,6 +48,32 @@ class TimbreTests(unittest.TestCase):
         # 200 frames in all; the 50 frames at −50 dB are dropped, the 50 at −30 dB kept: the mean index sits at 124.5.
         self.assertLess(abs(v[0]-124.5),2,v[0])
 
+    def test_timbre_crop_avoids_the_pause_between_two_audible_stretches(self):
+        calls=[]
+        class Session:
+            def get_outputs(self):return [type('O',(),{'name':n})() for n in ['embedding','timbre_frames']]
+            def run(self,names,inputs):
+                calls.append(inputs['values'].copy());frames=(inputs['values'].shape[1]-400)//320+1
+                return [np.arange(frames,dtype=np.float32)[None,:,None].repeat(768,axis=2)]
+        rng=np.random.default_rng(1);x=rng.normal(0,.003,16000*30).astype(np.float32)  # room noise around -50 dBFS throughout
+        tone=np.sin(np.arange(16000*3)*.1).astype(np.float32);x[:16000*3]+=tone;x[-16000*3:]+=tone  # audible at 0–3 s and 27–30 s only
+        with patch.object(perception,'session',return_value=Session()):v=perception.timbre(x)
+        self.assertTrue(np.array_equal(calls[0][0],x[:128000]))  # the window with the most audible frames; ties go toward the span centre, then the earlier one
+        self.assertLess(abs(v[0]-74.5),3,v[0])  # pooled over the 150 tone frames only, not the noise
+        # A recording whose audible span passes but which holds no window with enough speech is refused, not pooled.
+        short=rng.normal(0,.003,16000*30).astype(np.float32);short[:4800]+=tone[:4800];short[-4800:]+=tone[:4800]
+        with patch.object(perception,'session',return_value=Session()),self.assertRaises(ValueError):perception.timbre(short)
+
+    def test_timbre_crop_finds_speech_that_starts_late(self):
+        calls=[]
+        class Session:
+            def get_outputs(self):return [type('O',(),{'name':n})() for n in ['embedding','timbre_frames']]
+            def run(self,names,inputs):
+                calls.append(inputs['values'].copy());frames=(inputs['values'].shape[1]-400)//320+1;return [np.ones((1,frames,768),np.float32)]
+        x=np.zeros(16000*30,np.float32);x[:16000]=np.sin(np.arange(16000)*.1);x[16000*20:]=np.sin(np.arange(16000*10)*.1)  # one second at the start, ten seconds from 20 s
+        with patch.object(perception,'session',return_value=Session()):perception.timbre(x)
+        self.assertTrue(np.array_equal(calls[0][0],x[16000*20:16000*28]))  # every window inside 20–30 s ties; the one nearest the span centre wins
+
     def test_timbre_crop_follows_speech_at_the_start_of_a_long_recording(self):
         calls=[]
         class Session:
@@ -56,7 +82,7 @@ class TimbreTests(unittest.TestCase):
                 calls.append(inputs['values'].copy());frames=(inputs['values'].shape[1]-400)//320+1;return [np.ones((1,frames,768),np.float32)]
         x=np.zeros(16000*15,np.float32);x[:16000*3]=np.sin(np.arange(16000*3)*.1)  # three seconds of speech, then twelve of silence
         with patch.object(perception,'session',return_value=Session()):perception.timbre(x)
-        crop=calls[0][0];self.assertEqual(len(crop),128000);self.assertGreater(np.abs(crop[:16000*3]).max(),.5)
+        self.assertTrue(np.array_equal(calls[0][0],x[:128000]))
 
     @unittest.skipUnless(perception.available(),'prepared models are absent')
     def test_prepared_model_exposes_embedding_and_timbre(self):

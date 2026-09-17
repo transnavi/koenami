@@ -10,7 +10,7 @@ VERSION = 'wavlm-sv-int8-v2'
 # speakers closest to JVS listener similarity ratings (docs/research/jvs-similarity.md); the x-vector remains the
 # identity descriptor. The version covers the pooling rule as well as the graph: a different
 # crop length, layer or energy threshold changes every vector and must change this string.
-TIMBRE_VERSION = 'wavlm-l3-int8-v1'
+TIMBRE_VERSION = 'wavlm-l3-int8-v2'
 MODEL_DIR = Path(os.environ.get('KOENAMI_MODELS', Path(__file__).parent / '.models/perception'))
 _sessions = {}
 
@@ -35,13 +35,26 @@ def session(name):
     return _sessions[name]
 
 
+FLOOR = .001  # rms of a 20 ms frame below which nothing counts as audible, in span() and in the pooling
+
+
+def frame_rms(x):
+    """Root-mean-square per 20 ms frame on WavLM's 320-sample grid."""
+    step = RATE // 50
+    frames = np.pad(x, (0, (-len(x)) % step)).reshape(-1, step)
+    return np.sqrt(np.mean(frames * frames, axis=1))
+
+
+def audible(rms):
+    """Frames that locate speech within a whole recording: above the floor and within 2% of the loudest frame."""
+    return rms > max(FLOOR, float(rms.max()) * .02)
+
+
 def span(x):
     """Sample range from the first to the last audible 20 ms frame; at least two seconds long."""
     if len(x) < 2 * RATE: raise ValueError('2秒以上の音声を選んでください。')
     step = RATE // 50
-    frames = np.pad(x, (0, (-len(x)) % step)).reshape(-1, step)
-    rms = np.sqrt(np.mean(frames * frames, axis=1))
-    active = np.flatnonzero(rms > max(.001, float(rms.max()) * .02))
+    active = np.flatnonzero(audible(frame_rms(x)))
     if not len(active): raise ValueError('声が小さすぎます。別の音声を選んでください。')
     start, end = max(0, int(active[0]) * step - step), min(len(x), (int(active[-1]) + 2) * step)
     if end - start < 2 * RATE: raise ValueError('2秒以上、話した音声を選んでください。')
@@ -71,21 +84,27 @@ def age_input(part):
 
 
 def timbre(x):
-    """Layer-3 timbre vector: one pass over at most eight seconds centred on the audible span, with
-    the frames pooled over speech only (within 40 dB of the loudest 20 ms frame).
+    """Layer-3 timbre vector: one pass over the eight seconds holding the most audible frames (ties
+    toward the centre of the audible span), pooled over speech frames only: within 40 dB of the
+    crop's loudest 20 ms frame and above the level floor.
 
     The quiet edges are kept as context for the model and left out of the mean;
     docs/research/jvs-similarity.md records what each choice was worth on the JVS ratings. Not unit-normalised; compare with cosine distance."""
     start, end = span(x)
+    step, n = RATE // 50, 8 * 50
+    rms = frame_rms(x)
     if len(x) > 8 * RATE:
-        start = int(np.clip((start + end) // 2 - 4 * RATE, 0, len(x) - 8 * RATE)); x = x[start:start + 8 * RATE]
+        counts = np.cumsum(np.r_[0, audible(rms)]); counts = counts[n:] - counts[:-n]
+        best = np.flatnonzero(counts == counts.max()); centre = ((start + end) // 2 - 4 * RATE) // step
+        c = min(int(best[np.abs(best - centre).argmin()]) * step, len(x) - 8 * RATE)
+        x = x[c:c + 8 * RATE]; rms = frame_rms(x)
     if 'timbre_frames' not in [o.name for o in session('wavlm').get_outputs()]:
         raise ValueError('The prepared WavLM model predates the timbre output; run prepare_voice_models.py.')
     frames = session('wavlm').run(['timbre_frames'], {'values': x.astype(np.float32)[None, :]})[0][0]
-    # WavLM frames sit on a 320-sample grid; frame energy on that grid selects the speech frames.
-    step = RATE // 50; grid = np.pad(x, (0, (-len(x)) % step)).reshape(-1, step)[:len(frames)]
-    energy = 10 * np.log10(np.mean(grid * grid, axis=1) + 1e-12); speech = energy > energy.max() - 40
-    v = frames[speech].mean(axis=0) if speech.any() else frames.mean(axis=0)
+    energy = 20 * np.log10(rms[:len(frames)] + 1e-12)
+    speech = (energy > energy.max() - 40) & (rms[:len(frames)] > FLOOR)
+    if speech.sum() < 75: raise ValueError('2秒以上、話した音声を選んでください。')  # 1.5 s of speech frames
+    v = frames[speech].mean(axis=0)
     if v.shape != (768,) or not np.isfinite(v).all(): raise ValueError('この音声の推定に失敗しました。')
     return v
 

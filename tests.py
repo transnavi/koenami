@@ -33,6 +33,16 @@ class AcousticTests(unittest.TestCase):
         self.assertEqual(m['features'],{});self.assertIn('quiet_intervals',m)
         self.assertGreater(m['active_seconds'],3);self.assertIn('peak',m)
 
+    def test_voiced_fraction_stays_within_one_when_a_quiet_tail_is_voiced(self):
+        t=np.arange(RATE*3)/RATE
+        x=sum(np.sin(2*np.pi*180*n*t)/n for n in range(1,6))*.2
+        # The last two seconds sit 26 dB down: above Praat's silence threshold (about -30 dB of the
+        # peak) and the level gate (-35 dB), below speech level (-20 dB), so voiced but not speech-level.
+        x[RATE:]*=10**(-26/20)
+        m=measure(x)
+        self.assertLessEqual(m['voicing']['voiced_fraction'],1);self.assertGreater(m['voicing']['voiced_fraction'],.9);self.assertFalse(m['voicing']['sparse'])
+        self.assertGreater(m['voiced_seconds'],2)  # the quiet tail still counts as voiced speech
+
     def test_brief_speech_in_a_long_noisy_window_is_not_sparse(self):
         rng=np.random.default_rng(5);t=np.arange(RATE*8)/RATE
         x=rng.normal(0,.003,RATE*8);seg=slice(RATE*3,RATE*3+int(RATE*.5))
@@ -40,6 +50,18 @@ class AcousticTests(unittest.TestCase):
         m=measure(x)
         self.assertFalse(m['voicing']['sparse']);self.assertGreater(m['voicing']['voiced_fraction'],.5)
         self.assertAlmostEqual(m['features']['f0'],180,delta=2);self.assertLess(m['active_seconds'],1.5)
+
+    def test_halving_share_reports_missing_odd_harmonics_without_correcting(self):
+        t=np.arange(RATE*3)/RATE
+        tone=lambda hz:sum(np.sin(2*np.pi*hz*n*t)/n for n in range(1,8))*.08
+        for hz in [170,340]:
+            steady=measure(tone(hz))
+            self.assertAlmostEqual(steady['features']['f0'],hz,delta=2);self.assertLess(steady['pitch_halving_pct'],5)
+        # Praat follows the alternating 340/170 Hz signal at 170 Hz throughout (octave-jump cost
+        # against 300 ms blocks); the 340 Hz stretches then lack odd harmonics of the tracked value.
+        mixed=tone(340);half=(np.arange(len(t))//int(RATE*.3))%2==1;mixed[half]=tone(170)[half]
+        m=measure(mixed)
+        self.assertLess(m['features']['f0'],200);self.assertTrue(35<=m['pitch_halving_pct']<=65,m['pitch_halving_pct'])
 
     def test_known_pitch(self):
         t=np.arange(RATE*3)/RATE

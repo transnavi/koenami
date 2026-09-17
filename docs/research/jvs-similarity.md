@@ -13,7 +13,13 @@ Scripts: `benchmark_jvs_similarity.py` (extraction, raw-distance scoring),
 `extract_expanded_acoustics.py` (expanded acoustic vector),
 `research_jvs_deploy_check.py` (the deployed pipeline and its alternatives),
 `research_jvs_halving_audit.py` (pitch-tracking audit). The results file
-records the commit, model revisions and measurement versions of the run.
+records the commit, model revisions and measurement versions of the run,
+and the sha256 of every producing script and analysis module. The analysis
+modules changed after that commit (#62 adds the halving share, #76 corrects
+the voiced fraction, #79 changes the timbre crop rule); the record's hashes
+are those of the commit named in it, which stays in the branch history, and
+none of the three changes alters a quantity the tables below depend on
+except the crop rule, whose figures #79 reports as unchanged.
 
 ## Data
 

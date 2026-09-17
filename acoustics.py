@@ -6,7 +6,7 @@ from math import gcd
 
 RATE = 16000
 STEP = 0.02
-VERSION = '3.1.0'
+VERSION = '3.1.1'
 
 
 def mono16(audio, rate):
@@ -45,7 +45,8 @@ def measure(audio, rate=RATE, detailed=False):
     # Speech-level frames: within 20 dB of the loudest 5%. A noisy microphone floor can sit
     # above the silence threshold, so the floor itself cannot be the reference for "how much
     # of the speech was voiced".
-    active = int((db > max(threshold, float(np.quantile(db, .95)) - 20.)).sum())
+    speech = db > max(threshold, float(np.quantile(db, .95)) - 20.)
+    active = int(speech.sum())
     count = int(voiced.sum())
     base = {'version': VERSION, 'duration': round(duration, 3),
             'voiced_seconds': round(count * STEP, 3),
@@ -70,7 +71,13 @@ def measure(audio, rate=RATE, detailed=False):
     # Pitch, resonance and harmonicity are measured on voiced frames only. Whispered or
     # mostly unvoiced input can still pass a handful of frames through the strength gate;
     # those medians would describe noise, so they are withheld when voicing is sparse.
-    base['voicing'] = {'voiced_fraction': round(count / max(1, active), 3), 'sparse': count < 10 or count < .1 * active}
+    # The reported fraction counts voiced frames inside the speech-level frames, so it stays within
+    # 0–1 when a quiet but periodic tail is voiced without reaching speech level. The gate keeps
+    # comparing every reliable voiced frame with the speech-level count: a loud non-speech burst
+    # (a cough, handling noise) then shrinks neither the numerator nor the verdict, which the
+    # intersection would.
+    base['voicing'] = {'voiced_fraction': round(int((voiced & speech).sum()) / max(1, active), 3),
+                       'sparse': count < 10 or count < .1 * active}
     if base['voicing']['sparse']:
         base['reason'] = 'No reliable voiced speech. Check the microphone and speak normally.'
         return base
@@ -84,6 +91,7 @@ def measure(audio, rate=RATE, detailed=False):
     data = {'f0': [], 'f1': [], 'f2': [], 'f3': [], 'f4': [], 'hnr': [],
             'balance': [], 'f3_alternative': [], 'delta_f': [], 'delta_f_alternative': []}
     track = []
+    halved = []
     for i, t in enumerate(times):
         row = {'t': round(float(t), 3), 'f0': None, 'f1': None, 'f2': None, 'f3': None, 'f4': None, 'delta_f': None, 'hnr': None, 'balance': None, 'pitch_span': None}
         if voiced[i]:
@@ -114,6 +122,14 @@ def measure(audio, rate=RATE, detailed=False):
             hi = spec[(freq >= 1000) & (freq < 4000)].sum()
             balance=float(10*np.log10((hi+1e-20)/(lo+1e-20)))
             data['balance'].append(balance);row['balance']=balance
+            # Octave check against the harmonic pattern: a voice tracked at half its pitch has energy
+            # at the even multiples of the tracked value and none at the odd ones. Voices above the
+            # 500 Hz ceiling (falsetto, children) are tracked that way by design, and period-doubled
+            # creak looks the same, so the share is reported, never corrected. Calibration on JVS:
+            # modal reading at most 3.3% of frames, halved falsetto 20% and up.
+            peak = lambda hz: float(10*np.log10(spec[np.abs(freq - hz) <= max(.06*hz, RATE/2048)].max() + 1e-20))
+            harmonics = [peak(k*f0[i]) for k in range(1, 7)]
+            halved.append(np.mean(harmonics[1::2]) - np.mean(harmonics[0::2]) > 10)
             if detailed and i%2==0:
                 recent=f0[max(0,i-74):i+1][voiced[max(0,i-74):i+1]]
                 if len(recent)>=5:row['pitch_span']=float(12*np.log2(np.quantile(recent,.9)/np.quantile(recent,.1)))
@@ -129,6 +145,7 @@ def measure(audio, rate=RATE, detailed=False):
     features['quiet_pct'] = 100*sum(p['end']-p['start'] for p in intervals)/duration
     features['quiet_mean'] = float(np.mean([p['end']-p['start'] for p in intervals])) if intervals else 0.
     features['pitch_span'] = float(12*np.log2(np.quantile(data['f0'], .9)/np.quantile(data['f0'], .1)))
+    base['pitch_halving_pct'] = round(100*float(np.mean(halved)), 1)
     base.update(features=features, track=track,
                 formant_seconds=round(len(data['f3'])*STEP, 3),
                 pitch_p10=float(np.quantile(data['f0'], .1)),
