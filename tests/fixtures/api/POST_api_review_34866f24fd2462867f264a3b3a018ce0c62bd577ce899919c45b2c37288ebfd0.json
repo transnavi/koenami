@@ -2,6 +2,6 @@
  "key": "POST /api/review 34866f24fd2462867f264a3b3a018ce0c62bd577ce899919c45b2c37288ebfd0",
  "status": 200,
  "contentType": "application/json; charset=utf-8",
- "body": "{\"speaker\": \"4abf7ed6198d\", \"clip\": \"common_voice_ja_20068302\", \"display\": \"M 2466\", \"language\": \"ja\", \"flags\": [], \"ratings\": {}, \"mode\": \"new\", \"session\": \"w56cpow4mjuuxd6w\", \"pass\": \"all\", \"note\": \"memo\", \"reviewed\": \"2026-09-17T10:08:35+00:00\"}",
+ "body": "{\"speaker\": \"4abf7ed6198d\", \"clip\": \"common_voice_ja_20068302\", \"display\": \"M 2466\", \"language\": \"ja\", \"flags\": [], \"ratings\": {}, \"mode\": \"new\", \"session\": \"w56cpow4mjuuxd6w\", \"pass\": \"all\", \"note\": \"memo\", \"reviewed\": \"2026-09-17T23:21:59+00:00\"}",
  "base64": false
 }

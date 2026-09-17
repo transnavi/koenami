@@ -20,4 +20,11 @@ declare module '@app/measure/engine' {
 	): Promise<PCM>;
 	export function version(): Promise<string>;
 	export function stop(): void;
+	type Kind = 'analyze' | 'live';
+	export const gate: {
+		hold(kind?: Kind): () => void;
+		fail(message: string, kind?: Kind, times?: number): void;
+		restore(kind?: Kind): void;
+		patch(kind: Kind, fn: ((detail: Detail) => Detail) | null): void;
+	};
 }

@@ -262,7 +262,7 @@
    "attrs": {
     "title": "判定を共有"
    },
-   "text": "声の判定 中間的な声 +6 男性的 中間 女性的"
+   "text": "声の判定 中間的な声 +11 男性的 −100 0 女性的 +100"
   },
   "verdict-main": {
    "tag": "span",
@@ -270,7 +270,7 @@
    "attrs": {
     "data-verdict": "androgynous"
    },
-   "text": "中間的な声 +6"
+   "text": "中間的な声 +11"
   },
   "verdict-word": {
    "tag": "strong",
@@ -282,7 +282,7 @@
    "tag": "b",
    "class": "",
    "attrs": {},
-   "text": "+6"
+   "text": "+11"
   },
   "verdict-gate": {
    "tag": "span",
