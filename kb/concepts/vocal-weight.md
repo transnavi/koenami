@@ -19,6 +19,10 @@ In English-community training vocabulary, vocal weight is the perceived heavines
 - Weight interacts with tract size in TVL's "fullness" model: "Overfull is a harsh, saturated, twangy sound formed by a heavy—small relationship. Underfull, on the other hand, is a hollow, dull, empty sound formed by a light—large relationship" [[erose2022]].
 - The vocabulary has spread beyond its originators: an independent coach's ear-training video credits "these concepts … to Clover and Z of TransVoiceLessons" [[dasilva2022]], and weight exercises for lightening or heavying are taught for trans and nonbinary voices in both directions [[yoxon2025]].
 - Classical singing uses the same words for a different contrast — lyric vs dramatic voice classification — so the singing article must not be read as the community definition [[wikipedia-vocal-weight]].
+- The wiki's pitch naturalisation method is a weight-reduction drill in which the learner speaks at their relaxed, default pitch, lets the last word of each phrase float up a little, and attends to the sound rather than to any single feature: "the goal is not to 'raise pitch', but to improve the voice at every pitch" [[sumi-pipm]].
+- For a low-pitched feminine voice the wiki prescribes descending in 20 Hz steps from 200 Hz while speaking at each step, and redrilling resonance voiced at the low pitch [[sumi-low-fem-voices]].
+- The wiki gives base pitch as 「the pitch the voice naturally wants to return to」 after intonation, states that it 「is determined mostly by vocal weight」, and sets the pairing out as 「Heavier vocal weight –> lower base pitch / Lighter weight –> can maintain higher base pitch」 [[sumi-base-pitch]].
+- The wiki's separately signed invented vocabulary defines welit as the estimated vocal fold vibratory mass, with adduction, twang, volume and creak explicitly excluded from it [[sumi-new-terminology]].
 
 **The acoustics that measure the same thing.**
 - A more open glottal configuration gives a source with "relatively greater low-frequency and weaker high-frequency components" plus aspiration noise and wider formant bandwidths — the H1–H2 family of measures [[hanson1997]].
@@ -39,7 +43,7 @@ In English-community training vocabulary, vocal weight is the perceived heavines
 - The community draws the same boundary from the other side: the wiki keeps Breathiness as its own page, separate from Vocal Weight, and its weight page warns that breathiness "is to be avoided" as a route to lightness [[sumianvoice]] [[sumi-vocal-weight]].
 
 ## Contested or unclear
-- How much weight per se moves perceived gender: the community ranks it "one of the more powerful" factors [[sumi2021]], but in DSFD perception ΔF dominated over CQ [[netzorg2025]], in training outcomes tilt changed for only some participants [[sodersten2026]], and breathiness as a gender cue had mixed results in the meta-analysis [[leung2018]].
+- How much weight per se moves perceived gender: the community ranks it "one of the more powerful" factors [[sumi2021]] and its gendered-factors page puts vocal weight first, ahead of microbehaviours, resonance and speech patterns [[sumi-vocal-gender]], but in DSFD perception ΔF dominated over CQ [[netzorg2025]], in training outcomes tilt changed for only some participants [[sodersten2026]], and breathiness as a gender cue had mixed results in the meta-analysis [[leung2018]].
 - Quietness is not lightness: Sumi warns that getting "really quiet it will sound similar, but you won't be changing vocal weight" [[sumi2021]], and Holmberg's data agree from the other direction — the male–female source difference shrinks in soft voice, so quiet speech is a less gendered source, not a lighter one [[holmberg1988]].
 - No validated single acoustic proxy exists: existing slope measures overlap and predict perceived quality poorly [[kreiman2007]], and HNR and tilt are confounded by microphone and noise [[voice-quality]].
 

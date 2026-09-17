@@ -11,7 +11,7 @@ Consonant precision and the spectral shape of fricatives. Contributes to gender 
 
 ## What is known
 - Articulation is associated with perceived gender [[leung2018]]; articulation–resonance training is one of the two arms that together outperform either alone [[leyns2023]].
-- Listeners shift the /s/–/ʃ/ boundary depending on whether they believe the talker is a woman or a man [[munson2017]]; cisgender and gender-expansive listeners categorise sibilants differently, most for a "non-binary" synthetic voice [[hope2023]].
+- Listeners shift the /s/–/ʃ/ boundary depending on whether they believe the talker is a woman or a man [[munson2017]]; cisgender and gender-expansive listeners categorise sibilants differently, most for a "non-binary" synthetic voice [[hope2023]]; telling listeners a speaker is trans changes their /s/ categorisation, in opposite directions for trans women and trans men [[jessee2025]].
 - In children, sibilant spectra affected gender perception only when isolated by morphing, not in natural speech [[funk2025]].
 - Perceived masculinity/femininity and perceived sexual orientation are correlated but acoustically distinct dimensions [[munson2007]].
 - Testosterone changed fricative kurtosis over a year in trans men, while jitter and vowel duration did not change [[eagen2025]].

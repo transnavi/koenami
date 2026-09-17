@@ -19,6 +19,7 @@ Singing pedagogy is the other half of the technique literature trans voice work 
 - **Acoustic registers in trained voices.** Once the laryngeal binary is smoothed, remaining "register" events can be harmonics passing through formants at vowel-predictable points, historically named "turning over, turning, tipping, or covering" [[bozeman2022]].
 - **Singing handicap in trans speakers.** In 61 trans women seeking gender-affirming voice care, Singing VHI-10 was 19 ± 13 and correlated only weakly with TVQ (R = 0.35); "trans women report perceived voice handicap in speaking and singing, which appears separate from gender-related voice/communication concerns" [[young2021]].
 - **Transfer into speech work.** Semi-occluded exercises, resonant voice, twang and sirens/glides used in trans training come from this studio and clinic literature ([[titze2006]], [[verdolini1998]], [[sundberg2010]], [[adabi2026]], [[yoxon2023]]). Community curricula that teach them for speech include [[transvoicelessons]].
+- **Binding and singing.** In a survey of 38 singers who wear chest binders while singing, participants reported mental-health benefits alongside difficulty with inhalation, loss of singing stamina and decreased voice volume, and preferred to keep binding while singing [[dolquist2025]].
 
 ## Contested or unclear
 - Whether belting is sustainable or strenuous is exactly the disagreement [[saldias2019]] images and does not settle (one singer, four patients).

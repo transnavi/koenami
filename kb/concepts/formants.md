@@ -16,7 +16,11 @@ Formants are the vocal-tract resonances; their spacing (ΔF, formant dispersion)
 - Oral resonance therapy (lip spreading, forward tongue carriage, five sessions, n = 10) raised F1–F3 and F0 and made most participants sound more feminine to listeners [[carew2007]]; short visual-biofeedback training moved F2 up or down on demand, and higher F2 raised perceived femininity [[kawitzky2020]]; average formant frequency rose with training and predicted listener ratings [[sodersten2026]].
 - Combining articulation–resonance training with pitch elevation beat either alone in a randomised crossover trial (n = 30) [[leyns2023]].
 - Untrained Mandarin-speaking trans women already showed vowel-specific formant shifts relative to cis men and women [[huang2024]]; F1–F3 rose after Wendler glottoplasty in a Beijing series [[zhang2023cn]].
+- A six-person Brazilian series (two trans men, four trans women) found formant values below the national and international literature and jitter, shimmer and the noise parameters outside their normative ranges, with the noise-to-harmonic ratio above normal; the authors put the conclusion on the tools rather than the speakers, citing 「fragilidade dos programas de análise vocal acústica que não contemplam a heterogeneidade cultural e as variadas identidades de gênero」 [[dornelas2021a]].
 - Taller men with higher testosterone had lower F0 and lower ΔF and were rated more masculine; the height effect ran partly through ΔF [[cartei2014]].
+- A private-practice protocol targeting individual resonance goals raised F0 and F2 and vowel space area and reduced estimated vocal tract length, with the F2 change predicting the change on the TWVQ [[hirsch2026]].
+- The English-language wiki names larynx height, vowel shape, oropharyngeal closure and expansion, and mouth space as the mechanisms of resonance change, with larynx height the larger modification and vowel shape the smaller [[sumi-resonance]].
+- A Japanese lesson titled 「ナチュラルな女声は口の中にあり！」 places a natural female voice in the mouth rather than at the larynx [[kozakana2019]].
 
 ## Contested or unclear
 - Whole-utterance formant averages mix vowels, so ΔF depends on what was said; compare the same words (Koenami method page).

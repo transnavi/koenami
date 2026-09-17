@@ -10,10 +10,18 @@ wikipedia: ["Patient-reported outcome"]
 Questionnaires that capture how a person experiences their voice: the Trans Woman Voice Questionnaire (TVQ-MtF/TWVQ), its translations, the Voice Handicap Index, and generic quality of life. They track self-perception more than listener perception.
 
 ## What is known
-- TVQ(MtF) was developed from interviews and validated with α = .964–.974 and ICC 0.979 [[dacakis2013]]; validated translations: German (α 0.97, r = 0.88 with VHI, two factors) [[salm2020]], Italian [[robotti2022]], Portuguese use data [[schwarz2017]], simplified Chinese TWVQ-SC (α 0.97, ICC 0.84, r = 0.85 with VHI-10; trans women 86 vs cis women 34) [[wang2022]]; Hebrew scores correlated with F0 and vocal range [[diamant2021]].
+- TVQ(MtF) was developed from interviews and validated with α = .964–.974 and ICC 0.979 [[dacakis2013]]; validated translations: German (α 0.97, r = 0.88 with VHI, two factors) [[salm2020]], Italian [[robotti2022]], Portuguese use data [[schwarz2017]], Brazilian Portuguese TVQ:MtF (α = 0.911 at test and 0.952 at retest, test–retest ICC 0.957 in 13 respondents) [[santos2015]], simplified Chinese TWVQ-SC (α 0.97, ICC 0.84, r = 0.85 with VHI-10; trans women 86 vs cis women 34) [[wang2022]]; Hebrew scores correlated with F0 and vocal range [[diamant2021]].
 - Quality of life relates more to self-rated voice than to listener ratings [[hancock2011]]; the main burdens are emotional reactions to activity and participation limits, not demographics [[hancock2017]]; self- and listener ratings correlate weakly [[quinn2021]].
 - Surgery and therapy both improve PROMs; Wendler + therapy gives the largest TWVQ change [[chowdhury2025]]; TVQMtF fell from 89.9 to 50.4 after glottoplasty [[zhang2023cn]].
 - In trans men, VHI fell after testosterone to control levels [[nimura2022]]; across 313 TGD adults, hormone therapy and counselling were associated with better TWVQ/TVQFtM scores [[shen2026]].
+- Twelve of the 30 TWVQ items were rated severe by at least 40% of 26 respondents, most often the items about vocal identity [[echevarria2026]].
+- Among 5,424 TGD adults, 21.4% had had voice therapy while 30.5% wanted it, and 1.7% had had voice-related surgery while 10% wanted it [[rae2026]].
+- A scoping review of transmasculine PROMs found five studies only, and reported the instruments in use as not representative in their original forms or of undetermined validity for this group [[beam2025]].
+- In pre-treatment interviews, transfeminine patients described success as less misgendering, less mental and phonatory effort, and a voice that works on the phone and with strangers [[francois2025]].
+- Among 69 trans people attending one clinic, voice-related quality of life was low in both groups, trans men and trans women differed on what an ideal voice is, and trans women's daily-life vocal impact was driven mainly by how others perceived their voice [[santana2022]].
+- In three trans adults recruited by snowball sampling in São Paulo, one rated their own voice positively on the TWVQ and two negatively, two scored moderate and one high on the Beck Anxiety Inventory, and their free accounts narrated voice together with childhood, trajectory and family [[pereira2023]].
+- Two further instruments were adapted to Brazilian Portuguese, the Vocal Congruence Scale and the Transgender Congruence Scale, with five items adjusted in each and a pre-test in 38 trans people (29 trans women, 2 travestis and 7 trans men) [[irineu2024]].
+- In a Korean nationwide survey of 232 trans people, VHI-10 averaged 16.57 for MtF and 10.83 for FtM against 3.27 for controls; the MtF mean sits above the 11-point abnormality cut-off although none had a voice disorder, and the MtF group scored highest on the emotional items [[yoo2018]].
 
 ## Open questions
 - No validated Japanese TVQ/TWVQ in this vault — a translation and validation would be a concrete project.
