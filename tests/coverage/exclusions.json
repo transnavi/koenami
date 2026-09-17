@@ -2389,7 +2389,7 @@
 		{
 			"file": "src/lib/space.ts",
 			"kind": "branch",
-			"line": 129,
+			"line": 131,
 			"column": 4,
 			"code": "if (finite(norm) && norm > 0) {",
 			"reason": "Cannot be false: rows are filtered to finite features, the difference vector is non-zero (checked one line above) and the ridged covariance is positive definite, so the solved Fisher vector is finite and non-zero."
@@ -2397,7 +2397,7 @@
 		{
 			"file": "src/lib/space.ts",
 			"kind": "branch",
-			"line": 131,
+			"line": 133,
 			"column": 5,
 			"code": "if (fisher.reduce((s, x, k) => s + x * difference[k], 0) < 0",
 			"reason": "The sign flip needs fisher·difference < 0, i.e. dᵀW⁻¹d < 0, impossible for a positive-definite W."
@@ -2405,7 +2405,7 @@
 		{
 			"file": "src/lib/space.ts",
 			"kind": "statement",
-			"line": 131,
+			"line": 133,
 			"column": 67,
 			"code": "fisher = fisher.map((x) => -x);",
 			"reason": "The sign flip needs fisher·difference < 0, i.e. dᵀW⁻¹d < 0, impossible for a positive-definite W."
@@ -2413,7 +2413,7 @@
 		{
 			"file": "src/lib/space.ts",
 			"kind": "function",
-			"line": 131,
+			"line": 133,
 			"column": 87,
 			"code": "(x) => -x);",
 			"reason": "Arrow inside the unreachable sign flip above."
@@ -2421,7 +2421,7 @@
 		{
 			"file": "src/lib/space.ts",
 			"kind": "branch",
-			"line": 139,
+			"line": 141,
 			"column": 5,
 			"code": "if (axes.length === 5) this.projections.contrast = { axes, v",
 			"reason": "In practice never false: after the eigenvectors, the five unit vectors are appended as candidates and at least four of them are independent of any single Fisher axis, so orthogonalize (norm > 1e-6) always completes the basis."
