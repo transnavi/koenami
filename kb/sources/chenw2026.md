@@ -17,6 +17,7 @@ topics: ["[[voice-therapy-techniques]]", "[[chinese-voice]]", "[[patient-reporte
 # The impact of remote interactive voice therapy on patient adherence and treatment efficacy（Chen W et al. 2026）
 
 ## What it says
+- The Chinese abstract's own terms (PubMed publisher block): the intervention is 远程交互式嗓音训练 (「比较远程交互式嗓音训练与传统面对面训练」), also written 远程嗓音训练 in the conclusion, and the outcome 依从性; the conclusion reads 「远程嗓音训练模式可显著提高异地患者的治疗依从性，且疗效与传统模式相当。该模式为克服嗓音康复的时空限制提供了有效解决方案，对优化嗓音障碍管理策略、提升医疗服务的可及性具有重要实践意义」.
 - Design: "A retrospective historical control study... categorizing patients into three groups based on distinct periods of COVID-19 prevention policies" — the 2019 traditional therapy group (n = 82), the 2021 traditional therapy group (n = 43) and the 2022 remote therapy group (n = 54) (abstract, Methods). The comparison is between eras of policy, not a randomised allocation.
 - Adherence, overall: the 2022 remote group's rate (38.89%) was higher than 2019 (31.71%) and 2021 (23.26%), "although the difference was not statistically significant (P>0.05)".
 - Adherence, by geography — the finding the paper is built on: "non-Guangzhou patients exhibited significantly higher adherence with remote therapy (2022: 45.45%) compared to traditional therapy (2019: 5.00%; 2021: 0) (P<0.01 for both comparisons)".
