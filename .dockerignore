@@ -6,6 +6,7 @@
 !acoustics.py
 !signals.py
 !perception.py
+!own_voice.py
 !.deploy/
 !.deploy/data/
 !.deploy/data/**
