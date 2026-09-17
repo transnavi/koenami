@@ -223,6 +223,8 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				await before(page);
 			}
 			await page.goto(path);
+			// The pinned tree is wired at the load event; the Kit tree wires its pages on hydration.
+			if (process.env.KOENAMI_TREE === 'new') await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
 		};
 		await use({ log, golden, tick, until, untilTicking, settled, canvas, download, choose, rowAction, open, back, forward, audio: fixtureAudio });
 	}
