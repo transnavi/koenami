@@ -65,6 +65,8 @@ RETIRED = {'other_speaker': '別の話者'}
 FLAGS = QUALITY
 PROBLEMS = {**QUALITY, **RETIRED}
 # Pairwise judgements: two clips, three questions, answered a / b / same. Logged to PAIRS.
+# near/far: neighbours in the pair's distance space; same-speaker: two clips of one voice; repeat: a judged pair asked again.
+PAIR_KINDS = {'near', 'far', 'same-speaker', 'repeat'}
 PAIR_QUESTIONS = {'femininity': 'どちらが女性らしい', 'naturalness': 'どちらが自然', 'preference': 'どちらを見本にしたい'}
 PAIR_ANSWERS = ('a', 'b', 'same')
 # The listener's own working definitions, shown under each question so they stay fixed across sessions.
@@ -141,11 +143,13 @@ def append_pair(record, path=None):
     if any(v not in PAIR_ANSWERS for v in answers.values()): raise ValueError('answers must be a, b or same')
     if not answers: raise ValueError('at least one answer')
     kind = record.get('kind') or 'near'
-    if kind not in ('near', 'far'): raise ValueError('kind must be near or far')
+    if kind not in PAIR_KINDS: raise ValueError(f'kind must be one of {sorted(PAIR_KINDS)}')
     distance = record.get('distance')
     if distance is not None and (isinstance(distance, bool) or not isinstance(distance, (int, float))): raise ValueError('distance must be a number')
+    space = record.get('space')
+    if not isinstance(space, str) or not space.strip(): raise ValueError('space required: the distance space the pair was drawn in')
     out = {'a': a, 'b': b, 'language': record.get('language', 'ja'), 'answers': answers, 'kind': kind,
-           'distance': None if distance is None else round(float(distance), 4), 'session': str(record.get('session') or '')[:40],
+           'distance': None if distance is None else round(float(distance), 4), 'space': space.strip()[:40], 'session': str(record.get('session') or '')[:40],
            'note': str(record.get('note') or '')[:1000].strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
     if path == PAIRS and (a.startswith(OWN) or b.startswith(OWN)): path = PRIVATE_PAIRS
     path.parent.mkdir(parents=True, exist_ok=True)

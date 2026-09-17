@@ -14,6 +14,7 @@ from server import create_app, load_timbre_index
 import server
 import perception
 import build_timbre_index
+import curation
 from signals import visualise
 
 ROOT=Path(__file__).parent
@@ -261,8 +262,22 @@ class APITests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('audio/',r.headers['Content-Type']);self.assertIn("frame-ancestors 'none'",r.headers['Content-Security-Policy'])
         r=await self.client.get('/data/library-measurements.json');self.assertEqual(r.status,404)
 
-class SimilarTests(unittest.IsolatedAsyncioTestCase):
-    """Reference ranking over a small synthetic index; the timbre model itself is patched out."""
+class IndexFixture:
+    """A synthetic timbre index with minimal libraries in a temp data dir; the timbre model itself is patched out."""
+    async def asyncSetUp(self):
+        self.tmp=tempfile.TemporaryDirectory();self.fake_index()
+        self.patches=[patch.object(server,'DATA',Path(self.tmp.name)),patch.object(perception,'timbre_ready',return_value=True)]
+        for p in self.patches:p.start()
+        self.client=TestClient(TestServer(create_app()));await self.client.start_server()
+
+    async def asyncTearDown(self):
+        await self.client.close()
+        for p in self.patches:p.stop()
+        self.tmp.cleanup()
+
+
+class SimilarTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
+    """Reference ranking over a small synthetic index."""
     def fake_index(self):
         rng=np.random.default_rng(2);base=rng.normal(size=(4,768))
         ids,lang,spk,grp,syn,vec=[],[],[],[],[],[]
@@ -276,17 +291,6 @@ class SimilarTests(unittest.IsolatedAsyncioTestCase):
             clips=[{'id':i,'audio':f'/samples/{i}.flac','speaker':s,'group':g,'plotted':True,'language':language} for i,s,g,l in zip(ids,spk,grp,lang) if l==language]
             (Path(self.tmp.name)/name).write_text(json.dumps({'version':'test','clips':clips}))
         self.base=base;return path
-
-    async def asyncSetUp(self):
-        self.tmp=tempfile.TemporaryDirectory();self.fake_index()
-        self.patches=[patch.object(server,'DATA',Path(self.tmp.name)),patch.object(perception,'timbre_ready',return_value=True)]
-        for p in self.patches:p.start()
-        self.client=TestClient(TestServer(create_app()));await self.client.start_server()
-
-    async def asyncTearDown(self):
-        await self.client.close()
-        for p in self.patches:p.stop()
-        self.tmp.cleanup()
 
     async def test_similar_ranks_speakers_by_centroid_and_names_the_nearest_clip(self):
         r=await self.client.get('/api/catalog');self.assertEqual((await r.json())['capabilities']['similar'],['en','ja'])
@@ -343,6 +347,85 @@ class SimilarTests(unittest.IsolatedAsyncioTestCase):
             rows,_=build_timbre_index.main(out=out,checkpoint=1)
         self.assertEqual([r['id'] for r in rows],['a','b','e']);self.assertEqual(len(calls),3)  # a and b were kept, only e was encoded
         self.assertTrue(np.array_equal(np.load(out)['vectors'][:2],first));self.assertFalse(out.with_suffix('.tmp.npz').exists())
+
+
+class PairsTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
+    """The listening-pair queue over a synthetic index and libraries, with judgements logged to a temp file."""
+    def fake_index(self):
+        # Twelve Japanese speakers with three clips each (the same-speaker draw takes one pair per speaker, so near/far
+        # pairs still find partners), plus one English speaker; features for the five-feature fallback.
+        rng=np.random.default_rng(2);speakers=[(f'spk{ch}','female' if i%2==0 else 'male','ja') for i,ch in enumerate('ABCDEFGHIJKL')]+[('spkX','female','en')]
+        base=rng.normal(size=(len(speakers),768));ids,lang,spk,grp,syn,vec=[],[],[],[],[],[]
+        for k,(speaker,group,language) in enumerate(speakers):
+            for c in range(3):ids.append(f'{speaker}-clip{c}');lang.append(language);spk.append(speaker);grp.append(group);syn.append(False);vec.append(base[k]+rng.normal(scale=.05,size=768))
+        path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz'
+        np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(ids),language=np.array(lang),speaker=np.array(spk),group=np.array(grp),synthetic=np.array(syn),vectors=np.array(vec,'float16'))
+        (Path(self.tmp.name)/'libraries').mkdir()
+        for language,name in [('ja','native-ja.json'),('en','libraries/en.json')]:
+            clips=[{'id':i,'audio':f'/samples/{i}.flac','speaker':s,'group':g,'plotted':True,'language':language,
+                    'features':{'f0':float(rng.uniform(120,260)),'delta_f':float(rng.uniform(900,1100)),'hnr':float(rng.uniform(8,16)),'balance':float(rng.uniform(-30,-10)),'pitch_span':float(rng.uniform(2,8))}}
+                   for i,s,g,l in zip(ids,spk,grp,lang) if l==language]
+            (Path(self.tmp.name)/name).write_text(json.dumps({'version':'test','clips':clips}))
+        self.base=base;self.speakers=[sp for sp,_,_ in speakers];self.pairs_log=Path(self.tmp.name)/'pairs.jsonl';return path
+
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
+        self.log_patches=[patch.object(curation,'PAIRS',self.pairs_log),patch.object(curation,'PRIVATE_PAIRS',Path(self.tmp.name)/'private-pairs.jsonl')]
+        for p in self.log_patches:p.start()
+
+    async def asyncTearDown(self):
+        for p in self.log_patches:p.stop()
+        await super().asyncTearDown()
+
+    async def queue(self,client=None,**query):
+        r=await (client or self.client).get('/api/pairs?'+'&'.join(f'{k}={v}' for k,v in {'lang':'ja','session':'t',**query}.items()));self.assertEqual(r.status,200);return (await r.json())['queue']
+
+    async def test_queue_draws_in_the_timbre_space_with_same_speaker_pairs_and_repeats(self):
+        judged=[{'a':'spkA-clip0','b':'spkB-clip0','language':'ja','answers':{'femininity':'a'},'kind':'near','distance':.12,'space':'acoustic-five','session':'earlier'},
+                {'a':'spkC-clip0','b':'spkD-clip0','language':'ja','answers':{'femininity':'b'},'kind':'near','distance':.2,'space':'acoustic-five','session':'t'}]
+        with patch.object(curation,'load_pairs',return_value=judged):q=await self.queue()
+        kinds={p['kind'] for p in q};self.assertTrue({'near','far','same-speaker','repeat'}<=kinds,kinds)
+        repeats=[p for p in q if p['kind']=='repeat'];self.assertEqual([(p['a']['id'],p['b']['id'],p['space']) for p in repeats],[('spkA-clip0','spkB-clip0','acoustic-five')])  # the current session's pair is not re-asked
+        unit=self.base/np.linalg.norm(self.base,axis=1,keepdims=True);cosine=1-unit@unit.T
+        for p in q:
+            self.assertNotEqual(p['a']['id'],p['b']['id'])
+            if p['kind']=='repeat':continue
+            self.assertEqual(p['space'],'timbre:'+perception.TIMBRE_VERSION);self.assertNotIn({p['a']['id'],p['b']['id']},[{'spkA-clip0','spkB-clip0'},{'spkC-clip0','spkD-clip0'}])
+            if p['kind']=='same-speaker':self.assertEqual(p['a']['speaker'],p['b']['speaker'])
+            else:
+                self.assertNotEqual(p['a']['speaker'],p['b']['speaker'])
+                if p['kind']=='near':  # a near partner is among the query speaker's five nearest speakers by base cosine
+                    i,j=self.speakers.index(p['a']['speaker']),self.speakers.index(p['b']['speaker']);self.assertLessEqual(min(np.argsort(cosine[i]).tolist().index(j),np.argsort(cosine[j]).tolist().index(i)),5)
+        near=[p['distance'] for p in q if p['kind']=='near'];far=[p['distance'] for p in q if p['kind']=='far']
+        self.assertLess(np.median(near),np.median(far))
+
+    async def test_own_takes_join_the_queue_and_their_judgements_stay_private(self):
+        own=Path(self.tmp.name)/'own';own.mkdir();x,r=sf.read(ROOT/'data/original-excerpt.wav',dtype='float32')  # real speech: a tone has no formants and would not be plotted
+        for name,start in [('take1.wav',0),('take2.wav',r*3)]:sf.write(own/name,x[start:start+r*3],r)
+        await self.client.close()
+        with patch.object(perception,'timbre',return_value=(self.base[0]*.9+self.base[1]*.1).astype('float32')):
+            self.client=TestClient(TestServer(create_app()));await self.client.start_server();q=await self.queue()
+        own_ids={p['a']['id'] for p in q if p['a']['id'].startswith('own-')}|{p['b']['id'] for p in q if p['b']['id'].startswith('own-')};self.assertEqual(len(own_ids),2)
+        self.assertTrue(any(p['kind']=='same-speaker' and p['a']['id'].startswith('own-') and p['b']['id'].startswith('own-') for p in q))
+        self.assertTrue(any(p['kind']=='near' and (p['a']['id'].startswith('own-')!=p['b']['id'].startswith('own-')) for p in q))
+        cache=json.loads((own/f'timbre-{perception.TIMBRE_VERSION}.json').read_text());self.assertEqual(len(cache),2)  # vectors cached on disk
+        own_pair=next(p for p in q if p['kind']=='same-speaker' and p['a']['id'].startswith('own-'))
+        r=await self.client.post('/api/pairs',json={'a':own_pair['a']['id'],'b':own_pair['b']['id'],'language':'ja','answers':{'naturalness':'a'},'kind':'same-speaker','distance':own_pair['distance'],'space':own_pair['space'],'session':'t'})
+        self.assertEqual(r.status,200);self.assertFalse(self.pairs_log.exists());self.assertEqual(len((Path(self.tmp.name)/'private-pairs.jsonl').read_text().splitlines()),1)
+
+    async def test_queue_falls_back_to_the_five_features_without_an_index(self):
+        await self.client.close()
+        with patch.object(server,'load_timbre_index',return_value=None):
+            self.client=TestClient(TestServer(create_app()));await self.client.start_server();q=await self.queue()
+        self.assertTrue(q);self.assertTrue(all(p['space']=='acoustic-five' for p in q));self.assertTrue({'near','far','same-speaker'}<={p['kind'] for p in q})
+
+    async def test_judgements_record_kind_and_space(self):
+        body={'a':'spkA-clip0','b':'spkA-clip1','language':'ja','answers':{'naturalness':'same'},'kind':'same-speaker','distance':.2,'space':'timbre:'+perception.TIMBRE_VERSION,'session':'t'}
+        r=await self.client.post('/api/pairs',json=body);self.assertEqual(r.status,200);saved=await r.json()
+        self.assertEqual((saved['kind'],saved['space']),('same-speaker','timbre:'+perception.TIMBRE_VERSION))
+        r=await self.client.post('/api/pairs',json=dict(body,kind='sideways'));self.assertEqual(r.status,422)
+        r=await self.client.post('/api/pairs',json={k:v for k,v in body.items() if k!='space'});self.assertEqual(r.status,422)  # the space is never guessed on write
+        self.assertEqual(len(self.pairs_log.read_text().splitlines()),1)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
