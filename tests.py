@@ -74,9 +74,49 @@ class AcousticTests(unittest.TestCase):
         self.assertLess(m['resonance_sensitivity_pct'],5)
         self.assertNotIn('scores',m)
 
+class EngineTests(unittest.TestCase):
+    """The Rust engine the libraries are built with, through `engine.py`."""
+    @classmethod
+    def setUpClass(cls):
+        import engine
+        if not engine.BINARY.exists():raise unittest.SkipTest('build measure/ first (cargo build --release)')
+        cls.engine=engine
+    def test_version_is_stamped_on_every_measurement(self):
+        measured=self.engine.measure_files([ROOT/'data/original-excerpt.wav'])
+        m=measured[str(ROOT/'data/original-excerpt.wav')]
+        self.assertEqual(m['version'],self.engine.version())
+        self.assertEqual(m['duration'],10)
+        self.assertEqual(len(m['track']),100)
+        for key in ['f0','delta_f','hnr','balance','pitch_span']:self.assertIn(key,m['features'])
+    def test_cache_measures_only_other_versions(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'cache.json';path.write_text(json.dumps({'original-excerpt.wav':{'version':'3.0.0','features':{}},'baseline.wav':{'version':self.engine.version(),'features':{'f0':1}}}))
+            cache=self.engine.Cache(path)
+            got=cache.measure(ROOT/'data',['original-excerpt.wav','baseline.wav'])
+            self.assertEqual(got['baseline.wav']['features'],{'f0':1})
+            self.assertEqual(got['original-excerpt.wav']['version'],self.engine.version())
+            self.assertIn('f0',got['original-excerpt.wav']['features'])
+            self.assertNotIn('track',got['original-excerpt.wav'])
+            self.assertEqual(json.loads(path.read_text())['original-excerpt.wav']['version'],self.engine.version())
+    def test_a_file_the_engine_cannot_measure_raises_after_measuring_the_rest(self):
+        with self.assertRaises(self.engine.MeasureError) as raised:self.engine.measure_files([ROOT/'README.md',ROOT/'data/baseline.wav'])
+        self.assertEqual(list(raised.exception.errors),[str(ROOT/'README.md')])
+        self.assertIn(str(ROOT/'data/baseline.wav'),raised.exception.measured)
+    def test_cache_keeps_what_it_measured_before_a_failure_and_prunes(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'cache.json';path.write_text(json.dumps({'gone.wav':{'version':self.engine.version(),'features':{}}}))
+            cache=self.engine.Cache(path)
+            with self.assertRaises(self.engine.MeasureError):cache.measure(ROOT,['data/baseline.wav','README.md'])
+            saved=json.loads(path.read_text())
+            self.assertEqual(list(saved),['data/baseline.wav'])
+            self.assertNotIn('quiet_intervals',saved['data/baseline.wav'])
+
 class CollectionTests(unittest.TestCase):
     def test_all_collected_audio_decodes_and_matches_manifest(self):
         library=json.loads((ROOT/'data/native-ja.json').read_text());clips=library['clips']
+        self.assertEqual(library['version'],'4.0.0')
         self.assertGreater(len(clips),6500)
         self.assertEqual(len({p['id'] for p in clips}),len(clips))
         self.assertGreater(len({p['speaker'] for p in clips}),550)

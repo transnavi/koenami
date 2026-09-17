@@ -2,8 +2,7 @@
 import asyncio,json,hashlib
 from pathlib import Path
 import edge_tts
-import soundfile as sf
-from acoustics import measure
+from engine import measure_files,version
 ROOT=Path(__file__).parent
 TEXTS={
  'ja':['今日はいい天気ですね。少し散歩に出かけませんか。','おはようございます。今日もよろしくお願いします。','では、授業を始めます。分からないところがあったら聞いてください。','ありがとうございます。またお会いできるのを楽しみにしています。'],
@@ -17,8 +16,9 @@ async def main():
   selected=[v for v in voices if v['Locale']==locale]
   selected=([v for v in selected if v['Gender']=='Female'][:4]+[v for v in selected if v['Gender']=='Male'][:2])
   print(lang,'synthetic voices',len(selected),flush=True)
+  phrases=[]
   for voice in selected:
-   for i,text in enumerate(texts):
+   for text in texts:
     name=voice['ShortName'];id='tts-'+hashlib.sha256((name+text).encode()).hexdigest()[:14];path=ROOT/'data/samples'/f'{id}.mp3'
     if not path.exists():
      for attempt in range(3):
@@ -27,9 +27,11 @@ async def main():
       except Exception:
        path.unlink(missing_ok=True)
        if attempt==2:raise
-    x,sr=sf.read(path);m=measure(x,sr)
-    f=m['features'];ok=m.get('formant_seconds',0)>=.35 and 'delta_f' in f and m.get('resonance_sensitivity_pct',100)<=12
+    phrases.append((voice,text,name,id,path))
+  measured=measure_files(p[4] for p in phrases)
+  for voice,text,name,id,path in phrases:
+    m=measured[str(path)];f=m['features'];ok=m.get('formant_seconds',0)>=.35 and 'delta_f' in f and m.get('resonance_sensitivity_pct',100)<=12
     clips.append({'id':id,'speaker':name,'group':'synthetic','synthetic':True,'language':lang,'voice_label':voice['Gender'].lower(),'name':name.split('-')[2].replace('Neural',''),'text':text,'audio':'/samples/'+path.name,'duration':m['duration'],'features':f,'level_dbfs':m.get('level_dbfs'),'peak':m.get('peak'),'voiced_seconds':m['voiced_seconds'],'formant_seconds':m.get('formant_seconds',0),'plotted':ok,'reason':None if ok else 'Unstable resonance estimate.','source':'https://github.com/rany2/edge-tts','engine':'Microsoft Edge neural TTS / edge-tts 7.2.8','sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
-  (ROOT/'data/synthetic.json').write_text(json.dumps({'clips':clips},ensure_ascii=False))
+  (ROOT/'data/synthetic.json').write_text(json.dumps({'version':version(),'clips':clips},ensure_ascii=False))
   print(lang,'generated',len(clips),flush=True)
 asyncio.run(main())

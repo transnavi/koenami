@@ -3,9 +3,10 @@
 //! ```text
 //! koenami-measure [--detailed] [--visuals] FILE...     one line per file: {"path", "measurement"}
 //! koenami-measure [--detailed] [--visuals] --pcm RATE  32-bit float little-endian mono PCM on stdin
+//! koenami-measure --version                            the measurement version every result carries
 //! ```
 //!
-//! Files are WAV, AIFF or FLAC. Every input is mixed to mono and resampled to
+//! Files are WAV, AIFF, FLAC or MP3. Every input is mixed to mono and resampled to
 //! 16 kHz before measurement. Files are measured in parallel; failures are
 //! reported on the line for that file and the exit status is 1 when any
 //! input failed.
@@ -14,7 +15,7 @@ use std::io::{Read, Write};
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-use koenami_measure::{Measurement, measure, mono16, mono16_audio, visualise};
+use koenami_measure::{Measurement, VERSION, measure, mono16, mono16_audio, visualise};
 use phx_audio::Audio;
 use rayon::prelude::*;
 use serde::Serialize;
@@ -33,6 +34,7 @@ struct Options {
     visuals: bool,
     pcm_rate: Option<f64>,
     files: Vec<PathBuf>,
+    version: bool,
 }
 
 fn parse(args: impl Iterator<Item = String>) -> Result<Options, String> {
@@ -41,6 +43,7 @@ fn parse(args: impl Iterator<Item = String>) -> Result<Options, String> {
         visuals: false,
         pcm_rate: None,
         files: Vec::new(),
+        version: false,
     };
     let mut args = args.peekable();
     while let Some(arg) = args.next() {
@@ -56,9 +59,20 @@ fn parse(args: impl Iterator<Item = String>) -> Result<Options, String> {
                 options.pcm_rate = Some(rate);
             }
             "-h" | "--help" => return Err(String::new()),
+            "--version" => options.version = true,
             other if other.starts_with('-') => return Err(format!("unknown option {other}")),
             _ => options.files.push(PathBuf::from(arg)),
         }
+    }
+    if options.version {
+        if options.pcm_rate.is_some()
+            || !options.files.is_empty()
+            || options.detailed
+            || options.visuals
+        {
+            return Err("--version takes no other arguments".into());
+        }
+        return Ok(options);
     }
     if options.pcm_rate.is_none() && options.files.is_empty() {
         return Err("no input".to_string());
@@ -102,7 +116,7 @@ fn emit(out: &mut impl Write, line: &Line<'_>) -> Result<(), ExitCode> {
 }
 
 fn main() -> ExitCode {
-    const USAGE: &str = "usage: koenami-measure [--detailed] [--visuals] FILE...\n       koenami-measure [--detailed] [--visuals] --pcm RATE < samples.f32le";
+    const USAGE: &str = "usage: koenami-measure [--detailed] [--visuals] FILE...\n       koenami-measure [--detailed] [--visuals] --pcm RATE < samples.f32le\n       koenami-measure --version";
     let options = match parse(std::env::args().skip(1)) {
         Ok(options) => options,
         Err(message) if message.is_empty() => {
@@ -114,6 +128,10 @@ fn main() -> ExitCode {
             return ExitCode::from(2);
         }
     };
+    if options.version {
+        println!("{VERSION}");
+        return ExitCode::SUCCESS;
+    }
     let stdout = std::io::stdout();
 
     if let Some(rate) = options.pcm_rate {

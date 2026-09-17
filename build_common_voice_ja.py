@@ -51,9 +51,7 @@ def metadata():
 
 
 def main():
-    # Praat's acoustic measurements are CPU-only; process one short clip at a time.
-    import soundfile as sf
-    from acoustics import measure
+    from engine import Cache
 
     local_path = ROOT / 'data/native-ja.json'
     old_clips = json.loads(local_path.read_text())['clips'] if local_path.exists() else []
@@ -66,18 +64,14 @@ def main():
     if failures:
         raise RuntimeError(f'Could not collect {len(failures)} reference files; existing library retained.')
     clips = []
-    cache_path = ROOT / 'data/library-measurements.json'
-    cache = json.loads(cache_path.read_text()) if cache_path.exists() else {}
+    cache = Cache(ROOT / 'data/library-measurements.json')
+    measurements = cache.measure(ROOT / 'data/samples', [row['file_name'] for row in rows])
     quality_path = ROOT / 'data/speech-quality.json'
     quality = json.loads(quality_path.read_text()) if quality_path.exists() else {}
     empty = []
     for row in rows:
         path = ROOT / 'data/samples' / row['file_name']
-        measured = cache.get(path.name)
-        if measured is None:
-            audio, rate = sf.read(path)
-            measured = measure(audio, rate)
-            cache[path.name] = {k: v for k, v in measured.items() if k != 'track'}
+        measured = measurements[path.name]
         features = measured['features']
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         speech = quality.get(path.stem, {})
@@ -85,7 +79,9 @@ def main():
             empty.append({'id': path.stem, 'display_label': labels.get(path.stem), 'speaker': speaker_id(row), 'text': row['text'], 'speech': speech})
             continue
         reason = measured.get('reason')
-        if measured.get('voiced_seconds', 0) < 1 or measured.get('formant_seconds', 0) < .35:
+        if reason:
+            pass
+        elif measured.get('voiced_seconds', 0) < 1 or measured.get('formant_seconds', 0) < .35:
             reason = 'Too little stable voiced speech.'
         elif measured.get('clipping_fraction', 0) > .005:
             reason = 'Clipping.'
@@ -118,13 +114,13 @@ def main():
         if clip['id'] in labels: clip['display_label'] = labels[clip['id']]
         clips.append(clip)
     manifest = {
+        'version': cache.version,
         'language': 'ja', 'source': 'Common Voice 25.0 Japanese', 'revision': REVISION,
         'license': 'CC0-1.0', 'clips': clips,
         'selection': 'Adult speakers with at least two positive votes and no negative votes. '
                      'All eligible clips, excluding reviewed pronunciation mismatches and explicitly '
                      'self-reported non-native accents. Native pronunciation is unverified for other speakers.',
     }
-    cache_path.write_text(json.dumps(cache, ensure_ascii=False, allow_nan=False))
     (ROOT / 'data/empty-reference-review.json').write_text(json.dumps(empty, indent=2, ensure_ascii=False))
     (ROOT / 'data/common-voice-ja.json').write_text(json.dumps(manifest, ensure_ascii=False, allow_nan=False))
     # The local Japanese collection contains JVS plus these Common Voice references.

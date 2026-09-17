@@ -22,7 +22,7 @@ export function distance2(a,b){return finite(a?.f0)&&finite(a?.delta_f)&&finite(
 /* One clip per labeled human speaker: the clip nearest that speaker's median pitch and resonance. */
 export function representatives(clips){const by=new Map();for(const c of clips.filter(c=>c.plotted&&!c.synthetic&&['female','male'].includes(c.group))){if(!by.has(c.speaker))by.set(c.speaker,[]);by.get(c.speaker).push(c);}return [...by.values()].map(group=>{const f=quantile(group.map(c=>c.features.f0),.5),d=quantile(group.map(c=>c.features.delta_f),.5);return [...group].sort((a,b)=>distance2(a.features,{f0:f,delta_f:d})-distance2(b.features,{f0:f,delta_f:d}))[0];});}
 /* The verdict is withheld until a take passes the same rule every reference clip had to pass
-   (build_library.py): enough stable voiced speech, no clipping, a resonance estimate that does
+   (the build_*.py scripts): enough stable voiced speech, no clipping, a resonance estimate that does
    not swing with the analysis settings. Each entry names the measurement and the bound. */
 export const GATE=[
  {key:'voiced_seconds',label:'有声区間',unit:'秒',min:1,digits:1},

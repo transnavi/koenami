@@ -4,8 +4,7 @@ from pathlib import Path
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 import requests
-import soundfile as sf
-from acoustics import measure
+from engine import Cache
 
 ROOT=Path(__file__).parent
 REV='8262c16bf297c87a9cd88c51997c4758ed7a8ba2'
@@ -53,15 +52,12 @@ def main():
         print(lang,'eligible:',len(allrows),'speakers:',len({r['client_id'] for r in allrows}),flush=True)
     with ThreadPoolExecutor(max_workers=3) as pool:list(pool.map(collect_job,jobs))
     outdir=ROOT/'data/libraries';outdir.mkdir(exist_ok=True)
-    cachepath=ROOT/'data/multilingual-measurements.json'
-    cache=json.loads(cachepath.read_text()) if cachepath.exists() else {}
+    cache=Cache(ROOT/'data/multilingual-measurements.json')
     for lang,rows in bylang.items():
-        clips=[]
-        for i,row in enumerate(rows):
+        clips=[];measured=cache.measure(ROOT/'data/samples',[Path(row['path']).name for row in rows])
+        for row in rows:
             name=Path(row['path']).name;path=ROOT/'data/samples'/name
-            if name not in cache:
-                x,sr=sf.read(path);m=measure(x,sr);cache[name]={k:v for k,v in m.items() if k!='track'}
-            m=cache[name];f=m['features'];reason=None
+            m=measured[name];f=m['features'];reason=None
             if m['voiced_seconds']<1 or m.get('formant_seconds',0)<.35:reason='Too little stable voiced speech.'
             elif any(k not in f for k in ['f0','delta_f','hnr','balance']):reason='Incomplete measurements.'
             elif m.get('clipping_fraction',0)>.005:reason='Clipping.'
@@ -75,12 +71,11 @@ def main():
                 'source':f"{BASE}/audio/{lang}/{row['split']}/{lang}_{row['split']}_0.tar",'archive_member':name,
                 'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
             clips.append(clip)
-            if i%100==0:cachepath.write_text(json.dumps(cache));print(lang,'measured',i+1,'/',len(rows),flush=True)
         counts={g:{'clips':sum(p['group']==g for p in clips),'speakers':len({p['speaker'] for p in clips if p['group']==g}),
             'plotted_clips':sum(p['group']==g and p['plotted'] for p in clips),'plotted_speakers':len({p['speaker'] for p in clips if p['group']==g and p['plotted']})} for g in ['female','male']}
-        result={'version':3,'language':lang,'source':f'Mozilla Common Voice 17.0 · {lang}','revision':REV,'license':'CC0-1.0',
+        result={'version':cache.version,'language':lang,'source':f'Mozilla Common Voice 17.0 · {lang}','revision':REV,'license':'CC0-1.0',
             'source_url':'https://huggingface.co/datasets/fsicoli/common_voice_17_0','selection':'All adult female/male-labeled clips with at least two up-votes and no down-votes in the indicated splits.','splits':LANGS[lang],'counts':counts,'failures':[],'clips':clips}
         (outdir/f'{lang}.json').write_text(json.dumps(result,ensure_ascii=False))
-        cachepath.write_text(json.dumps(cache));print(lang,'ready',json.dumps(counts),flush=True)
+        print(lang,'ready',json.dumps(counts),flush=True)
 
 if __name__=='__main__':main()

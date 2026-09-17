@@ -20,11 +20,11 @@ default = ["cli"]
 cli = ["dep:rayon"]
 
 [dependencies]
-phx-audio = { git = "https://github.com/mkpoli/phonia", rev = "d87a7ab1f438733e0bb214f5825a8fe3e094f18d" }
-phx-dsp = { git = "https://github.com/mkpoli/phonia", rev = "d87a7ab1f438733e0bb214f5825a8fe3e094f18d" }
-phx-pitch = { git = "https://github.com/mkpoli/phonia", rev = "d87a7ab1f438733e0bb214f5825a8fe3e094f18d" }
-phx-formant = { git = "https://github.com/mkpoli/phonia", rev = "d87a7ab1f438733e0bb214f5825a8fe3e094f18d" }
-phx-voice = { git = "https://github.com/mkpoli/phonia", rev = "d87a7ab1f438733e0bb214f5825a8fe3e094f18d" }
+phx-audio = { git = "https://github.com/mkpoli/phonia", rev = "076bcea0e7f38a6d90b059bf05b4bd5fa70aced9" }
+phx-dsp = { git = "https://github.com/mkpoli/phonia", rev = "076bcea0e7f38a6d90b059bf05b4bd5fa70aced9" }
+phx-pitch = { git = "https://github.com/mkpoli/phonia", rev = "076bcea0e7f38a6d90b059bf05b4bd5fa70aced9" }
+phx-formant = { git = "https://github.com/mkpoli/phonia", rev = "076bcea0e7f38a6d90b059bf05b4bd5fa70aced9" }
+phx-voice = { git = "https://github.com/mkpoli/phonia", rev = "076bcea0e7f38a6d90b059bf05b4bd5fa70aced9" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 base64 = "0.22"
