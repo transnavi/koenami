@@ -1,8 +1,9 @@
 import {cardSVG,CARD_WIDTH,CARD_HEIGHT} from './card.js';
 import {resultParams,shareText} from './score.js';
 /* Everything a result needs to leave the app: its URL, the post text, the card
-   as SVG and PNG, and the intent links. The result URL carries only the five
-   measurements; the receiving page and the Worker recompute the score from them. */
+   as SVG and PNG, and the intent links. The result URL carries the five
+   measurements, plus the age estimate when the user chose to include it; the
+   receiving page and the Worker recompute the score from the measurements. */
 export const HASHTAG='Koenami';
 export const ICONS={
  x:'<path d="M17.5 3h3l-7.1 8.2L21.7 21h-6.3l-4.6-6-5.3 6H2.5l7.6-8.7L2.2 3h6.4l4.2 5.5Zm-1.1 16.2h1.7L7.7 4.7H5.8Z" fill="currentColor" stroke="none"/>',

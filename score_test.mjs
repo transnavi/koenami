@@ -37,4 +37,6 @@ const withAge=parseResultParams(resultParams({f0:200,delta_f:1100,hnr:10,balance
 assert.equal(withAge.age,26,'age travels rounded');
 assert.equal(parseResultParams(resultParams({f0:200,delta_f:1100,hnr:10,balance:-15,pitch_span:5},'ja')).age,undefined,'no age unless chosen');
 assert.equal(parseResultParams(new URLSearchParams('v=1&l=ja&f0=200&df=1100&hnr=10&bal=-15&sp=5&age=250')).age,undefined,'implausible age ignored');
+{const s=new Scorer(JSON.parse(readFileSync('.deploy/assets/public-api/ja.json','utf8')).clips),base=s.score({f0:200,delta_f:1100,hnr:10,balance:-15,pitch_span:5});
+ assert.ok(cardSVG({...base,age:26},s).includes('約26歳'),'card shows the age when present');assert.ok(!cardSVG(base,s).includes('年齢'),'card has no age line otherwise');}
 console.log('age: ok');

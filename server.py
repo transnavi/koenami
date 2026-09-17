@@ -12,6 +12,7 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 from aiohttp import web, ClientSession, ClientTimeout
+import perception
 from acoustics import measure, mono16, RATE
 from signals import visualise
 import curation
@@ -47,6 +48,8 @@ def create_app():
     own_clips, own_paths = ([], {}) if PUBLIC else own_voice.load(DATA)
     clips.update({c['id']: c for c in own_clips})
     gate, asr_gate = asyncio.Semaphore(1), asyncio.Semaphore(1)
+    # Age inference has its own gate so a live-analysis burst never queues behind a model run and vice versa;
+    # the container's two threads for ONNX plus one analysis fit the basic instance (see container_test.py).
     neural_gate = asyncio.Semaphore(1)
     cache = OrderedDict()
     pcm_cache = OrderedDict()
@@ -130,13 +133,13 @@ def create_app():
 
     async def age(request):
         """Age impression from the audEERING model; absent when the prepared model is not shipped."""
-        import perception
         if not perception.available(['age']): raise web.HTTPNotFound(text='年齢の推定モデルが用意されていません。')
         x = await read_audio(request)
         if len(x) > RATE * 60: raise web.HTTPBadRequest(text='1分以内の音声を使用してください。')
         async with neural_gate:
             try: return respond(await asyncio.to_thread(perception.age, x))
             except ValueError as error: raise web.HTTPUnprocessableEntity(text=str(error))
+            except RuntimeError: raise web.HTTPUnprocessableEntity(text='この音声の推定に失敗しました。')
 
     async def detail(request):
         name = request.match_info['name']

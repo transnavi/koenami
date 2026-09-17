@@ -33,10 +33,12 @@ async function sharedResult(env: Env, url: URL) {
   const parsed = parseResultParams(url.searchParams);
   if (!parsed || !languages.has(parsed.lang)) return null;
   const s = await scorer(env, parsed.lang);
-  const result = s.score(parsed.features);
-  if (!result) return null;
-  const canonical = `${siteOrigin}/r?${resultParams(result.features, parsed.lang)}`;
-  return { scorer: s, result, lang: parsed.lang, canonical, image: `${siteOrigin}/og.png?${resultParams(result.features, parsed.lang)}` };
+  const scored = s.score(parsed.features);
+  if (!scored) return null;
+  // The age rides along only when the link carries it; the card and both URLs must agree with the browser's rendering.
+  const result = { ...scored, age: parsed.age };
+  const params = resultParams(result.features, parsed.lang, { age: parsed.age });
+  return { scorer: s, result, lang: parsed.lang, canonical: `${siteOrigin}/r?${params}`, image: `${siteOrigin}/og.png?${params}` };
 }
 
 async function resultPage(request: Request, env: Env, url: URL): Promise<Response> {

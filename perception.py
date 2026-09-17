@@ -16,7 +16,7 @@ _sessions = {}
 
 
 def available(names=('wavlm', 'age')):
-    return all((MODEL_DIR / f'{name}.int8.onnx').is_file() for name in names)
+    return all((MODEL_DIR / f'{name}.int8.onnx').is_file() and (MODEL_DIR / f'{name}-preprocessor_config.json').is_file() for name in names)
 
 
 def session(name):
@@ -109,30 +109,26 @@ def timbre(x):
     return v
 
 
-def age(x):
-    """Rough listener-facing age in years: the median over at most three four-second windows.
-    The model returns years directly; the range across windows is reported so a spread can be
-    read as instability rather than precision."""
-    parts = windows(x)
+def age_summary(parts):
+    """Rough listener-facing age in years: the median over the windows, with the range across them so a
+    spread reads as instability rather than precision. The model returns years directly."""
     ages = [float(session('age').run(None, {'values': age_input(part)})[0].ravel()[0]) for part in parts]
     if not np.isfinite(ages).all(): raise ValueError('この音声の推定に失敗しました。')
     return {'estimate': round(float(np.median(ages)), 1), 'windowRange': [round(min(ages), 1), round(max(ages), 1)],
             'windows': len(ages), 'model': 'audeering-6-layer', 'target': 'speaker-age', 'validatedJapanesePerception': False}
 
 
+def age(x):
+    return age_summary(windows(x))
+
+
 def describe(x):
     parts = windows(x)
-    embeddings, ages = [], []
+    embeddings = []
     for part in parts:
         embeddings.append(session('wavlm').run(None, {'values': part})[0][0])
-    for part in parts:
-        ages.append(float(session('age').run(None, {'values': age_input(part)})[0].ravel()[0]))
     embedding = np.mean(embeddings, axis=0)
     embedding /= max(float(np.linalg.norm(embedding)), 1e-8)
-    if not np.isfinite(embedding).all() or not np.isfinite(ages).all():
+    if not np.isfinite(embedding).all():
         raise ValueError('この音声の推定に失敗しました。')
-    return {'version': VERSION, 'embedding': embedding.round(7).tolist(),
-            'age': {'estimate': round(float(np.median(ages)), 1),
-                    'windowRange': [round(min(ages), 1), round(max(ages), 1)],
-                    'windows': len(ages), 'model': 'audeering-6-layer',
-                    'target': 'speaker-age', 'validatedJapanesePerception': False}}
+    return {'version': VERSION, 'embedding': embedding.round(7).tolist(), 'age': age_summary(parts)}
