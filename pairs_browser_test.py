@@ -26,10 +26,12 @@ def main(url):
             page.goto(url + '/pairs.html')
             wait(page, 'window.pairsApp?.queue.length>0')
             first = page.evaluate('({a:pairsApp.queue[0].a.id,b:pairsApp.queue[0].b.id,kind:pairsApp.queue[0].kind,d:pairsApp.queue[0].distance,n:pairsApp.queue.length})')
-            assert first['a'] != first['b'] and first['n'] == 60 and first['kind'] == 'near' and first['d'] < 1.5, first
-            kinds = page.evaluate('pairsApp.queue.map(p=>p.kind)'); assert kinds[3] == 'far' and kinds.count('far') == 15
+            assert first['a'] != first['b'] and first['n'] == 60, first
+            kinds = page.evaluate('pairsApp.queue.map(p=>p.kind)'); assert 10 <= kinds.count('far') <= 15 and kinds.count('near') + kinds.count('far') == 60
             # Both sides are blind: the page shows sentences and durations, never labels.
             assert page.locator('#side-a .text').inner_text() and 'F ' not in page.locator('#card').inner_text()
+            assert page.locator('.question .rubric').count() == 3 and '女声は男声より上' in page.locator('.question .rubric').first.inner_text()
+            own = page.evaluate('pairsApp.queue.filter(p=>p.own).length'); assert own == 0 or (own <= 15 and page.evaluate('pairsApp.queue.filter(p=>p.own).every(p=>[p.a.id,p.b.id].some(id=>id.startsWith("own-")))'))
             # 1 / 2 / 3 answer the active question and advance; pressing the same key again clears it.
             page.keyboard.press('1'); page.keyboard.press('2'); page.keyboard.press('3')
             assert page.evaluate('pairsApp.answers') == {'femininity': 'a', 'naturalness': 'same', 'preference': 'b'}

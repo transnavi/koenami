@@ -22,7 +22,7 @@ function togglePause(){const p=playing&&players[playing];if(!p)return restart();
 
 async function load(saved={}){
  const r=await fetch('/api/pairs?lang='+encodeURIComponent(state.lang)+'&session='+state.session);if(!r.ok)throw Error(await r.text());
- const data=await r.json();state.questions=data.questions;state.log=data.log;state.judged=data.judged;state.queue=data.queue;state.drafts={...state.drafts,...(saved.drafts||{})};
+ const data=await r.json();state.questions=data.questions;state.rubric=data.rubric||{};state.log=data.log;state.judged=data.judged;state.queue=data.queue;state.drafts={...state.drafts,...(saved.drafts||{})};
  state.at=Math.max(0,state.queue.findIndex(p=>pairKey(p)===saved.key));show();
 }
 function show(){
@@ -39,7 +39,7 @@ function renderQuestions(){
   const row=document.createElement('div');row.className='question';row.dataset.active=String(i===state.active);row.onclick=()=>{state.active=i;renderQuestions();remember();};
   const label=document.createElement('span');label.className='name';label.textContent=name;const choices=document.createElement('div');choices.className='choices';
   [['a','A','1'],['same','同じ','2'],['b','B','3']].forEach(([v,text,k])=>{const b=document.createElement('button');b.type='button';b.textContent=text;const kb=document.createElement('kbd');kb.textContent=k;b.append(kb);b.setAttribute('aria-pressed',String(state.answers[key]===v));b.onclick=e=>{e.stopPropagation();state.active=i;answer(v);};choices.append(b);});
-  row.append(label,choices);$('questions').append(row);
+  const hint=document.createElement('small');hint.className='rubric';hint.textContent=state.rubric[key]||'';row.append(label,choices,hint);$('questions').append(row);
  });
 }
 function answer(v){const keys=Object.keys(state.questions),key=keys[state.active];if(!key)return;state.answers[key]=state.answers[key]===v?undefined:v;if(state.answers[key]===undefined)delete state.answers[key];state.active=Math.min(keys.length-1,state.active+1);renderQuestions();remember();}
