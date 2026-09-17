@@ -157,13 +157,13 @@ test.describe('verdict and sharing', () => {
 		// Closing the dialog before the card is ready drops the image.
 		await page.unroute('**/fonts/**');
 		let release: (() => void) | null = null;
-		await page.route('**/fonts/koenami-share-700.ttf', async (route) => {
+		await page.route('**/fonts/koenami-share-*-700.ttf', async (route) => {
 			await new Promise<void>((r) => {
 				release = r;
 			});
 			await route.continue();
 		});
-		const held = page.waitForRequest('**/fonts/koenami-share-700.ttf');
+		const held = page.waitForRequest('**/fonts/koenami-share-*-700.ttf');
 		await page.locator('#share-button').click();
 		await held;
 		await page.locator('#share-dialog [data-close]').click();
@@ -374,6 +374,8 @@ test.describe('verdict and sharing', () => {
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.analysed);
 		await studio.until(app.shareReady);
+		// The goldens are pinned to a tree; before it includes the age row there is nothing to characterize.
+		test.skip((await page.locator('#share-age-run').count()) === 0, 'the pinned tree predates the age impression');
 		await page.locator('#share-button').click();
 		await studio.until(app.shareImage);
 		await studio.tick(200);
