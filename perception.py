@@ -7,7 +7,7 @@ RATE = 16000
 VERSION = 'wavlm-sv-int8-v2'
 # Second output of the same ONNX graph: the frames of WavLM encoder layer 3, pooled by timbre()
 # over speech frames of one centre crop. Cosine distance between two of these ranks reference
-# speakers closest to JVS listener similarity ratings (see README); the x-vector remains the
+# speakers closest to JVS listener similarity ratings (docs/research/jvs-similarity.md); the x-vector remains the
 # identity descriptor. The version covers the pooling rule as well as the graph: a different
 # crop length, layer or energy threshold changes every vector and must change this string.
 TIMBRE_VERSION = 'wavlm-l3-int8-v1'
@@ -74,8 +74,8 @@ def timbre(x):
     """Layer-3 timbre vector: one pass over at most eight seconds centred on the audible span, with
     the frames pooled over speech only (within 40 dB of the loudest 20 ms frame).
 
-    The quiet edges are kept as context for the model and left out of the mean; the README records
-    what each choice was worth on the JVS ratings. Not unit-normalised; compare with cosine distance."""
+    The quiet edges are kept as context for the model and left out of the mean;
+    docs/research/jvs-similarity.md records what each choice was worth on the JVS ratings. Not unit-normalised; compare with cosine distance."""
     start, end = span(x)
     if len(x) > 8 * RATE:
         start = int(np.clip((start + end) // 2 - 4 * RATE, 0, len(x) - 8 * RATE)); x = x[start:start + 8 * RATE]
