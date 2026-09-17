@@ -1,4 +1,4 @@
-import { Container, getContainer } from '@cloudflare/containers';
+import { getContainer } from '@cloudflare/containers';
 import { initWasm, Resvg } from '@resvg/resvg-wasm';
 import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm';
 import fontRegular from './web/public/fonts/koenami-share-400.ttf';
@@ -6,12 +6,7 @@ import fontBold from './web/public/fonts/koenami-share-700.ttf';
 import { Scorer, parseResultParams, resultParams, shareText, formatScore, VERDICTS, LEANINGS } from './web/score.js';
 import { cardSVG } from './web/card.js';
 
-export class VoiceAnalyzer extends Container<Env> {
-  defaultPort = 8080;
-  sleepAfter = '1m';
-  enableInternet = false;
-  envVars = { KOENAMI_PUBLIC: '1', KOENAMI_DATA: '/app/data' };
-}
+export { VoiceAnalyzer } from './worker/analyzer';
 
 const languages = new Set(['ja', 'zh-CN', 'en', 'ko']);
 // Crawler and browser-chrome files at the site root (see web/public and prepare_public.py).

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="%lang%">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<meta name="theme-color" content="#f9fbff" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#171826" media="(prefers-color-scheme: dark)" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<script nonce="%sveltekit.nonce%">
+			// The saved theme is applied before the first paint (web/theme.js today).
+			let savedTheme = 'system';
+			try {
+				savedTheme = localStorage.getItem('voice-theme') || 'system';
+			} catch {}
+			document.documentElement.dataset.theme =
+				savedTheme === 'system'
+					? matchMedia('(prefers-color-scheme: dark)').matches
+						? 'dark'
+						: 'light'
+					: savedTheme;
+		</script>
+		%sveltekit.head%
+	</head>
+	<body>
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

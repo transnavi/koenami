@@ -1,0 +1,5 @@
+# Formatting applies to the SvelteKit tree; everything else keeps its own shape.
+*
+!src/**
+!vite.config.ts
+!svelte.config.js

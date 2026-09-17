@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+/* The studio's palette, by the names its canvases read through getComputedStyle. */
+:root {
+	color-scheme: light;
+	--bg: #f9fbff;
+	--surface: #fff;
+	--raised: #f2f5fb;
+	--ink: #3f4a62;
+	--heading: #27374c;
+	--muted: #6d7790;
+	--line: #dce6f2;
+	--accent: #1a78c2;
+	--sky: #4ba8ea;
+	--pink: #d56498;
+	--pink-fill: #ff83b7;
+	--purple: #7a58bd;
+	--self: #6b4aaf;
+	--selected: #eef7ff;
+	--grid: #e4eaf3;
+	--band: #ff83b735;
+	--shadow: 0 10px 40px #304a7225;
+	--danger: #cf496b;
+}
+[data-theme='dark'] {
+	color-scheme: dark;
+	--bg: #171826;
+	--surface: #1d1e30;
+	--raised: #28293d;
+	--ink: #e5e3f3;
+	--heading: #f2effb;
+	--muted: #a1a7c4;
+	--line: #33364f;
+	--accent: #74bbf2;
+	--sky: #74bbf2;
+	--pink: #ff9ecb;
+	--pink-fill: #ff9ecb;
+	--purple: #bb9ee8;
+	--self: #bb9ee8;
+	--selected: #2a354e;
+	--grid: #30344a;
+	--band: #ff9ecb30;
+	--shadow: 0 10px 40px #0006;
+	--danger: #ff7996;
+}
+
+/* Tailwind utilities point at the same variables, so `bg-bg`, `text-ink`, `border-line`
+   and the rest follow the theme attribute. */
+@theme inline {
+	--color-bg: var(--bg);
+	--color-surface: var(--surface);
+	--color-raised: var(--raised);
+	--color-ink: var(--ink);
+	--color-heading: var(--heading);
+	--color-muted: var(--muted);
+	--color-line: var(--line);
+	--color-accent: var(--accent);
+	--color-sky: var(--sky);
+	--color-pink: var(--pink);
+	--color-pink-fill: var(--pink-fill);
+	--color-purple: var(--purple);
+	--color-self: var(--self);
+	--color-selected: var(--selected);
+	--color-grid: var(--grid);
+	--color-danger: var(--danger);
+	--font-sans: Inter, 'Segoe UI', 'Noto Sans JP', sans-serif;
+	--shadow-panel: var(--shadow);
+}
+
+html {
+	font-synthesis: none;
+}
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+}
