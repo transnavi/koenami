@@ -6,7 +6,7 @@ import {SignalView} from './signals.js';
 import {TakeStore} from './storage.js';
 import {localize} from './locale.js';
 import {loadImported,importedAudio,importJVS} from './corpus-import.js';
-import {Scorer,VERDICTS,LEANINGS,formatScore,gateFailure,representatives,distance2} from './score.js';
+import {Scorer,VERDICTS,LEANINGS,formatScore,gateFailure,verdictOf,representatives,distance2} from './score.js';
 import {shareBundle,cardImage,systemShare,labelled} from './share.js';
 'use strict';
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -169,7 +169,7 @@ $('loopback').onclick=()=>{if(!monitorGain||!recordContext||!state.recording)ret
 $('live-mode').onclick=()=>state.recording?stopRecording():startRecording('live');
 window.addEventListener('keydown',e=>{if(e.repeat||document.querySelector('dialog[open]')||['INPUT','TEXTAREA','SELECT','KOE-SELECT'].includes(e.target.tagName)||e.target.isContentEditable)return;if(e.code==='Space'){e.preventDefault();if(!state.recording)$('play-mine').click();}else if(e.code==='KeyR'&&!e.ctrlKey&&!e.metaKey){e.preventDefault();state.recording?stopRecording():startRecording('record');}else if(e.code==='Escape'){if(state.recording)cancelCapture();else if(!state.busy){e.preventDefault();for(const side of ['own','ref'])if(state.ranges[side])selectRange(side,null);}}});
 window.addEventListener('beforeunload',()=>{for(const t of stream?.getTracks()||[])t.stop();});
-async function saveTake(id=crypto.randomUUID()){state.ownTakeId=id;const snapshot=snapshotOwn(),old=state.takes.find(t=>t.id===id),t={id,name:state.ownName,date:old?.date||new Date().toISOString(),features:state.ownFull.features,duration:state.ownFull.duration,language:state.ownLanguage,stored:true};const saved=await TakeStore.saveRecording(snapshot,t);state.takes=saved.index;await persistTakes();renderTakeMenu();updateMap();}
+async function saveTake(id=crypto.randomUUID()){state.ownTakeId=id;const snapshot=snapshotOwn(),old=state.takes.find(t=>t.id===id),quality=state.ownFull.analysisPending?undefined:Object.fromEntries(['voiced_seconds','formant_seconds','clipping_fraction','resonance_sensitivity_pct'].map(k=>[k,state.ownFull[k]])),t={id,name:state.ownName,date:old?.date||new Date().toISOString(),features:state.ownFull.features,duration:state.ownFull.duration,language:state.ownLanguage,stored:true,...(quality&&{quality})};const saved=await TakeStore.saveRecording(snapshot,t);state.takes=saved.index;await persistTakes();renderTakeMenu();updateMap();}
 async function analyzeTake(take){
  const id=take.takeId;if(!id||state.analyzing.has(id))return;state.analyzing.add(id);controls();
  try{
@@ -313,6 +313,19 @@ function updateVerdict(){const result=shareResult(),scorer=state.scorer;const re
  $('verdict-word').textContent=result?VERDICTS[result.verdict]:!scorer?.available?'この言語では計算できません':!m?'録音すると表示':m.analysisPending?'解析中':'まだ判定できません';
  $('verdict-number').textContent=result?formatScore(result.display):'';
  $('verdict-gate').hidden=!gate||!!result;if(gate&&!result)$('verdict-gate').textContent=gate.value?`${gate.label} ${gate.value}（${gate.need}）`:gate.label;for(const g of ['male','female']){const band=scorer?.available?scorer.bands[g]:null,el=$('verdict-band-'+g);el.hidden=!band;if(band){el.style.left=scalePos(band[0]);el.style.width=`calc(${scalePos(band[1])} - ${scalePos(band[0])})`;}}if(result)$('verdict-dot').style.left=scalePos(result.score);}
+/* Every stored take of the current language that has a verdict, oldest first; the chart and list share the rows. */
+function historyRows(){const scorer=state.scorer,lang=state.lang==='lab'?'en':state.lang;if(!scorer?.available)return [];
+ return state.takes.filter(t=>t.stored&&t.language===lang&&t.features&&!(t.quality&&gateFailure(t.quality))).map(t=>({take:t,result:scorer.score(t.features),unchecked:!t.quality})).filter(r=>r.result).sort((a,b)=>a.take.date.localeCompare(b.take.date));}
+function renderHistory(current){
+ const rows=historyRows(),section=$('share-history');section.hidden=rows.length<2;if(section.hidden)return;
+ const bands=state.scorer.bands,W=480,H=110,L=30,R=8,T=8,B=18,y=s=>T+(H-T-B)*(1-(clamp(s,-50,50)+50)/100),x=i=>L+(W-L-R)*(rows.length>1?i/(rows.length-1):.5);
+ const band=(g,color)=>`<rect x="${L}" y="${y(bands[g][1])}" width="${W-L-R}" height="${Math.max(1,y(bands[g][0])-y(bands[g][1]))}" fill="${color}" opacity=".18"/>`;
+ const points=rows.map((r,i)=>[x(i),y(r.result.score)]);
+ const day=d=>new Date(d).toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+ $('history-chart').innerHTML=`${band('male','var(--sky)')}${band('female','var(--pink)')}<line x1="${L}" y1="${y(0)}" x2="${W-R}" y2="${y(0)}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>${[50,0,-50].map(v=>`<text x="${L-6}" y="${y(v)+3}" font-size="8" text-anchor="end" fill="var(--muted)">${formatScore(v)}</text>`).join('')}<polyline points="${points.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--self)" stroke-width="1.5"/>${points.map(([px,py],i)=>`<circle cx="${px}" cy="${py}" r="${rows[i].take.id===state.ownTakeId?4:2.5}" fill="var(--self)" stroke="var(--surface)" stroke-width="1"/>`).join('')}<text x="${L}" y="${H-4}" font-size="8" fill="var(--muted)">${day(rows[0].take.date)}</text><text x="${W-R}" y="${H-4}" font-size="8" text-anchor="end" fill="var(--muted)">${day(rows.at(-1).take.date)}</text>`;
+ $('history-list').replaceChildren(...[...rows].reverse().map(r=>{const li=document.createElement('li');li.setAttribute('aria-current',String(r.take.id===state.ownTakeId));const when=new Date(r.take.date);li.innerHTML=`<span class="history-name">${esc(r.take.name)}</span><time datetime="${esc(r.take.date)}">${when.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'})} ${when.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})}</time><span class="history-verdict" data-verdict="${r.result.verdict}">${VERDICTS[r.result.verdict]}</span><b>${formatScore(r.result.display)}</b>`;const b=document.createElement('button');if(r.take.id===state.ownTakeId){b.textContent='表示中';b.disabled=true;}else{b.textContent='開く';b.title='この録音を表示';b.onclick=()=>{$('share-dialog').close();restoreTake({storedId:r.take.id}).catch(e=>notify(e.message,true));};}li.append(b);return li;}));
+ $('history-note').hidden=!rows.some(r=>r.unchecked);
+}
 let shareImage=null;
 $('verdict-readout').onclick=()=>$('share-button').click();
 $('verdict-help').onclick=()=>{const s=state.scorer;openHelp(VERDICT_HELP,s?.available?[['男性的な見本 · 中央80%',`${formatScore(Math.round(s.bands.male[0]))}〜${formatScore(Math.round(s.bands.male[1]))}`],['女性的な見本 · 中央80%',`${formatScore(Math.round(s.bands.female[0]))}〜${formatScore(Math.round(s.bands.female[1]))}`],['参照話者数',s.speakers.length]]:[]);};
@@ -325,6 +338,7 @@ $('share-button').onclick=async()=>{
  $('share-system').hidden=!navigator.share;$('share-system').onclick=()=>systemShare(result,scorer,lang).catch(e=>{if(e.name!=='AbortError')$('share-status').textContent=e.message;});
  shareImage=null;const render=async()=>shareImage||(shareImage=await cardImage(result,scorer));
  $('share-save').onclick=async()=>{try{download(await render(),`koenami-${result.display}.png`);}catch(e){$('share-status').textContent=e.message;}};
+ renderHistory(result);
  $('share-dialog').showModal();
  try{const file=await render();if(!$('share-dialog').open)return;const img=$('share-image');if(img.src)URL.revokeObjectURL(img.src);img.src=URL.createObjectURL(file);img.alt=`${bundle.text}。5つの指標と見本の分布を描いた画像。`;img.hidden=false;}catch(e){$('share-status').textContent=e.message;}
 };
