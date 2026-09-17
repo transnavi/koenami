@@ -7,13 +7,16 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 const wasm = `${root}src/lib/measure/pkg/koenami_measure_bg.wasm`;
 const glue = `${root}src/lib/measure/pkg/koenami_measure.js`;
 const cli = `${root}measure/target/release/koenami-measure`;
 const built = existsSync(wasm) && existsSync(cli);
+// A machine without both builds skips; CI has them, and a silent skip there
+// would leave the two implementations uncompared.
+if (!built && process.env.CI) throw new Error('build the engine first: bun run build:wasm, and cargo build --release in measure/');
 
 /* Speech-like samples: a falling pitch with two resonances and a silent tail. */
 function speech(seconds = 2) {
@@ -34,20 +37,30 @@ function speech(seconds = 2) {
 	return x;
 }
 
-async function load() {
-	const module = await import(glue);
-	module.initSync({ module: readFileSync(wasm) });
-	return module;
+/* The module is started once: wasm-bindgen's glue holds one instance. */
+let engine: Awaited<ReturnType<typeof import_>>;
+async function import_() {
+	return (await import(glue)) as {
+		analyze_json: (x: Float32Array) => string;
+		live_json: (x: Float32Array) => string;
+		to_mono16: (x: Float32Array, channels: number, rate: number) => Float32Array;
+		version: () => string;
+		initSync: (input: { module: Buffer }) => unknown;
+	};
 }
 
 describe.skipIf(!built)('the browser measurement engine', () => {
-	it('reports the same version as the native engine', async () => {
-		const { version } = await load();
-		expect(version()).toBe(execFileSync(cli, ['--version']).toString().trim());
+	beforeAll(async () => {
+		engine = await import_();
+		engine.initSync({ module: readFileSync(wasm) });
 	});
 
-	it('measures a take exactly as the native engine does', async () => {
-		const { analyze_json } = await load();
+	it('reports the same version as the native engine', () => {
+		expect(engine.version()).toBe(execFileSync(cli, ['--version']).toString().trim());
+	});
+
+	it('measures a take exactly as the native engine does', () => {
+		const { analyze_json } = engine;
 		const x = speech();
 		const browser = JSON.parse(analyze_json(x));
 		const native = JSON.parse(
@@ -63,7 +76,15 @@ describe.skipIf(!built)('the browser measurement engine', () => {
 			native.track.map((row: { f0: number | null }) => row.f0 === null),
 		);
 		expect(browser.quiet_intervals).toEqual(native.quiet_intervals);
-		expect(browser.visuals.spectrogram).toEqual(native.visuals.spectrogram);
+		// The spectrogram is quantised to a byte per pixel; a pixel on a rounding
+		// boundary may differ where the two libms do, so the frame is compared
+		// with that tolerance rather than byte for byte.
+		expect(browser.visuals.spectrogram.frames).toBe(native.visuals.spectrogram.frames);
+		expect(browser.visuals.spectrogram.bins).toBe(native.visuals.spectrogram.bins);
+		const pixels = (value: string) => Buffer.from(value, 'base64');
+		const [left, right] = [pixels(browser.visuals.spectrogram.data), pixels(native.visuals.spectrogram.data)];
+		expect(left.length).toBe(right.length);
+		expect(left.every((value, i) => Math.abs(value - right[i]) <= 1)).toBe(true);
 		for (const key of Object.keys(native.features)) {
 			expect(browser.features[key]).toBeCloseTo(native.features[key], 6);
 		}
@@ -71,18 +92,19 @@ describe.skipIf(!built)('the browser measurement engine', () => {
 		expect(browser.level_dbfs).toBeCloseTo(native.level_dbfs, 6);
 	});
 
-	it('answers a live window with whether the last half second carried speech', async () => {
-		const { live_json } = await load();
+	it('answers a live window with whether the last half second carried speech', () => {
+		const { live_json } = engine;
 		expect(JSON.parse(live_json(speech(1.5))).active).toBe(true);
 		// A window whose last half second is silent: the listener stopped talking.
 		const stopped = speech(1.5);
 		stopped.fill(0, stopped.length - 16000 * 0.6);
 		expect(JSON.parse(live_json(stopped)).active).toBe(false);
-		expect(JSON.parse(live_json(speech(1.5))).visuals ?? null).toBe(null);
+		// The live view draws the window from these, as it did from the analyzer's.
+		expect(JSON.parse(live_json(speech(1.5))).visuals.spectrogram.frames).toBeGreaterThan(0);
 	});
 
-	it('mixes and resamples what the studio imports', async () => {
-		const { to_mono16, analyze_json } = await load();
+	it('mixes and resamples what the studio imports', () => {
+		const { to_mono16, analyze_json } = engine;
 		const x = speech();
 		const stereo = new Float32Array(x.length * 2);
 		for (let i = 0; i < x.length; i++) {
@@ -91,7 +113,9 @@ describe.skipIf(!built)('the browser measurement engine', () => {
 		}
 		expect(Array.from(to_mono16(stereo, 2, 16000))).toEqual(Array.from(x));
 		const resampled = to_mono16(x, 1, 48000);
-		expect(resampled.length).toBe(Math.round(x.length / 3));
+		// rubato's output length can sit a sample or two either side of the ratio,
+		// as the crate's own resampling test allows.
+		expect(Math.abs(resampled.length - Math.round(x.length / 3))).toBeLessThanOrEqual(2);
 		expect(JSON.parse(analyze_json(resampled)).duration).toBeCloseTo(x.length / 48000, 2);
 		expect(() => to_mono16(new Float32Array(3), 2, 16000)).toThrow(/whole frames/);
 	});

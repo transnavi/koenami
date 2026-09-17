@@ -21,6 +21,8 @@ const config = {
 		// bootstrap and the theme script. Cloudflare Web Analytics injects its beacon at the
 		// edge, so its script and endpoint are admitted. 'wasm-unsafe-eval' lets the
 		// measurement worker compile its module: the narrow permission for WebAssembly,
+		// which does not admit eval or inline script. 'wasm-unsafe-eval' lets the
+		// measurement worker compile its module: the narrow permission for WebAssembly,
 		// which does not admit eval or inline script.
 		csp: {
 			mode: 'auto',

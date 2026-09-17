@@ -4,12 +4,13 @@
  * a take is measured by the engine that built the reference libraries and
  * nothing waits on the network or on another listener's request. The worker
  * starts on the first call and stays; a caller that has moved on abandons
- * its answer through an `AbortSignal`. */
+ * its answer through an `AbortSignal`, and the worker skips a call it has
+ * not started yet. */
 import type { Detail, PCM } from '$lib/studio/types';
 import MeasureWorker from './worker?worker';
 import type { MeasureCall, MeasureResponse } from './worker';
 
-type Pending = { resolve: (value: never) => void; reject: (reason: Error) => void };
+type Pending = { resolve: (value: unknown) => void; reject: (reason: Error) => void };
 
 let worker: Worker | null = null;
 let next = 0;
@@ -23,31 +24,46 @@ function connect(): Worker {
 		if (!waiting) return;
 		pending.delete(data.id);
 		if ('error' in data) waiting.reject(new Error(data.error));
-		else waiting.resolve(('json' in data ? data.json : data.samples) as never);
+		else if ('cancelled' in data) waiting.reject(abortError());
+		else waiting.resolve('json' in data ? data.json : data.samples);
 	};
-	worker.onerror = (event) => {
-		const failure = new Error(event.message || 'Measurement failed in the browser.');
-		for (const waiting of pending.values()) waiting.reject(failure);
-		pending.clear();
-		worker?.terminate();
-		worker = null;
-	};
+	worker.onerror = (event) => fail(new Error(event.message || 'Measurement failed in the browser.'));
 	return worker;
+}
+
+/* Every call in flight fails together: the worker holds the only engine, so
+ * a worker that has stopped has stopped for all of them. */
+function fail(error: Error) {
+	for (const waiting of pending.values()) waiting.reject(error);
+	pending.clear();
+	worker?.terminate();
+	worker = null;
 }
 
 function send<T>(call: MeasureCall, transfer: Transferable[], signal?: AbortSignal): Promise<T> {
 	if (signal?.aborted) return Promise.reject(abortError());
 	const id = ++next;
 	return new Promise<T>((resolve, reject) => {
-		pending.set(id, { resolve: resolve as (value: never) => void, reject });
-		signal?.addEventListener(
-			'abort',
-			() => {
-				if (pending.delete(id)) reject(abortError());
-			},
-			{ once: true },
-		);
-		connect().postMessage({ ...call, id }, { transfer });
+		const abort = () => {
+			if (!pending.delete(id)) return;
+			worker?.postMessage({ kind: 'cancel', cancel: id, id: ++next });
+			reject(abortError());
+		};
+		const settle = (run: () => void) => {
+			signal?.removeEventListener('abort', abort);
+			run();
+		};
+		pending.set(id, {
+			resolve: (value) => settle(() => resolve(value as T)),
+			reject: (error) => settle(() => reject(error)),
+		});
+		signal?.addEventListener('abort', abort, { once: true });
+		try {
+			connect().postMessage({ ...call, id }, { transfer });
+		} catch (error) {
+			pending.delete(id);
+			settle(() => reject(error instanceof Error ? error : new Error(String(error))));
+		}
 	});
 }
 
@@ -76,9 +92,11 @@ export async function live(pcm: PCM, signal?: AbortSignal): Promise<Detail> {
 }
 
 /** Mixes interleaved samples to the mono 16 kHz the engine measures. */
-export async function mono16(samples: Float32Array, channels: number, rate: number): Promise<PCM> {
+export async function mono16(samples: Float32Array, channels: number, rate: number, signal?: AbortSignal): Promise<PCM> {
+	if (!Number.isInteger(channels) || channels < 1) throw new Error('Audio must have a whole number of channels.');
+	if (!Number.isFinite(rate) || rate <= 0) throw new Error('Audio must carry a sample rate.');
 	const owned = copy(samples);
-	return (await send<Float32Array>({ kind: 'mono16', samples: owned, channels, rate }, [owned.buffer])) as PCM;
+	return (await send<Float32Array>({ kind: 'mono16', samples: owned, channels, rate }, [owned.buffer], signal)) as PCM;
 }
 
 /** The engine's measurement version, for comparing a stored take with it. */
@@ -86,9 +104,7 @@ export function version(): Promise<string> {
 	return send<string>({ kind: 'version' }, []);
 }
 
-/** Drops the worker; the next call starts a new one. */
+/** Drops the worker; calls in flight fail and the next call starts a new one. */
 export function stop() {
-	worker?.terminate();
-	worker = null;
-	pending.clear();
+	fail(abortError());
 }
