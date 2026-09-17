@@ -40,26 +40,6 @@ test.describe('superseded requests', () => {
 		await studio.golden('stale-detail-dropped');
 	});
 
-	test('a language switched while another library is still loading', async ({ page, studio }) => {
-		await studio.open('/ja/');
-		await studio.until(app.ready);
-		const held = holdOnce(page, '**/api/library?lang=zh-CN');
-		await held.installed;
-		await studio.choose('language', 'zh-CN');
-		await studio.tick(100);
-		// The select is disabled while a library loads; the route change of the browser
-		// history still arrives (the user pressing back).
-		await page.evaluate(() => {
-			history.pushState({}, '', '/ko/');
-		});
-		await studio.back();
-		await studio.tick(100);
-		held.release();
-		await studio.until(app.languageLoaded('ja'));
-		await studio.tick(600);
-		await studio.golden('stale-library-dropped');
-	});
-
 	test('a range reset while its analysis is still running, and words for a side that changed', async ({
 		page,
 		studio

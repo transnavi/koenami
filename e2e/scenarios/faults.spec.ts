@@ -17,15 +17,18 @@ test.describe('server and storage faults', () => {
 			catalog.languages = catalog.languages.filter((l: { id: string }) => l.id !== 'lab');
 			await route.fulfill({ response, json: catalog });
 		});
+		// Each language is its own page; when the page's library cannot be fetched the studio
+		// reports it and stays empty.
 		await page.route('**/api/library?lang=ko', (route) =>
 			route.fulfill({ status: 404, contentType: 'text/plain; charset=utf-8', body: 'Not found' })
 		);
+		await studio.open('/ko/');
+		await studio.until('document.getElementById("notice").textContent.length > 0');
+		await studio.tick(300);
+		await studio.golden('library-404');
+		await page.unroute('**/api/library?lang=ko');
 		await studio.open('/ja/');
 		await studio.until(app.ready);
-		await studio.choose('language', 'ko');
-		await studio.until(app.libraryLoaded);
-		await studio.tick(300);
-		await studio.golden('library-404-keeps-current');
 		// Reference audio that cannot be fetched reports a playback error.
 		await page.route('**/samples/common_voice_ja_36363165.mp3', (route) =>
 			route.fulfill({ status: 404, body: '' })

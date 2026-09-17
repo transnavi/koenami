@@ -67,6 +67,12 @@ class FakeCache {
 	async delete(r: Req) {
 		return this.store.delete(keyOf(r));
 	}
+	// add() rejects for a response that is not ok, as the browser's does; the worker swallows it per file.
+	async add(u: string) {
+		const r = await fetchStub(new FakeRequest(u));
+		if (!r.ok) throw new TypeError('bad response');
+		this.store.set(abs(u), r);
+	}
 	async addAll(urls: string[]) {
 		for (const u of urls) this.store.set(abs(u), await fetchStub(new FakeRequest(u)));
 	}
@@ -122,8 +128,13 @@ const request = async (url: string, init: Init = {}) => {
 	await Promise.all(waits);
 	return outcome;
 };
-const cached = () =>
-	[...(caches.get('koenami-v1')?.store.keys() ?? [])].map((u) => u.replace(ORIGIN, '')).sort();
+// The worker's cache: the one it opened, next to the stale one seeded for the activate
+// step (its name bumps with the shell it caches).
+const cache = () => {
+	const name = [...caches.keys()].find((n) => n !== 'koenami-v0');
+	return caches.get(name!)!;
+};
+const cached = () => [...(cache().store.keys() ?? [])].map((u) => u.replace(ORIGIN, '')).sort();
 
 // The Kit tree gets a service worker shaped by its own build ($service-worker) together with
 // the studio; its golden is recorded then.
@@ -151,7 +162,7 @@ describe.skipIf((process.env.KOENAMI_TREE || 'old') === 'new')('service worker',
 			['/robots.txt']
 		];
 		for (const [url, init] of requests) {
-			if (url === '/guide.html') caches.get('koenami-v1')!.phantom.push(abs('/ghost.html'));
+			if (url === '/guide.html') cache().phantom.push(abs('/ghost.html'));
 			log.push([
 				init?.method || 'GET',
 				url,
