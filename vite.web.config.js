@@ -17,8 +17,9 @@ function languagePages() {
   configResolved(config) { publicDir = config.publicDir; },
   transformIndexHtml: { order: 'pre', handler(html, ctx) {
    if (!ctx.server) return html;
-   const name = ctx.path.split('/').pop(), lang = languageOf(ctx.originalUrl || ctx.path);
-   return renderPage(html, lang, (PAGES[name] || PAGES['index.html'])(lang));
+   const name = ctx.path.split('/').pop() || 'index.html', lang = languageOf(ctx.originalUrl || ctx.path);
+   if (!PAGES[name]) throw new Error(`koenami-language-pages: ${name} has no page address`);
+   return renderPage(html, lang, PAGES[name](lang));
   } },
   configureServer(server) {
    server.middlewares.use((req, res, next) => {

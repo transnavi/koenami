@@ -15,7 +15,7 @@ export { VoiceAnalyzer } from './worker/analyzer';
 
 const languages = new Set<string>(LANGUAGES);
 // The share font in its three cuts; the card's language picks one (see web/share.js).
-const cardFonts: Record<string, [ArrayBuffer, ArrayBuffer]> = { ja: [fontJaRegular, fontJaBold], 'zh-CN': [fontZhRegular, fontZhBold], ko: [fontKoRegular, fontKoBold] };
+const cardFonts: Record<ReturnType<typeof fontCut>, [ArrayBuffer, ArrayBuffer]> = { ja: [fontJaRegular, fontJaBold], 'zh-CN': [fontZhRegular, fontZhBold], ko: [fontKoRegular, fontKoBold] };
 // Error text in the language the client asked for; the studio sends its own language.
 const say = (request: Request, key: string) => translator(matchLanguage(request.headers.get('Accept-Language')))(key) as string;
 // Crawler and browser-chrome files at the site root (see web/public and prepare_public.py).
@@ -59,7 +59,7 @@ async function resultPage(request: Request, env: Env, url: URL): Promise<Respons
   const description = t('result.share_description', { text: shareText(shared.result, lang) }) as string;
   const content: Record<string, string> = {
     'og:title': title, 'twitter:title': title, 'og:description': description, 'twitter:description': description,
-    'og:url': shared.canonical, 'og:image': shared.image, 'twitter:image': shared.image, 'og:image:alt': shareText(shared.result),
+    'og:url': shared.canonical, 'og:image': shared.image, 'twitter:image': shared.image, 'og:image:alt': shareText(shared.result, lang),
   };
   return new HTMLRewriter()
     .on('title', { element(el) { el.setInnerContent(title); } })

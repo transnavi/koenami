@@ -102,7 +102,7 @@ def main():
     write(OUT / 'manifest.json', manifest)
     # Sitemap with last-modified dates taken from git, so a page's date only
     # moves when its source does.
-    pages = {'/': ['web/index.html', 'web/app.js', 'web/i18n/ja.js'], **{f'/{lang}/': ['web/index.html', 'web/app.js', f'web/i18n/{lang}.js'] for lang in LANGUAGES if lang != 'ja'},
+    pages = {'/': ['web/index.html', 'web/app.js', 'web/i18n/index.js', 'web/i18n/ja.js'], **{f'/{lang}/': ['web/index.html', 'web/app.js', 'web/i18n/index.js', f'web/i18n/{lang}.js'] for lang in LANGUAGES if lang != 'ja'},
              '/guide.html': ['web/guide.html'], '/tutorial.html': ['web/tutorial.html'], '/method.html': ['web/method.html'], '/references.html': ['web/references.html']}
     entries = []
     for path, sources in pages.items():

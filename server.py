@@ -35,16 +35,25 @@ MESSAGES = {
     'too_quiet': {'ja': '声が小さすぎます。別の音声を選んでください。', 'zh-CN': '声音太小，请选择其他音频。', 'en': 'The voice is too quiet. Choose another clip.', 'ko': '목소리가 너무 작습니다. 다른 음성을 골라 주세요.'},
     'too_little_speech': {'ja': '2秒以上、話した音声を選んでください。', 'zh-CN': '请选择包含2秒以上说话声音的音频。', 'en': 'Choose audio with at least 2 seconds of speech.', 'ko': '2초 이상 말한 음성을 골라 주세요.'},
     'failed': {'ja': 'この音声の推定に失敗しました。', 'zh-CN': '无法对这段音频进行估计。', 'en': 'The estimate failed for this audio.', 'ko': '이 음성의 추정에 실패했습니다.'},
+    'measure_failed': {'ja': 'この音声を測定できませんでした。', 'zh-CN': '无法测量这段音频。', 'en': 'This audio could not be measured.', 'ko': '이 음성을 측정하지 못했습니다.'},
     'no_timbre_index': {'ja': 'この言語の参照声のインデックスがありません。', 'zh-CN': '这种语言没有参考声音的索引。', 'en': 'There is no reference voice index for this language.', 'ko': '이 언어의 참고 음성 인덱스가 없습니다.'},
     'compare_failed': {'ja': '声の比較に失敗しました。もう一度お試しください。', 'zh-CN': '声音比较失败，请重试。', 'en': 'The voice comparison failed. Try again.', 'ko': '목소리 비교에 실패했습니다. 다시 시도해 주세요.'},
 }
 
 
 def language(request):
-    first = request.headers.get('Accept-Language', '').split(',')[0].split(';')[0].strip()
-    if first in LANGUAGES: return first
-    primary = first.split('-')[0].lower()
-    return next((k for k in LANGUAGES if k.split('-')[0] == primary), 'ja')
+    """The served language a client accepts: ranges in quality order, exact tag first, then its primary subtag (matchLanguage in web/i18n/index.js)."""
+    ranges = []
+    for i, part in enumerate(request.headers.get('Accept-Language', '').split(',')):
+        tag, *params = [p.strip() for p in part.split(';')]
+        q = next((float(p[2:]) for p in params if p.startswith('q=') and p[2:].replace('.', '', 1).isdigit()), 1.0)
+        if tag and q > 0: ranges.append((-q, i, tag.lower()))
+    for _, _, tag in sorted(ranges):
+        exact = next((k for k in LANGUAGES if k.lower() == tag), None)
+        if exact: return exact
+        primary = next((k for k in LANGUAGES if k.split('-')[0] == tag.split('-')[0]), None)
+        if primary: return primary
+    return 'ja'
 
 
 def message(request, key, **params):
@@ -202,7 +211,7 @@ def create_app():
                 return respond(result, headers={'Server-Timing':
                     f'queue;dur={(started-queued)*1000:.1f}, analysis;dur={(perf_counter()-started)*1000:.1f}'})
             except (ValueError, RuntimeError):
-                raise web.HTTPUnprocessableEntity(text='Could not measure this audio.')
+                raise web.HTTPUnprocessableEntity(text=message(request, 'measure_failed'))
 
     async def age(request):
         """Age impression from the audEERING model; absent when the prepared model is not shipped."""
@@ -224,7 +233,7 @@ def create_app():
         x = await read_audio(request)
         async with neural_gate:
             try: vector = await asyncio.to_thread(perception.timbre, x)
-            except ValueError as e: raise web.HTTPUnprocessableEntity(text=str(e))
+            except ValueError as error: raise web.HTTPUnprocessableEntity(text=message(request, str(error)) if str(error) in MESSAGES else str(error))
             except Exception as error:  # ONNX Runtime raises its own classes, none of them RuntimeError
                 print(f'Timbre inference failed: {type(error).__name__}', flush=True)
                 raise web.HTTPServiceUnavailable(text=message(request, 'compare_failed'))

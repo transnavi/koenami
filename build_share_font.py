@@ -9,6 +9,7 @@ instanced at 400 and 700 and cut down to the glyphs the card needs in the langua
 use that cut (web/i18n: Japanese and English share the JP cut), so the Worker and the
 browser both embed a few tens of kilobytes per language instead of 10 MB.
 """
+import argparse
 import json
 import subprocess
 import sys
@@ -20,14 +21,11 @@ from fontTools.varLib import instancer
 
 ROOT = Path(__file__).parent
 OUT = ROOT / 'web' / 'public' / 'fonts'
-FONT_DIRS = [Path(sys.argv[sys.argv.index('--fonts') + 1])] if '--fonts' in sys.argv else [
-    Path('/mnt/c/Windows/Fonts'),
-    Path.home() / '.fonts',
-]
+FONT_DIRS = [Path('/mnt/c/Windows/Fonts'), Path.home() / '.fonts']
 # Cut → (variable font file, languages written in it).
 CUTS = {'ja': ('NotoSansJP-VF.ttf', ['ja', 'en']), 'zh-CN': ('NotoSansSC-VF.ttf', ['zh-CN']), 'ko': ('NotoSansKR-VF.ttf', ['ko'])}
 ASCII = ''.join(chr(c) for c in range(0x20, 0x7F))
-EXTRA = '−ΔΔ／・「」（）〜…'
+EXTRA = '−Δ／・「」（）〜…'
 # The catalogue keys whose text reaches the card (web/card.js and web/score.js).
 CARD_KEYS = ['card.eyebrow', 'card.male', 'card.center', 'card.female', 'card.male_refs', 'card.female_refs',
              'verdict.female', 'verdict.androgynous', 'verdict.male', 'leaning.female', 'leaning.androgynous', 'leaning.male',
@@ -38,17 +36,22 @@ CARD_KEYS = ['card.eyebrow', 'card.male', 'card.center', 'card.female', 'card.ma
 def card_text():
     """Every card string per language, read from the catalogues through Node."""
     script = f"import {{ CATALOGUES }} from './web/i18n/index.js'; const keys = {json.dumps(CARD_KEYS)}; " \
-             "console.log(JSON.stringify(Object.fromEntries(Object.entries(CATALOGUES).map(([l, c]) => [l, keys.map((k) => { const v = c[k]; return typeof v === 'string' ? v : Object.values(v).join(''); }).join('')]))));"
+             "console.log(JSON.stringify(Object.fromEntries(Object.entries(CATALOGUES).map(([l, c]) => [l, keys.map((k) => { const v = c[k]; if (v === undefined) throw new Error(`no catalogue entry ${k} in ${l}`); return typeof v === 'string' ? v : Object.values(v).join(''); }).join('')]))));"
     return json.loads(subprocess.run(['node', '--input-type=module', '-e', script], cwd=ROOT, capture_output=True, text=True, check=True).stdout)
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--fonts', type=Path, help='directory holding NotoSansJP-VF.ttf, NotoSansSC-VF.ttf and NotoSansKR-VF.ttf')
+    args = parser.parse_args()
+    dirs = [args.fonts] if args.fonts else FONT_DIRS
     texts = card_text()
     OUT.mkdir(parents=True, exist_ok=True)
+    licences = []
     for cut, (filename, languages) in CUTS.items():
-        source = next((d / filename for d in FONT_DIRS if (d / filename).exists()), None)
+        source = next((d / filename for d in dirs if (d / filename).exists()), None)
         if not source:
-            sys.exit(f'{filename} not found under {", ".join(map(str, FONT_DIRS))}; pass --fonts DIR.')
+            sys.exit(f'{filename} not found under {", ".join(map(str, dirs))}; pass --fonts DIR.')
         chars = set(ASCII + EXTRA + ''.join(texts[l] for l in languages))
         for weight in (400, 700):
             font = instancer.instantiateVariableFont(TTFont(source), {'wght': weight}, inplace=False)
@@ -60,9 +63,9 @@ def main():
             target = OUT / f'koenami-share-{cut}-{weight}.ttf'
             font.save(target)
             print(target.relative_to(ROOT), target.stat().st_size, 'bytes', len(chars), 'characters')
-        if cut == 'ja':
-            names = TTFont(source)['name']
-            (OUT / 'OFL.txt').write_text(names.getDebugName(13) + '\n\n' + names.getDebugName(14) + '\n')
+        names = TTFont(source)['name']
+        licences.append(f'{names.getDebugName(1)} (koenami-share-{cut}-*.ttf)\n\n' + names.getDebugName(13) + '\n\n' + names.getDebugName(14) + '\n')
+    (OUT / 'OFL.txt').write_text('\n\n'.join(licences))
 
 
 if __name__ == '__main__':

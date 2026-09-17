@@ -19,12 +19,20 @@ export const fontCut = (lang) => (lang === 'ko' || lang === 'zh-CN' ? lang : 'ja
 export const known = (lang) => (LANGUAGES.includes(lang) ? lang : 'ja');
 /* The studio's address in a language; Japanese lives at the root. */
 export const home = (lang) => (lang === 'ja' ? '/' : `/${lang}/`);
-/* An Accept-Language value, or any language tag, reduced to a served language. */
+/* An Accept-Language value, or any language tag, reduced to a served language: the ranges in
+   quality order, each matched by exact tag and then by primary subtag (server.py's language()
+   follows the same rule). */
 export function matchLanguage(header) {
- const first = String(header || '').split(',')[0].trim().split(';')[0];
- if (LANGUAGES.includes(first)) return first;
- const primary = first.split('-')[0].toLowerCase();
- return LANGUAGES.find((l) => l.split('-')[0] === primary) || 'ja';
+ const ranges = String(header || '').split(',').map((part, i) => {
+  const [tag, ...params] = part.trim().split(';').map((p) => p.trim());
+  const q = params.find((p) => p.startsWith('q='));
+  return { tag: tag.toLowerCase(), q: q ? Number(q.slice(2)) : 1, i };
+ }).filter((r) => r.tag && r.q > 0).sort((a, b) => b.q - a.q || a.i - b.i);
+ for (const { tag } of ranges) {
+  const match = LANGUAGES.find((l) => l.toLowerCase() === tag) || LANGUAGES.find((l) => l.split('-')[0] === tag.split('-')[0]);
+  if (match) return match;
+ }
+ return 'ja';
 }
 /* The language a request addresses: /<lang>/ pages, and ?l=<lang> on the result page. */
 export function languageOf(url) {
@@ -48,7 +56,8 @@ export function translator(lang) {
   if (value === undefined) value = ja[key];
   if (value === undefined) throw new Error(`i18n: no message for ${key}`);
   if (value && typeof value === 'object' && !Array.isArray(value)) value = value[plural.select(Number(params?.n) || 0)] ?? value.other;
-  if (typeof value !== 'string' || !params) return value;
+  if (Array.isArray(value)) return value.slice();
+  if (!params) return value;
   return value.replace(/\{(\w+)\}/g, (m, name) => (!(name in params) ? m : typeof params[name] === 'number' ? params[name].toLocaleString(lang) : String(params[name])));
  };
 }
@@ -58,7 +67,8 @@ export const lang = typeof document === 'undefined' ? 'ja' : known(document.docu
 export const t = translator(lang);
 
 const escapeHTML = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-const escapeJSON = (s) => JSON.stringify(String(s)).slice(1, -1);
+// Inside a <script> block a literal `<` must not start a tag, so it goes out as \u003c.
+const escapeJSON = (s) => JSON.stringify(String(s)).slice(1, -1).replace(/</g, '\\u003c');
 /* Fills a page template for one language. Tokens: {{t:key}} (HTML-escaped text), {{h:key}}
    (markup from the catalogue), {{j:key}} (inside a JSON string), and the page fields
    {{lang}}, {{og_locale}}, {{home}}, {{url}}, {{links}} (canonical, hreflang alternates and
