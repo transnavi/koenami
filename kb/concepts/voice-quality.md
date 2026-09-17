@@ -16,6 +16,11 @@ How the folds close and how much noise mixes with the periodic source: breathy v
 - After training, some trans women increased L1–L2 (shifted tilt) and many increased loudness [[sodersten2026]]; after glottoplasty, jitter, shimmer and NHR increased [[yilmaz2021]] and roughness rose [[mora2018]].
 - Creaky voice, once described as a masculinity marker, is now frequent among young American women and read as informal yet educated; Japanese women in the same study used it far less [[yuasa2010]].
 - Japanese everyday voice-quality words load on three factors — clarity, power and pitch/youth — with nasality as one axis [[kido2001]]; voice-actor descriptors cluster into pairs such as 大人っぽい–幼い, 上品な–荒々しい [[yasuda2023]].
+- After feminisation therapy F2 rose and the low-to-high spectral ratio increased, but HNR and CPP did not change — no acoustic sign of added breathiness [[mckenna2026]].
+- The English-language wiki's "clarity" scale overlaps a lot with harmonic-to-noise ratio, and it notes that HNR refers to noise only, missing nasality and tongue-root effects that also make a voice sound out of place [[sumi-clarity]].
+- The wiki argues brightness is resonance multiplied by tone clarity, so a high-resonance voice can sound dark and a low-resonance voice bright [[sumi-questionable-terms]].
+- The wiki gives open quotient as related to low vocal weight and closed quotient to high, usually measured with electroglottography, and calls the correlation with weight a good but not perfect one [[sumi-glossary]].
+- The wiki lays out a closure scale from glottal stop through pressed phonation, slight adduction, flow phonation, darkening abduction, breathy and overblown to no closure at all [[sumi-breathiness]].
 
 ## Contested or unclear
 - Whether breathiness helps a feminine impression: some training material recommends a lighter closure, the research is mixed [[leung2018]] [[dahl2018]] [[neuhaus2026]].

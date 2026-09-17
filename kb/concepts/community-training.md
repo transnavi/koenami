@@ -30,6 +30,12 @@ The hub over every non-clinical community resource in the vault: who teaches gen
 - A New Taipei hospital team's (亞東紀念醫院) public teaching and surgery pages, community-grade provider material with 180 Hz-up / 140 Hz-down targets [[voicedoctor-tw]].
 - The wider 伪声 and MtF.wiki layer is mapped in [[chinese-community]].
 
+**Editorial and practice rules the English-language wiki states.**
+- An exercise is included if it works most of the time and has a fairly long track record, then cleared through a risk gate: where a risk exists and a beginner-usable mitigation does not, the method is scrapped, and otherwise the mitigation is printed with the exercise [[sumi-pedagogy]].
+- The daily budget given is 5–10 minutes of exercises and no more than a few hours of a trained voice, with strain or added effort as the hard limit at any time and for any reason [[sumi-how-to-practice]].
+- For practice that cannot be done aloud, humming substitutes for a pitch slide and whispering for resonance and speech-pattern work, the latter for only a few minutes a day and only while quiet and light [[sumi-covert-practice]].
+- A Japanese lesson with one of the larger audiences in this sweep tells learners to copy the demonstration and set theory aside [[kuzutetsu2025]].
+
 **What all of these have in common.**
 - Each note records the resource's own claims about itself; none of these curricula has published outcome data, and the only community method adjacent to measurement is the single-teacher DSFD dataset [[netzorg2025]].
 - Where the vocabulary overlaps research constructs (weight vs closed quotient, size vs formants), the mapping and its limits are worked through in [[vocal-weight]] and [[formants]].

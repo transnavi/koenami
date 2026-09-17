@@ -17,6 +17,11 @@ What listeners use when they assign a gender, or a degree of masculinity/feminin
 - Self-ratings of femininity correlate only weakly with listener ratings and strongly with satisfaction, and the gap widens after training [[quinn2021]]; listener-rated femininity partly regressed a year after training while self-perception stayed stable [[leyns2024]]; quality of life tracks self-perception more than listener perception [[hancock2011]].
 - After cricothyroid approximation alone, trans women were rated between cis male and cis female groups; femaleness correlated with F0 [[vanborsel2008]].
 - Beyond gender, listeners form consistent personality impressions from sub-second utterances along valence and dominance [[mcaleer2014]].
+- Gender and sexuality expansive listeners weighted F0 and formant scaling less than cisgender heterosexual listeners when categorising gender, and more when categorising the talker's gender orientation [[munson2025]].
+- Visible bodies shift voice-type ratings toward the visual cue, and trans listeners resisted this for vocal-tract-length manipulations but not for F0 manipulations [[marchandknight2026]].
+- Cisgender and TGD listeners agreed strongly on the masculine and feminine recordings drawn from r/transvoice (r(s) = 0.72 and 0.75) but not on the gender-neutral ones, where agreement was weak and non-significant [[kenny2025]].
+- Telling listeners that a speaker is trans changes how they categorise /s/, in opposite directions for trans women and trans men [[jessee2025]].
+- A note.com writer argues that 声パス depends on the listener's expectations and the quality of the channel rather than on the voice alone [[note-kyanaru-voicepass]].
 
 ## Contested or unclear
 - The relative weight of F0 versus formants (material-dependent; see [[fundamental-frequency]]).

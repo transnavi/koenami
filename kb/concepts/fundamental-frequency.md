@@ -19,10 +19,14 @@ The rate of vocal-fold vibration, heard as pitch. Koenami reports the median F0 
 - Speakers deliberately raise F0 and formants to sound feminine and lower both to sound masculine, without training [[cartei2012]].
 - Japanese female-voice attractiveness ratings peak around 280–290 Hz and fall above that (inverted U) [[tanaka2022]]; naturalness ratings of Japanese 両声類 voices were reported highest around 200–240 Hz and lower above ~300 Hz, from one contest sample [[hasegawa2017]].
 - Japanese women speak with higher average pitch than Dutch women; experiments tied this to cultural associations of high pitch with modesty and dependence, and of Japanese masculinity with low pitch [[vanbezooijen1995]].
+- One year after ten weeks of feminisation training the median F0 had fallen 1.5–1.7 semitones from its post-training peak while the formant gains held, and the F0 5th percentile had not risen at all [[leyns2026]].
+- The most-watched Japanese lesson in this sweep is titled 「地声低いは関係ない」 — a low speaking voice is not the obstacle [[aikun2020]].
+- The most recent of three lessons by one Japanese channel addresses 「声が低くても」 — learners whose voices are already low [[tanakarin2025]].
 
 ## Contested or unclear
 - Whether F0 or formants matter more depends on the material: isolated vowels favour F0 [[lass1976]] [[hillenbrand2009]], connected speech gives formants a larger role [[gelfer2013]]; a synthesis study found no fixed F0 or VTL threshold, with cue weights shifting across the range [[neuhaus2026]].
 - One thesis on trans women found pitch, pitch variation and intensity correlated with femininity ratings but formants and breathiness did not [[dahl2018]] — a small-sample outlier against the resynthesis literature.
+- The Voice Resource Project wiki states that pitch "is not a gendered factor" and matters chiefly as a training lever for lowering vocal weight, recommending about 200 Hz as the practice anchor [[sumi-pitch]].
 
 ## Open questions
 - What F0 range Japanese listeners hear as natural for a feminine voice — only weak data [[hasegawa2017]] [[tanaka2022]].
