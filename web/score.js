@@ -4,12 +4,12 @@ import {translator} from './i18n/index.js';
 /* Shareable result: where a voice sits on the female–male contrast axis of the
    current language's reference speakers, plus the five raw measurements.
    The scale is signed and linear along that axis: 0 is halfway between the two
-   group medians, −25 the male median, +25 the female median. Either direction is
+   group medians, −50 the male median, +50 the female median. Either direction is
    a goal in its own right and 0 is the goal for an androgynous voice, so the
-   number never carries one group's name. The display clamps to ±50.
+   number never carries one group's name. The display clamps to ±100.
    Bump SCORE_VERSION whenever the axis, anchors or verdict bands change; old
    result URLs carry their version. */
-export const SCORE_VERSION=1;
+export const SCORE_VERSION=2;
 export const METRIC_KEYS=['f0','delta_f','hnr','balance','pitch_span'];
 /* Labels come from the interface language's catalogue; the Worker renders result pages in the language of the link. */
 export const metricLabel=(key,lang='ja')=>translator(lang)(`metric.${key}.label`);
@@ -17,7 +17,7 @@ export const metricUnit=(key,lang='ja')=>translator(lang)(`metric.${key}.unit`);
 export const METRIC_DIGITS={f0:0,delta_f:0,hnr:1,balance:1,pitch_span:1};
 export const verdictLabel=(verdict,lang='ja')=>translator(lang)(`verdict.${verdict}`);
 export const leaningLabel=(verdict,lang='ja')=>translator(lang)(`leaning.${verdict}`);
-export const SCALE_LIMIT=50;
+export const SCALE_LIMIT=100;
 /* Signed number with an explicit sign; U+2212 for minus. */
 export const formatScore=v=>v>0?`+${v}`:v<0?`−${-v}`:'0';
 export function distance2(a,b){return finite(a?.f0)&&finite(a?.delta_f)&&finite(b?.f0)&&finite(b?.delta_f)?(12*Math.log2(a.f0/b.f0)/4)**2+((a.delta_f-b.delta_f)/90)**2:Infinity;}
@@ -41,7 +41,7 @@ export function gateFailure(detail,lang='ja'){
   if(g.max!==undefined&&v>g.max)return {label,value:`${shown} ${unit}`,need:t('gate.max',{value:String(g.max*(g.scale||1)),unit})};}
  return null;
 }
-export function verdictOf(score){return score>=15?'female':score<=-15?'male':'androgynous';}
+export function verdictOf(score){return score>=30?'female':score<=-30?'male':'androgynous';}
 /* Built from the public library alone, never from imported references, so the studio's
    verdict equals what /r and /og.png recompute from the shared numbers. */
 export class Scorer{
@@ -55,7 +55,7 @@ export class Scorer{
   const groups={female:[],male:[]};
   for(const c of this.speakers){const v=axis(c);if(finite(v))groups[c.group].push(v);}
   this.anchors={male:quantile(groups.male,.5),female:quantile(groups.female,.5)};
-  const toScore=v=>50*(v-(this.anchors.male+this.anchors.female)/2)/(this.anchors.female-this.anchors.male);
+  const toScore=v=>100*(v-(this.anchors.male+this.anchors.female)/2)/(this.anchors.female-this.anchors.male);
   this.toScore=toScore;
   this.bands={};for(const g of ['female','male'])this.bands[g]=[quantile(groups[g],.1),quantile(groups[g],.9)].map(toScore);
   this.metricBands={};for(const key of METRIC_KEYS){this.metricBands[key]={};for(const g of ['female','male']){const values=this.speakers.filter(c=>c.group===g).map(c=>c.features[key]).filter(finite);this.metricBands[key][g]=[quantile(values,.1),quantile(values,.9)];}}
