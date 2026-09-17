@@ -1,9 +1,11 @@
 """Pronunciation exclusions must survive future Common Voice expansion."""
 import unittest
+import unittest.mock
 import json
 import tempfile
 from pathlib import Path
 from build_common_voice_ja import POLICY, selection, speaker_id
+import curation
 from curation import RATING_KEYS, SCALES, Verdicts, append, append_pair
 from screen_reference_speech import verdict
 
@@ -82,6 +84,17 @@ class ReviewLogTests(unittest.TestCase):
         migrated = [r for r in Verdicts().reviews if r['reviewed'].startswith('2026-09-15')]
         v = Verdicts(migrated)
         self.assertEqual(len(v.native_speakers), 3); self.assertEqual(len(v.excluded_speakers), 19); self.assertEqual(len(v.excluded_clips), 15)
+
+    def test_own_recordings_go_to_the_private_logs(self):
+        with tempfile.TemporaryDirectory() as folder, unittest.mock.patch.multiple(curation, LOG=Path(folder) / 'r.jsonl', PAIRS=Path(folder) / 'p.jsonl',
+                                                                                  PRIVATE_LOG=Path(folder) / 'own/r.jsonl', PRIVATE_PAIRS=Path(folder) / 'own/p.jsonl'):
+            append({'speaker': 'own-abc', 'clip': 'own-abc', 'ratings': {'femininity': 4}}, curation.LOG)
+            append({'speaker': 'x', 'clip': 'cv1', 'ratings': {'femininity': 2}}, curation.LOG)
+            append_pair({'a': 'own-abc', 'b': 'cv1', 'answers': {'femininity': 'a'}}, curation.PAIRS)
+            append_pair({'a': 'cv2', 'b': 'cv1', 'answers': {'femininity': 'b'}}, curation.PAIRS)
+            self.assertEqual([r['clip'] for r in curation._lines(curation.LOG)], ['cv1']); self.assertEqual([r['clip'] for r in curation._lines(curation.PRIVATE_LOG)], ['own-abc'])
+            self.assertEqual(len(curation.load()), 2); self.assertEqual(len(curation.load_pairs()), 2)
+            self.assertEqual([r['a'] for r in curation._lines(curation.PRIVATE_PAIRS)], ['own-abc'])
 
     def test_pair_log_validation(self):
         with tempfile.TemporaryDirectory() as folder:

@@ -26,6 +26,10 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 LOG = ROOT / 'curation/reviews.jsonl'
 PAIRS = ROOT / 'curation/pairs.jsonl'
+# Judgements that mention the listener's own recordings (ids `own-…`) stay on this machine.
+PRIVATE_LOG = ROOT / 'data/own/reviews.jsonl'
+PRIVATE_PAIRS = ROOT / 'data/own/pairs.jsonl'
+OWN = 'own-'
 
 # Every rating is 0-6 except `age`. Groups and anchor words follow the literature cited in web/method.html#review.
 SCALES = [
@@ -63,15 +67,26 @@ PROBLEMS = {**QUALITY, **RETIRED}
 # Pairwise judgements: two clips, three questions, answered a / b / same. Logged to PAIRS.
 PAIR_QUESTIONS = {'femininity': 'どちらが女性らしい', 'naturalness': 'どちらが自然', 'preference': 'どちらを見本にしたい'}
 PAIR_ANSWERS = ('a', 'b', 'same')
+# The listener's own working definitions, shown under each question so they stay fixed across sessions.
+PAIR_RUBRIC = {'femininity': '女声は男声より上。男声どうしなら高く明るいほう、女声どうしなら高く明るく可愛いほう（低い・年配・雑なほうが下）。',
+               'naturalness': '滑らかで良い日本語に聞こえ、機械的でなく、感情がある。',
+               'preference': 'はっきりしていて雑音が少なく、手本らしい。'}
 
 
-def load(path=LOG):
+def _lines(path):
     if not path.exists(): return []
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
-def append(review, path=LOG):
+def load(path=None):
+    """Public records followed by the private ones, when the private log exists."""
+    path = LOG if path is None else path
+    return _lines(path) + (_lines(PRIVATE_LOG) if path == LOG else [])
+
+
+def append(review, path=None):
     """Validate and add one review; returns the stored record."""
+    path = LOG if path is None else path
     if not isinstance(review, dict) or not isinstance(review.get('flags', []), list) or not isinstance(review.get('ratings') or {}, dict):
         raise ValueError('malformed review')
     flags = list(dict.fromkeys(review.get('flags', [])))
@@ -101,18 +116,20 @@ def append(review, path=LOG):
     record = {'speaker': speaker, 'clip': review.get('clip') or None, 'display': review.get('display'),
               'language': review.get('language', 'ja'), 'flags': flags, 'ratings': ratings, 'mode': mode, 'session': session, 'pass': rating_pass,
               'note': note.strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
+    if path == LOG and str(record['clip'] or '').startswith(OWN): path = PRIVATE_LOG
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a') as f: f.write(json.dumps(record, ensure_ascii=False) + '\n')
     return record
 
 
-def load_pairs(path=PAIRS):
-    if not path.exists(): return []
-    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+def load_pairs(path=None):
+    path = PAIRS if path is None else path
+    return _lines(path) + (_lines(PRIVATE_PAIRS) if path == PAIRS else [])
 
 
-def append_pair(record, path=PAIRS):
+def append_pair(record, path=None):
     """Validate and add one pairwise judgement; returns the stored record."""
+    path = PAIRS if path is None else path
     if not isinstance(record, dict): raise ValueError('malformed pair')
     a, b = record.get('a'), record.get('b')
     if not isinstance(a, str) or not isinstance(b, str) or not a or not b or a == b: raise ValueError('two distinct clips required')
@@ -130,6 +147,7 @@ def append_pair(record, path=PAIRS):
     out = {'a': a, 'b': b, 'language': record.get('language', 'ja'), 'answers': answers, 'kind': kind,
            'distance': None if distance is None else round(float(distance), 4), 'session': str(record.get('session') or '')[:40],
            'note': str(record.get('note') or '')[:1000].strip(), 'reviewed': datetime.now(timezone.utc).isoformat(timespec='seconds')}
+    if path == PAIRS and (a.startswith(OWN) or b.startswith(OWN)): path = PRIVATE_PAIRS
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('a') as f: f.write(json.dumps(out, ensure_ascii=False) + '\n')
     return out

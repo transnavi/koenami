@@ -15,6 +15,7 @@ from aiohttp import web, ClientSession, ClientTimeout
 from acoustics import measure, mono16, RATE
 from signals import visualise
 import curation
+import own_voice
 
 ROOT = Path(__file__).parent
 PUBLIC = os.environ.get('KOENAMI_PUBLIC') == '1'
@@ -42,6 +43,9 @@ def create_app():
                 if clip['language'] in libraries: libraries[clip['language']]['clips'].append(clip)
     clips = {s['id']: s for lib in libraries.values() for s in lib['clips']}
     sample_files = {Path(s['audio']).name for s in clips.values() if s['audio'].startswith('/samples/')}
+    # The listener's own takes: local only, never part of a library or a public build.
+    own_clips, own_paths = ([], {}) if PUBLIC else own_voice.load(DATA)
+    clips.update({c['id']: c for c in own_clips})
     gate, asr_gate = asyncio.Semaphore(1), asyncio.Semaphore(1)
     cache = OrderedDict()
     pcm_cache = OrderedDict()
@@ -175,6 +179,7 @@ def create_app():
 
     async def sample(request):
         name = request.match_info['file']
+        if name in own_paths: return web.FileResponse(own_paths[name])
         if name not in sample_files: raise web.HTTPNotFound()
         response = web.FileResponse(DATA / 'samples' / name)
         if name.lower().endswith('.flac'): response.content_type = 'audio/flac'
@@ -209,11 +214,13 @@ def create_app():
                 pool = 'jvs'
             else: pool = 'synthetic' if c.get('synthetic') else 'cv'
             by_speaker.setdefault(c['speaker'], []).append(c); pool_of[c['speaker']] = pool
+        if lang == 'ja':
+            for c in own_clips: by_speaker[c['speaker']] = [c]; pool_of[c['speaker']] = 'own'
         queue = []
         for sid, clips in by_speaker.items():
             if pool_of[sid] == 'jvs': best = next((c for c in clips if c.get('utterance') == JVS_PARALLEL[0]), clips[0])
             else: best = max(clips, key=lambda c: (bool(c.get('plotted')), c.get('duration', 0)))
-            queue.append({'speaker': sid, 'pool': pool_of[sid], 'clips': [dict(id=c['id'], display='VOICEVOX' if c.get('synthetic') else (c.get('display_label') or c.get('name') or sid), text=c.get('text'),
+            queue.append({'speaker': sid, 'pool': pool_of[sid], 'clips': [dict(id=c['id'], display='VOICEVOX' if c.get('synthetic') else '自分' if c.get('private') else (c.get('display_label') or c.get('name') or sid), text=c.get('text') or ('（自分の録音）' if c.get('private') else ''),
                           audio=c['audio'], duration=c.get('duration'), plotted=bool(c.get('plotted'))) for c in sorted(clips, key=lambda c: c['id'])], 'first': best['id']})
         rng = random.Random(session or 'koenami')
         rng.shuffle(queue)
@@ -229,8 +236,8 @@ def create_app():
             queue = [q for q in queue if q['missing'] and not q['previous']['flags']]
         else:
             # Unreviewed speakers interleaved 5 : 2 : 1 (Common Voice : JVS : synthetic) until a pool runs dry.
-            pools = {name: [q for q in queue if q['speaker'] not in reviewed and q['pool'] == name] for name in ('cv', 'jvs', 'synthetic')}
-            pattern = ['cv'] * 5 + ['jvs'] * 2 + ['synthetic']
+            pools = {name: [q for q in queue if q['speaker'] not in reviewed and q['pool'] == name] for name in ('cv', 'jvs', 'synthetic', 'own')}
+            pattern = ['cv', 'cv', 'jvs', 'own', 'cv', 'cv', 'synthetic', 'own']
             fresh = []
             while any(pools.values()):
                 for name in pattern:
@@ -274,12 +281,25 @@ def create_app():
                 and all(isinstance(c['features'].get(k), (int, float)) for k in keys) and c['features']['f0'] > 0]
         if len(pool) < 8: return []
         X = np.array([[12 * np.log2(c['features']['f0'])] + [c['features'][k] for k in keys[1:]] for c in pool], float)
-        X = (X - X.mean(0)) / (X.std(0) + 1e-9)
         judged = {frozenset((r['a'], r['b'])) for r in curation.load_pairs()}
         rng = random.Random(session or 'koenami')
         order = list(range(len(pool))); rng.shuffle(order)
         pairs, used = [], set()
-        def item(c): return dict(id=c['id'], display=c.get('display_label'), text=c.get('text'), audio=c['audio'], duration=c.get('duration'), speaker=c['speaker'])
+        def item(c): return dict(id=c['id'], display='自分' if c.get('private') else c.get('display_label'), text=c.get('text') or ('（自分の録音）' if c.get('private') else ''),
+                                 audio=c['audio'], duration=c.get('duration'), speaker=c['speaker'])
+        def vector(c): return (np.array([12 * np.log2(c['features']['f0'])] + [c['features'][k] for k in keys[1:]], float) - mean) / std
+        mean, std = X.mean(0), X.std(0) + 1e-9; X = (X - mean) / std
+        # Own takes with usable measurements: each becomes one side of a pair against a near library neighbour.
+        own = [c for c in own_clips if lang == 'ja' and c.get('plotted')]
+        rng.shuffle(own)
+        for c in own:
+            if len(pairs) >= 15: break
+            d = np.sqrt(((X - vector(c)) ** 2).sum(1))
+            candidates = [j for j in np.argsort(d) if frozenset((c['id'], pool[j]['id'])) not in judged][:5]
+            if not candidates: continue
+            j = rng.choice(candidates); used.add(j)
+            a, b = (c, pool[j]) if rng.random() < .5 else (pool[j], c)
+            pairs.append({'a': item(a), 'b': item(b), 'kind': 'near', 'distance': round(float(d[j]), 4), 'own': True})
         for i in order:
             if len(pairs) >= 60: break
             d = np.sqrt(((X - X[i]) ** 2).sum(1))
@@ -292,14 +312,20 @@ def create_app():
             used.update((i, j))
             a, b = (pool[i], pool[j]) if rng.random() < .5 else (pool[j], pool[i])
             pairs.append({'a': item(a), 'b': item(b), 'kind': 'far' if far else 'near', 'distance': round(float(d[j]), 4)})
+        rng.shuffle(pairs)
         return pairs
+
+    def label(cid):
+        c = clips.get(cid)
+        if not c: return cid
+        return '自分' if c.get('private') else 'VOICEVOX' if c.get('synthetic') else (c.get('display_label') or c.get('name') or cid)
 
     async def pairs_get(request):
         if PUBLIC: raise web.HTTPNotFound()
         lang, session = request.query.get('lang', 'ja'), request.query.get('session', '')[:40]
         if lang not in libraries: raise web.HTTPNotFound()
-        return respond({'language': lang, 'questions': curation.PAIR_QUESTIONS, 'judged': len(curation.load_pairs()),
-                        'queue': pair_queue(lang, session), 'log': curation.load_pairs()[-50:]})
+        return respond({'language': lang, 'questions': curation.PAIR_QUESTIONS, 'rubric': curation.PAIR_RUBRIC, 'judged': len(curation.load_pairs()),
+                        'queue': pair_queue(lang, session), 'log': [dict(r, labels=[label(r['a']), label(r['b'])]) for r in curation.load_pairs()[-50:]]})
 
     async def pairs_post(request):
         if PUBLIC: raise web.HTTPNotFound()
