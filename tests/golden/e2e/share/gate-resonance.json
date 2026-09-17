@@ -449,10 +449,8 @@
   "quality-state": {
    "tag": "span",
    "class": "",
-   "attrs": {
-    "hidden": ""
-   },
-   "text": ""
+   "attrs": {},
+   "text": "響きの推定値が解析設定によって変わりやすい音声です。"
   },
   "signal-view": {
    "tag": "koe-select",
