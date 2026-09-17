@@ -1,8 +1,36 @@
 {
-  "compilerOptions": {
-    "target": "ES2022", "module": "ESNext", "moduleResolution": "bundler",
-    "lib": ["ES2022"], "strict": true, "noEmit": true, "skipLibCheck": true, "allowJs": true,
-    "types": ["./worker-configuration.d.ts"]
-  },
-  "include": ["worker.ts", "worker-configuration.d.ts", "worker-modules.d.ts"]
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": false,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"moduleResolution": "bundler"
+	},
+	// Kit's default include also sweeps tests/, which type-checks against its own
+	// tests/tsconfig.json (bun run check:tests); the worker is checked by check:worker.
+	"include": [
+		".svelte-kit/ambient.d.ts",
+		".svelte-kit/env.d.ts",
+		".svelte-kit/non-ambient.d.ts",
+		".svelte-kit/types/**/$types.d.ts",
+		"vite.config.ts",
+		"src/**/*.js",
+		"src/**/*.ts",
+		"src/**/*.svelte"
+	],
+	"exclude": [
+		"node_modules/**",
+		".svelte-kit/output",
+		"src/service-worker.js",
+		"src/service-worker/**/*.js",
+		"src/service-worker.ts",
+		"src/service-worker/**/*.ts",
+		"src/service-worker.d.ts",
+		"src/service-worker/**/*.d.ts"
+	]
 }
