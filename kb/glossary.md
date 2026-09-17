@@ -190,7 +190,7 @@ Terms as the communities and teachers use them, with the note that attests the u
 - **Big dog / little dog** (en) — a resonance exercise: pant like a small dog for a small, bright tract, like a big dog for a large, dark one, then keep that shape when speaking; described by voice teacher Renée Yoxon, who credits no originator [[yoxon2023]]. → [[voice-therapy-techniques]] · [[formants]]
 - **Chest voice / head voice** (en; ja 胸声 / 頭声; ko 흉성 / 두성; es voz de pecho) — sensation-based register names; the felt vibrations are feedback, not the sound source, and chest vibration is felt only up to about 300 Hz [[herbst2020]]. → [[vocal-registers]]
 - **Closed quotient** (en) — the share of each vibratory cycle during which the folds are closed; a longer closed phase gives stronger high harmonics and a brighter, heavier sound [[herbst2020]]. → [[vocal-weight]] · [[voice-quality]]
-- **H1–H2** (en) — the amplitude difference between the first two harmonics; larger values go with breathier phonation, and it is one of the measures behind "vocal weight" [[garellek2013]]. → [[vocal-weight]]
+- **H1–H2** (en) — the amplitude difference between the first two harmonics; a more open glottis strengthens the low harmonics relative to the high ones [[hanson1997]], listeners hear changes in it as breathiness [[garellek2013]], and it is one of the measures behind "vocal weight". → [[vocal-weight]]
 - **Creak / vocal fry** (en; ja きしみ声; zh 嘎裂声 / 气泡音) — several distinct kinds of low, constricted or irregular phonation; fry proper is periodic but heavily damped [[keating2015]]. → [[voice-quality]] · [[vocal-registers]]
 
 - **Laryngeal mechanisms M0–M3** (en) — the four vibratory regimes shown by electroglottography: M0 fry, M1 chest/modal, M2 falsetto, M3 whistle; M1 and M2 overlap in pitch [[roubeau2009]] [[herbst2020]]. → [[vocal-registers]]
@@ -214,7 +214,7 @@ Terms as the communities and teachers use them, with the note that attests the u
 - **夹子音** (zh) — a pinched, cutesy extreme voice, named partly in parody [[bili-zhizhiya2023]]. → [[vocal-registers]]
 - **中性音** (zh) — the neutral intermediate voice trained before a cross-gender one [[moegirl-weisheng]]. → [[chinese-community]]
 - **男声女调** (zh clinical) — the persistently high-pitched male voice, mutational falsetto, in mainland voice medicine [[yao2025]] [[wang2009]] [[liang2017]]. → [[voice-health]]
-- **嗓音女性化 / 嗓音男性化** (zh) — voice feminization / masculinization, the clinical and community term [[mtfwiki-vocal-therapy]] [[voicedoctor-tw]]. → [[voice-feminization-therapy]] · [[voice-masculinization]]
+- **嗓音女性化 / 嗓音男性化** (zh) — voice feminization, the term of the community wiki and clinics [[mtfwiki-vocal-therapy]] [[voicedoctor-tw]], and voice masculinization as a translated video titles it [[bili-fledence2025]]. → [[voice-feminization-therapy]] · [[voice-masculinization]]
 - **声带截短术 · 环甲接近术** (zh) — vocal-fold shortening (Wendler-type glottoplasty), the mainland default, and cricothyroid approximation [[mtfwiki-vocal-surgery]] [[zhang2023cn]]. → [[voice-surgery]]
 - **药娘** (zh community) — a person feminizing through hormones, often self-administered; MtF.wiki's slang table marks it as possibly offensive from outsiders [[mtfwiki-slang]] [[baike-yaoniang]]. → [[chinese-community]] · [[hormones-and-voice]]
 - **跨女 / 跨男 / 跨儿** (zh community) — trans woman, trans man, and an affectionate umbrella term [[mtfwiki-slang]]. → [[chinese-community]]
@@ -228,7 +228,7 @@ Terms as the Spanish-, Portuguese-, French-, German-, Italian-, Dutch- and Russi
 
 - **feminización de la voz** (es) — voice feminization, the clinical term in Spain and Latin America; community phrasing is "feminizar la voz" [[viales2025]] [[tornero2019]] [[longi2021]]. → [[voice-feminization-therapy]]
 - **masculinización de la voz** (es) — voice masculinization, paired with the above in the reviews [[viales2025]] [[femivoz]]. → [[voice-masculinization]]
-- **fonoaudiólogo/a** (es, Latin America) — the speech-language pathologist, as the Chilean and Argentine studies name the profession [[munoz2025]] [[mendez2025]]; in Spain the profession is **logopedia / logopeda** [[heydrich2023]]. → [[speech-language-pathology]]
+- **fonoaudiólogo/a** (es, Latin America) — the speech-language pathologist, as Colombian and Argentine studies name the profession [[munoz2025]] [[mendez2025]]; in Spain the profession is **logopedia / logopeda** [[heydrich2023]]. → [[speech-language-pathology]]
 - **terapeuta da fala** (pt, Portugal) — the European Portuguese name for the profession, against Brazilian **fonoaudiólogo(a)**; the two national literatures keep separate terms for the same clinician [[ferreira2025]] [[dornelas2021]]. → [[speech-language-pathology]]
 - **feminização vocal** (pt, Brazil) — vocal feminization as the community says it; the SUS clinical programme calls the same process **redesignação vocal** (vocal reassignment) [[ganda2025]] [[dornelas2021]]. → [[voice-feminization-therapy]]
 - **altura · ressonância · peso vocal** (pt) — pitch, resonance, vocal weight: the Brazilian tutorial triad, matching the English communities' pitch–resonance–weight set [[ganda2025]]. → [[fundamental-frequency]] · [[formants]] · [[vocal-weight]]
