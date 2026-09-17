@@ -287,6 +287,28 @@ $('take-select').addEventListener('optionaction',async e=>{
 });
 
 
+/* Bulk actions on the recording history: one zip of every saved take, or delete them all. */
+async function storedTakes(){const out=[];for(const t of state.takes){if(!t.stored)continue;const rec=await TakeStore.read('recording:'+t.id).catch(()=>null);if(rec?.pcm)out.push({...t,pcm:rec.pcm});}return out;}
+$('download-all').onclick=async()=>{
+ if(state.busy||state.recording)return;state.busy=true;controls();
+ try{const takes=await storedTakes();if(!takes.length)throw new Error('保存された録音がありません。');
+  const {ZipWriter,BlobWriter,BlobReader,TextReader}=await import('@zip.js/zip.js/index-native.js');
+  const zip=new ZipWriter(new BlobWriter('application/zip')),used=new Set(),manifest=[];
+  for(const [i,t] of takes.entries()){let name=(t.name||'take').replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|]+/g,'_');if(used.has(name))name+='-'+(i+1);used.add(name);
+   await zip.add(name+'.wav',new BlobReader(wav(t.pcm)));manifest.push({file:name+'.wav',id:t.id,name:t.name,date:t.date,duration:t.duration,features:t.features});}
+  await zip.add('takes.json',new TextReader(JSON.stringify(manifest,null,1)));
+  download(await zip.close(),'koenami-recordings.zip');notify(`${takes.length}件の録音をまとめました。`);
+ }catch(error){notify(error.message,true);}
+ finally{state.busy=false;controls();}
+};
+$('delete-all').onclick=async()=>{
+ if(state.busy||state.recording)return;const stored=state.takes.filter(t=>t.stored);
+ if(!stored.length){notify('保存された録音がありません。');return;}
+ if(!confirm(`保存された録音${stored.length}件をすべて削除します。元に戻せません。`))return;
+ for(const t of stored)await deleteTake({storedId:t.id});
+ notify(`${stored.length}件の録音を削除しました。`);
+};
+
 function updateJvsBanner(){const count=new Set(state.clips.filter(c=>c.dataset==='JVS').map(c=>c.id)).size;$('jvs-banner').hidden=state.lang!=='ja'||count>=5000;}
 let importController=null;
 $('add-reference').onclick=()=>{$('jvs-status').textContent=state.imported.length?`${state.imported.length.toLocaleString()}音声を追加済み`:'';$('import-dialog').showModal();};
