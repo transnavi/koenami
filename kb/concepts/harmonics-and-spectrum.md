@@ -24,6 +24,8 @@ A voiced sound is a stack of harmonics — energy at F0, 2×F0, 3×F0 and so on 
 - The longer closed phase of chest register "typically corresponds with the strength of noteworthy harmonics": during the open phase higher harmonics are damped in the trachea, so a longer closed phase yields stronger overtones [[herbst2020]].
 - Listeners use the amplitude drop between low harmonics (H1–H2, H2–H4) to distinguish breathy from modal phonation [[garellek2013]].
 - The "singing formant" is "a high spectrum envelope peak near 2.8 kHz" produced by lowering the larynx and widening the pharynx relative to the larynx tube, adding an extra formant between F3 and F4 [[sundberg1974]].
+- After endoscopic vocal fold shortening the long-term average spectrum converged on cisgender female reference profiles over twelve months while sound pressure level stayed constant [[dasdogen2026]].
+- A Japanese lesson's title argues that neither 裏声 nor high pitch is needed, and puts 倍音 (overtones) in their place [[visera2021]].
 
 ## Contested or unclear
 - Wikipedia's overtone article calls formants "highly variable amplitudes of the overtones" [[wikipedia-overtone]]. The definition used in this vault, and on the Formant page, is the tract *resonance* that produces those peaks [[wikipedia-formant]] [[fant1960]].

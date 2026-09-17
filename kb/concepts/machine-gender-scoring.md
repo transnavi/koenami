@@ -14,6 +14,7 @@ Models that output a continuous femininity/masculinity estimate, the datasets be
 - Extreme-random-forest scores correlate with human masculinity/femininity ratings up to r = .63 (female) and .77 (male) at 7 s of speech [[chen2021]]; a later acoustic characterisation with a machine system [[chen2023]] (abstract unread).
 - Gender classifiers are highly sensitive to voice modification and speaker verification fails as modification grows; texture should be modelled as pitch, resonance and weight [[netzorg2024]]; DSFD gives controlled teacher speech with EGG [[netzorg2025]].
 - Self-supervised representations beat classical features for within-speaker impression shifts; multimodal LLMs were unreliable [[fujita2026]].
+- On 100 recordings from cisgender speakers, a model trained on a larger low-quality corpus classified voice gender at 92% against 100% for both expert and naïve human listeners, and beat the smaller high-quality model at 84% [[simon2026]].
 - Style-tag datasets: ParaSpeechCaps (59 tags, English) [[diwan2025]]; Coco-Nut (Japanese free-text) [[watanabe2023]]; JVS [[takamichi2019]].
 
 ## Contested or unclear

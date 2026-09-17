@@ -17,6 +17,7 @@ Sex hormones act on the larynx in one direction: androgens enlarge it and lower 
 - Testosterone's voice effects go beyond F0: over a year, shimmer decreased and fricative kurtosis increased while jitter and vowel duration did not change [[eagen2025]]; voice-related handicap after testosterone fell to the level of controls without voice disorders [[nimura2022]].
 - Acoustics and self-perception can move apart during the first year: trans men's self-reported masculinization did not correlate with F0, range or habitual pitch level at any time point [[hancock2017a]].
 - The endocrine guideline frames all of this inside multidisciplinary assessment and recommends no hormone treatment before puberty [[hembree2017]].
+- Monthly prospective follow-up of 14 transmasculine adolescents and young adults found speaking F0 falling by 3 months (mean −32.9 Hz) and plateauing by 9 months, with semitone pitch range unchanged across the 12 months [[ma2026]].
 
 ## Contested or unclear
 - Whether trans men on testosterone need voice services at all: one Japanese cohort study argues intervention is unnecessary because VHI normalises [[nimura2022]], while a participant-centred mixed-methods study found 79% of its transmasculine sample showed indications of gender-related voice problems [[azul2018]], and a critical review rejects the assumption that testosterone satisfies every transmasculine client [[azul2015]].

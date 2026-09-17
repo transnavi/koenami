@@ -19,6 +19,10 @@ Lowering pitch and darkening resonance. Testosterone does most of the pitch work
 - Not everyone seeking masculinization takes hormones: ASHA names modified vocal function exercises and circumlaryngeal massage with laryngeal reposturing as behavioural routes, and states that hormones do not change intonation, volume or nonverbal communication [[asha-gender-affirming-voice]].
 - The UCSF chapter puts the residual group in numbers: 90% of trans men reach acceptable voice results after 4–5 months of androgens, about 75% are identified as male by telephone, and behavioural intervention after hormones lowered speaking pitch by an additional 35 Hz [[ucsf2016]].
 - Readiness, not scope, is the bottleneck: most of 140 surveyed Taiwanese SLPs accepted trans voice work as in scope but did not feel sufficiently skilled [[litosseliti2019]], and UK SLTs cite lack of training behind clients' difficulty accessing local services [[rcslt2019]].
+- In interviews with ten participants after the Ghent masculinising intonation training, more than half reported limited vocal change and about half a decrease in being addressed as the wrong gender [[papeleu2025a]]; the trial itself is [[papeleu2026]].
+- Transmasculine voices that were acoustically similar to cis male voices were still rated less masculine and less natural, and their speakers scored higher on the Voice Handicap Index [[fujiki2026]].
+- Transmasculine speech on testosterone was categorised as male at the same rate as cis male speech, and F0 together with formant-estimated vocal tract length still left much of the variance in gender perception unexplained [[pan2025]].
+- Four direct testosterone injections into the bilateral vocal folds lowered mean F0 three months after the final injection in two hormone-naïve adults, with post-treatment testosterone and estradiol levels similar to baseline [[mortonjones2026]].
 
 ## Open questions
 - Evidence for behavioural masculinization without testosterone (non-binary people, or people not taking T) is absent from this vault.

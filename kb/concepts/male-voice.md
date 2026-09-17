@@ -16,6 +16,7 @@ A hub for what makes a voice hear as a man's. The pubertal growth of the larynx 
 - Testosterone lowers trans men's speaking F0 over the first year, but a meta-analysis found about one in five had not reached cis-male norms at 12 months and voice problems were common [[ziegler2018]]; in a Swedish cohort mean F0 reached 125 Hz at 12 months with wide individual variation, and satisfaction tracked lower F0 [[nygren2016]]; Japanese cohorts give the same time course [[nimura2015]] [[nimura2022]]. Over the first year shimmer also falls and fricative spectra change, while jitter and vowel duration do not [[eagen2025]].
 - For those who want a lower voice without testosterone, or whose pitch dropped but who still hear as female, training and surgery exist: see [[voice-masculinization]] and the scoping review of masculinizing procedures [[kalra2026]].
 - Perceived masculinity is correlated with, yet separable from, perceived sexual orientation, with partly different acoustic predictors; gay men were rated less masculine than heterosexual men in that study [[munson2007]]. Voice-actor "boy" voices follow a convention rather than real boys' acoustics [[hayashi2026]].
+- The largest 男声 lesson in the Japanese sweep, at 134,252 views, teaches an イケボ — the performance word for an attractive male voice [[natsunoame2022]].
 
 ## Contested or unclear
 - How much of the male–female difference in Japanese pitch is cultural pulling of men's pitch downward rather than anatomy [[vanbezooijen1995]].

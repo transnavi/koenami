@@ -14,6 +14,10 @@ Questionnaires that capture how a person experiences their voice: the Trans Woma
 - Quality of life relates more to self-rated voice than to listener ratings [[hancock2011]]; the main burdens are emotional reactions to activity and participation limits, not demographics [[hancock2017]]; self- and listener ratings correlate weakly [[quinn2021]].
 - Surgery and therapy both improve PROMs; Wendler + therapy gives the largest TWVQ change [[chowdhury2025]]; TVQMtF fell from 89.9 to 50.4 after glottoplasty [[zhang2023cn]].
 - In trans men, VHI fell after testosterone to control levels [[nimura2022]]; across 313 TGD adults, hormone therapy and counselling were associated with better TWVQ/TVQFtM scores [[shen2026]].
+- Twelve of the 30 TWVQ items were rated severe by at least 40% of 26 respondents, most often the items about vocal identity [[echevarria2026]].
+- Among 5,424 TGD adults, 21.4% had had voice therapy while 30.5% wanted it, and 1.7% had had voice-related surgery while 10% wanted it [[rae2026]].
+- A scoping review of transmasculine PROMs found five studies only, and reported the instruments in use as not representative in their original forms or of undetermined validity for this group [[beam2025]].
+- In pre-treatment interviews, transfeminine patients described success as less misgendering, less mental and phonatory effort, and a voice that works on the phone and with strangers [[francois2025]].
 
 ## Open questions
 - No validated Japanese TVQ/TWVQ in this vault — a translation and validation would be a concrete project.

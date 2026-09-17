@@ -14,6 +14,7 @@ The risk side of changing a voice: strain from forcing pitch, fatigue, instabili
 - Surgical adverse events: roughness after glottoplasty [[mora2018]], increased jitter/shimmer/NHR and 32% revision requests after laser reduction [[yilmaz2021]], granuloma and fatigue with combinations [[chowdhury2025]]; postoperative rest and therapy are stressed [[catani2024]].
 - Resonance training raised F0 without forcing it [[carew2007]] — a lower-strain route than pitch pushing.
 - Guidelines recommend assessment and training with qualified clinicians [[coleman2022]] [[davies2015]].
+- In 58 trans people who had not had voice harmonisation, Vocal Fatigue Index scores rose by an average of 4.11 points for each additional context in which the person adjusted their voice, and were higher in transmasculine than transfeminine respondents [[godoy2026]].
 
 ## Open questions
 - Incidence of strain injuries from self-directed feminization training is unmeasured.

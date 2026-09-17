@@ -17,6 +17,9 @@ Formants are the vocal-tract resonances; their spacing (ΔF, formant dispersion)
 - Combining articulation–resonance training with pitch elevation beat either alone in a randomised crossover trial (n = 30) [[leyns2023]].
 - Untrained Mandarin-speaking trans women already showed vowel-specific formant shifts relative to cis men and women [[huang2024]]; F1–F3 rose after Wendler glottoplasty in a Beijing series [[zhang2023cn]].
 - Taller men with higher testosterone had lower F0 and lower ΔF and were rated more masculine; the height effect ran partly through ΔF [[cartei2014]].
+- A private-practice protocol targeting individual resonance goals raised F0 and F2 and vowel space area and reduced estimated vocal tract length, with the F2 change predicting the change on the TWVQ [[hirsch2026]].
+- The English-language wiki names larynx height, vowel shape, oropharyngeal closure and expansion, and mouth space as the mechanisms of resonance change, with larynx height the larger modification and vowel shape the smaller [[sumi-resonance]].
+- A Japanese lesson titled 「ナチュラルな女声は口の中にあり！」 places a natural female voice in the mouth rather than at the larynx [[kozakana2019]].
 
 ## Contested or unclear
 - Whole-utterance formant averages mix vowels, so ΔF depends on what was said; compare the same words (Koenami method page).
