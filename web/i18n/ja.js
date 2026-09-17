@@ -186,9 +186,6 @@ export default {
  'info.source': 'ソースコード（GitHub） ↗',
  'info.colors': '配色の参考：',
 
- 'rename.heading': '名前の変更',
- 'rename.aria': '録音の名前',
- 'rename.empty': '名前を入力してください。',
  'rename.failed': '名前を変更できませんでした。もう一度お試しください。',
  'report.heading': '比較',
  'report.save': 'レポートを保存',

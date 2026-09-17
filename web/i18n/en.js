@@ -185,9 +185,6 @@ export default {
  'info.source': 'Source code (GitHub) ↗',
  'info.colors': 'Colors follow',
 
- 'rename.heading': 'Rename',
- 'rename.aria': 'Recording name',
- 'rename.empty': 'Enter a name.',
  'rename.failed': 'The recording could not be renamed. Try again.',
  'report.heading': 'Comparison',
  'report.save': 'Save the report',
