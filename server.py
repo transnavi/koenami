@@ -315,12 +315,17 @@ def create_app():
         rng.shuffle(pairs)
         return pairs
 
+    def label(cid):
+        c = clips.get(cid)
+        if not c: return cid
+        return '自分' if c.get('private') else 'VOICEVOX' if c.get('synthetic') else (c.get('display_label') or c.get('name') or cid)
+
     async def pairs_get(request):
         if PUBLIC: raise web.HTTPNotFound()
         lang, session = request.query.get('lang', 'ja'), request.query.get('session', '')[:40]
         if lang not in libraries: raise web.HTTPNotFound()
         return respond({'language': lang, 'questions': curation.PAIR_QUESTIONS, 'rubric': curation.PAIR_RUBRIC, 'judged': len(curation.load_pairs()),
-                        'queue': pair_queue(lang, session), 'log': curation.load_pairs()[-50:]})
+                        'queue': pair_queue(lang, session), 'log': [dict(r, labels=[label(r['a']), label(r['b'])]) for r in curation.load_pairs()[-50:]]})
 
     async def pairs_post(request):
         if PUBLIC: raise web.HTTPNotFound()
