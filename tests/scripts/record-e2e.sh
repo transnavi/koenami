@@ -5,6 +5,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 python=${KOENAMI_PYTHON:-.venv/bin/python}
+# The analyzer's port; another one when a sibling worktree's recording holds the default.
+analyzer_port=${KOENAMI_ANALYZER_PORT:-35512}
 # The review and pairs pages append to these logs; recording starts from the committed state.
 for log in curation/reviews.jsonl curation/pairs.jsonl; do
 	if git ls-files --error-unmatch "$log" >/dev/null 2>&1; then
@@ -21,9 +23,9 @@ cleanup() {
 trap cleanup EXIT
 # One partial review, so the update mode of the review page has a speaker to show.
 printf '%s\n' "$seed" >> curation/reviews.jsonl
-KOENAMI_PUBLIC=0 KOENAMI_DATA="$PWD/tests/fixtures/data" "$python" server.py --port 35512 & analyzer=$!
-for _ in $(seq 100); do curl -sf http://127.0.0.1:35512/api/catalog >/dev/null && break; sleep 0.2; done
-curl -sf http://127.0.0.1:35512/api/catalog >/dev/null || { echo "analyzer did not start" >&2; exit 1; }
+KOENAMI_PUBLIC=0 KOENAMI_DATA="$PWD/tests/fixtures/data" "$python" server.py --port "$analyzer_port" & analyzer=$!
+for _ in $(seq 600); do curl -sf http://127.0.0.1:$analyzer_port/api/catalog >/dev/null && break; sleep 0.2; done
+curl -sf http://127.0.0.1:$analyzer_port/api/catalog >/dev/null || { echo "analyzer did not start" >&2; exit 1; }
 # A full run starts from nothing, so fixtures of removed scenarios do not linger.
 if [[ $# -eq 0 ]]; then rm -rf tests/golden/e2e tests/golden/canvas tests/fixtures/api coverage/e2e; fi
 node -e '
@@ -34,4 +36,4 @@ meta.chromium = require("playwright-core").chromium.executablePath().split("/").
 meta.recorded = new Date().toISOString().slice(0, 10);
 fs.writeFileSync("tests/golden/META.json", JSON.stringify(meta, null, "\t") + "\n");
 '
-MOCK_API_RECORD=http://127.0.0.1:35512 RECORD=1 bun x playwright test --config playwright.config.ts --update-snapshots=all "$@"
+MOCK_API_RECORD=http://127.0.0.1:$analyzer_port RECORD=1 bun x playwright test --config playwright.config.ts --update-snapshots=all "$@"

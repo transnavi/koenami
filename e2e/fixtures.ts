@@ -46,6 +46,7 @@ type Studio = {
 	untilTicking: (expression: string, timeoutMs?: number) => Promise<void>;
 	/** Pixel-exact PNG golden of one canvas, from the canvas's own pixels. */
 	canvas: (name: string, selector: string) => Promise<void>;
+	screen: (name: string) => Promise<void>;
 	/** Download triggered by `action`, recorded as name + SHA-256. */
 	download: (
 		action: () => Promise<void>
@@ -419,6 +420,33 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				`${name}.png`
 			);
 		};
+		// The rendered page, pixel for pixel. Two launches of the same page differ by a few
+		// pixels at rounded corners (a channel off by 1 or 2 out of 255 from antialiasing),
+		// so the comparison allows that colour distance and no differing pixel beyond it:
+		// a moved element, a wrong colour or a changed font differs by far more. The live
+		// timer is masked, and so are the map and signal canvases: their pixels have goldens
+		// of their own, and a playback cursor on them follows real time.
+		const screen = async (name: string) => {
+			await settle();
+			await page.evaluate(() => document.fonts.ready).catch(() => {});
+			// A mask covers the element's box whatever lies over it, so the canvases are masked
+			// only while no dialog is open above them; a dialog's screen shows the dialog.
+			const covered = await page.locator('dialog[open]').count();
+			const shot = await page.screenshot({
+				fullPage: true,
+				animations: 'disabled',
+				caret: 'hide',
+				mask: covered
+					? [page.locator('#timer'), page.locator('#live-time')]
+					: [
+							page.locator('#timer'),
+							page.locator('#live-time'),
+							page.locator('#voice-map'),
+							page.locator('#signal-canvas')
+						]
+			});
+			expect(shot).toMatchSnapshot(`${name}.png`, { maxDiffPixels: 0, threshold: 0.02 });
+		};
 		const download = async (action: () => Promise<void>) => {
 			const waiting = page.waitForEvent('download');
 			await action();
@@ -502,6 +530,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		await use({
 			log,
 			golden,
+			screen,
 			tick,
 			until,
 			untilTicking,
