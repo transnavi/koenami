@@ -1,7 +1,0 @@
-{
- "key": "POST /api/pairs 1fece24d53f735972f74af8f8b6a5f70fc38abce932663201e7335ee02ea79d8",
- "status": 200,
- "contentType": "application/json; charset=utf-8",
- "body": "{\"a\": \"common_voice_ja_38935230\", \"b\": \"common_voice_ja_19580234\", \"language\": \"ja\", \"answers\": {\"femininity\": \"a\"}, \"kind\": \"far\", \"distance\": 2.957, \"session\": \"w56cpow4mjuuxd6w\", \"note\": \"\", \"reviewed\": \"2026-09-17T04:13:17+00:00\"}",
- "base64": false
-}

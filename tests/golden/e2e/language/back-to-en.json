@@ -1,7 +1,7 @@
 {
  "url": "/en/",
- "title": "Koenami · 女声・男声のボイトレツール",
- "lang": "ja",
+ "title": "Koenami · voice training for feminine and masculine voices",
+ "lang": "en",
  "theme": "light",
  "dialogs": [],
  "focus": "body",
@@ -165,7 +165,7 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "見本の言語"
+    "aria-label": "Language (interface and references)"
    },
    "value": "en",
    "options": [
@@ -195,27 +195,27 @@
     },
     {
      "value": "lab",
-     "text": "発声の見本",
+     "text": "Voice lab",
      "disabled": false,
      "data": {}
     }
    ],
    "trigger": "English",
    "expanded": "false",
-   "text": "日本語普通话English한국어発声の見本"
+   "text": "日本語 普通话 English 한국어 Voice lab"
   },
   "corpus-count": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "20音声 · 20人"
+   "text": "20 clips · 20 speakers"
   },
   "tour-restart": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "画面ガイド",
-    "aria-label": "画面ガイド"
+    "title": "Screen guide",
+    "aria-label": "Screen guide"
    },
    "text": ""
   },
@@ -223,8 +223,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "この言語の見本では判定を計算できません",
-    "aria-label": "判定を共有",
+    "title": "The references in this language cannot give a verdict",
+    "aria-label": "Share the verdict",
     "disabled": ""
    },
    "text": ""
@@ -233,8 +233,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "設定",
-    "aria-label": "設定"
+    "title": "Settings",
+    "aria-label": "Settings"
    },
    "text": ""
   },
@@ -242,8 +242,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "出典と関連ツール",
-    "aria-label": "出典と関連ツール"
+    "title": "Sources and related tools",
+    "aria-label": "Sources and related tools"
    },
    "text": ""
   },
@@ -251,8 +251,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "明暗を切り替え",
-    "aria-label": "明暗を切り替え"
+    "title": "Switch light and dark",
+    "aria-label": "Switch light and dark"
    },
    "text": ""
   },
@@ -260,10 +260,10 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "判定を共有",
+    "title": "Share the verdict",
     "disabled": ""
    },
-   "text": "声の判定この言語では計算できません男性的中間女性的"
+   "text": "Voice verdict Not available in this language Masculine Middle Feminine"
   },
   "verdict-main": {
    "tag": "span",
@@ -271,13 +271,13 @@
    "attrs": {
     "data-verdict": ""
    },
-   "text": "この言語では計算できません"
+   "text": "Not available in this language"
   },
   "verdict-word": {
    "tag": "strong",
    "class": "",
    "attrs": {},
-   "text": "この言語では計算できません"
+   "text": "Not available in this language"
   },
   "verdict-number": {
    "tag": "b",
@@ -319,7 +319,7 @@
    "tag": "canvas",
    "class": "",
    "attrs": {
-    "aria-label": "自分と見本の5指標を重ねた図"
+    "aria-label": "Your five measurements overlaid on the reference"
    },
    "text": ""
   },
@@ -328,17 +328,17 @@
    "class": "",
    "attrs": {
     "role": "group",
-    "aria-label": "声の指標"
+    "aria-label": "Voice measurements"
    },
-   "text": "高さ—Hz270響き—Hz ΔF1143質感—dB11.0明るさ—dB-20.9抑揚—半音9.4"
+   "text": "Pitch — Hz 270 Resonance — Hz ΔF 1143 Texture — dB 11.0 Brightness — dB -20.9 Intonation — st 9.4"
   },
   "report-button": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "比較レポートを開く"
+    "title": "Open the comparison report"
    },
-   "text": "見本との差—"
+   "text": "Distance to reference —"
   },
   "fit-value": {
    "tag": "strong",
@@ -351,39 +351,40 @@
    "class": "",
    "attrs": {
     "tabindex": "0",
-    "aria-label": "声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。形は1.2秒の移動中央値のうち中心に近い80%。"
+    "aria-label": "Voice map. Scroll to zoom, drag to rotate, Shift+drag to pan. The outline is the central 80% of a 1.2-second moving median."
    },
    "text": ""
   },
   "projection-controls": {
    "tag": "div",
    "class": "",
-   "attrs": {},
-   "text": "主成分男女差"
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Principal Contrast"
   },
   "auto-rotate": {
    "tag": "button",
    "class": "",
    "attrs": {
     "aria-pressed": "false",
-    "title": "3Dの自動回転を切り替え",
-    "hidden": ""
+    "title": "Toggle the 3D auto-rotation"
    },
-   "text": "↻自動回転"
+   "text": "↻ Auto-rotate"
   },
   "space-label": {
    "tag": "span",
    "class": "",
    "attrs": {
-    "title": "5つの指標から計算した主成分空間"
+    "title": "Principal component space of the five measurements"
    },
-   "text": "声の分布"
+   "text": "Voice map"
   },
   "group-legend": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "女性的な声男性的な声自分"
+   "text": "Feminine voices Masculine voices You"
   },
   "show-female": {
    "tag": "input",
@@ -419,8 +420,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "拡大",
-    "aria-label": "拡大"
+    "title": "Zoom in",
+    "aria-label": "Zoom in"
    },
    "text": ""
   },
@@ -428,8 +429,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "縮小",
-    "aria-label": "縮小"
+    "title": "Zoom out",
+    "aria-label": "Zoom out"
    },
    "text": ""
   },
@@ -437,8 +438,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "声の広がりに表示を合わせる",
-    "aria-label": "声の広がりに表示を合わせる"
+    "title": "Fit the view to the voices",
+    "aria-label": "Fit the view to the voices"
    },
    "text": ""
   },
@@ -446,8 +447,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "表示をリセット",
-    "aria-label": "表示をリセット"
+    "title": "Reset the view",
+    "aria-label": "Reset the view"
    },
    "text": ""
   },
@@ -463,38 +464,38 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "音声の表示"
+    "aria-label": "Signal view"
    },
    "value": "pitch",
    "options": [
     {
      "value": "pitch",
-     "text": "高さ",
+     "text": "Pitch",
      "disabled": false,
      "data": {}
     },
     {
      "value": "spectrogram",
-     "text": "スペクトログラム",
+     "text": "Spectrogram",
      "disabled": false,
      "data": {}
     },
     {
      "value": "spectrum",
-     "text": "スペクトル",
+     "text": "Spectrum",
      "disabled": false,
      "data": {}
     },
     {
      "value": "waveform",
-     "text": "波形",
+     "text": "Waveform",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "高さ",
+   "trigger": "Pitch",
    "expanded": "false",
-   "text": "高さスペクトログラムスペクトル波形"
+   "text": "Pitch Spectrogram Spectrum Waveform"
   },
   "signal-own": {
    "tag": "button",
@@ -502,16 +503,16 @@
    "attrs": {
     "aria-pressed": "false"
    },
-   "text": "自分"
+   "text": "You"
   },
   "signal-both": {
    "tag": "button",
    "class": "",
    "attrs": {
     "aria-pressed": "true",
-    "title": "各範囲の長さを0〜100%にそろえます。単語の位置は一致しません。"
+    "title": "Each selection is stretched to 0–100% of its length. Word positions do not line up."
    },
-   "text": "重ねる"
+   "text": "Overlay"
   },
   "signal-ref": {
    "tag": "button",
@@ -519,15 +520,15 @@
    "attrs": {
     "aria-pressed": "false"
    },
-   "text": "見本"
+   "text": "Reference"
   },
   "words-button": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "文字起こしと単語分割"
+    "title": "Transcribe and split into words"
    },
-   "text": "単語"
+   "text": "Words"
   },
   "range-label": {
    "tag": "span",
@@ -539,8 +540,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "選択範囲を解除（Esc）",
-    "aria-label": "選択範囲を解除",
+    "title": "Clear the selection (Esc)",
+    "aria-label": "Clear the selection",
     "hidden": ""
    },
    "text": ""
@@ -550,7 +551,7 @@
    "class": "",
    "attrs": {
     "tabindex": "0",
-    "aria-label": "波形をクリックして再生位置を移動、ドラッグして範囲を選択。左右キーで再生位置を移動。高さの目盛りをクリックするとHzと音名が切り替わります。"
+    "aria-label": "Click the waveform to seek, drag to select a range. Left and right arrow keys move the playback position. Click the pitch scale to switch between Hz and note names."
    },
    "text": ""
   },
@@ -559,7 +560,7 @@
    "class": "",
    "attrs": {
     "role": "group",
-    "aria-label": "推定した単語の位置"
+    "aria-label": "Estimated word positions"
    },
    "text": ""
   },
@@ -567,10 +568,10 @@
    "tag": "dialog",
    "class": "",
    "attrs": {
-    "aria-label": "見本を選ぶ"
+    "aria-label": "Choose a reference"
    },
    "open": false,
-   "text": "見本の声10女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重いJVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 0101Roll the dice, please.270 Hz · 0:03☆F 0041F 0061F 0021F 0011F 0071F 0031F 0051F 0081F 0091もっと見る"
+   "text": "Reference voices 10 Feminine voices Androgynous voices Masculine voices All voices ★ Favorites Imported voices By speaker name Closest to your voice Lowest pitch first Highest pitch first Teacher 001 002 003 DSFD Pitch Low Middle High Resonance Low Middle High Weight Light Middle Heavy Add the JVS references 100 speakers · 5,000 clips Download ↗ Import F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆ F 004 1 F 006 1 F 002 1 F 001 1 F 007 1 F 003 1 F 005 1 F 008 1 F 009 1 Show more"
   },
   "library-count": {
    "tag": "span",
@@ -582,8 +583,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "見本の音声を読み込む",
-    "aria-label": "見本の音声を読み込む"
+    "title": "Import reference audio",
+    "aria-label": "Import reference audio"
    },
    "text": ""
   },
@@ -591,37 +592,37 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "見本の種類"
+    "aria-label": "Kind of reference"
    },
    "value": "female",
    "options": [
     {
      "value": "female",
-     "text": "女性的な声",
+     "text": "Feminine voices",
      "disabled": false,
      "data": {}
     },
     {
      "value": "androgynous",
-     "text": "中性的な声",
+     "text": "Androgynous voices",
      "disabled": false,
      "data": {}
     },
     {
      "value": "male",
-     "text": "男性的な声",
+     "text": "Masculine voices",
      "disabled": false,
      "data": {}
     },
     {
      "value": "all",
-     "text": "すべての声",
+     "text": "All voices",
      "disabled": false,
      "data": {}
     },
     {
      "value": "favorites",
-     "text": "★ お気に入り",
+     "text": "★ Favorites",
      "disabled": false,
      "data": {
       "data-divider": ""
@@ -629,21 +630,21 @@
     },
     {
      "value": "custom",
-     "text": "読み込んだ声",
+     "text": "Imported voices",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "女性的な声",
+   "trigger": "Feminine voices",
    "expanded": "false",
-   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声"
+   "text": "Feminine voices Androgynous voices Masculine voices All voices ★ Favorites Imported voices"
   },
   "reference-upload": {
    "tag": "input",
    "class": "",
    "attrs": {
     "type": "file",
-    "aria-label": "見本の音声を読み込む",
+    "aria-label": "Import reference audio",
     "hidden": ""
    },
    "value": "",
@@ -654,46 +655,46 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "並び順"
+    "aria-label": "Sort order"
    },
    "value": "high",
    "options": [
     {
      "value": "name",
-     "text": "話者名順",
+     "text": "By speaker name",
      "disabled": false,
      "data": {}
     },
     {
      "value": "near",
-     "text": "自分の声に近い順",
+     "text": "Closest to your voice",
      "disabled": true,
      "data": {}
     },
     {
      "value": "low",
-     "text": "高さが低い順",
+     "text": "Lowest pitch first",
      "disabled": false,
      "data": {}
     },
     {
      "value": "high",
-     "text": "高さが高い順",
+     "text": "Highest pitch first",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "高さが高い順",
+   "trigger": "Highest pitch first",
    "expanded": "false",
-   "text": "話者名順自分の声に近い順高さが低い順高さが高い順"
+   "text": "By speaker name Closest to your voice Lowest pitch first Highest pitch first"
   },
   "search": {
    "tag": "input",
    "class": "",
    "attrs": {
     "type": "search",
-    "placeholder": "検索",
-    "aria-label": "見本を検索"
+    "placeholder": "Search",
+    "aria-label": "Search references"
    },
    "value": "",
    "text": ""
@@ -704,19 +705,19 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い"
+   "text": "Teacher 001 002 003 DSFD Pitch Low Middle High Resonance Low Middle High Weight Light Middle Heavy"
   },
   "teacher": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "講師"
+    "aria-label": "Teacher"
    },
    "value": "all",
    "options": [
     {
      "value": "all",
-     "text": "講師",
+     "text": "Teacher",
      "disabled": false,
      "data": {}
     },
@@ -745,126 +746,126 @@
      "data": {}
     }
    ],
-   "trigger": "講師",
+   "trigger": "Teacher",
    "expanded": "false",
-   "text": "講師001002003DSFD"
+   "text": "Teacher 001 002 003 DSFD"
   },
   "teacher-pitch": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "講師の声の高さ"
+    "aria-label": "Teacher's pitch"
    },
    "value": "all",
    "options": [
     {
      "value": "all",
-     "text": "高さ",
+     "text": "Pitch",
      "disabled": false,
      "data": {}
     },
     {
      "value": "low",
-     "text": "低い",
+     "text": "Low",
      "disabled": false,
      "data": {}
     },
     {
      "value": "med",
-     "text": "中間",
+     "text": "Middle",
      "disabled": false,
      "data": {}
     },
     {
      "value": "high",
-     "text": "高い",
+     "text": "High",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "高さ",
+   "trigger": "Pitch",
    "expanded": "false",
-   "text": "高さ低い中間高い"
+   "text": "Pitch Low Middle High"
   },
   "teacher-resonance": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "講師の響き"
+    "aria-label": "Teacher's resonance"
    },
    "value": "all",
    "options": [
     {
      "value": "all",
-     "text": "響き",
+     "text": "Resonance",
      "disabled": false,
      "data": {}
     },
     {
      "value": "low",
-     "text": "低い",
+     "text": "Low",
      "disabled": false,
      "data": {}
     },
     {
      "value": "med",
-     "text": "中間",
+     "text": "Middle",
      "disabled": false,
      "data": {}
     },
     {
      "value": "high",
-     "text": "高い",
+     "text": "High",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "響き",
+   "trigger": "Resonance",
    "expanded": "false",
-   "text": "響き低い中間高い"
+   "text": "Resonance Low Middle High"
   },
   "teacher-weight": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "講師の声の重さ"
+    "aria-label": "Teacher's vocal weight"
    },
    "value": "all",
    "options": [
     {
      "value": "all",
-     "text": "重さ",
+     "text": "Weight",
      "disabled": false,
      "data": {}
     },
     {
      "value": "low",
-     "text": "軽い",
+     "text": "Light",
      "disabled": false,
      "data": {}
     },
     {
      "value": "med",
-     "text": "中間",
+     "text": "Middle",
      "disabled": false,
      "data": {}
     },
     {
      "value": "high",
-     "text": "重い",
+     "text": "Heavy",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "重さ",
+   "trigger": "Weight",
    "expanded": "false",
-   "text": "重さ軽い中間重い"
+   "text": "Weight Light Middle Heavy"
   },
   "sample-scroll": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むF 0101Roll the dice, please.270 Hz · 0:03☆F 0041F 0061F 0021F 0011F 0071F 0031F 0051F 0081F 0091もっと見る"
+   "text": "Add the JVS references 100 speakers · 5,000 clips Download ↗ Import F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆ F 004 1 F 006 1 F 002 1 F 001 1 F 007 1 F 003 1 F 005 1 F 008 1 F 009 1 Show more"
   },
   "jvs-banner": {
    "tag": "div",
@@ -872,24 +873,24 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込む"
+   "text": "Add the JVS references 100 speakers · 5,000 clips Download ↗ Import"
   },
   "jvs-download": {
    "tag": "a",
    "class": "",
    "attrs": {
-    "title": "JVS公式配布（ZIP、約3.5GB）",
+    "title": "Official JVS release (ZIP, about 3.5 GB)",
     "href": "https://drive.google.com/file/d/19oAw8wWn3Y7z6CKChRdAyGOB9yupL_Xt/view",
     "target": "_blank",
     "rel": "noreferrer"
    },
-   "text": "ダウンロード ↗"
+   "text": "Download ↗"
   },
   "jvs-banner-import": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "読み込む"
+   "text": "Import"
   },
   "sample-list": {
    "tag": "div",
@@ -898,35 +899,35 @@
    "rows": {
     "count": 22,
     "head": [
-     "details#en:female:1c1f78f06fdf|speaker-folder||true|F 0101Roll the dice, please.270 Hz · 0:03☆",
-     "summary#||||F 0101",
-     "button#common_voice_en_17839501|sample-row|true||Roll the dice, please.270 Hz · 0:03",
+     "details#en:female:1c1f78f06fdf|speaker-folder||true|F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆",
+     "summary#||||F 010 1",
+     "button#common_voice_en_17839501|sample-row|true||Roll the dice, please. 270 Hz · 0:03",
      "button#|favorite|false||☆",
-     "details#en:female:470a80e28937|speaker-folder||false|F 0041",
-     "summary#||||F 0041",
-     "details#en:female:a2f52a649528|speaker-folder||false|F 0061",
-     "summary#||||F 0061",
-     "details#en:female:bcb7c332cbfa|speaker-folder||false|F 0021",
-     "summary#||||F 0021",
-     "details#en:female:03ebc9c1104d|speaker-folder||false|F 0011",
-     "summary#||||F 0011",
-     "details#en:female:033b81304fd7|speaker-folder||false|F 0071",
-     "summary#||||F 0071",
-     "details#en:female:a2b0960b9858|speaker-folder||false|F 0031",
-     "summary#||||F 0031",
-     "details#en:female:0edcaafb8336|speaker-folder||false|F 0051",
-     "summary#||||F 0051",
-     "details#en:female:826c4a40b1c1|speaker-folder||false|F 0081",
-     "summary#||||F 0081",
-     "details#en:female:6d06f0216c70|speaker-folder||false|F 0091",
-     "summary#||||F 0091"
+     "details#en:female:470a80e28937|speaker-folder||false|F 004 1",
+     "summary#||||F 004 1",
+     "details#en:female:a2f52a649528|speaker-folder||false|F 006 1",
+     "summary#||||F 006 1",
+     "details#en:female:bcb7c332cbfa|speaker-folder||false|F 002 1",
+     "summary#||||F 002 1",
+     "details#en:female:03ebc9c1104d|speaker-folder||false|F 001 1",
+     "summary#||||F 001 1",
+     "details#en:female:033b81304fd7|speaker-folder||false|F 007 1",
+     "summary#||||F 007 1",
+     "details#en:female:a2b0960b9858|speaker-folder||false|F 003 1",
+     "summary#||||F 003 1",
+     "details#en:female:0edcaafb8336|speaker-folder||false|F 005 1",
+     "summary#||||F 005 1",
+     "details#en:female:826c4a40b1c1|speaker-folder||false|F 008 1",
+     "summary#||||F 008 1",
+     "details#en:female:6d06f0216c70|speaker-folder||false|F 009 1",
+     "summary#||||F 009 1"
     ],
     "tail": [
-     "summary#||||F 0051",
-     "details#en:female:826c4a40b1c1|speaker-folder||false|F 0081",
-     "summary#||||F 0081",
-     "details#en:female:6d06f0216c70|speaker-folder||false|F 0091",
-     "summary#||||F 0091"
+     "summary#||||F 005 1",
+     "details#en:female:826c4a40b1c1|speaker-folder||false|F 008 1",
+     "summary#||||F 008 1",
+     "details#en:female:6d06f0216c70|speaker-folder||false|F 009 1",
+     "summary#||||F 009 1"
     ]
    }
   },
@@ -936,14 +937,14 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "もっと見る"
+   "text": "Show more"
   },
   "play-reference": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "見本を再生",
-    "aria-label": "見本を再生"
+    "title": "Play the reference",
+    "aria-label": "Play the reference"
    },
    "text": ""
   },
@@ -951,9 +952,9 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "見本を選ぶ"
+    "title": "Choose a reference"
    },
-   "text": "F 010270 Hz · 1143 ΔF"
+   "text": "F 010 270 Hz · 1143 ΔF"
   },
   "selected-name": {
    "tag": "strong",
@@ -971,8 +972,8 @@
    "tag": "button",
    "class": "favorite",
    "attrs": {
-    "aria-label": "お気に入りに追加",
-    "title": "お気に入り",
+    "aria-label": "Add to favorites",
+    "title": "Favorite",
     "aria-pressed": "false"
    },
    "text": "☆"
@@ -981,8 +982,8 @@
    "tag": "a",
    "class": "",
    "attrs": {
-    "title": "出典",
-    "aria-label": "出典",
+    "title": "Source",
+    "aria-label": "Source",
     "target": "_blank",
     "rel": "noreferrer",
     "href": "https://huggingface.co/datasets/fsicoli/common_voice_17_0/resolve/8262c16bf297c87a9cd88c51997c4758ed7a8ba2/audio/en/test/en_test_0.tar"
@@ -1007,8 +1008,8 @@
    "tag": "button",
    "class": "record-button",
    "attrs": {
-    "title": "録音（R）",
-    "aria-label": "新しく録音",
+    "title": "Record (R)",
+    "aria-label": "New recording",
     "aria-pressed": "false"
    },
    "text": ""
@@ -1017,23 +1018,23 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "自分の声を再生（Space）",
-    "aria-label": "自分の声を再生",
+    "title": "Play your voice (Space)",
+    "aria-label": "Play your voice",
     "disabled": ""
    },
-   "text": "再生"
+   "text": "Play"
   },
   "take-select": {
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "録音履歴",
-    "title": "録音履歴",
-    "data-display-label": "録音履歴"
+    "aria-label": "Recordings",
+    "title": "Recordings",
+    "data-display-label": "Recordings"
    },
    "value": "",
    "options": [],
-   "trigger": "録音履歴",
+   "trigger": "Recordings",
    "expanded": "false",
    "text": ""
   },
@@ -1054,16 +1055,16 @@
    "attrs": {
     "role": "switch",
     "aria-checked": "false",
-    "title": "マイクの声をリアルタイムに表示",
-    "aria-label": "リアルタイム測定を開始"
+    "title": "Plot the microphone in real time",
+    "aria-label": "Start real-time measurement"
    },
-   "text": "リアルタイム<time>"
+   "text": "Real-time <time>"
   },
   "live-mode-label": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "リアルタイム"
+   "text": "Real-time"
   },
   "live-time": {
    "followsPlayback": true
@@ -1073,8 +1074,8 @@
    "class": "",
    "attrs": {
     "aria-pressed": "false",
-    "aria-label": "自分の声を聴く",
-    "title": "自分の声を聴く（イヤホン推奨）",
+    "aria-label": "Hear your own voice",
+    "title": "Hear your own voice (headphones recommended)",
     "disabled": ""
    },
    "text": ""
@@ -1087,7 +1088,7 @@
     "min": "0.5",
     "max": "1.5",
     "step": "0.05",
-    "aria-label": "再生速度"
+    "aria-label": "Playback speed"
    },
    "value": "1",
    "text": ""
@@ -1096,8 +1097,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "標準速度に戻す",
-    "aria-label": "標準速度に戻す"
+    "title": "Back to normal speed",
+    "aria-label": "Back to normal speed"
    },
    "text": "1×"
   },
@@ -1105,8 +1106,8 @@
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "見本、自分の順に再生",
-    "aria-label": "見本、自分の順に再生",
+    "title": "Play the reference, then your voice",
+    "aria-label": "Play the reference, then your voice",
     "aria-pressed": "false"
    },
    "text": "A/B"
@@ -1116,7 +1117,7 @@
    "class": "",
    "attrs": {
     "type": "file",
-    "aria-label": "音声を読み込む"
+    "aria-label": "Load an audio file"
    },
    "value": "",
    "files": 0,
@@ -1183,25 +1184,25 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "見本を追加×音声ファイルを選ぶ↗JVSを追加公式サイトでダウンロード ↗公式のZIP、または展開したフォルダーを選択。100人・5,000音声を追加できます。ZIPを選ぶフォルダーを選ぶ中止音声の利用はJVSの規約に従ってください。読み込んだ見本は、このブラウザーに保存されます。"
+   "text": "Add a reference × Choose an audio file ↗ Add JVS Download from the official site ↗ Choose the official ZIP or the folder it unpacks to. Adds 100 speakers and 5,000 clips. Choose ZIP Choose folder Stop Use of the audio follows the JVS terms. Imported references are stored in this browser."
   },
   "import-audio": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "音声ファイルを選ぶ↗"
+   "text": "Choose an audio file ↗"
   },
   "choose-jvs-zip": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "ZIPを選ぶ"
+   "text": "Choose ZIP"
   },
   "choose-jvs-folder": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "フォルダーを選ぶ"
+   "text": "Choose folder"
   },
   "jvs-zip": {
    "tag": "input",
@@ -1230,7 +1231,7 @@
    "class": "",
    "attrs": {
     "role": "progressbar",
-    "aria-label": "JVSの読み込み",
+    "aria-label": "JVS import",
     "aria-valuemin": "0",
     "aria-valuemax": "100",
     "aria-valuenow": "0",
@@ -1252,14 +1253,14 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "中止"
+   "text": "Stop"
   },
   "settings-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "設定配色ライトダーク端末に合わせるリアルタイムの解析時間1.5 s3 s6 s12 sリアルタイムに表示する時間5 秒再生音量をそろえる測定値を書き出す録音履歴まとめてダウンロードすべて削除"
+   "text": "Settings Colors Light Dark Follow the device Real-time analysis window 1.5 s 3 s 6 s 12 s Real-time trail length 5 s Match playback volume Export measurements Recordings Download all Delete all"
   },
   "theme-select": {
    "tag": "koe-select",
@@ -1269,26 +1270,26 @@
    "options": [
     {
      "value": "light",
-     "text": "ライト",
+     "text": "Light",
      "disabled": false,
      "data": {}
     },
     {
      "value": "dark",
-     "text": "ダーク",
+     "text": "Dark",
      "disabled": false,
      "data": {}
     },
     {
      "value": "system",
-     "text": "端末に合わせる",
+     "text": "Follow the device",
      "disabled": false,
      "data": {}
     }
    ],
-   "trigger": "端末に合わせる",
+   "trigger": "Follow the device",
    "expanded": "false",
-   "text": "ライトダーク端末に合わせる"
+   "text": "Light Dark Follow the device"
   },
   "live-window": {
    "tag": "koe-select",
@@ -1323,7 +1324,7 @@
    ],
    "trigger": "3 s",
    "expanded": "false",
-   "text": "1.5 s3 s6 s12 s"
+   "text": "1.5 s 3 s 6 s 12 s"
   },
   "live-shape-window": {
    "tag": "input",
@@ -1333,7 +1334,7 @@
     "min": "1",
     "max": "30",
     "step": "1",
-    "aria-valuetext": "5 秒"
+    "aria-valuetext": "5 s"
    },
    "value": "5",
    "text": ""
@@ -1344,8 +1345,8 @@
    "attrs": {
     "for": "live-shape-window"
    },
-   "value": "5 秒",
-   "text": "5 秒"
+   "value": "5 s",
+   "text": "5 s"
   },
   "normalize": {
    "tag": "input",
@@ -1362,33 +1363,63 @@
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "測定値を書き出す"
+   "text": "Export measurements"
   },
   "download-all": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "まとめてダウンロード"
+   "text": "Download all"
   },
   "delete-all": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "すべて削除"
+   "text": "Delete all"
   },
   "info-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗参考文献 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考：transnavi.jp"
+   "text": "Koenami A voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice and record while imitating it; your voice appears in the same acoustic space, and you can see how close you are to the voice you are aiming for. Real-time measurement shows which way your voice moves while you adjust it. The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings stay in your browser. Voice training tutorials, analysis from t"
+  },
+  "rename-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "Rename Save"
+  },
+  "rename-input": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "aria-label": "Recording name"
+   },
+   "value": "",
+   "text": ""
+  },
+  "rename-status": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "rename-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Save"
   },
   "report-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "比較×レポートを保存"
+   "text": "Comparison × Save the report"
   },
   "report-content": {
    "tag": "div",
@@ -1400,14 +1431,14 @@
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "レポートを保存"
+   "text": "Save the report"
   },
   "metric-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "何で変わるか注意"
+   "text": "What changes it Caveats"
   },
   "metric-title": {
    "tag": "h2",
@@ -1444,14 +1475,14 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "声の判定—共有…リンクをコピー画像を保存結果ページ ↗判定の推移この端末の録音古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は測定方法と出典にあります。"
+   "text": "Voice verdict — Rough perceived age Estimate Include in the image and link A reference value from an age estimation model (audEERING). Whether it matches how old a Japanese voice, or a voice in training, sounds has not been checked. The audio is sent only for this estimate and is not stored. Share… Copy link Save image Result page ↗ Verdict over time recordings on this device Older recordings did not store the verdict conditions (voiced duration and the rest), so they are shown without that check. The link carries only the five measurements; the recording is not sent. Method and sources (Japan"
   },
   "verdict-help": {
    "tag": "button",
    "class": "",
    "attrs": {
-    "title": "判定の読み方",
-    "aria-label": "判定の読み方"
+    "title": "How to read the verdict",
+    "aria-label": "How to read the verdict"
    },
    "text": ""
   },
@@ -1483,6 +1514,38 @@
    },
    "text": ""
   },
+  "share-age-run": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "Estimate"
+  },
+  "share-age-value": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-age-include-label": {
+   "tag": "label",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Include in the image and link"
+  },
+  "share-age-include": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox"
+   },
+   "value": "on",
+   "checked": false,
+   "text": ""
+  },
   "share-intents": {
    "tag": "span",
    "class": "",
@@ -1496,7 +1559,7 @@
     "type": "button",
     "hidden": ""
    },
-   "text": "共有…"
+   "text": "Share…"
   },
   "share-copy": {
    "tag": "button",
@@ -1504,7 +1567,7 @@
    "attrs": {
     "type": "button"
    },
-   "text": "リンクをコピー"
+   "text": "Copy link"
   },
   "share-save": {
    "tag": "button",
@@ -1512,7 +1575,7 @@
    "attrs": {
     "type": "button"
    },
-   "text": "画像を保存"
+   "text": "Save image"
   },
   "share-open": {
    "tag": "a",
@@ -1522,7 +1585,7 @@
     "target": "_blank",
     "rel": "noopener"
    },
-   "text": "結果ページ ↗"
+   "text": "Result page ↗"
   },
   "share-history": {
    "tag": "section",
@@ -1530,14 +1593,14 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "判定の推移この端末の録音古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。"
+   "text": "Verdict over time recordings on this device Older recordings did not store the verdict conditions (voiced duration and the rest), so they are shown without that check."
   },
   "history-chart": {
    "tag": "svg",
    "class": "",
    "attrs": {
     "role": "img",
-    "aria-label": "録音ごとの判定の推移"
+    "aria-label": "Verdict of each recording over time"
    },
    "text": ""
   },
@@ -1553,7 +1616,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。"
+   "text": "Older recordings did not store the verdict conditions (voiced duration and the rest), so they are shown without that check."
   }
  },
  "storage": {
@@ -1569,14 +1632,12 @@
     "search": "",
     "reference": "common_voice_ko_36880067",
     "referenceRange": null,
-    "openSpeakers": [
-     "ko:female:e721830ea33b"
-    ],
-    "dimension": 2,
+    "openSpeakers": [],
+    "dimension": 3,
     "projection": "variance",
     "yaw": -0.45,
     "tilt": 0.3,
-    "zoom": 1,
+    "zoom": 1.1,
     "camera": [
      0.5,
      0.5,
@@ -1592,7 +1653,7 @@
     ],
     "autoRotate": false,
     "signal": "pitch",
-    "signalSource": "ref",
+    "signalSource": "own",
     "overlay": true,
     "liveShapeSeconds": 5
    }
@@ -1624,28 +1685,28 @@
   {
    "seq": 4,
    "method": "GET",
+   "path": "/api/catalog",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 5,
+   "method": "GET",
    "path": "/api/library",
    "query": "lang=zh-CN",
    "status": 200
   },
   {
-   "seq": 5,
+   "seq": 6,
    "method": "GET",
    "path": "/api/detail/common_voice_zh-CN_19004591",
    "query": "",
    "status": 200
   },
   {
-   "seq": 6,
-   "method": "GET",
-   "path": "/api/library",
-   "query": "lang=en",
-   "status": 200
-  },
-  {
    "seq": 7,
    "method": "GET",
-   "path": "/api/detail/common_voice_en_17839501",
+   "path": "/api/catalog",
    "query": "",
    "status": 200
   },
@@ -1653,25 +1714,53 @@
    "seq": 8,
    "method": "GET",
    "path": "/api/library",
-   "query": "lang=ko",
+   "query": "lang=en",
    "status": 200
   },
   {
    "seq": 9,
    "method": "GET",
-   "path": "/api/detail/common_voice_ko_36880067",
+   "path": "/api/detail/common_voice_en_17839501",
    "query": "",
    "status": 200
   },
   {
    "seq": 10,
    "method": "GET",
+   "path": "/api/catalog",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 11,
+   "method": "GET",
+   "path": "/api/library",
+   "query": "lang=ko",
+   "status": 200
+  },
+  {
+   "seq": 12,
+   "method": "GET",
+   "path": "/api/detail/common_voice_ko_36880067",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 13,
+   "method": "GET",
+   "path": "/api/catalog",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 14,
+   "method": "GET",
    "path": "/api/library",
    "query": "lang=en",
    "status": 200
   },
   {
-   "seq": 11,
+   "seq": 15,
    "method": "GET",
    "path": "/api/detail/common_voice_en_17839501",
    "query": "",

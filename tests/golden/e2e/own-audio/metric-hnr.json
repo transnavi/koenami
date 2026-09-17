@@ -167,7 +167,7 @@
    "tag": "koe-select",
    "class": "",
    "attrs": {
-    "aria-label": "見本の言語"
+    "aria-label": "言語（画面と見本）"
    },
    "value": "ja",
    "options": [
@@ -197,14 +197,14 @@
     },
     {
      "value": "lab",
-     "text": "発声の見本",
+     "text": "Voice lab",
      "disabled": false,
      "data": {}
     }
    ],
    "trigger": "日本語",
    "expanded": "false",
-   "text": "日本語普通话English한국어発声の見本"
+   "text": "日本語 普通话 English 한국어 Voice lab"
   },
   "corpus-count": {
    "tag": "span",
@@ -263,7 +263,7 @@
    "attrs": {
     "title": "判定を共有"
    },
-   "text": "声の判定中間的な声+14男性的中間女性的"
+   "text": "声の判定 中間的な声 +14 男性的 中間 女性的"
   },
   "verdict-main": {
    "tag": "span",
@@ -271,7 +271,7 @@
    "attrs": {
     "data-verdict": "androgynous"
    },
-   "text": "中間的な声+14"
+   "text": "中間的な声 +14"
   },
   "verdict-word": {
    "tag": "strong",
@@ -326,7 +326,7 @@
     "role": "group",
     "aria-label": "声の指標"
    },
-   "text": "高さ226Hz100響き1097Hz ΔF1066質感9.3dB7.0明るさ-15.1dB-15.9抑揚7.5半音5.0"
+   "text": "高さ 226 Hz 100 響き 1097 Hz ΔF 1066 質感 9.3 dB 7.0 明るさ -15.1 dB -15.9 抑揚 7.5 半音 5.0"
   },
   "report-button": {
    "tag": "button",
@@ -334,7 +334,7 @@
    "attrs": {
     "title": "見本との5指標の標準化距離。0が一致。比較レポートを開く。"
    },
-   "text": "見本との差2.63"
+   "text": "見本との差 2.63"
   },
   "fit-value": {
    "tag": "strong",
@@ -357,7 +357,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "主成分男女差"
+   "text": "主成分 男女差"
   },
   "auto-rotate": {
    "tag": "button",
@@ -366,7 +366,7 @@
     "aria-pressed": "false",
     "title": "3Dの自動回転を切り替え"
    },
-   "text": "↻自動回転"
+   "text": "↻ 自動回転"
   },
   "space-label": {
    "tag": "span",
@@ -380,7 +380,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "女性的な声男性的な声自分"
+   "text": "女性的な声 男性的な声 自分"
   },
   "show-female": {
    "tag": "input",
@@ -491,7 +491,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さスペクトログラムスペクトル波形"
+   "text": "高さ スペクトログラム スペクトル 波形"
   },
   "signal-own": {
    "tag": "button",
@@ -567,7 +567,7 @@
     "aria-label": "見本を選ぶ"
    },
    "open": false,
-   "text": "見本の声25女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声話者名順自分の声に近い順高さが低い順高さが高い順講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重いJVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むM 24781この箱は縦が短くて、横が長いです。100 Hz · 0:05☆M 24601M 25062M 24561M 25293M 24963M 24573M 24672M 25002M 24792M 24843M 24922M 25103M 25251M 25241M 24703M 24633M 24833M 25211M 25143M 25041M 25111M 24513M 25122M 25031もっと見る"
+   "text": "見本の声 25 女性的な声 中性的な声 男性的な声 すべての声 ★ お気に入り 読み込んだ声 話者名順 自分の声に近い順 高さが低い順 高さが高い順 講師 001 002 003 DSFD 高さ 低い 中間 高い 響き 低い 中間 高い 重さ 軽い 中間 重い JVSの見本を追加 100人 · 5,000音声 ダウンロード ↗ 読み込む M 2478 1 この箱は縦が短くて、横が長いです。 100 Hz · 0:05 ☆ M 2460 1 M 2506 2 M 2456 1 M 2529 3 M 2496 3 M 2457 3 M 2467 2 M 2500 2 M 2479 2 M 2484 3 M 2492 2 M 2510 3 M 2525 1 M 2524 1 M 2470 3 M 2463 3 M 2483 3 M 2521 1 M 2514 3 M 2504 1 M 2511 1 M 2451 3 M 2512 2 M 2503 1 もっと見る"
   },
   "library-count": {
    "tag": "span",
@@ -633,7 +633,7 @@
    ],
    "trigger": "男性的な声",
    "expanded": "false",
-   "text": "女性的な声中性的な声男性的な声すべての声★ お気に入り読み込んだ声"
+   "text": "女性的な声 中性的な声 男性的な声 すべての声 ★ お気に入り 読み込んだ声"
   },
   "reference-upload": {
    "tag": "input",
@@ -682,7 +682,7 @@
    ],
    "trigger": "高さが低い順",
    "expanded": "false",
-   "text": "話者名順自分の声に近い順高さが低い順高さが高い順"
+   "text": "話者名順 自分の声に近い順 高さが低い順 高さが高い順"
   },
   "search": {
    "tag": "input",
@@ -701,7 +701,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "講師001002003DSFD高さ低い中間高い響き低い中間高い重さ軽い中間重い"
+   "text": "講師 001 002 003 DSFD 高さ 低い 中間 高い 響き 低い 中間 高い 重さ 軽い 中間 重い"
   },
   "teacher": {
    "tag": "koe-select",
@@ -744,7 +744,7 @@
    ],
    "trigger": "講師",
    "expanded": "false",
-   "text": "講師001002003DSFD"
+   "text": "講師 001 002 003 DSFD"
   },
   "teacher-pitch": {
    "tag": "koe-select",
@@ -781,7 +781,7 @@
    ],
    "trigger": "高さ",
    "expanded": "false",
-   "text": "高さ低い中間高い"
+   "text": "高さ 低い 中間 高い"
   },
   "teacher-resonance": {
    "tag": "koe-select",
@@ -818,7 +818,7 @@
    ],
    "trigger": "響き",
    "expanded": "false",
-   "text": "響き低い中間高い"
+   "text": "響き 低い 中間 高い"
   },
   "teacher-weight": {
    "tag": "koe-select",
@@ -855,19 +855,19 @@
    ],
    "trigger": "重さ",
    "expanded": "false",
-   "text": "重さ軽い中間重い"
+   "text": "重さ 軽い 中間 重い"
   },
   "sample-scroll": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込むM 24781この箱は縦が短くて、横が長いです。100 Hz · 0:05☆M 24601M 25062M 24561M 25293M 24963M 24573M 24672M 25002M 24792M 24843M 24922M 25103M 25251M 25241M 24703M 24633M 24833M 25211M 25143M 25041M 25111M 24513M 25122M 25031もっと見る"
+   "text": "JVSの見本を追加 100人 · 5,000音声 ダウンロード ↗ 読み込む M 2478 1 この箱は縦が短くて、横が長いです。 100 Hz · 0:05 ☆ M 2460 1 M 2506 2 M 2456 1 M 2529 3 M 2496 3 M 2457 3 M 2467 2 M 2500 2 M 2479 2 M 2484 3 M 2492 2 M 2510 3 M 2525 1 M 2524 1 M 2470 3 M 2463 3 M 2483 3 M 2521 1 M 2514 3 M 2504 1 M 2511 1 M 2451 3 M 2512 2 M 2503 1 もっと見る"
   },
   "jvs-banner": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "JVSの見本を追加100人 · 5,000音声ダウンロード ↗読み込む"
+   "text": "JVSの見本を追加 100人 · 5,000音声 ダウンロード ↗ 読み込む"
   },
   "jvs-download": {
    "tag": "a",
@@ -893,53 +893,53 @@
    "rows": {
     "count": 52,
     "head": [
-     "details#ja:Common Voice:c78fc31d53b5|speaker-folder||true|M 24781この箱は縦が短くて、横が長いです。100 Hz · 0:05☆",
-     "summary#||||M 24781",
-     "button#common_voice_ja_20307951|sample-row|true||この箱は縦が短くて、横が長いです。100 Hz · 0:05",
+     "details#ja:Common Voice:c78fc31d53b5|speaker-folder||true|M 2478 1 この箱は縦が短くて、横が長いです。 100 Hz · 0:05 ☆",
+     "summary#||||M 2478 1",
+     "button#common_voice_ja_20307951|sample-row|true||この箱は縦が短くて、横が長いです。 100 Hz · 0:05",
      "button#|favorite|false||☆",
-     "details#ja:Common Voice:f504d98b0f67|speaker-folder||false|M 24601",
-     "summary#||||M 24601",
-     "details#ja:Common Voice:4c6431bfa9ba|speaker-folder||false|M 25062",
-     "summary#||||M 25062",
-     "details#ja:Common Voice:61211de94190|speaker-folder||false|M 24561",
-     "summary#||||M 24561",
-     "details#ja:Common Voice:e02995a92bc3|speaker-folder||false|M 25293",
-     "summary#||||M 25293",
-     "details#ja:Common Voice:93a5f4970c07|speaker-folder||false|M 24963",
-     "summary#||||M 24963",
-     "details#ja:Common Voice:9f0ef06d2f3d|speaker-folder||false|M 24573",
-     "summary#||||M 24573",
-     "details#ja:Common Voice:4abf7ed6198d|speaker-folder||false|M 24672",
-     "summary#||||M 24672",
-     "details#ja:Common Voice:29d7198b11ad|speaker-folder||false|M 25002",
-     "summary#||||M 25002",
-     "details#ja:Common Voice:4cb5a0ee54a3|speaker-folder||false|M 24792",
-     "summary#||||M 24792",
-     "details#ja:Common Voice:bd75a0bddb41|speaker-folder||false|M 24843",
-     "summary#||||M 24843",
-     "details#ja:Common Voice:e1d11471a395|speaker-folder||false|M 24922",
-     "summary#||||M 24922",
-     "details#ja:Common Voice:e7b1d03d92dc|speaker-folder||false|M 25103",
-     "summary#||||M 25103",
-     "details#ja:Common Voice:ad0ea38b0841|speaker-folder||false|M 25251",
-     "summary#||||M 25251",
-     "details#ja:Common Voice:caf13a4ef43c|speaker-folder||false|M 25241",
-     "summary#||||M 25241",
-     "details#ja:Common Voice:e3fddd3b40d8|speaker-folder||false|M 24703",
-     "summary#||||M 24703",
-     "details#ja:Common Voice:9453b56bfa15|speaker-folder||false|M 24633",
-     "summary#||||M 24633",
-     "details#ja:Common Voice:272a97745942|speaker-folder||false|M 24833",
-     "summary#||||M 24833",
-     "details#ja:Common Voice:08830d2a352a|speaker-folder||false|M 25211",
-     "summary#||||M 25211"
+     "details#ja:Common Voice:f504d98b0f67|speaker-folder||false|M 2460 1",
+     "summary#||||M 2460 1",
+     "details#ja:Common Voice:4c6431bfa9ba|speaker-folder||false|M 2506 2",
+     "summary#||||M 2506 2",
+     "details#ja:Common Voice:61211de94190|speaker-folder||false|M 2456 1",
+     "summary#||||M 2456 1",
+     "details#ja:Common Voice:e02995a92bc3|speaker-folder||false|M 2529 3",
+     "summary#||||M 2529 3",
+     "details#ja:Common Voice:93a5f4970c07|speaker-folder||false|M 2496 3",
+     "summary#||||M 2496 3",
+     "details#ja:Common Voice:9f0ef06d2f3d|speaker-folder||false|M 2457 3",
+     "summary#||||M 2457 3",
+     "details#ja:Common Voice:4abf7ed6198d|speaker-folder||false|M 2467 2",
+     "summary#||||M 2467 2",
+     "details#ja:Common Voice:29d7198b11ad|speaker-folder||false|M 2500 2",
+     "summary#||||M 2500 2",
+     "details#ja:Common Voice:4cb5a0ee54a3|speaker-folder||false|M 2479 2",
+     "summary#||||M 2479 2",
+     "details#ja:Common Voice:bd75a0bddb41|speaker-folder||false|M 2484 3",
+     "summary#||||M 2484 3",
+     "details#ja:Common Voice:e1d11471a395|speaker-folder||false|M 2492 2",
+     "summary#||||M 2492 2",
+     "details#ja:Common Voice:e7b1d03d92dc|speaker-folder||false|M 2510 3",
+     "summary#||||M 2510 3",
+     "details#ja:Common Voice:ad0ea38b0841|speaker-folder||false|M 2525 1",
+     "summary#||||M 2525 1",
+     "details#ja:Common Voice:caf13a4ef43c|speaker-folder||false|M 2524 1",
+     "summary#||||M 2524 1",
+     "details#ja:Common Voice:e3fddd3b40d8|speaker-folder||false|M 2470 3",
+     "summary#||||M 2470 3",
+     "details#ja:Common Voice:9453b56bfa15|speaker-folder||false|M 2463 3",
+     "summary#||||M 2463 3",
+     "details#ja:Common Voice:272a97745942|speaker-folder||false|M 2483 3",
+     "summary#||||M 2483 3",
+     "details#ja:Common Voice:08830d2a352a|speaker-folder||false|M 2521 1",
+     "summary#||||M 2521 1"
     ],
     "tail": [
-     "summary#||||M 24513",
-     "details#ja:Common Voice:1111031013c7|speaker-folder||false|M 25122",
-     "summary#||||M 25122",
-     "details#ja:Common Voice:d3c1642346cc|speaker-folder||false|M 25031",
-     "summary#||||M 25031"
+     "summary#||||M 2451 3",
+     "details#ja:Common Voice:1111031013c7|speaker-folder||false|M 2512 2",
+     "summary#||||M 2512 2",
+     "details#ja:Common Voice:d3c1642346cc|speaker-folder||false|M 2503 1",
+     "summary#||||M 2503 1"
     ]
    }
   },
@@ -966,7 +966,7 @@
    "attrs": {
     "title": "見本を選ぶ"
    },
-   "text": "M 2478100 Hz · 1066 ΔF"
+   "text": "M 2478 100 Hz · 1066 ΔF"
   },
   "selected-name": {
    "tag": "strong",
@@ -1051,7 +1051,8 @@
      "disabled": false,
      "data": {
       "data-detail": "0:06",
-      "data-actions": "download,delete"
+      "data-actions": "play,rename,download,delete",
+      "data-peaks": "[0,0,0,0,0,0.01,0.01,0,0,0,0.01,0.83,0.93,0.18,0.87,0.65,1,0.83,0.93,0.95,0.94,0.95,0.9,0.78,0.14,0.82,0.63,0.7,0.99,0.92,0.8,0.6,0.96,1,0.96,0.83,0.88,0.28,0.77,0.32,0.92,0.55,0.81,0.99,0.93,0.59,0.66,0.84,0.96,0.95,0.97,0.98,0.94,0.87,0.39,0.05,0.74,0.17,0,0.13,0,0,0,0]"
      }
     }
    ],
@@ -1079,7 +1080,7 @@
     "title": "マイクの声をリアルタイムに表示",
     "aria-label": "リアルタイム測定を開始"
    },
-   "text": "リアルタイム<time>"
+   "text": "リアルタイム <time>"
   },
   "live-mode-label": {
    "tag": "span",
@@ -1206,13 +1207,13 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "見本を追加×音声ファイルを選ぶ↗JVSを追加公式サイトでダウンロード ↗公式のZIP、または展開したフォルダーを選択。100人・5,000音声を追加できます。ZIPを選ぶフォルダーを選ぶ中止音声の利用はJVSの規約に従ってください。読み込んだ見本は、このブラウザーに保存されます。"
+   "text": "見本を追加 × 音声ファイルを選ぶ ↗ JVSを追加 公式サイトでダウンロード ↗ 公式のZIP、または展開したフォルダーを選択。100人・5,000音声を追加できます。 ZIPを選ぶ フォルダーを選ぶ 中止 音声の利用はJVSの規約に従ってください。読み込んだ見本は、このブラウザーに保存されます。"
   },
   "import-audio": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "音声ファイルを選ぶ↗"
+   "text": "音声ファイルを選ぶ ↗"
   },
   "choose-jvs-zip": {
    "tag": "button",
@@ -1282,7 +1283,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "設定配色ライトダーク端末に合わせるリアルタイムの解析時間1.5 s3 s6 s12 sリアルタイムに表示する時間5 秒再生音量をそろえる測定値を書き出す録音履歴まとめてダウンロードすべて削除"
+   "text": "設定 配色 ライト ダーク 端末に合わせる リアルタイムの解析時間 1.5 s 3 s 6 s 12 s リアルタイムに表示する時間 5 秒 再生音量をそろえる 測定値を書き出す 録音履歴 まとめてダウンロード すべて削除"
   },
   "theme-select": {
    "tag": "koe-select",
@@ -1311,7 +1312,7 @@
    ],
    "trigger": "端末に合わせる",
    "expanded": "false",
-   "text": "ライトダーク端末に合わせる"
+   "text": "ライト ダーク 端末に合わせる"
   },
   "live-window": {
    "tag": "koe-select",
@@ -1346,7 +1347,7 @@
    ],
    "trigger": "3 s",
    "expanded": "false",
-   "text": "1.5 s3 s6 s12 s"
+   "text": "1.5 s 3 s 6 s 12 s"
   },
   "live-shape-window": {
    "tag": "input",
@@ -1404,20 +1405,50 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "Koenami両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。使い方 ↗声のしくみと練習の手引き ↗測定方法と出典 ↗参考文献 ↗Acoustic Gender Space ↗Phonia ↗InFormant ↗ソースコード（GitHub） ↗配色の参考：transnavi.jp"
+   "text": "Koenami 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。 見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。 使い方 ↗ 声のしくみと練習の手引き ↗ 測定方法と出典 ↗ 参考文献 ↗ Acoustic Gender Space ↗ Phonia ↗ InFormant ↗ ソースコード（GitHub） ↗ 配色の参考： transnavi.jp"
+  },
+  "rename-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "名前の変更 保存"
+  },
+  "rename-input": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "aria-label": "録音の名前"
+   },
+   "value": "",
+   "text": ""
+  },
+  "rename-status": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "rename-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "保存"
   },
   "report-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "比較×2.63見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。この2音声の差：図に表示 63% · 省略 37%5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。指標自分見本参照音声の中央80%高さ · Hz226100105〜175響き · Hz ΔF10971066953〜1074質感 · dB9.37.06.2〜12.4明るさ · dB-15.1-15.9-20.8〜-10.9抑揚 · 半音7.55.03.7〜8.9高さの標準偏差 · Hz56.427.1—高さの標準偏差 · 半音3.93.2—無音の割合 · %22.432.2—無音区間の平均 · 秒0.80.5—F1 · Hz477.4473.5—F2 · Hz1668.21351.1—F3 · Hz2621.53179.8—F4 · Hz4218.04299.9—見本の高さは自分より14.0半音低めです。速度を落として聴き、無理のない高さで同じ文を試してください。響きの推定値は自分 1097、見本 1066 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べてくだ"
+   "text": "比較 × 2.63 見本との音響的な差 · 0で一致 高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。 この2音声の差：図に表示 63% · 省略 37% 5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。 指標 自分 見本 参照音声の中央80% 高さ · Hz 226 100 105〜175 響き · Hz ΔF 1097 1066 953〜1074 質感 · dB 9.3 7.0 6.2〜12.4 明るさ · dB -15.1 -15.9 -20.8〜-10.9 抑揚 · 半音 7.5 5.0 3.7〜8.9 高さの標準偏差 · Hz 56.4 27.1 — 高さの標準偏差 · 半音 3.9 3.2 — 無音の割合 · % 22.4 32.2 — 無音区間の平均 · 秒 0.8 0.5 — F1 · Hz 477.4 473.5 — F2 · Hz 1668.2 1351.1 — F3 · Hz 2621.5 3179.8 — F4 · Hz 4218.0 4299.9 — 見本の高さは自分より14.0半音低めです。速度を落として聴き、無理のない高さで同じ文を試してください。 響きの推定値は自分 1097、見本 1066 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちな"
   },
   "report-content": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "2.63見本との音響的な差 · 0で一致高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。この2音声の差：図に表示 63% · 省略 37%5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。指標自分見本参照音声の中央80%高さ · Hz226100105〜175響き · Hz ΔF10971066953〜1074質感 · dB9.37.06.2〜12.4明るさ · dB-15.1-15.9-20.8〜-10.9抑揚 · 半音7.55.03.7〜8.9高さの標準偏差 · Hz56.427.1—高さの標準偏差 · 半音3.93.2—無音の割合 · %22.432.2—無音区間の平均 · 秒0.80.5—F1 · Hz477.4473.5—F2 · Hz1668.21351.1—F3 · Hz2621.53179.8—F4 · Hz4218.04299.9—見本の高さは自分より14.0半音低めです。速度を落として聴き、無理のない高さで同じ文を試してください。響きの推定値は自分 1097、見本 1066 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べてください。"
+   "text": "2.63 見本との音響的な差 · 0で一致 高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。 この2音声の差：図に表示 63% · 省略 37% 5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。 指標 自分 見本 参照音声の中央80% 高さ · Hz 226 100 105〜175 響き · Hz ΔF 1097 1066 953〜1074 質感 · dB 9.3 7.0 6.2〜12.4 明るさ · dB -15.1 -15.9 -20.8〜-10.9 抑揚 · 半音 7.5 5.0 3.7〜8.9 高さの標準偏差 · Hz 56.4 27.1 — 高さの標準偏差 · 半音 3.9 3.2 — 無音の割合 · % 22.4 32.2 — 無音区間の平均 · 秒 0.8 0.5 — F1 · Hz 477.4 473.5 — F2 · Hz 1668.2 1351.1 — F3 · Hz 2621.5 3179.8 — F4 · Hz 4218.0 4299.9 — 見本の高さは自分より14.0半音低めです。速度を落として聴き、無理のない高さで同じ文を試してください。 響きの推定値は自分 1097、見本 1066 Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの"
   },
   "report-save": {
    "tag": "button",
@@ -1432,7 +1463,7 @@
     "open": ""
    },
    "open": true,
-   "text": "質感声の周期成分と雑音成分の比（HNR）です。小さい値には息やかすれが関係することがありますが、録音の雑音にも左右されます。声の重さを直接測る指標ではありません。自分9.3 dB選んだ見本7.0 dB男性的な声の見本 · 中央80%6.2–12.4 dB参照話者数25何で変わるか息漏れ（声帯の閉じ方）かすれ、がらつき録音の雑音。環境音が多いと下がります注意声の「重さ」や「太さ」の指標ではありません。静かな部屋で録った見本と、雑音のある自分の録音を直接比べると、雑音の分だけ低く出ます。"
+   "text": "質感 声の周期成分と雑音成分の比（HNR）です。小さい値には息やかすれが関係することがありますが、録音の雑音にも左右されます。声の重さを直接測る指標ではありません。 自分 9.3 dB 選んだ見本 7.0 dB 男性的な声の見本 · 中央80% 6.2–12.4 dB 参照話者数 25 何で変わるか 息漏れ（声帯の閉じ方） かすれ、がらつき 録音の雑音。環境音が多いと下がります 注意 声の「重さ」や「太さ」の指標ではありません。 静かな部屋で録った見本と、雑音のある自分の録音を直接比べると、雑音の分だけ低く出ます。"
   },
   "metric-title": {
    "tag": "h2",
@@ -1450,26 +1481,26 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "自分9.3 dB選んだ見本7.0 dB男性的な声の見本 · 中央80%6.2–12.4 dB参照話者数25"
+   "text": "自分 9.3 dB 選んだ見本 7.0 dB 男性的な声の見本 · 中央80% 6.2–12.4 dB 参照話者数 25"
   },
   "metric-factors": {
    "tag": "ul",
    "class": "",
    "attrs": {},
-   "text": "息漏れ（声帯の閉じ方）かすれ、がらつき録音の雑音。環境音が多いと下がります"
+   "text": "息漏れ（声帯の閉じ方） かすれ、がらつき 録音の雑音。環境音が多いと下がります"
   },
   "metric-caveats": {
    "tag": "ul",
    "class": "",
    "attrs": {},
-   "text": "声の「重さ」や「太さ」の指標ではありません。静かな部屋で録った見本と、雑音のある自分の録音を直接比べると、雑音の分だけ低く出ます。"
+   "text": "声の「重さ」や「太さ」の指標ではありません。 静かな部屋で録った見本と、雑音のある自分の録音を直接比べると、雑音の分だけ低く出ます。"
   },
   "share-dialog": {
    "tag": "dialog",
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "声の判定—共有…リンクをコピー画像を保存結果ページ ↗判定の推移この端末の録音古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は測定方法と出典にあります。"
+   "text": "声の判定 — 聞こえる年齢のめやす 推定する 画像とリンクに含める 年齢の推定モデル（audEERING）の参考値です。日本語や練習中の声について「何歳に聞こえるか」との一致は確認していません。音声は推定のためだけに送信され、保存されません。 共有… リンクをコピー 画像を保存 結果ページ ↗ 判定の推移 この端末の録音 古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。 リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は 測定方法と出典 にあります。"
   },
   "verdict-help": {
    "tag": "button",
@@ -1506,6 +1537,38 @@
    "attrs": {
     "role": "status"
    },
+   "text": ""
+  },
+  "share-age-run": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "推定する"
+  },
+  "share-age-value": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-age-include-label": {
+   "tag": "label",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "画像とリンクに含める"
+  },
+  "share-age-include": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox"
+   },
+   "value": "on",
+   "checked": false,
    "text": ""
   },
   "share-intents": {
@@ -1555,7 +1618,7 @@
    "attrs": {
     "hidden": ""
    },
-   "text": "判定の推移この端末の録音古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。"
+   "text": "判定の推移 この端末の録音 古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。"
   },
   "history-chart": {
    "tag": "svg",
@@ -1650,6 +1713,72 @@
      "id": "00000000-0000-4000-8000-000000000001",
      "language": "ja",
      "name": "own-a.wav",
+     "peaks": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0.01,
+      0.01,
+      0,
+      0,
+      0,
+      0.01,
+      0.83,
+      0.93,
+      0.18,
+      0.87,
+      0.65,
+      1,
+      0.83,
+      0.93,
+      0.95,
+      0.94,
+      0.95,
+      0.9,
+      0.78,
+      0.14,
+      0.82,
+      0.63,
+      0.7,
+      0.99,
+      0.92,
+      0.8,
+      0.6,
+      0.96,
+      1,
+      0.96,
+      0.83,
+      0.88,
+      0.28,
+      0.77,
+      0.32,
+      0.92,
+      0.55,
+      0.81,
+      0.99,
+      0.93,
+      0.59,
+      0.66,
+      0.84,
+      0.96,
+      0.95,
+      0.97,
+      0.98,
+      0.94,
+      0.87,
+      0.39,
+      0.05,
+      0.74,
+      0.17,
+      0,
+      0.13,
+      0,
+      0,
+      0,
+      0
+     ],
      "quality": {
       "clipping_fraction": 0,
       "formant_seconds": 1.98,
@@ -1661,6 +1790,7 @@
    ],
    "recording:00000000-0000-4000-8000-000000000001": {
     "detail": {
+     "active_seconds": 4.08,
      "clipping_fraction": 0,
      "duration": 6.696,
      "features": {
@@ -1685,6 +1815,7 @@
      "formant_sensitivity_pct": 1.9,
      "level_dbfs": -14.46429916099856,
      "peak": 0.8627919554710388,
+     "pitch_halving_pct": 0.6,
      "pitch_p10": 167.92642399550678,
      "pitch_p90": 258.6940640785254,
      "quiet_intervals": [
@@ -3693,7 +3824,7 @@
        "t": 6.648
       }
      ],
-     "version": "3.0.0",
+     "version": "3.1.1",
      "visuals": {
       "duration": 6.696,
       "spectrogram": {
@@ -3720,11 +3851,16 @@
        "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
       }
      },
-     "voiced_seconds": 3.22
+     "voiced_seconds": 3.22,
+     "voicing": {
+      "sparse": false,
+      "voiced_fraction": 0.765
+     }
     },
     "id": null,
     "language": "ja",
     "measurement": {
+     "active_seconds": 4.08,
      "clipping_fraction": 0,
      "duration": 6.696,
      "features": {
@@ -3749,6 +3885,7 @@
      "formant_sensitivity_pct": 1.9,
      "level_dbfs": -14.46429916099856,
      "peak": 0.8627919554710388,
+     "pitch_halving_pct": 0.6,
      "pitch_p10": 167.92642399550678,
      "pitch_p90": 258.6940640785254,
      "quiet_intervals": [
@@ -5757,7 +5894,7 @@
        "t": 6.648
       }
      ],
-     "version": "3.0.0",
+     "version": "3.1.1",
      "visuals": {
       "duration": 6.696,
       "spectrogram": {
@@ -5784,7 +5921,11 @@
        "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
       }
      },
-     "voiced_seconds": 3.22
+     "voiced_seconds": 3.22,
+     "voicing": {
+      "sparse": false,
+      "voiced_fraction": 0.765
+     }
     },
     "name": "own-a.wav",
     "pcm": {
@@ -5800,6 +5941,7 @@
    "takes": {
     "current": {
      "detail": {
+      "active_seconds": 4.08,
       "clipping_fraction": 0,
       "duration": 6.696,
       "features": {
@@ -5824,6 +5966,7 @@
       "formant_sensitivity_pct": 1.9,
       "level_dbfs": -14.46429916099856,
       "peak": 0.8627919554710388,
+      "pitch_halving_pct": 0.6,
       "pitch_p10": 167.92642399550678,
       "pitch_p90": 258.6940640785254,
       "quiet_intervals": [
@@ -7832,7 +7975,7 @@
         "t": 6.648
        }
       ],
-      "version": "3.0.0",
+      "version": "3.1.1",
       "visuals": {
        "duration": 6.696,
        "spectrogram": {
@@ -7859,11 +8002,16 @@
         "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
        }
       },
-      "voiced_seconds": 3.22
+      "voiced_seconds": 3.22,
+      "voicing": {
+       "sparse": false,
+       "voiced_fraction": 0.765
+      }
      },
      "id": null,
      "language": "ja",
      "measurement": {
+      "active_seconds": 4.08,
       "clipping_fraction": 0,
       "duration": 6.696,
       "features": {
@@ -7888,6 +8036,7 @@
       "formant_sensitivity_pct": 1.9,
       "level_dbfs": -14.46429916099856,
       "peak": 0.8627919554710388,
+      "pitch_halving_pct": 0.6,
       "pitch_p10": 167.92642399550678,
       "pitch_p90": 258.6940640785254,
       "quiet_intervals": [
@@ -9896,7 +10045,7 @@
         "t": 6.648
        }
       ],
-      "version": "3.0.0",
+      "version": "3.1.1",
       "visuals": {
        "duration": 6.696,
        "spectrogram": {
@@ -9923,7 +10072,11 @@
         "sha256": "7f2ad553dad4d8fb38cf4a2fb90eaef5b221c5ada68805e55cc216b0f0b2ba04"
        }
       },
-      "voiced_seconds": 3.22
+      "voiced_seconds": 3.22,
+      "voicing": {
+       "sparse": false,
+       "voiced_fraction": 0.765
+      }
      },
      "name": "own-a.wav",
      "pcm": {

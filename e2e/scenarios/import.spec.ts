@@ -199,7 +199,8 @@ test.describe('JVS import', () => {
 		await studio.until(app.languageLoaded('en'));
 		await page.locator('#add-reference').click();
 		await page.locator('#jvs-zip').setInputFiles(await archive(info.outputPath()));
-		await studio.until('document.getElementById("jvs-status").textContent.includes("追加済み")');
+		// The English page reports in English.
+		await studio.until('document.getElementById("jvs-status").textContent.includes("imported")');
 		await studio.until(app.idle);
 		await studio.tick(300);
 		await studio.golden('imported-in-english');

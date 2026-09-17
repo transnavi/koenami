@@ -1,0 +1,43 @@
+{
+ "cuts": {
+  "en": "ja",
+  "ja": "ja",
+  "ko": "ko",
+  "xx": "ja",
+  "zh-CN": "zh-CN"
+ },
+ "fonts": {
+  "en": "Noto Sans JP",
+  "ja": "Noto Sans JP",
+  "ko": "Noto Sans KR",
+  "zh-CN": "Noto Sans SC"
+ },
+ "homes": {
+  "en": "/en/",
+  "ja": "/",
+  "ko": "/ko/",
+  "zh-CN": "/zh-CN/"
+ },
+ "known": [
+  "ja",
+  "en",
+  "zh-CN",
+  "ko",
+  "ja",
+  "ja",
+  "ja",
+  "ja"
+ ],
+ "languages": [
+  "ja",
+  "zh-CN",
+  "en",
+  "ko"
+ ],
+ "locales": {
+  "en": "en_US",
+  "ja": "ja_JP",
+  "ko": "ko_KR",
+  "zh-CN": "zh_CN"
+ }
+}

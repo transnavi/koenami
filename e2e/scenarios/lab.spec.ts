@@ -5,9 +5,8 @@ import { app } from '../hooks';
 // configurations.
 test.describe('research library', () => {
 	test('teacher filters, research naming and English words', async ({ page, studio }) => {
-		await studio.open('/ja/');
-		await studio.until(app.ready);
-		await studio.choose('language', 'lab');
+		// The research library is a language of the catalog, so it has its own page.
+		await studio.open('/lab/');
 		await studio.until(app.languageLoaded('lab'));
 		await page.locator('#play-reference').click();
 		await studio.until('document.getElementById("reference-player").paused');

@@ -27,7 +27,7 @@
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "済 61組 · 残り 57組"
+   "text": "済 200組 · 残り 57組"
   },
   "theme-button": {
    "tag": "button",
@@ -42,7 +42,7 @@
    "tag": "section",
    "class": "",
    "attrs": {},
-   "text": "AQわたしは左手ではしを持ちます。4.2 秒BWこの映画、設定を聞いただけで面白そう4.2 秒A → B を繰り返すRSpace：一時停止／再開どちらが女性らしいA1同じ2B3どちらが自然A1同じ2B3どちらを見本にしたいA1同じ2B3保存できませんでした: unknown clipスキップS保存して次へEnter"
+   "text": "A Q 地球表層を覆う、地殻プレートの運動を探るのが、この実験の眼目だ。 8.5 秒 B W すると間もなくまた投げ出された 3.8 秒 A → B を繰り返す R Space：一時停止／再開 どちらが女性らしい A 1 同じ 2 B 3 女声は男声より上。男声どうしなら高く明るいほう、女声どうしなら高く明るく可愛いほう（低い・年配・雑なほうが下）。 どちらが自然 A 1 同じ 2 B 3 滑らかで良い日本語に聞こえ、機械的でなく、感情がある。 どちらを見本にしたい A 1 同じ 2 B 3 はっきりしていて雑音が少なく、手本らしい。 保存できませんでした: unknown clip スキップ S 保存して次へ Enter"
   },
   "side-a": {
    "tag": "button",
@@ -51,19 +51,19 @@
     "type": "button",
     "aria-pressed": "false"
    },
-   "text": "AQわたしは左手ではしを持ちます。4.2 秒"
+   "text": "A Q 地球表層を覆う、地殻プレートの運動を探るのが、この実験の眼目だ。 8.5 秒"
   },
   "text-a": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "わたしは左手ではしを持ちます。"
+   "text": "地球表層を覆う、地殻プレートの運動を探るのが、この実験の眼目だ。"
   },
   "meta-a": {
    "tag": "small",
    "class": "",
    "attrs": {},
-   "text": "4.2 秒"
+   "text": "8.5 秒"
   },
   "side-b": {
    "tag": "button",
@@ -72,19 +72,19 @@
     "type": "button",
     "aria-pressed": "false"
    },
-   "text": "BWこの映画、設定を聞いただけで面白そう4.2 秒"
+   "text": "B W すると間もなくまた投げ出された 3.8 秒"
   },
   "text-b": {
    "tag": "span",
    "class": "",
    "attrs": {},
-   "text": "この映画、設定を聞いただけで面白そう"
+   "text": "すると間もなくまた投げ出された"
   },
   "meta-b": {
    "tag": "small",
    "class": "",
    "attrs": {},
-   "text": "4.2 秒"
+   "text": "3.8 秒"
   },
   "loop": {
    "tag": "button",
@@ -93,13 +93,13 @@
     "type": "button",
     "aria-pressed": "true"
    },
-   "text": "A → B を繰り返すR"
+   "text": "A → B を繰り返す R"
   },
   "questions": {
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "どちらが女性らしいA1同じ2B3どちらが自然A1同じ2B3どちらを見本にしたいA1同じ2B3"
+   "text": "どちらが女性らしい A 1 同じ 2 B 3 女声は男声より上。男声どうしなら高く明るいほう、女声どうしなら高く明るく可愛いほう（低い・年配・雑なほうが下）。 どちらが自然 A 1 同じ 2 B 3 滑らかで良い日本語に聞こえ、機械的でなく、感情がある。 どちらを見本にしたい A 1 同じ 2 B 3 はっきりしていて雑音が少なく、手本らしい。"
   },
   "note": {
    "tag": "input",
@@ -120,13 +120,13 @@
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "スキップS"
+   "text": "スキップ S"
   },
   "save": {
    "tag": "button",
    "class": "",
    "attrs": {},
-   "text": "保存して次へEnter"
+   "text": "保存して次へ Enter"
   },
   "done": {
    "tag": "p",
@@ -140,7 +140,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "№ 2689 vs № 2454女性らしい Ajvs031-parallel100-VOICEACTRESS100_075 vs common_voice_ja_38916530女性らしい B · 自然 同じ · 見本にしたい Ajvs089-nonpara30-BASIC5000_2526 vs jvs041-parallel100-VOICEACTRESS100_010女性らしい B · 自然 同じ · 見本にしたい 同じjvs074-nonpara30-BASIC5000_0985 vs jvs012-parallel100-VOICEACTRESS100_080女性らしい B · 自然 同じ · 見本にしたい 同じcommon_voice_ja_39036782 vs jvs032-nonpara30-BASIC5000_1476女性らしい B · 自然 A · 見本にしたい Bjvs012-nonpara30-BASIC5000_1153 vs jvs004-nonpara30-TRAVEL1000_0409女性らしい B · 自然 同じ · 見本にしたい 同じcommon_voice_ja_39380008 vs jvs091-nonpara30-BASIC5000_2904女性らしい 同じ · 自然 同じ · 見本にしたい Ajvs026-nonpara30-UT-P"
+   "text": "№ 2482 vs № 2481 女性らしい A jvs044-parallel100-VOICEACTRESS100_003 vs own-c44eaea38d26 女性らしい A · 自然 同じ · 見本にしたい 同じ own-b1986c18dd2f vs common_voice_ja_45175991 自然 B · 女性らしい B · 見本にしたい B own-35bb27e39331 vs common_voice_ja_41781995 女性らしい B · 自然 B · 見本にしたい B common_voice_ja_39000260 vs own-901d7e4e23b2 女性らしい A · 自然 同じ · 見本にしたい A jvs029-nonpara30-BASIC5000_2386 vs own-20e89c433af2 女性らしい 同じ · 自然 A · 見本にしたい A own-1ce5cd4ff55d vs № 2530 女性らしい 同じ · 自然 同じ · 見本にしたい 同じ own-4c19f2a0f639 vs jvs026-nonpara30-BASIC5000_1869 女性らしい 同じ · 自然 同じ · 見本にしたい 同じ"
   }
  },
  "storage": {
@@ -155,21 +155,21 @@
    "voice-theme": "light",
    "koenami-pairs": {
     "lang": "ja",
-    "key": "common_voice_ja_19580207|common_voice_ja_27988874",
+    "key": "common_voice_ja_22751172|common_voice_ja_38955775",
     "drafts": {
-     "common_voice_ja_21853976|common_voice_ja_23631898": {
+     "common_voice_ja_22760153-repeat13|common_voice_ja_22834892": {
       "answers": {},
       "note": "",
       "active": 0
      },
-     "common_voice_ja_38841862|common_voice_ja_26011748": {
+     "common_voice_ja_22717324|common_voice_ja_38843897": {
       "answers": {
        "femininity": "same"
       },
       "note": "",
       "active": 1
      },
-     "common_voice_ja_19580207|common_voice_ja_27988874": {
+     "common_voice_ja_22751172|common_voice_ja_38955775": {
       "answers": {
        "femininity": "a"
       },
@@ -194,7 +194,7 @@
    "method": "POST",
    "path": "/api/pairs",
    "query": "",
-   "body": "225b efc86f3645dccc768ff3fb3c3222f0dab548fbe753c84372c348d0d5dda81e20",
+   "body": "251b e292ee52ce34476a9c20e20fc189f94da248c2bf655b05666ebaa0818c026299",
    "status": 200
   },
   {
@@ -209,7 +209,7 @@
    "method": "POST",
    "path": "/api/pairs",
    "query": "",
-   "body": "177b 1fece24d53f735972f74af8f8b6a5f70fc38abce932663201e7335ee02ea79d8",
+   "body": "211b d27740597879ed41bed713f08a0895bd170a4cffb7259e077c23027b979cb4a9",
    "status": 200
   },
   {
@@ -217,21 +217,21 @@
    "method": "POST",
    "path": "/api/pairs",
    "query": "",
-   "body": "179b 463ff11d928487d79af09ceb5d03247c63944349091daef29ce9912804bdac19",
+   "body": "202b 86161599dfe216ab40985ca5dc0329c8a008ecee0682f6a34ef4da2cf1aa8898",
    "status": 422
   }
  ],
  "media": [
-  "/samples/common_voice_ja_19580207.mp3",
-  "/samples/common_voice_ja_19580234.mp3",
-  "/samples/common_voice_ja_21853976.mp3",
-  "/samples/common_voice_ja_23631898.mp3",
-  "/samples/common_voice_ja_26011748.mp3",
-  "/samples/common_voice_ja_27988874.mp3",
-  "/samples/common_voice_ja_38841862.mp3",
+  "/samples/common_voice_ja_20887610.mp3",
+  "/samples/common_voice_ja_20887611.mp3",
+  "/samples/common_voice_ja_22717324.mp3",
+  "/samples/common_voice_ja_22751172.mp3",
+  "/samples/common_voice_ja_22760153.mp3",
+  "/samples/common_voice_ja_22834892.mp3",
+  "/samples/common_voice_ja_27988876.mp3",
   "/samples/common_voice_ja_38843897.mp3",
-  "/samples/common_voice_ja_38935230.mp3",
-  "/samples/common_voice_ja_38935383.mp3"
+  "/samples/common_voice_ja_38916575.mp3",
+  "/samples/common_voice_ja_38955775.mp3"
  ],
  "errors": []
 }

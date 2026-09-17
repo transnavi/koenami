@@ -23,7 +23,11 @@ const sourcePath = (filePath) => {
 		.replace(/(\.[cm]?js|\.ts|\.svelte)[^/]*$/, '$1')
 		.replace(/^.*?tests\/old-tree\//, '')
 		.replace(/^.*?(src\/lib\/)/, '$1');
-	if (tree === 'old') return clean.startsWith('web/') ? clean : `web/${clean}`;
+	// The files of web/public are served at the site's root.
+	if (tree === 'old') {
+		const rel = clean.startsWith('web/') ? clean : `web/${clean}`;
+		return rel === 'web/language.js' || rel === 'web/sw.js' ? `web/public/${rel.slice(4)}` : rel;
+	}
 	return clean.replace(/^@fs\/.*?\/src\//, 'src/');
 };
 const entryFilter = (entry) => {

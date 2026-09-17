@@ -31,7 +31,7 @@ async function close(code = 0) {
 	backend.kill('SIGTERM');
 	process.exitCode = code;
 }
-for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => void close());
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => close());
 backend.on('exit', (code) => {
 	if (!closing) void close(code || 0);
 });

@@ -57,7 +57,9 @@ export default defineConfig({
 	// audio. MOCK_API_RECORD (set by tests/scripts/record-e2e.sh) makes it proxy API
 	// calls to a real analyzer and save the answers.
 	webServer: {
-		command: 'node tests/mock-api/server.mjs',
+		// E2E_SERVER_COMMAND starts the same server under another argv, for a machine where
+		// a sibling worktree's suite stops servers by name.
+		command: process.env.E2E_SERVER_COMMAND || 'node tests/mock-api/server.mjs',
 		port,
 		reuseExistingServer: false,
 		env: {

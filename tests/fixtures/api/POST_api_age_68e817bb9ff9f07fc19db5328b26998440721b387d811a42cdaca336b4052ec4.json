@@ -1,0 +1,7 @@
+{
+ "key": "POST /api/age 68e817bb9ff9f07fc19db5328b26998440721b387d811a42cdaca336b4052ec4",
+ "status": 200,
+ "contentType": "application/json; charset=utf-8",
+ "body": "{\"estimate\": 47.1, \"windowRange\": [46.3, 47.9], \"windows\": 2, \"model\": \"audeering-6-layer\", \"target\": \"speaker-age\", \"validatedJapanesePerception\": false}",
+ "base64": false
+}

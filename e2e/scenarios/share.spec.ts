@@ -45,7 +45,48 @@ test.describe('verdict and sharing', () => {
 		await studio.golden('link-copy-failed');
 		const image = await studio.download(() => page.locator('#share-save').click());
 		await studio.golden('image-saved', { extra: { image } });
+		// An age impression is estimated on request; including it adds it to the link and the
+		// card, and the estimate is kept per take while the dialog is open again.
+		await page.locator('#share-age-run').click();
+		await studio.until('document.getElementById("share-age-value").textContent !== ""');
+		await studio.tick(300);
+		await studio.golden('age-estimated');
+		await page.locator('#share-age-include').check();
+		await studio.until(app.shareImage);
+		await studio.tick(300);
+		await studio.golden('age-included');
+		const imageWithAge = await studio.download(() => page.locator('#share-save').click());
+		await studio.golden('image-saved-with-age', { extra: { image: imageWithAge } });
+		await page.locator('#share-age-include').uncheck();
+		await studio.until(app.shareImage);
+		await studio.tick(300);
+		await studio.golden('age-excluded');
 		await page.locator('#share-dialog [data-close]').click();
+		await page.locator('#share-button').click();
+		await studio.until(app.shareImage);
+		await studio.tick(300);
+		await studio.golden('age-kept-for-take');
+		await page.locator('#share-dialog [data-close]').click();
+		// The estimate that fails reports in the dialog.
+		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
+		await studio.until(app.ownName('own-b.wav') + ' && ' + app.analysed + ' && ' + app.shareReady);
+		await page.route('**/api/age', (route) =>
+			route.fulfill({
+				status: 503,
+				contentType: 'text/plain; charset=utf-8',
+				body: '年齢の推定モデルを準備しています。'
+			})
+		);
+		await page.locator('#share-button').click();
+		await studio.until(app.shareImage);
+		await page.locator('#share-age-run').click();
+		await studio.until('document.getElementById("share-status").textContent !== ""');
+		await studio.tick(300);
+		await studio.golden('age-failed');
+		await page.unroute('**/api/age');
+		await page.locator('#share-dialog [data-close]').click();
+		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+		await studio.until(app.ownName('own-a.wav') + ' && ' + app.analysed + ' && ' + app.shareReady);
 
 		// The readout opens the same dialog; a system share sheet, where the browser has one,
 		// receives the text, the link and the card.
@@ -157,13 +198,13 @@ test.describe('verdict and sharing', () => {
 		// Closing the dialog before the card is ready drops the image.
 		await page.unroute('**/fonts/**');
 		let release: (() => void) | null = null;
-		await page.route('**/fonts/koenami-share-700.ttf', async (route) => {
+		await page.route('**/fonts/koenami-share-ja-700.ttf', async (route) => {
 			await new Promise<void>((r) => {
 				release = r;
 			});
 			await route.continue();
 		});
-		const held = page.waitForRequest('**/fonts/koenami-share-700.ttf');
+		const held = page.waitForRequest('**/fonts/koenami-share-ja-700.ttf');
 		await page.locator('#share-button').click();
 		await held;
 		await page.locator('#share-dialog [data-close]').click();
@@ -317,6 +358,15 @@ test.describe('verdict and sharing', () => {
 		await studio.open('/r?v=1&l=ja');
 		await studio.tick(300);
 		await studio.golden('result-missing-values');
+		// An age in the link is shown; one outside the accepted range is ignored.
+		await studio.open(withParams({ age: '27' }));
+		await studio.until('!document.getElementById("result-image").hidden');
+		await studio.tick(300);
+		await studio.golden('result-with-age');
+		await studio.open(withParams({ age: '3' }));
+		await studio.until('!document.getElementById("result-image").hidden');
+		await studio.tick(300);
+		await studio.golden('result-age-out-of-range');
 		await studio.open(withParams({ l: 'xx' }));
 		await studio.tick(300);
 		await studio.golden('result-unknown-language');
@@ -365,6 +415,7 @@ test.describe('verdict and sharing', () => {
 		await page.locator('#result-save').click();
 		await studio.tick(100);
 		await studio.golden('result-save-failed');
-		await expect(page.locator('#result-try')).toHaveAttribute('href', '/ja/');
+		// The Japanese studio is the root.
+		await expect(page.locator('#result-try')).toHaveAttribute('href', '/');
 	});
 });
