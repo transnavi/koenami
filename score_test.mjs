@@ -33,3 +33,8 @@ assert.equal(gateFailure({voiced_seconds:.6,formant_seconds:1,clipping_fraction:
 assert.equal(gateFailure({voiced_seconds:2,formant_seconds:1,clipping_fraction:.02}).need,'0.5 %以下');
 assert.equal(gateFailure({voiced_seconds:2,formant_seconds:1,clipping_fraction:0,resonance_sensitivity_pct:20}).label,'響きの推定のぶれ');
 console.log('gate: ok');
+const withAge=parseResultParams(resultParams({f0:200,delta_f:1100,hnr:10,balance:-15,pitch_span:5},'ja',{age:26.4}));
+assert.equal(withAge.age,26,'age travels rounded');
+assert.equal(parseResultParams(resultParams({f0:200,delta_f:1100,hnr:10,balance:-15,pitch_span:5},'ja')).age,undefined,'no age unless chosen');
+assert.equal(parseResultParams(new URLSearchParams('v=1&l=ja&f0=200&df=1100&hnr=10&bal=-15&sp=5&age=250')).age,undefined,'implausible age ignored');
+console.log('age: ok');

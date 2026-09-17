@@ -8,6 +8,7 @@ import {localize} from './locale.js';
 import {loadImported,importedAudio,importJVS} from './corpus-import.js';
 import {Scorer,VERDICTS,LEANINGS,formatScore,gateFailure,verdictOf,representatives,distance2} from './score.js';
 import {shareBundle,cardImage,systemShare,labelled} from './share.js';
+import {ageText} from './score.js';
 'use strict';
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(v,n=0)=>finite(v)?v.toFixed(n):'—';
@@ -367,17 +368,21 @@ function renderHistory(current){
  $('history-list').replaceChildren(...[...rows].reverse().map(r=>{const li=document.createElement('li');li.setAttribute('aria-current',String(r.take.id===state.ownTakeId));const when=new Date(r.take.date);li.innerHTML=`<span class="history-name">${esc(r.take.name)}</span><time datetime="${esc(r.take.date)}">${when.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'})} ${when.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})}</time><span class="history-verdict" data-verdict="${r.result.verdict}">${VERDICTS[r.result.verdict]}</span><b>${formatScore(r.result.display)}</b>`;const b=document.createElement('button');if(r.take.id===state.ownTakeId){b.textContent='表示中';b.disabled=true;}else{b.textContent='開く';b.title='この録音を表示';b.onclick=()=>{$('share-dialog').close();restoreTake({storedId:r.take.id}).catch(e=>notify(e.message,true));};}li.append(b);return li;}));
  $('history-note').hidden=!rows.some(r=>r.unchecked);
 }
-let shareImage=null;
+let shareImage=null;const ageEstimates=new Map();
 $('verdict-readout').onclick=()=>$('share-button').click();
 $('verdict-help').onclick=()=>{const s=state.scorer;openHelp(VERDICT_HELP,s?.available?[['男性的な見本 · 中央80%',`${formatScore(Math.round(s.bands.male[0]))}〜${formatScore(Math.round(s.bands.male[1]))}`],['女性的な見本 · 中央80%',`${formatScore(Math.round(s.bands.female[0]))}〜${formatScore(Math.round(s.bands.female[1]))}`],['参照話者数',s.speakers.length]]:[]);};
 $('share-button').onclick=async()=>{
- const result=shareResult();if(!result)return;const scorer=state.scorer,lang=state.lang==='lab'?'en':state.lang,bundle=shareBundle(result,scorer,lang);
+ const scored=shareResult();if(!scored)return;const scorer=state.scorer,lang=state.lang==='lab'?'en':state.lang;
+ const ageKey=state.ownTakeId||state.ownId||state.ownName,cachedAge=ageEstimates.get(ageKey);let result={...scored,age:cachedAge&&$('share-age-include').checked?cachedAge.estimate:undefined},bundle=shareBundle(result,scorer,lang);
  $('share-verdict').textContent=VERDICTS[result.verdict];$('share-verdict').dataset.verdict=result.verdict;$('share-score').querySelector('strong').textContent=formatScore(result.display);$('share-score').querySelector('span').textContent=LEANINGS[result.verdict];
- $('share-intents').replaceChildren(...bundle.intents.map(i=>{const a=document.createElement('a');a.href=i.href;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=labelled(i.icon,i.label);a.title=`${i.label}に投稿`;return a;}));
- $('share-open').href=bundle.url;$('share-open').innerHTML=labelled('external','結果ページ');$('share-system').innerHTML=labelled('share','共有…');$('share-copy').innerHTML=labelled('link','リンクをコピー');$('share-save').innerHTML=labelled('image','画像を保存');$('share-status').textContent='';$('share-image').hidden=true;
+ const applyBundle=()=>{$('share-intents').replaceChildren(...bundle.intents.map(i=>{const a=document.createElement('a');a.href=i.href;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=labelled(i.icon,i.label);a.title=`${i.label}に投稿`;return a;}));$('share-open').href=bundle.url;};applyBundle();$('share-open').innerHTML=labelled('external','結果ページ');$('share-system').innerHTML=labelled('share','共有…');$('share-copy').innerHTML=labelled('link','リンクをコピー');$('share-save').innerHTML=labelled('image','画像を保存');$('share-status').textContent='';$('share-image').hidden=true;
  $('share-copy').onclick=async()=>{try{await navigator.clipboard.writeText(bundle.url);$('share-status').textContent='リンクをコピーしました。';}catch{$('share-status').textContent=bundle.url;}};
  $('share-system').hidden=!navigator.share;$('share-system').onclick=()=>systemShare(result,scorer,lang).catch(e=>{if(e.name!=='AbortError')$('share-status').textContent=e.message;});
  shareImage=null;const render=async()=>shareImage||(shareImage=await cardImage(result,scorer));
+ const showAge=()=>{const a=ageEstimates.get(ageKey);$('share-age-value').textContent=a?`${ageText(a.estimate)}（4秒ごとの推定 ${Math.round(a.windowRange[0])}〜${Math.round(a.windowRange[1])}）`:'';$('share-age-run').hidden=!!a;$('share-age-include-label').hidden=!a;};showAge();
+ const refresh=async()=>{const a=ageEstimates.get(ageKey);result={...scored,age:a&&$('share-age-include').checked?a.estimate:undefined};bundle=shareBundle(result,scorer,lang);applyBundle();shareImage=null;try{const file=await render();if(!$('share-dialog').open)return;const img=$('share-image');if(img.src)URL.revokeObjectURL(img.src);img.src=URL.createObjectURL(file);}catch(e){$('share-status').textContent=e.message;}};
+ $('share-age-include').onchange=refresh;
+ $('share-age-run').onclick=async()=>{if(!state.ownPCM)return;const r=state.ranges.own,pcm=r?state.ownPCM.slice(Math.round(r[0]*16000),Math.round(r[1]*16000)):state.ownPCM;$('share-age-run').disabled=true;$('share-age-run').textContent='推定中…';try{const a=await api('/api/age',{method:'POST',body:pcm});ageEstimates.set(ageKey,a);showAge();$('share-age-include').checked=false;}catch(e){$('share-status').textContent=e.message;}finally{$('share-age-run').disabled=false;$('share-age-run').textContent='推定する';}};
  $('share-save').onclick=async()=>{try{download(await render(),`koenami-${result.display}.png`);}catch(e){$('share-status').textContent=e.message;}};
  renderHistory(result);
  $('share-dialog').showModal();

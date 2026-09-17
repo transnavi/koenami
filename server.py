@@ -47,6 +47,7 @@ def create_app():
     own_clips, own_paths = ([], {}) if PUBLIC else own_voice.load(DATA)
     clips.update({c['id']: c for c in own_clips})
     gate, asr_gate = asyncio.Semaphore(1), asyncio.Semaphore(1)
+    neural_gate = asyncio.Semaphore(1)
     cache = OrderedDict()
     pcm_cache = OrderedDict()
 
@@ -126,6 +127,16 @@ def create_app():
                     f'queue;dur={(started-queued)*1000:.1f}, analysis;dur={(perf_counter()-started)*1000:.1f}'})
             except (ValueError, RuntimeError):
                 raise web.HTTPUnprocessableEntity(text='Could not measure this audio.')
+
+    async def age(request):
+        """Age impression from the audEERING model; absent when the prepared model is not shipped."""
+        import perception
+        if not perception.available(['age']): raise web.HTTPNotFound(text='年齢の推定モデルが用意されていません。')
+        x = await read_audio(request)
+        if len(x) > RATE * 60: raise web.HTTPBadRequest(text='1分以内の音声を使用してください。')
+        async with neural_gate:
+            try: return respond(await asyncio.to_thread(perception.age, x))
+            except ValueError as error: raise web.HTTPUnprocessableEntity(text=str(error))
 
     async def detail(request):
         name = request.match_info['name']
@@ -366,6 +377,7 @@ def create_app():
 
     app.router.add_get('/api/health', health)
     app.router.add_post('/api/analyze', measurement)
+    app.router.add_post('/api/age', age)
     app.router.add_get('/api/catalog', catalog)
     app.router.add_get('/api/library', metadata)
     app.router.add_get('/api/detail/{name}', detail)
