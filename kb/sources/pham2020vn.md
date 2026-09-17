@@ -3,7 +3,7 @@ type: source
 key: pham2020vn
 title: "Điều trị nội tiết tố và phẫu thuật chuyển đổi giới tính của người chuyển giới tại Việt Nam"
 title_en: "Hormone treatment and sex reassignment surgery among transgender people in Vietnam"
-authors: [Phạm Nguyên, Nguyễn Văn, Phạm Vân, Đỗ Thị Bích, Nguyễn Thị, Lê Việt, Đỗ Thị]
+authors: [Phạm Nguyên Hà, Nguyễn Văn Luyện, Phạm Vân Anh, Đỗ Thị Bích Ngọc, Nguyễn Thị Lợi, Lê Hùng Việt, Đỗ Thị Vân]
 year: 2020
 venue: Tạp chí Khoa học Nghiên cứu Sức khỏe và Phát triển (Journal of Health and Development Studies) 4(4) 18–31
 doi: 10.38148/JHDS.0404SKPT20-040
@@ -32,5 +32,5 @@ topics: ["[[transgender-care-context]]", "[[hormones-and-voice]]", "[[voice-acro
 
 ## Notes
 - Cross-sectional and interview-based, four provinces, self-reported hormone and surgery history; the 12 qualitative participants are not a random subset.
-- The paper was published in Vietnamese with an English abstract on the journal site; this note reads the Vietnamese abstract in full.
+- The paper is in Vietnamese; the article page carries the Vietnamese abstract, which this note reads in full (the PDF was not read).
 - The conclusion refers to «Luật Chuyển đổi giới tính» in the future tense ("sẽ giúp" — will help), so the study was written before that law existed; its current status was not checked.

@@ -17,7 +17,7 @@ topics: ["[[community-training]]", "[[voice-across-languages]]", "[[voice-femini
 # TUTORIAL! Cara agar suara cowok jadi cewek!
 
 ## What it says
-- An Indonesian-language video tutorial (uploaded 2022-05-12) teaching a male-to-female voice switch. The presenter describes it as her own routine rather than a curriculum: «Jadi ini cara latihan aku ya supaya bisa dapat suara kaya gitu, gausa terlalu heboh ngikutin nya ya, asal sering, lakukan aja klo lagi gabut hehe!» — this is how I practise to get a voice like that, don't follow it too frantically, just do it often, whenever you have spare time (video description, 2026-09-18).
+- An Indonesian-language video tutorial (uploaded 2022-05-12) teaching a male-to-female voice switch. The presenter describes it as her own routine rather than a curriculum: «Jdi ini cara latihan aku ya supaya bisa dapat suara kaya gitu, gausa terlalu heboh ngikutin nya ya,asal sering, lakukan aja klo lagi gabut hehe!» (sic) — this is how I practise to get a voice like that, don't follow it too frantically, just do it often, whenever you have spare time (video description, 2026-09-18).
 - The description directs viewers to the presenter's Instagram for questions and requests, and asks for criticism in the comments.
 - The video's framing is the informal Indonesian «suara cowok jadi cewek» — a guy's voice becoming a girl's — rather than any clinical term.
 

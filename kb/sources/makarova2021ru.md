@@ -3,9 +3,9 @@ type: source
 key: makarova2021ru
 title: "Проблема применения гормональной терапии, направленной на коррекцию пола, трансгендерными лицами по собственной инициативе"
 title_en: "The problem of self-initiated hormone therapy for sex correction by transgender people"
-authors: [Макарова Е.В., Соловьева Н.В., Кременецкая С.А.]
+authors: [Макарова Е.В., Соловьева Н.В., Кременицкая С.А.]
 year: 2021
-venue: Проблемы эндокринологии 68(2) 40–47
+venue: Проблемы эндокринологии 68(2) 40–47 (online 2021-12-01; the issue is dated 2022)
 doi: 10.14341/probl12806
 url: https://doi.org/10.14341/probl12806
 language: ru

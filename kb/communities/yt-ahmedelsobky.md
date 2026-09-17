@@ -12,7 +12,7 @@ topics: ["[[voice-surgery]]", "[[voice-feminization-therapy]]", "[[community-tra
 ---
 
 ## What it offers
-- The Arabic-language YouTube channel of Prof. Dr Ahmed Elsobky. The channel description («مركز السبكي لجراحات الأذن والأنف والحنجرة») presents him as «أستاذ الأنف والأذن والحنجرة - طب المنصورة» (professor of ENT at Mansoura Faculty of Medicine), holder of a doctorate in «جراحات التشخير» (phonosurgery), and «استشاري جراحات العيوب الخلائقية للحنجرة» — consultant for congenital laryngeal defects — with clinics listed in Mansoura, Sandoub and El-Manzala in Egypt.
+- The Arabic-language YouTube channel of Prof. Dr Ahmed Elsobky. The channel description («مركز السبكي لجراحات الأذن والأنف والحنجرة») presents him as «أستاذ الأنف والأذن والحنجرة - طب المنصورة» (professor of ENT at Mansoura Faculty of Medicine), holder of a doctorate in «جراحات التشخير» (snoring surgery), and «استشاري جراحات العيوب الخلقية للحنجرة» — consultant for congenital laryngeal defects — with clinics listed in Mansoura, Sandoub and El-Manzala in Egypt.
 - A video on the channel's feminising work is confirmed by oEmbed: «عمليات تأنيث الصوت - د أحمد السبكي» ("voice feminization operations"). Its description frames the audience as women troubled by a rough or masculine-leaning voice: «بعض النساء و البنات تعاني من الصوت الخشن او المائل للذكوري و يشرح لنا الدكتور احمد السبكي امكانية علاج هذا العيب» (uploaded 2022-12-02).
 - The channel's Arabic material is surgical and outpatient practice explanation, with a phone number in the description rather than a link to written material.
 

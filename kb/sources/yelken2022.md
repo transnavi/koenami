@@ -5,7 +5,7 @@ title: "Ses Estetiği"
 title_en: "Voice aesthetics"
 authors: [Yelken K]
 year: 2022
-venue: "Temel Larengoloji (eds. Saltürk Z, Berkiten G, Kumral TL, Sağıroğlu S), Akademisyen Kitabevi, ISBN 9786258155808, chapter 10.37609/akya.1836.c19298"
+venue: "Temel Larengoloji (eds. Saltürk Z, Berkiten G, Kumral TL, Sağıroğlu S), Akademisyen Kitabevi, ISBN 9786258155808, pp. 179–189, chapter 10.37609/akya.1836.c19298"
 doi: 10.37609/akya.1836.c19298
 url: https://books.akademisyen.net/index.php/akya/catalog/book/1836/chapter/19298
 language: tr

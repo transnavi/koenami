@@ -1,7 +1,7 @@
 ---
 type: source
 key: yt-truongchuclinh-2020
-title: "Cách Luyện Giọng Nói Trầm Như Nam | LGBT Việt Nam"
+title: "Cách Luyện Giọng Nói Trầm Như Nam | LGBT Việt Nam | Trương Chúc Linh"
 title_en: "How to train a voice as deep as a man's | LGBT Vietnam"
 authors: [Lucior Trương Chúc Linh]
 year: 2020

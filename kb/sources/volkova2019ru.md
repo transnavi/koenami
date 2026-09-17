@@ -5,7 +5,8 @@ title: "Современные подходы к ведению гендерно
 title_en: "Current approaches to managing gender dysphoria: an endocrinologist's view"
 authors: [Волкова Н.И., Давиденко И.Ю., Дегтярева Ю.С.]
 year: 2019
-venue: Альманах клинической медицины 47(2)
+venue: Альманах клинической медицины 47(2) 166–174
+doi: 10.18786/2072-0505-2019-47-020
 url: https://cyberleninka.ru/article/n/sovremennye-podhody-k-vedeniyu-gendernoy-disforii-vzglyad-endokrinologa
 language: ru
 kind: narrative review
@@ -29,4 +30,4 @@ topics: ["[[transgender-care-context]]", "[[hormones-and-voice]]", "[[european-l
 ## Notes
 - Narrative review, not a systematic one; no search strategy or evidence grading is reported in the text read.
 - The single mention of the voice in the full text is the masculinising one; the paper says nothing about feminising therapy and the voice.
-- Read through CyberLeninka's HTML rendering; the DOI could not be recovered from that page, so no DOI is recorded.
+- Read through CyberLeninka's HTML rendering; the DOI is printed in the article's citation line and resolves at doi.org.

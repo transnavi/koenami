@@ -212,7 +212,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[herbst2020]] — Herbst CT 2020, Registers—The Snake Pit of Voice Pedagogy, Part 1: Proprioception, Perception, and Laryngeal Mechanisms
 - [[kawitzky2020]] — Kawitzky D 2020, The Effect of Formant Biofeedback on the Feminization of Voice in Transgender Women
 - [[kim2020]] — Kim HT 2020, Vocal Feminization for Transgender Women: Current Strategies and Patient Perspectives
-- [[pham2020vn]] — Phạm Nguyên 2020, Điều trị nội tiết tố và phẫu thuật chuyển đổi giới tính của người chuyển giới tại Việt Nam (Hormone treatment and sex reassignment surgery among transgender people in Vietnam)
+- [[pham2020vn]] — Phạm Nguyên Hà 2020, Điều trị nội tiết tố và phẫu thuật chuyển đổi giới tính của người chuyển giới tại Việt Nam (Hormone treatment and sex reassignment surgery among transgender people in Vietnam)
 - [[saldias2020]] — Saldías M 2020, Water Resistance Therapy as Vocal Warm-Up Method in Contemporary Commercial Music Singers
 - [[salm2020]] — Salm S 2020, Validation of the German Version of the Transsexual Voice Questionnaire for Male-to-Female Transsexuals
 - [[barone2021]] — Barone NA 2021, Acoustic and Aerodynamic Comparisons of Voice Qualities Produced After Voice Training
@@ -233,7 +233,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[young2021]] — Young VN 2021, Voice and Stroboscopic Characteristics in Transgender Patients Seeking Gender-Affirming Voice Care
 - [[antoni2022]] — Antoni C 2022, Voice and Speech Training for the Transgendered Patient: What the Otolaryngologist Should Know
 - [[kobayashi2022]] — Kobayashi H 2022, 男性から女性型性同一性障害症例の音声外科手術に伴うリハビリテーション治療 (Rehabilitation (voice therapy) accompanying voice surgery in male-to-female gender identity disorder cases)
-- [[kremenitskaya2022ru]] — Кременецкая С.А. 2022, Суицидальная активность и коморбидная психическая патология у лиц с гендерной дисфорией (Suicidal activity and comorbid mental pathology in people with gender dysphoria)
+- [[kremenitskaya2022ru]] — Кременицкая С.А. 2022, Суицидальная активность и коморбидная психическая патология у лиц с гендерной дисфорией (Suicidal activity and comorbid mental pathology in people with gender dysphoria)
 - [[marsano2022]] — Marsano-Cornejo MJ 2022, Frecuencia fundamental en hombres transexuales en diferentes etapas de tratamiento hormonal (Fundamental frequency in transsexual men at different stages of hormonal treatment)
 - [[moriyama2022]] — 森山至貴 2022, 声変わりは早まっているのか？ (Are boys' voices changing at a younger age?)
 - [[myers2022]] — Myers B 2022, Telepractice Considerations for Evaluation and Treatment of Voice Disorders: Tailoring to Specific Populations
@@ -503,7 +503,7 @@ Also: [[glossary]] — terms in English, Japanese, Chinese, Korean, Spanish and 
 - [[maart2020]] — "Maart (Maart the human)" 2020, Non-binair | Logopedie om mijn stem te verlagen (Non-binary | Speech-language therapy to lower my voice)
 - [[noroda2020]] — 牛乳大魔王のろだ 2020, 【両声類】私流！男声の出し方講座【彼は女性です】 ('Ryōseirui: my own way of producing a male voice' (YouTube video))
 - [[ssal2020]] — 쌀이없어요 (uploader) 2020, 트젠 음성여성화 목소리 수술 [쌀쓸신잡] | 트랜스젠더 (Trans voice-feminization surgery [miscellaneous] | transgender (YouTube video))
-- [[yt-truongchuclinh-2020]] — Lucior Trương Chúc Linh 2020, Cách Luyện Giọng Nói Trầm Như Nam | LGBT Việt Nam (How to train a voice as deep as a man's | LGBT Vietnam)
+- [[yt-truongchuclinh-2020]] — Lucior Trương Chúc Linh 2020, Cách Luyện Giọng Nói Trầm Như Nam | LGBT Việt Nam | Trương Chúc Linh (How to train a voice as deep as a man's | LGBT Vietnam)
 - [[alloortho-voix]] — "Allo Ortho" 2021, Je suis en transition de genre : comment modifier ma voix ? (I am transitioning: how do I change my voice? (Allo Ortho, Paris))
 - [[anime-academy-ryoseirui2021]] — 東京アニメ・声優＆eスポーツ専門学校 2021, 【男女】両声類のなり方は？おすすめの練習方法や声の出し方の注意点を解説 ('How to become a ryōseirui: recommended practice and cautions' (Tokyo College of Anime & E-sports))
 - [[aogi2021]] — あおぎ葵 2021, MTF声音女性化练习手册 (MTF Voice Feminization Practice Handbook)
