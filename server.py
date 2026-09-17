@@ -22,6 +22,29 @@ PUBLIC = os.environ.get('KOENAMI_PUBLIC') == '1'
 DATA = Path(os.environ.get('KOENAMI_DATA', ROOT / 'data'))
 LIMIT = 60 if PUBLIC else 900
 LANGUAGES = {'ja': '日本語', 'zh-CN': '普通话', 'en': 'English', 'ko': '한국어'}
+# Error text in the language the client asked for (Accept-Language names the studio's
+# language); perception.py raises these keys as ValueError messages.
+MESSAGES = {
+    'audio_length': {'ja': '0.25秒〜{n}分の音声を使用してください。', 'zh-CN': '请使用0.25秒〜{n}分钟的音频。', 'en': 'Use audio between 0.25 seconds and {n} minutes long.', 'ko': '0.25초〜{n}분 길이의 음성을 사용해 주세요.'},
+    'busy': {'ja': '解析が混み合っています。少し待ってからお試しください。', 'zh-CN': '分析服务繁忙，请稍等片刻再试。', 'en': 'The analyzer is busy. Wait a moment and try again.', 'ko': '분석이 몰려 있습니다. 잠시 기다렸다가 다시 시도해 주세요.'},
+    'no_age_model': {'ja': '年齢の推定モデルが用意されていません。', 'zh-CN': '没有可用的年龄估计模型。', 'en': 'The age estimation model is not available.', 'ko': '나이 추정 모델이 준비되어 있지 않습니다.'},
+    'age_too_long': {'ja': '1分以内の音声を使用してください。', 'zh-CN': '请使用1分钟以内的音频。', 'en': 'Use audio no longer than one minute.', 'ko': '1분 이내의 음성을 사용해 주세요.'},
+    'too_short': {'ja': '2秒以上の音声を選んでください。', 'zh-CN': '请选择2秒以上的音频。', 'en': 'Choose audio of at least 2 seconds.', 'ko': '2초 이상의 음성을 골라 주세요.'},
+    'too_quiet': {'ja': '声が小さすぎます。別の音声を選んでください。', 'zh-CN': '声音太小，请选择其他音频。', 'en': 'The voice is too quiet. Choose another clip.', 'ko': '목소리가 너무 작습니다. 다른 음성을 골라 주세요.'},
+    'too_little_speech': {'ja': '2秒以上、話した音声を選んでください。', 'zh-CN': '请选择包含2秒以上说话声音的音频。', 'en': 'Choose audio with at least 2 seconds of speech.', 'ko': '2초 이상 말한 음성을 골라 주세요.'},
+    'failed': {'ja': 'この音声の推定に失敗しました。', 'zh-CN': '无法对这段音频进行估计。', 'en': 'The estimate failed for this audio.', 'ko': '이 음성의 추정에 실패했습니다.'},
+}
+
+
+def language(request):
+    first = request.headers.get('Accept-Language', '').split(',')[0].split(';')[0].strip()
+    if first in LANGUAGES: return first
+    primary = first.split('-')[0].lower()
+    return next((k for k in LANGUAGES if k.split('-')[0] == primary), 'ja')
+
+
+def message(request, key, **params):
+    return MESSAGES[key][language(request)].format(**params)
 
 
 def analyze(x):
@@ -73,7 +96,7 @@ def create_app():
     async def read_audio(request):
         body = await request.read()
         if not body or len(body) % 4 or not RATE <= len(body) <= RATE*4*LIMIT:
-            raise web.HTTPBadRequest(text=f'0.25秒〜{LIMIT // 60}分の音声を使用してください。')
+            raise web.HTTPBadRequest(text=message(request, 'audio_length', n=LIMIT // 60))
         x = np.frombuffer(body, dtype='<f4').copy()
         if not np.isfinite(x).all() or np.max(np.abs(x)) > 1.01:
             raise web.HTTPBadRequest(text='Invalid audio samples.')
@@ -110,7 +133,7 @@ def create_app():
         return x
 
     async def measurement(request):
-        if PUBLIC and request.query.get('live') == '1' and gate.locked(): raise web.HTTPServiceUnavailable(text='解析が混み合っています。少し待ってからお試しください。', headers={'Retry-After': '1'})
+        if PUBLIC and request.query.get('live') == '1' and gate.locked(): raise web.HTTPServiceUnavailable(text=message(request, 'busy'), headers={'Retry-After': '1'})
         x = await read_audio(request)
         queued = perf_counter()
         async with gate:
@@ -131,12 +154,12 @@ def create_app():
     async def age(request):
         """Age impression from the audEERING model; absent when the prepared model is not shipped."""
         import perception
-        if not perception.available(['age']): raise web.HTTPNotFound(text='年齢の推定モデルが用意されていません。')
+        if not perception.available(['age']): raise web.HTTPNotFound(text=message(request, 'no_age_model'))
         x = await read_audio(request)
-        if len(x) > RATE * 60: raise web.HTTPBadRequest(text='1分以内の音声を使用してください。')
+        if len(x) > RATE * 60: raise web.HTTPBadRequest(text=message(request, 'age_too_long'))
         async with neural_gate:
             try: return respond(await asyncio.to_thread(perception.age, x))
-            except ValueError as error: raise web.HTTPUnprocessableEntity(text=str(error))
+            except ValueError as error: raise web.HTTPUnprocessableEntity(text=message(request, str(error)) if str(error) in MESSAGES else str(error))
 
     async def detail(request):
         name = request.match_info['name']

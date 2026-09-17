@@ -1,14 +1,23 @@
 import { getContainer } from '@cloudflare/containers';
 import { initWasm, Resvg } from '@resvg/resvg-wasm';
 import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm';
-import fontRegular from './web/public/fonts/koenami-share-400.ttf';
-import fontBold from './web/public/fonts/koenami-share-700.ttf';
-import { Scorer, parseResultParams, resultParams, shareText, formatScore, VERDICTS, LEANINGS } from './web/score.js';
+import fontJaRegular from './web/public/fonts/koenami-share-ja-400.ttf';
+import fontJaBold from './web/public/fonts/koenami-share-ja-700.ttf';
+import fontZhRegular from './web/public/fonts/koenami-share-zh-CN-400.ttf';
+import fontZhBold from './web/public/fonts/koenami-share-zh-CN-700.ttf';
+import fontKoRegular from './web/public/fonts/koenami-share-ko-400.ttf';
+import fontKoBold from './web/public/fonts/koenami-share-ko-700.ttf';
+import { Scorer, parseResultParams, resultParams, shareText, formatScore, verdictLabel, leaningLabel } from './web/score.js';
 import { cardSVG } from './web/card.js';
+import { LANGUAGES, FONTS, fontCut, known, matchLanguage, translator } from './web/i18n/index.js';
 
 export { VoiceAnalyzer } from './worker/analyzer';
 
-const languages = new Set(['ja', 'zh-CN', 'en', 'ko']);
+const languages = new Set<string>(LANGUAGES);
+// The share font in its three cuts; the card's language picks one (see web/share.js).
+const cardFonts: Record<string, [ArrayBuffer, ArrayBuffer]> = { ja: [fontJaRegular, fontJaBold], 'zh-CN': [fontZhRegular, fontZhBold], ko: [fontKoRegular, fontKoBold] };
+// Error text in the language the client asked for; the studio sends its own language.
+const say = (request: Request, key: string) => translator(matchLanguage(request.headers.get('Accept-Language')))(key) as string;
 // Crawler and browser-chrome files at the site root (see web/public and prepare_public.py).
 const siteFiles = /^\/(robots\.txt|sitemap\.xml|site\.webmanifest|sw\.js|og-(image|guide|tutorial|method|references)\.png|screenshot-(wide|narrow)\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
 const maxBytes = 16000 * 4 * 60;
@@ -40,12 +49,14 @@ async function sharedResult(env: Env, url: URL) {
 }
 
 async function resultPage(request: Request, env: Env, url: URL): Promise<Response> {
-  const page = await env.ASSETS.fetch(new Request(`${siteOrigin}/result.html`, request));
+  // The page is written in the language of the link (its `l`), like the verdict it recomputes.
+  const lang = known(url.searchParams.get('l')), t = translator(lang);
+  const page = await env.ASSETS.fetch(new Request(`${siteOrigin}${lang === 'ja' ? '' : '/' + lang}/result.html`, request));
   const shared = await sharedResult(env, url).catch(() => null);
   if (!shared) return page;
-  const verdict = shared.result.verdict as keyof typeof VERDICTS;
-  const title = `Koenami · ${VERDICTS[verdict]}（${LEANINGS[verdict]} ${formatScore(shared.result.display)}）`;
-  const description = `${shareText(shared.result)}。女性的な声・男性的な声の見本の中で、この声がどこにあるか。`;
+  const verdict = shared.result.verdict as string;
+  const title = t('result.window_title', { verdict: verdictLabel(verdict, lang), leaning: leaningLabel(verdict, lang), score: formatScore(shared.result.display) }) as string;
+  const description = t('result.share_description', { text: shareText(shared.result, lang) }) as string;
   const content: Record<string, string> = {
     'og:title': title, 'twitter:title': title, 'og:description': description, 'twitter:description': description,
     'og:url': shared.canonical, 'og:image': shared.image, 'twitter:image': shared.image, 'og:image:alt': shareText(shared.result),
@@ -68,11 +79,12 @@ async function resultImage(request: Request, env: Env, ctx: ExecutionContext, ur
   if (hit) return hit;
   // Every distinct query renders anew, so uncached renders share the analysis rate limit.
   const { success } = await env.ANALYSIS_LIMIT.limit({ key: request.headers.get('CF-Connecting-IP') || 'unknown' });
-  if (!success) return text('少し待ってからお試しください。', 429, { 'Retry-After': '10' });
+  if (!success) return text(say(request, 'api.busy'), 429, { 'Retry-After': '10' });
   resvgReady ??= initWasm(resvgWasm).catch((e) => { resvgReady = undefined; throw e; });
   await resvgReady;
-  const svg = cardSVG(shared.result, shared.scorer);
-  const renderer = new Resvg(svg, { font: { fontBuffers: [new Uint8Array(fontRegular), new Uint8Array(fontBold)], loadSystemFonts: false, defaultFontFamily: 'Noto Sans JP' } });
+  const svg = cardSVG(shared.result, shared.scorer, { lang: shared.lang });
+  const [regular, bold] = cardFonts[fontCut(shared.lang)];
+  const renderer = new Resvg(svg, { font: { fontBuffers: [new Uint8Array(regular), new Uint8Array(bold)], loadSystemFonts: false, defaultFontFamily: FONTS[shared.lang as keyof typeof FONTS] } });
   let png: Uint8Array;
   try { png = renderer.render().asPng(); } finally { renderer.free(); }
   const response = new Response(png, { headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=604800, immutable' } });
@@ -95,7 +107,9 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
     const lang = url.searchParams.get('lang') || 'ja';
     if (!languages.has(lang)) return text('Not found', 404);
     asset = `/public-api/${lang}.json`;
-  } else if (get && (url.pathname === '/' || /^\/(ja|zh-CN|en|ko)\/?$/.test(url.pathname))) asset = '/index.html';
+  } else if (get && (url.pathname === '/' || /^\/ja\/?$/.test(url.pathname))) asset = '/index.html';
+  else if (get && /^\/(zh-CN|en|ko)\/?$/.test(url.pathname)) asset = `/${url.pathname.split('/')[1]}/index.html`;
+  else if (get && /^\/(zh-CN|en|ko)\/site\.webmanifest$/.test(url.pathname)) asset = url.pathname;
   else if (request.method === 'GET' && url.pathname === '/r') return resultPage(request, env, url);
   else if (request.method === 'GET' && url.pathname === '/og.png') return resultImage(request, env, ctx, url);
   else if (get && (/^\/(assets|samples|fonts)\/[^/]+$/.test(url.pathname) || /^\/(method|guide|tutorial|references)\.html$/.test(url.pathname) || siteFiles.test(url.pathname))) asset = url.pathname;
@@ -108,25 +122,25 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
   const detail = /^\/api\/detail\/[a-zA-Z0-9_-]+$/.test(url.pathname) && get;
   if (!analysis && !detail && !(get && url.pathname === '/api/health')) return text('Not found', 404);
   const { success } = await env.ANALYSIS_LIMIT.limit({ key: request.headers.get('CF-Connecting-IP') || 'unknown' });
-  if (!success) return text('少し待ってからお試しください。', 429, { 'Retry-After': '10' });
+  if (!success) return text(say(request, 'api.busy'), 429, { 'Retry-After': '10' });
 
   let body: ArrayBuffer | undefined;
   if (analysis) {
     const length = Number(request.headers.get('Content-Length'));
-    if (length > maxBytes) return text('1分以内の音声を選んでください。', 413);
+    if (length > maxBytes) return text(say(request, 'api.too_long'), 413);
     // Bound reads even when the sender omits or lies about Content-Length.
     const reader = request.body?.getReader();
-    if (!reader) return text('音声がありません。', 400);
+    if (!reader) return text(say(request, 'api.no_audio'), 400);
     const chunks: Uint8Array[] = [];
     let size = 0;
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
       size += value.byteLength;
-      if (size > maxBytes) { await reader.cancel(); return text('1分以内の音声を選んでください。', 413); }
+      if (size > maxBytes) { await reader.cancel(); return text(say(request, 'api.too_long'), 413); }
       chunks.push(value);
     }
-    if (size < 16000 || size % 4) return text('0.25秒以上の音声を使用してください。', 400);
+    if (size < 16000 || size % 4) return text(say(request, 'api.too_short'), 400);
     const pcm = new Uint8Array(size);
     let offset = 0;
     for (const chunk of chunks) { pcm.set(chunk, offset); offset += chunk.byteLength; }
@@ -134,7 +148,7 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
   }
   const internal = new URL(url.pathname + url.search, 'http://localhost:8080');
   return getContainer(env.ANALYZER, 'demo').fetch(new Request(internal, {
-    method: request.method, headers: { 'Content-Type': 'application/octet-stream' }, body,
+    method: request.method, headers: { 'Content-Type': 'application/octet-stream', 'Accept-Language': request.headers.get('Accept-Language') || 'ja' }, body,
   }));
 }
 
@@ -148,7 +162,7 @@ export default {
       secured.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
       return secured;
     } catch {
-      return text('解析サーバーを準備しています。少し待ってからお試しください。', 503, { 'Retry-After': '5' });
+      return text(say(request, 'api.starting'), 503, { 'Retry-After': '5' });
     }
   },
 } satisfies ExportedHandler<Env>;

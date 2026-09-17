@@ -52,12 +52,12 @@ def audible(rms):
 
 def span(x):
     """Sample range from the first to the last audible 20 ms frame; at least two seconds long."""
-    if len(x) < 2 * RATE: raise ValueError('2秒以上の音声を選んでください。')
+    if len(x) < 2 * RATE: raise ValueError('too_short')
     step = RATE // 50
     active = np.flatnonzero(audible(frame_rms(x)))
-    if not len(active): raise ValueError('声が小さすぎます。別の音声を選んでください。')
+    if not len(active): raise ValueError('too_quiet')
     start, end = max(0, int(active[0]) * step - step), min(len(x), (int(active[-1]) + 2) * step)
-    if end - start < 2 * RATE: raise ValueError('2秒以上、話した音声を選んでください。')
+    if end - start < 2 * RATE: raise ValueError('too_little_speech')
     return start, end
 
 
@@ -75,7 +75,7 @@ def windows(x):
     starts = np.unique(np.linspace(0, len(x) - width, count, dtype=int))
     result = [x[start:start + width].astype(np.float32)[None, :] for start in starts
               if np.std(x[start:start + width]) >= .001]
-    if not result: raise ValueError('声が小さすぎます。別の音声を選んでください。')
+    if not result: raise ValueError('too_quiet')
     return result
 
 
@@ -103,9 +103,9 @@ def timbre(x):
     frames = session('wavlm').run(['timbre_frames'], {'values': x.astype(np.float32)[None, :]})[0][0]
     energy = 20 * np.log10(rms[:len(frames)] + 1e-12)
     speech = (energy > energy.max() - 40) & (rms[:len(frames)] > FLOOR)
-    if speech.sum() < 75: raise ValueError('2秒以上、話した音声を選んでください。')  # 1.5 s of speech frames
+    if speech.sum() < 75: raise ValueError('too_little_speech')  # 1.5 s of speech frames
     v = frames[speech].mean(axis=0)
-    if v.shape != (768,) or not np.isfinite(v).all(): raise ValueError('この音声の推定に失敗しました。')
+    if v.shape != (768,) or not np.isfinite(v).all(): raise ValueError('failed')
     return v
 
 
@@ -115,7 +115,7 @@ def age(x):
     read as instability rather than precision."""
     parts = windows(x)
     ages = [float(session('age').run(None, {'values': age_input(part)})[0].ravel()[0]) for part in parts]
-    if not np.isfinite(ages).all(): raise ValueError('この音声の推定に失敗しました。')
+    if not np.isfinite(ages).all(): raise ValueError('failed')
     return {'estimate': round(float(np.median(ages)), 1), 'windowRange': [round(min(ages), 1), round(max(ages), 1)],
             'windows': len(ages), 'model': 'audeering-6-layer', 'target': 'speaker-age', 'validatedJapanesePerception': False}
 
@@ -130,7 +130,7 @@ def describe(x):
     embedding = np.mean(embeddings, axis=0)
     embedding /= max(float(np.linalg.norm(embedding)), 1e-8)
     if not np.isfinite(embedding).all() or not np.isfinite(ages).all():
-        raise ValueError('この音声の推定に失敗しました。')
+        raise ValueError('failed')
     return {'version': VERSION, 'embedding': embedding.round(7).tolist(),
             'age': {'estimate': round(float(np.median(ages)), 1),
                     'windowRange': [round(min(ages), 1), round(max(ages), 1)],
