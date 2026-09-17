@@ -251,11 +251,14 @@ def create_app():
             other = [dict(q, first=next(c['id'] for c in q['clips'] if c['id'] not in heard and c['plotted']), repeat='speaker_repeat')
                      for q in queue if q['speaker'] in reviewed and any(c['id'] not in heard and c['plotted'] for c in q['clips'])]
             rng.shuffle(same); rng.shuffle(other)
+            # Same-clip repeats first: reliability per scale needs ~30 of them before the ratings can be judged
+            # against a ceiling; until the log holds that many, every eighth item is a same-clip repeat.
+            same_done = sum(1 for r in verdicts.reviews if r.get('mode') == 'repeat')
             queue = []
             for i, q in enumerate(fresh):
                 queue.append(q)
                 if i % 8 == 7:
-                    pool = same if (i // 8) % 2 == 0 else other
+                    pool = same if (same_done < 30 or (i // 8) % 2 == 0) and same else other
                     if pool: queue.append(pool.pop())
         return {'language': lang, 'mode': mode, 'reviewed': len(reviewed), 'queue': queue}
 
