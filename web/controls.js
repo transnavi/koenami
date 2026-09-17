@@ -21,7 +21,7 @@ class KoeSelect extends HTMLElement{
  this.list.replaceChildren(...options.map(o=>{
   const b=document.createElement('button');b.className='item'+(o.hasAttribute('data-divider')?' divider':'');b.type='button';b.role=actionMenu?'menuitemradio':'option';b.disabled=o.disabled;b.textContent=o.textContent;
   if(o.dataset.detail){const small=document.createElement('small');small.className='detail';small.textContent=o.dataset.detail;b.append(small);}
-  if(o.dataset.peaks){const wave=document.createElement('canvas');wave.className='wave';b.append(wave);drawWave(wave,JSON.parse(o.dataset.peaks));}
+  if(o.dataset.peaks){const wave=document.createElement('canvas');wave.className='wave';const peaks=o.dataset.peaks;b.append(wave);queueMicrotask(()=>drawWave(wave,JSON.parse(peaks)));}
   b.dataset.value=o.value;b.setAttribute(actionMenu?'aria-checked':'aria-selected',String(o===selected));b.onclick=()=>{this.value=o.value;this.close();this.dispatchEvent(new Event('change',{bubbles:true}));};
   if(!o.dataset.actions)return b;
   const row=document.createElement('div');row.className='choice-row';row.role='group';row.setAttribute('aria-label',o.textContent);row.append(b);
