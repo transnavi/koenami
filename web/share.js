@@ -1,5 +1,6 @@
 import {cardSVG,CARD_WIDTH,CARD_HEIGHT} from './card.js';
 import {resultParams,shareText} from './score.js';
+import {translator,known,fontCut} from './i18n/index.js';
 /* Everything a result needs to leave the app: its URL, the post text, the card
    as SVG and PNG, and the intent links. The result URL carries only the five
    measurements; the receiving page and the Worker recompute the score from them. */
@@ -18,12 +19,14 @@ export const icon=name=>`<svg class="share-icon" viewBox="0 0 24 24" aria-hidden
 /* Render a share control's content: icon plus visible label. */
 export const labelled=(name,text)=>`${icon(name)}<span>${text}</span>`;
 
-let fonts=null;
-async function loadFonts(){
- if(fonts)return fonts;
- const load=async weight=>{const bytes=new Uint8Array(await (await fetch(`/fonts/koenami-share-${weight}.ttf`)).arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return `data:font/ttf;base64,${btoa(binary)}`;};
+const fonts=new Map();
+async function loadFonts(lang){
+ const cut=fontCut(lang);
+ if(fonts.has(cut))return fonts.get(cut);
+ const load=async weight=>{const bytes=new Uint8Array(await (await fetch(`/fonts/koenami-share-${cut}-${weight}.ttf`)).arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return `data:font/ttf;base64,${btoa(binary)}`;};
  const [regular,bold]=await Promise.all([load(400),load(700)]);
- return fonts={400:regular,700:bold};
+ fonts.set(cut,{400:regular,700:bold});
+ return fonts.get(cut);
 }
 export function resultURL(features,lang,origin=location.origin,extra={}){return `${origin}/r?${resultParams(features,lang,extra)}`;}
 export function intents(url,text){
@@ -33,20 +36,23 @@ export function intents(url,text){
   {id:'misskey',label:'Misskey',icon:'misskey',href:`https://misskey-hub.net/share/?${new URLSearchParams({text:`${text} #${HASHTAG}`,url,visibility:'public'})}`},
  ];
 }
-export async function cardImage(result,scorer){
- const svg=cardSVG(result,scorer,{fonts:await loadFonts()});
+/* lang: the language the card is written in. */
+export async function cardImage(result,scorer,lang='ja'){
+ lang=known(lang);const t=translator(lang);
+ const svg=cardSVG(result,scorer,{fonts:await loadFonts(lang),lang});
  const image=new Image();image.decoding='async';
  const source=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
- try{await new Promise((ok,fail)=>{image.onload=ok;image.onerror=()=>fail(new Error('画像を作成できませんでした。'));image.src=source;});}
+ try{await new Promise((ok,fail)=>{image.onload=ok;image.onerror=()=>fail(new Error(t('share.image_failed')));image.src=source;});}
  finally{URL.revokeObjectURL(source);}
  const canvas=document.createElement('canvas');canvas.width=CARD_WIDTH;canvas.height=CARD_HEIGHT;canvas.getContext('2d').drawImage(image,0,0);
- const blob=await new Promise(ok=>canvas.toBlob(ok,'image/png'));if(!blob)throw new Error('画像を作成できませんでした。');
+ const blob=await new Promise(ok=>canvas.toBlob(ok,'image/png'));if(!blob)throw new Error(t('share.image_failed'));
  return new File([blob],`koenami-${result.display}.png`,{type:'image/png'});
 }
-export function shareBundle(result,scorer,lang){const url=resultURL(result.features,lang,location.origin,{age:result.age}),text=shareText(result);return {url,text,svg:cardSVG(result,scorer),intents:intents(url,text)};}
-export async function systemShare(result,scorer,lang){
- const {url,text}=shareBundle(result,scorer,lang);
- const file=await cardImage(result,scorer);
+/* lang: the reference language the link recomputes against; ui: the language the text and card are written in. */
+export function shareBundle(result,scorer,lang,ui=lang){const url=resultURL(result.features,lang,location.origin,{age:result.age}),text=shareText(result,ui);return {url,text,svg:cardSVG(result,scorer,{lang:ui}),intents:intents(url,text)};}
+export async function systemShare(result,scorer,lang,ui=lang){
+ const {url,text}=shareBundle(result,scorer,lang,ui);
+ const file=await cardImage(result,scorer,ui);
  const withFile={title:'Koenami',text:`${text} #${HASHTAG}`,url,files:[file]};
  if(navigator.canShare?.(withFile)){await navigator.share(withFile);return true;}
  if(navigator.share){await navigator.share({title:'Koenami',text:`${text} #${HASHTAG}`,url});return true;}

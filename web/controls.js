@@ -1,3 +1,4 @@
+import {t} from './i18n/index.js';
 let menuId=0;
 const drawWave=(canvas,peaks)=>{const w=208,h=18,dpr=(canvas.ownerDocument?.defaultView?.devicePixelRatio)||1;canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';const g=canvas.getContext('2d');g.scale(dpr,dpr);g.fillStyle=getComputedStyle(canvas).color;const n=peaks.length,step=w/n;for(let i=0;i<n;i++){const bar=Math.max(1,peaks[i]*h);g.fillRect(i*step,(h-bar)/2,Math.max(1,step*.66),bar);}};
 class KoeSelect extends HTMLElement{
@@ -25,10 +26,10 @@ class KoeSelect extends HTMLElement{
   b.dataset.value=o.value;b.setAttribute(actionMenu?'aria-checked':'aria-selected',String(o===selected));b.onclick=()=>{this.value=o.value;this.close();this.dispatchEvent(new Event('change',{bubbles:true}));};
   if(!o.dataset.actions)return b;
   const row=document.createElement('div');row.className='choice-row';row.role='group';row.setAttribute('aria-label',o.textContent);row.append(b);
-  const actions={play:{label:'再生',path:'M6 4l10 6-10 6z'},rename:{label:'名前を変更',path:'M13.5 3.5l3 3L7 16l-4 1 1-4z'},download:{label:'ダウンロード',path:'M10 3v10m-4-4 4 4 4-4M4 13v4h12v-4'},delete:{label:'削除',path:'M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8 8v6m4-6v6'}};
+  const actions={play:{label:t('action.play'),path:'M6 4l10 6-10 6z'},rename:{label:t('action.rename'),path:'M13.5 3.5l3 3L7 16l-4 1 1-4z'},download:{label:t('action.download'),path:'M10 3v10m-4-4 4 4 4-4M4 13v4h12v-4'},delete:{label:t('action.delete'),path:'M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8 8v6m4-6v6'}};
   for(const action of o.dataset.actions.split(',')){
    const spec=actions[action];if(!spec)continue;
-   const button=document.createElement('button');button.className='row-action';button.type='button';button.role='menuitem';button.dataset.value=o.value;button.dataset.action=action;button.disabled=o.disabled||o.dataset.disabledActions?.split(',').includes(action);button.setAttribute('aria-label',o.textContent+'を'+spec.label);button.title=spec.label;
+   const button=document.createElement('button');button.className='row-action';button.type='button';button.role='menuitem';button.dataset.value=o.value;button.dataset.action=action;button.disabled=o.disabled||o.dataset.disabledActions?.split(',').includes(action);button.setAttribute('aria-label',t('action.label',{name:o.textContent,action:spec.label}));button.title=spec.label;
    button.innerHTML='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="'+spec.path+'"/></svg>';
    button.onclick=()=>{if(action!=='play')this.close();this.dispatchEvent(new CustomEvent('optionaction',{bubbles:true,detail:{value:o.value,action}}));};row.append(button);
   }

@@ -24,6 +24,40 @@ PUBLIC = os.environ.get('KOENAMI_PUBLIC') == '1'
 DATA = Path(os.environ.get('KOENAMI_DATA', ROOT / 'data'))
 LIMIT = 60 if PUBLIC else 900
 LANGUAGES = {'ja': '日本語', 'zh-CN': '普通话', 'en': 'English', 'ko': '한국어'}
+# Error text in the language the client asked for (Accept-Language names the studio's
+# language); perception.py raises these keys as ValueError messages.
+MESSAGES = {
+    'audio_length': {'ja': '0.25秒〜{n}分の音声を使用してください。', 'zh-CN': '请使用0.25秒〜{n}分钟的音频。', 'en': 'Use audio between 0.25 seconds and {n} minutes long.', 'ko': '0.25초〜{n}분 길이의 음성을 사용해 주세요.'},
+    'busy': {'ja': '解析が混み合っています。少し待ってからお試しください。', 'zh-CN': '分析服务繁忙，请稍等片刻再试。', 'en': 'The analyzer is busy. Wait a moment and try again.', 'ko': '분석이 몰려 있습니다. 잠시 기다렸다가 다시 시도해 주세요.'},
+    'no_age_model': {'ja': '年齢の推定モデルが用意されていません。', 'zh-CN': '没有可用的年龄估计模型。', 'en': 'The age estimation model is not available.', 'ko': '나이 추정 모델이 준비되어 있지 않습니다.'},
+    'age_too_long': {'ja': '1分以内の音声を使用してください。', 'zh-CN': '请使用1分钟以内的音频。', 'en': 'Use audio no longer than one minute.', 'ko': '1분 이내의 음성을 사용해 주세요.'},
+    'too_short': {'ja': '2秒以上の音声を選んでください。', 'zh-CN': '请选择2秒以上的音频。', 'en': 'Choose audio of at least 2 seconds.', 'ko': '2초 이상의 음성을 골라 주세요.'},
+    'too_quiet': {'ja': '声が小さすぎます。別の音声を選んでください。', 'zh-CN': '声音太小，请选择其他音频。', 'en': 'The voice is too quiet. Choose another clip.', 'ko': '목소리가 너무 작습니다. 다른 음성을 골라 주세요.'},
+    'too_little_speech': {'ja': '2秒以上、話した音声を選んでください。', 'zh-CN': '请选择包含2秒以上说话声音的音频。', 'en': 'Choose audio with at least 2 seconds of speech.', 'ko': '2초 이상 말한 음성을 골라 주세요.'},
+    'failed': {'ja': 'この音声の推定に失敗しました。', 'zh-CN': '无法对这段音频进行估计。', 'en': 'The estimate failed for this audio.', 'ko': '이 음성의 추정에 실패했습니다.'},
+    'measure_failed': {'ja': 'この音声を測定できませんでした。', 'zh-CN': '无法测量这段音频。', 'en': 'This audio could not be measured.', 'ko': '이 음성을 측정하지 못했습니다.'},
+    'no_timbre_index': {'ja': 'この言語の参照声のインデックスがありません。', 'zh-CN': '这种语言没有参考声音的索引。', 'en': 'There is no reference voice index for this language.', 'ko': '이 언어의 참고 음성 인덱스가 없습니다.'},
+    'compare_failed': {'ja': '声の比較に失敗しました。もう一度お試しください。', 'zh-CN': '声音比较失败，请重试。', 'en': 'The voice comparison failed. Try again.', 'ko': '목소리 비교에 실패했습니다. 다시 시도해 주세요.'},
+}
+
+
+def language(request):
+    """The served language a client accepts: ranges in quality order, exact tag first, then its primary subtag (matchLanguage in web/i18n/index.js)."""
+    ranges = []
+    for i, part in enumerate(request.headers.get('Accept-Language', '').split(',')):
+        tag, *params = [p.strip() for p in part.split(';')]
+        q = next((float(p[2:]) for p in params if p.startswith('q=') and p[2:].replace('.', '', 1).isdigit()), 1.0)
+        if tag and q > 0: ranges.append((-q, i, tag.lower()))
+    for _, _, tag in sorted(ranges):
+        exact = next((k for k in LANGUAGES if k.lower() == tag), None)
+        if exact: return exact
+        primary = next((k for k in LANGUAGES if k.split('-')[0] == tag.split('-')[0]), None)
+        if primary: return primary
+    return 'ja'
+
+
+def message(request, key, **params):
+    return MESSAGES[key][language(request)].format(**params)
 
 
 def analyze(x):
@@ -124,7 +158,7 @@ def create_app():
     async def read_audio(request):
         body = await request.read()
         if not body or len(body) % 4 or not RATE <= len(body) <= RATE*4*LIMIT:
-            raise web.HTTPBadRequest(text=f'0.25秒〜{LIMIT // 60}分の音声を使用してください。')
+            raise web.HTTPBadRequest(text=message(request, 'audio_length', n=LIMIT // 60))
         x = np.frombuffer(body, dtype='<f4').copy()
         if not np.isfinite(x).all() or np.max(np.abs(x)) > 1.01:
             raise web.HTTPBadRequest(text='Invalid audio samples.')
@@ -161,7 +195,7 @@ def create_app():
         return x
 
     async def measurement(request):
-        if PUBLIC and request.query.get('live') == '1' and gate.locked(): raise web.HTTPServiceUnavailable(text='解析が混み合っています。少し待ってからお試しください。', headers={'Retry-After': '1'})
+        if PUBLIC and request.query.get('live') == '1' and gate.locked(): raise web.HTTPServiceUnavailable(text=message(request, 'busy'), headers={'Retry-After': '1'})
         x = await read_audio(request)
         queued = perf_counter()
         async with gate:
@@ -177,32 +211,32 @@ def create_app():
                 return respond(result, headers={'Server-Timing':
                     f'queue;dur={(started-queued)*1000:.1f}, analysis;dur={(perf_counter()-started)*1000:.1f}'})
             except (ValueError, RuntimeError):
-                raise web.HTTPUnprocessableEntity(text='Could not measure this audio.')
+                raise web.HTTPUnprocessableEntity(text=message(request, 'measure_failed'))
 
     async def age(request):
         """Age impression from the audEERING model; absent when the prepared model is not shipped."""
         import perception
-        if not perception.available(['age']): raise web.HTTPNotFound(text='年齢の推定モデルが用意されていません。')
+        if not perception.available(['age']): raise web.HTTPNotFound(text=message(request, 'no_age_model'))
         x = await read_audio(request)
-        if len(x) > RATE * 60: raise web.HTTPBadRequest(text='1分以内の音声を使用してください。')
+        if len(x) > RATE * 60: raise web.HTTPBadRequest(text=message(request, 'age_too_long'))
         async with neural_gate:
             try: return respond(await asyncio.to_thread(perception.age, x))
-            except ValueError as error: raise web.HTTPUnprocessableEntity(text=str(error))
+            except ValueError as error: raise web.HTTPUnprocessableEntity(text=message(request, str(error)) if str(error) in MESSAGES else str(error))
 
     async def similar(request):
         """Reference speakers whose voices sit closest to the recording, by the layer-3 timbre descriptor."""
         lang = request.query.get('lang', 'ja')
-        if not timbre_index or lang not in timbre_index: raise web.HTTPNotFound(text='この言語の参照声のインデックスがありません。')
+        if not timbre_index or lang not in timbre_index: raise web.HTTPNotFound(text=message(request, 'no_timbre_index'))
         try: limit = max(1, min(int(request.query.get('limit', '12')), 50))
         except (ValueError, TypeError): raise web.HTTPBadRequest(text='limit must be a number.')
-        if PUBLIC and neural_gate.locked(): raise web.HTTPServiceUnavailable(text='解析が混み合っています。少し待ってからお試しください。', headers={'Retry-After': '2'})
+        if PUBLIC and neural_gate.locked(): raise web.HTTPServiceUnavailable(text=message(request, 'busy'), headers={'Retry-After': '2'})
         x = await read_audio(request)
         async with neural_gate:
             try: vector = await asyncio.to_thread(perception.timbre, x)
-            except ValueError as e: raise web.HTTPUnprocessableEntity(text=str(e))
+            except ValueError as error: raise web.HTTPUnprocessableEntity(text=message(request, str(error)) if str(error) in MESSAGES else str(error))
             except Exception as error:  # ONNX Runtime raises its own classes, none of them RuntimeError
                 print(f'Timbre inference failed: {type(error).__name__}', flush=True)
-                raise web.HTTPServiceUnavailable(text='声の比較に失敗しました。もう一度お試しください。')
+                raise web.HTTPServiceUnavailable(text=message(request, 'compare_failed'))
         index = timbre_index[lang]
         return respond({'version': perception.TIMBRE_VERSION, 'language': lang, 'speakers': rank_similar(index, vector, limit),
                         'indexed': {'clips': index['clips'], 'speakers': len(index['speakers'])}})

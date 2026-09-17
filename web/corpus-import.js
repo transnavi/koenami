@@ -1,9 +1,10 @@
 import { TakeStore } from './storage.js';
+import { t } from './i18n/index.js';
 
 let indexPromise;
 async function index() {
   if (!indexPromise) indexPromise = fetch('/api/import-index/jvs').then(async response => {
-    if (!response.ok) throw new Error('JVSの一覧を取得できませんでした。');
+    if (!response.ok) throw new Error(t('jvs.index_failed'));
     return new Map((await response.json()).clips.map(c => [c.id, c]));
   }).catch(error => { indexPromise = null; throw error; });
   return indexPromise;
@@ -18,7 +19,7 @@ export async function loadImported() {
 
 export async function importedAudio(id) {
   const blob = await TakeStore.read('jvs-audio:' + id);
-  if (!blob) throw new Error('JVSの音声が見つかりません。もう一度追加してください。');
+  if (!blob) throw new Error(t('jvs.audio_missing'));
   return blob;
 }
 
@@ -51,21 +52,21 @@ export async function importJVS(files, progress, signal) {
     }
     if (!candidates.size) {
       if (ids.size) return { added: 0, total: ids.size };
-      throw new Error('対応するJVS音声が見つかりませんでした。公式のZIPか、展開したフォルダーを選んでください。');
+      throw new Error(t('jvs.no_match'));
     }
     const estimate = await navigator.storage?.estimate?.();
     const required = [...candidates.values()].reduce((n, { clip }) => n + clip.bytes, 0);
     if (estimate?.quota && required > estimate.quota - (estimate.usage || 0))
-      throw new Error('保存容量が足りません。話者ごとのフォルダーを選ぶと、一部だけ追加できます。');
+      throw new Error(t('jvs.quota'));
     let done = 0;
     progress(0, candidates.size);
     for (const { clip, read } of candidates.values()) {
       signal.throwIfAborted();
       const blob = await read();
-      if (blob.size !== clip.bytes) throw new Error('音声ファイルのサイズが一致しません。');
+      if (blob.size !== clip.bytes) throw new Error(t('jvs.size_mismatch'));
       const digest = [...new Uint8Array(await crypto.subtle.digest('SHA-256', await blob.arrayBuffer()))]
         .map(n => n.toString(16).padStart(2, '0')).join('');
-      if (digest !== clip.original_sha256) throw new Error('公式音声と一致しないファイルがあります。公式のZIPを選び直してください。');
+      if (digest !== clip.original_sha256) throw new Error(t('jvs.hash_mismatch'));
       signal.throwIfAborted();
       ids.add(clip.id);
       // Audio and its index entry commit together; cancellation keeps completed files.

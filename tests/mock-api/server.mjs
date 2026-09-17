@@ -24,17 +24,24 @@ const port = Number(process.env.MOCK_API_PORT || 35511);
 const site = join(root, process.env.MOCK_API_STATIC || 'web');
 const types = { html: 'text/html; charset=utf-8', js: 'text/javascript; charset=utf-8', css: 'text/css; charset=utf-8', svg: 'image/svg+xml', png: 'image/png', ico: 'image/x-icon', webmanifest: 'application/manifest+json', txt: 'text/plain; charset=utf-8', json: 'application/json' };
 // Routes as the Worker serves them. The pinned tree keeps one index.html for / and every
-// /<lang>/ and result.html for /r; a SvelteKit build prerenders each route to
-// <route>/index.html or <route>.html, and web/public sits at the root of both.
-function staticFile(pathname) {
+// /<lang>/ and result.html for /r; the current build writes <lang>/index.html and
+// <lang>/result.html per language (served for /r by its `l`), and a SvelteKit build
+// prerenders each route to <route>/index.html or <route>.html. web/public sits at the
+// root of all of them.
+function staticFile(pathname, search = '') {
 	const name = pathname.replace(/^\/|\/$/g, '');
 	if (name.includes('..')) return null;
 	const candidates = name
 		? [join(site, name), join(site, name, 'index.html'), join(site, `${name}.html`), join(site, 'public', name)]
 		: [join(site, 'index.html')];
 	if (/^(ja|zh-CN|en|ko)$/.test(name)) candidates.push(join(site, 'index.html'));
-	// worker.ts serves the shared-result page at /r (the query carries the measurements).
-	if (name === 'r') candidates.push(join(site, 'result.html'));
+	// worker.ts serves the shared-result page at /r (the query carries the measurements) in
+	// the language of its `l`, where the build has one.
+	if (name === 'r') {
+		const lang = new URLSearchParams(search).get('l');
+		if (/^(zh-CN|en|ko)$/.test(lang || '')) candidates.push(join(site, lang, 'result.html'));
+		candidates.push(join(site, 'result.html'));
+	}
 	for (const candidate of candidates) if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
 	return null;
 }
@@ -92,7 +99,7 @@ const server = createServer(async (req, res) => {
 			res.writeHead(200, { 'content-type': types.js, 'cache-control': 'no-store' });
 			return res.end(readFileSync(path));
 		}
-		const path = staticFile(url.pathname);
+		const path = staticFile(url.pathname, url.search);
 		if (!path) { res.writeHead(404, { 'content-type': 'text/plain' }); return res.end('not found'); }
 		let body = readFileSync(path);
 		if (path.endsWith('.html')) body = Buffer.from(body.toString('utf8').replace('<head>', '<head><script type="importmap">{"imports":{"@zip.js/zip.js/index-native.js":"/node_modules/@zip.js/zip.js/index-native.js"}}</script>'));
