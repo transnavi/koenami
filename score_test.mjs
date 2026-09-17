@@ -18,7 +18,7 @@ for(const lang of ['ja','zh-CN','en']){
  assert.equal(back.lang,lang);
  assert.ok(Math.abs(scorer.score(back.features).score-result.score)<.2,'URL round trip keeps the score');
  assert.match(cardSVG(result,scorer),/<svg[^>]*width="1200"/);
- assert.match(cardSVG(result,scorer,{lang:'ko'}),/font-family="'Noto Sans KR', sans-serif"[\s\S]*여성적|남성적/);
+ assert.match(cardSVG(result,scorer,{lang:'ko'}),/font-family="'Noto Sans KR', sans-serif"[\s\S]*>여성적인 목소리</);
  assert.match(cardSVG(result,scorer,{lang:'en'}),/'Noto Sans JP'[\s\S]*VOICE VERDICT/);
 }
 const ko=new Scorer(JSON.parse(readFileSync('.deploy/assets/public-api/ko.json','utf8')).clips);

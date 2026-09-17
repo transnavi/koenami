@@ -110,3 +110,14 @@ for (const lang of LANGUAGES) {
  }
 }
 console.log('share fonts: ok');
+
+// Every key the code asks for by literal exists; the template-string keys (metric.*, verdict.*, gate.*,
+// leaning.*, manifest.screenshot_*) are covered by the catalogue parity check above.
+import { readdirSync } from 'node:fs';
+const sources = [...readdirSync('web').filter((f) => f.endsWith('.js')).map((f) => `web/${f}`), 'worker.ts'];
+const used = new Set();
+for (const file of sources) for (const m of readFileSync(file, 'utf8').matchAll(/\b(?:t|say|translator\(\w+\))\(\s*(?:request,\s*)?'([\w.]+)'/g)) used.add(m[1]);
+const missing = [...used].filter((k) => !(k in ja));
+assert.deepEqual(missing, [], `keys used in code but absent from the catalogue: ${missing.join(', ')}`);
+assert.ok(used.size > 120, `only ${used.size} keys found in code`);
+console.log(`code keys: ok (${used.size})`);

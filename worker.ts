@@ -9,7 +9,7 @@ import fontKoRegular from './web/public/fonts/koenami-share-ko-400.ttf';
 import fontKoBold from './web/public/fonts/koenami-share-ko-700.ttf';
 import { Scorer, parseResultParams, resultParams, shareText, formatScore, verdictLabel, leaningLabel } from './web/score.js';
 import { cardSVG } from './web/card.js';
-import { LANGUAGES, FONTS, fontCut, known, matchLanguage, translator } from './web/i18n/index.js';
+import { LANGUAGES, fontFamily, fontCut, known, matchLanguage, translator } from './web/i18n/index.js';
 
 export { VoiceAnalyzer } from './worker/analyzer';
 
@@ -84,7 +84,7 @@ async function resultImage(request: Request, env: Env, ctx: ExecutionContext, ur
   await resvgReady;
   const svg = cardSVG(shared.result, shared.scorer, { lang: shared.lang });
   const [regular, bold] = cardFonts[fontCut(shared.lang)];
-  const renderer = new Resvg(svg, { font: { fontBuffers: [new Uint8Array(regular), new Uint8Array(bold)], loadSystemFonts: false, defaultFontFamily: FONTS[shared.lang as keyof typeof FONTS] } });
+  const renderer = new Resvg(svg, { font: { fontBuffers: [new Uint8Array(regular), new Uint8Array(bold)], loadSystemFonts: false, defaultFontFamily: fontFamily(shared.lang) } });
   let png: Uint8Array;
   try { png = renderer.render().asPng(); } finally { renderer.free(); }
   const response = new Response(png, { headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=604800, immutable' } });

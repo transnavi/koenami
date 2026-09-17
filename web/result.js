@@ -9,7 +9,8 @@ const LANGUAGES=new Set(languages);
 function fail(message){$('result-verdict').textContent=t('result.unavailable');$('result-status').textContent=message;}
 async function main(){
  const parsed=parseResultParams(new URLSearchParams(location.search));
- if(!parsed||!LANGUAGES.has(parsed.lang)){fail(t('result.no_params'));return;}
+ if(!parsed){fail(t('result.no_params'));return;}
+ if(!LANGUAGES.has(parsed.lang)){fail(t('result.no_verdict'));return;}
  const library=await (await fetch(`/api/library?lang=${encodeURIComponent(parsed.lang)}`)).json().catch(()=>null);
  if(!library){fail(t('result.no_library'));return;}
  const scorer=new Scorer(library.clips),scored=scorer.score(parsed.features),result=scored&&{...scored,age:parsed.age};

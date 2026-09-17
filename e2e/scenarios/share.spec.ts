@@ -101,8 +101,9 @@ test.describe('verdict and sharing', () => {
 		// Closing the dialog before the card is ready drops the image.
 		await page.unroute('**/fonts/**');
 		let release: (() => void) | null = null;
-		await page.route('**/fonts/koenami-share-700.ttf', async (route) => { await new Promise<void>((r) => { release = r; }); await route.continue(); });
-		const held = page.waitForRequest('**/fonts/koenami-share-700.ttf');
+		// The bold share font: one file in the pinned tree, one per script cut after the interface languages.
+		await page.route('**/fonts/koenami-share-*700.ttf', async (route) => { await new Promise<void>((r) => { release = r; }); await route.continue(); });
+		const held = page.waitForRequest('**/fonts/koenami-share-*700.ttf');
 		await page.locator('#share-button').click();
 		await held;
 		await page.locator('#share-dialog [data-close]').click();

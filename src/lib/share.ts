@@ -23,7 +23,7 @@ let fonts: Record<string, string> | null = null;
 async function loadFonts() {
 	if (fonts) return fonts;
 	const load = async (weight: number) => {
-		const bytes = new Uint8Array(await (await fetch(`/fonts/koenami-share-${weight}.ttf`)).arrayBuffer());
+		const bytes = new Uint8Array(await (await fetch(`/fonts/koenami-share-ja-${weight}.ttf`)).arrayBuffer());
 		let binary = '';
 		for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
 		return `data:font/ttf;base64,${btoa(binary)}`;

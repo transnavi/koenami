@@ -302,7 +302,7 @@ class SimilarTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
         self.assertLess(m['speakers'][0]['distance'],m['speakers'][1]['distance']);self.assertEqual(m['indexed'],{'clips':6,'speakers':3})
         r=await self.client.post('/api/similar?lang=ko',data=np.zeros(RATE*3,dtype='<f4').tobytes());self.assertEqual(r.status,404)
         r=await self.client.post('/api/similar?lang=ja&limit=abc',data=np.zeros(RATE*3,dtype='<f4').tobytes());self.assertEqual(r.status,400)
-        with patch.object(perception,'timbre',side_effect=ValueError('2秒以上の音声を選んでください。')):
+        with patch.object(perception,'timbre',side_effect=ValueError('too_short')):
             r=await self.client.post('/api/similar?lang=ja',data=np.zeros(RATE,dtype='<f4').tobytes());self.assertEqual(r.status,422)
 
     def test_index_loader_rejects_another_version_and_drops_unknown_clips(self):

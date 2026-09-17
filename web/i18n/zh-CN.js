@@ -5,6 +5,7 @@ export default {
  'page.browser_requirements': '能使用麦克风的浏览器',
  'page.publisher': 'とらんすナビ',
 
+ 'language.name': '普通话',
  'toolbar.language': '语言（界面与参考声音）',
  'toolbar.guide': '界面向导',
  'toolbar.share': '分享判定',
@@ -81,6 +82,7 @@ export default {
  'samples.search': '搜索',
  'samples.search_aria': '搜索参考声音',
  'samples.more': '显示更多',
+ 'lab.library': '发声示范',
  'lab.teacher': '教师',
  'lab.pitch': '音高',
  'lab.pitch_aria': '教师的音高',

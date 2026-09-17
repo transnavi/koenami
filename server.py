@@ -36,6 +36,8 @@ MESSAGES = {
     'too_little_speech': {'ja': '2秒以上、話した音声を選んでください。', 'zh-CN': '请选择包含2秒以上说话声音的音频。', 'en': 'Choose audio with at least 2 seconds of speech.', 'ko': '2초 이상 말한 음성을 골라 주세요.'},
     'failed': {'ja': 'この音声の推定に失敗しました。', 'zh-CN': '无法对这段音频进行估计。', 'en': 'The estimate failed for this audio.', 'ko': '이 음성의 추정에 실패했습니다.'},
     'measure_failed': {'ja': 'この音声を測定できませんでした。', 'zh-CN': '无法测量这段音频。', 'en': 'This audio could not be measured.', 'ko': '이 음성을 측정하지 못했습니다.'},
+    'invalid_selection': {'ja': '選択範囲が正しくありません。', 'zh-CN': '选区无效。', 'en': 'The selected range is not valid.', 'ko': '선택 구간이 올바르지 않습니다.'},
+    'words_unavailable': {'ja': '単語の位置推定は利用できません。波形で範囲を選んでください。', 'zh-CN': '无法估计词的位置。请在波形上选择范围。', 'en': 'Word timing is unavailable. Select a range on the waveform.', 'ko': '단어 위치 추정을 쓸 수 없습니다. 파형에서 구간을 골라 주세요.'},
     'no_timbre_index': {'ja': 'この言語の参照声のインデックスがありません。', 'zh-CN': '这种语言没有参考声音的索引。', 'en': 'There is no reference voice index for this language.', 'ko': '이 언어의 참고 음성 인덱스가 없습니다.'},
     'compare_failed': {'ja': '声の比較に失敗しました。もう一度お試しください。', 'zh-CN': '声音比较失败，请重试。', 'en': 'The voice comparison failed. Try again.', 'ko': '목소리 비교에 실패했습니다. 다시 시도해 주세요.'},
 }
@@ -255,7 +257,7 @@ def create_app():
                 try:
                     a, b = float(start), float(end)
                     if not np.isfinite([a, b]).all() or a < 0 or b-a < .25 or b > len(x)/RATE+.002: raise ValueError()
-                except (ValueError, TypeError): raise web.HTTPBadRequest(text='Invalid time selection.')
+                except (ValueError, TypeError): raise web.HTTPBadRequest(text=message(request, 'invalid_selection'))
                 x = x[round(a*RATE):round(b*RATE)]; offset = a
             result = await asyncio.to_thread(analyze, x)
             result['offset'] = offset
@@ -276,7 +278,7 @@ def create_app():
                 return respond(result)
             except Exception as error:
                 print(f'Word timing failed: {type(error).__name__}', flush=True)
-                raise web.HTTPServiceUnavailable(text='Word timing is unavailable. Select a range on the waveform.')
+                raise web.HTTPServiceUnavailable(text=message(request, 'words_unavailable'))
 
     async def catalog(request):
         return respond({'capabilities': {'words': not PUBLIC, 'maxSeconds': LIMIT, 'review': not PUBLIC, 'similar': sorted(timbre_index) if timbre_index else []}, 'languages': [dict(id=k, label=v,

@@ -10,11 +10,12 @@ import ko from './ko.js';
 export const LANGUAGES = ['ja', 'zh-CN', 'en', 'ko'];
 export const CATALOGUES = { ja, 'zh-CN': zh, en, ko };
 export const OG_LOCALES = { ja: 'ja_JP', 'zh-CN': 'zh_CN', en: 'en_US', ko: 'ko_KR' };
-/* The card font per language: the share font is a Noto Sans subset in three regional cuts. */
-export const FONTS = { ja: 'Noto Sans JP', 'zh-CN': 'Noto Sans SC', en: 'Noto Sans JP', ko: 'Noto Sans KR' };
 export const SITE = 'https://koe.transnavi.jp';
 /* The share font ships in three cuts of Noto Sans; English uses the Japanese cut's Latin glyphs. */
 export const fontCut = (lang) => (lang === 'ko' || lang === 'zh-CN' ? lang : 'ja');
+/* The family name of each cut, which resvg matches by name (web/public/fonts). */
+export const FONTS = { ja: 'Noto Sans JP', 'zh-CN': 'Noto Sans SC', ko: 'Noto Sans KR' };
+export const fontFamily = (lang) => FONTS[fontCut(lang)];
 
 export const known = (lang) => (LANGUAGES.includes(lang) ? lang : 'ja');
 /* The studio's address in a language; Japanese lives at the root. */
@@ -49,16 +50,20 @@ export function translator(lang) {
  if (!rules.has(lang)) rules.set(lang, new Intl.PluralRules(lang));
  const plural = rules.get(lang);
  /* t(key, params): a string with {name} filled in (numbers in the language's digit
-    grouping), or the array a list key holds. A {one, other} entry picks its form by
-    params.n. A missing key is a programming error. */
+    grouping), or a copy of the array a list key holds. A {one, other} entry picks its
+    form by params.n. A missing key, and a placeholder the params leave unfilled, are
+    programming errors; a list is returned as written, so the tour's {help}-style chips
+    pass through to tour.js. */
  return function t(key, params) {
   let value = messages[key];
-  if (value === undefined) value = ja[key];
-  if (value === undefined) throw new Error(`i18n: no message for ${key}`);
+  if (value === undefined) throw new Error(`i18n: no message for ${key} in ${lang}`);
   if (value && typeof value === 'object' && !Array.isArray(value)) value = value[plural.select(Number(params?.n) || 0)] ?? value.other;
   if (Array.isArray(value)) return value.slice();
   if (!params) return value;
-  return value.replace(/\{(\w+)\}/g, (m, name) => (!(name in params) ? m : typeof params[name] === 'number' ? params[name].toLocaleString(lang) : String(params[name])));
+  const filled = value.replace(/\{(\w+)\}/g, (m, name) => (!(name in params) ? m : typeof params[name] === 'number' ? params[name].toLocaleString(lang) : String(params[name])));
+  const left = /\{(\w+)\}/.exec(filled);
+  if (left) throw new Error(`i18n: ${key} needs {${left[1]}}`);
+  return filled;
  };
 }
 
@@ -82,7 +87,7 @@ export function renderPage(template, lang, path) {
   og_locale: OG_LOCALES[lang],
   home: home(lang),
   url: SITE + path,
-  links: path === '/r' ? '' : [
+  links: [
    `<link rel="canonical" href="${SITE}${path}">`,
    ...LANGUAGES.map((l) => `<link rel="alternate" hreflang="${l}" href="${SITE}${home(l)}">`),
    `<link rel="alternate" hreflang="x-default" href="${SITE}/">`,
@@ -103,7 +108,6 @@ export function renderManifest(base, lang) {
  manifest.description = t('manifest.description');
  manifest.lang = lang;
  manifest.start_url = home(lang);
- const labels = [t('manifest.screenshot_wide'), t('manifest.screenshot_narrow')];
- manifest.screenshots?.forEach((s, i) => { s.label = labels[i] ?? s.label; });
+ for (const s of manifest.screenshots || []) if (s.form_factor === 'wide' || s.form_factor === 'narrow') s.label = t(`manifest.screenshot_${s.form_factor}`);
  return JSON.stringify(manifest, null, 2) + '\n';
 }

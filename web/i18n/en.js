@@ -5,6 +5,7 @@ export default {
  'page.browser_requirements': 'A browser with microphone access',
  'page.publisher': 'とらんすナビ',
 
+ 'language.name': 'English',
  'toolbar.language': 'Language (interface and references)',
  'toolbar.guide': 'Screen guide',
  'toolbar.share': 'Share the verdict',
@@ -81,6 +82,7 @@ export default {
  'samples.search': 'Search',
  'samples.search_aria': 'Search references',
  'samples.more': 'Show more',
+ 'lab.library': 'Voice lab',
  'lab.teacher': 'Teacher',
  'lab.pitch': 'Pitch',
  'lab.pitch_aria': "Teacher's pitch",

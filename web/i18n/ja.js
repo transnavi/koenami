@@ -6,6 +6,7 @@ export default {
  'page.browser_requirements': 'マイクを使えるブラウザー',
  'page.publisher': 'とらんすナビ',
 
+ 'language.name': '日本語',
  'toolbar.language': '言語（画面と見本）',
  'toolbar.guide': '画面ガイド',
  'toolbar.share': '判定を共有',
@@ -82,6 +83,7 @@ export default {
  'samples.search': '検索',
  'samples.search_aria': '見本を検索',
  'samples.more': 'もっと見る',
+ 'lab.library': '発声の見本',
  'lab.teacher': '講師',
  'lab.pitch': '高さ',
  'lab.pitch_aria': '講師の声の高さ',

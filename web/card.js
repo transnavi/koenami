@@ -1,6 +1,6 @@
 import {finite,clamp} from './math.js';
 import {METRIC_KEYS,METRIC_DIGITS,metricLabel,metricUnit,verdictLabel,leaningLabel,formatScore,ageText} from './score.js';
-import {translator,FONTS} from './i18n/index.js';
+import {translator,fontFamily} from './i18n/index.js';
 /* The share card is one SVG string, rendered by the browser for the in-app
    preview and download and by resvg on the Worker for the social image.
    Both use the Noto Sans subset shipped with the site in the cut of the card's
@@ -29,7 +29,7 @@ function cloud(x,y,size,points,point,t){
 /* result: Scorer.score() output; scorer: {bands, metricBands, cloud}; lang: the card's language;
    fonts: {weight: data URI} for browser rendering, omitted for resvg. */
 export function cardSVG(result,scorer,{fonts=null,site='koe.transnavi.jp',lang='ja'}={}){
- const t=translator(lang),family=FONTS[lang]||FONTS.ja;
+ const t=translator(lang),family=fontFamily(lang);
  const style=fonts?`<style>${Object.entries(fonts).map(([weight,uri])=>`@font-face{font-family:"${family}";font-weight:${weight};src:url(${uri}) format("truetype")}`).join('')}</style>`:'';
  const accent=result.verdict==='female'?COLORS.pink:result.verdict==='male'?COLORS.sky:COLORS.self;
  const metrics=METRIC_KEYS.map((key,i)=>metricColumn(64+i*218,470,170,key,result.features[key],scorer.metricBands?.[key],lang)).join('');

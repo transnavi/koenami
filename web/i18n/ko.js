@@ -5,6 +5,7 @@ export default {
  'page.browser_requirements': '마이크를 쓸 수 있는 브라우저',
  'page.publisher': 'とらんすナビ',
 
+ 'language.name': '한국어',
  'toolbar.language': '언어 (화면과 참고 음성)',
  'toolbar.guide': '화면 안내',
  'toolbar.share': '판정 공유',
@@ -81,6 +82,7 @@ export default {
  'samples.search': '검색',
  'samples.search_aria': '참고 음성 검색',
  'samples.more': '더 보기',
+ 'lab.library': '발성 예시',
  'lab.teacher': '강사',
  'lab.pitch': '높이',
  'lab.pitch_aria': '강사 목소리의 높이',
