@@ -20,6 +20,8 @@ export function domProjection(): Observation {
 	};
 	const elements: Record<string, unknown> = {};
 	for (const el of document.querySelectorAll('[id]')) {
+		// The framework's own live region (SvelteKit's announcer) is not the app's DOM.
+		if (el.id === 'svelte-announcer') continue;
 		const id = el.id;
 		const entry: Record<string, unknown> = { tag: el.tagName.toLowerCase(), class: [...el.classList].filter((c) => contractClasses.includes(c)).sort().join(' '), attrs: attrs(el) };
 		if (el instanceof HTMLInputElement) { entry.value = el.value; if (el.type === 'checkbox' || el.type === 'radio') entry.checked = el.checked; if (el.type === 'file') entry.files = el.files?.length || 0; }

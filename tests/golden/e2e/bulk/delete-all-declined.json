@@ -1217,7 +1217,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": "保存された録音がありません。"
+   "text": ""
   },
   "import-dialog": {
    "tag": "dialog",
@@ -1643,7 +1643,7 @@
   "idb": {
    "recording-index": [
     {
-     "date": "2026-01-01T03:00:05.200Z",
+     "date": "2026-01-01T03:00:05.000Z",
      "duration": 6.696,
      "features": {
       "balance": -15.115525244433902,
@@ -1675,7 +1675,7 @@
      "stored": true
     },
     {
-     "date": "2026-01-01T03:00:05.200Z",
+     "date": "2026-01-01T03:00:05.000Z",
      "duration": 4.776,
      "features": {
       "balance": -22.75062396481386,
@@ -1707,7 +1707,7 @@
      "stored": true
     },
     {
-     "date": "2026-01-01T03:00:05.200Z",
+     "date": "2026-01-01T03:00:05.000Z",
      "duration": 6.696,
      "features": {
       "balance": -15.115525244433902,

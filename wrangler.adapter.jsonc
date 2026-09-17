@@ -1,0 +1,8 @@
+// Read by adapter-cloudflare only (svelte.config.js): where the Kit build goes. The Worker
+// itself (name, compatibility, bindings, routes) is wrangler.jsonc, whose entry
+// worker/entry.ts re-exports this worker.
+{
+  "name": "koenami",
+  "main": ".svelte-kit/cloudflare/_worker.js",
+  "assets": { "directory": ".svelte-kit/cloudflare", "binding": "ASSETS" }
+}

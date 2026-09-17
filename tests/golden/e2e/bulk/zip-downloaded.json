@@ -1217,7 +1217,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": "保存された録音がありません。"
+   "text": ""
   },
   "import-dialog": {
    "tag": "dialog",
@@ -1643,7 +1643,7 @@
   "idb": {
    "recording-index": [
     {
-     "date": "2026-01-01T03:00:05.200Z",
+     "date": "2026-01-01T03:00:05.000Z",
      "duration": 6.696,
      "features": {
       "balance": -15.115525244433902,
@@ -1675,7 +1675,7 @@
      "stored": true
     },
     {
-     "date": "2026-01-01T03:00:05.200Z",
+     "date": "2026-01-01T03:00:05.000Z",
      "duration": 4.776,
      "features": {
       "balance": -22.75062396481386,
@@ -1707,7 +1707,7 @@
      "stored": true
     },
     {
-     "date": "2026-01-01T03:00:05.200Z",
+     "date": "2026-01-01T03:00:05.000Z",
      "duration": 6.696,
      "features": {
       "balance": -15.115525244433902,
@@ -20144,7 +20144,7 @@
  "errors": [],
  "zip": {
   "name": "koenami-recordings.zip",
-  "sha256": "7c1c6fa9b2fe04076d95fb3e8bf4be8a5859b5292a5d4e741e5a83f81b7a7668",
+  "sha256": "29fac4264a4641a2b620b630ea531c4d6107cec909ebb062eea09ffe1fe8c8f9",
   "bytes": 484547
  }
 }

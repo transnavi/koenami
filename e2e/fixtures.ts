@@ -204,8 +204,10 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		let prepared = false;
 		let tourSkipped = false;
 		const flush = async () => { await flushers.get(page)?.(); };
-		const back = async () => { await flush(); await page.goBack(); };
-		const forward = async () => { await flush(); await page.goForward(); };
+		// The pinned tree is wired at the load event; the Kit tree wires its pages on hydration.
+		const ready = async () => { if (process.env.KOENAMI_TREE === 'new') await page.waitForSelector('html[data-hydrated]', { state: 'attached' }); };
+		const back = async () => { await flush(); await page.goBack(); await ready(); };
+		const forward = async () => { await flush(); await page.goForward(); await ready(); };
 		const rowAction = async (id: string, value: string, action: string) => {
 			await page.locator(`#${id} button.trigger`).click();
 			await page.locator(`#${id} button.row-action[data-value="${value}"][data-action="${action}"]`).click();
@@ -223,6 +225,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				await before(page);
 			}
 			await page.goto(path);
+			await ready();
 		};
 		await use({ log, golden, tick, until, untilTicking, settled, canvas, download, choose, rowAction, open, back, forward, audio: fixtureAudio });
 	}

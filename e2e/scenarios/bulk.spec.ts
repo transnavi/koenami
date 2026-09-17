@@ -2,7 +2,7 @@ import { test } from '../fixtures';
 import { app } from '../hooks';
 
 test.describe('bulk actions on saved recordings', () => {
-	test('download every take as one zip, then delete them all', async ({ page, studio }) => {
+	test('nothing to bundle or delete on an empty history', async ({ page, studio }) => {
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await page.locator('#settings-button').click();
@@ -13,6 +13,11 @@ test.describe('bulk actions on saved recordings', () => {
 		await studio.tick(100);
 		await studio.golden('nothing-to-delete');
 		await page.locator('#settings-dialog [data-close]').click();
+	});
+
+	test('download every take as one zip, then delete them all', async ({ page, studio }) => {
+		await studio.open('/ja/');
+		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 		await studio.until(app.analysed);
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
@@ -24,11 +29,20 @@ test.describe('bulk actions on saved recordings', () => {
 		await studio.until(app.analysed);
 		await studio.tick(1200);
 		await page.locator('#settings-button').click();
-		// The zip writer is loaded on first use; a second click while it loads is ignored.
-		let release: (() => void) | null = null;
-		await page.route('**/node_modules/@zip.js/zip.js/index-native.js', async (route) => { await new Promise<void>((resolve) => { release = resolve; }); await route.continue(); }, { times: 1 });
-		const held = page.waitForRequest('**/node_modules/@zip.js/zip.js/index-native.js');
-		const zip = studio.download(async () => { await page.locator('#download-all').click(); await held; await page.locator('#download-all').click(); await page.locator('#delete-all').click(); release!(); });
+		// The zip writer is loaded on first use (the only script the click fetches, in either
+		// tree); while it loads, a second download and a delete are both ignored as busy.
+		let release!: () => void;
+		const held = new Promise<void>((resolve) => { release = resolve; });
+		let intercepted!: () => void;
+		const paused = new Promise<void>((resolve) => { intercepted = resolve; });
+		await page.route('**/*.js', async (route) => { intercepted(); await held; await route.continue(); }, { times: 1 });
+		const zip = studio.download(async () => {
+			await page.locator('#download-all').click();
+			await paused;
+			await page.locator('#download-all').click();
+			await page.locator('#delete-all').click();
+			release();
+		});
 		await studio.golden('zip-downloaded', { extra: { zip: await zip } });
 		await studio.until(app.idle);
 		await studio.tick(100);

@@ -48,7 +48,7 @@ SPECS = {'wavlm': dict(outputs=['embedding', 'timbre_frames'], timbre_layer=TIMB
 class VoiceEncoder(nn.Module):
     """Speaker-verification x-vector plus the frames of encoder layer TIMBRE_LAYER, which
     `perception.timbre` pools over speech frames. The JVS listener-similarity benchmark
-    (research/jvs-benchmark) found layers 2–3 order speakers closest to listener ratings, and
+    (docs/research/jvs-similarity.md) found layers 2–3 order speakers closest to listener ratings, and
     that the pooling must skip silent frames while the model still sees them as context; the
     x-vector head is unchanged."""
     def __init__(self, path):

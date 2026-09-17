@@ -1,6 +1,6 @@
 .venv/
 __pycache__/
-research/
+/research/
 .cache/
 test-output/
 
@@ -12,9 +12,12 @@ dist/
 
 .venv-*/
 data/
+# The recorded fixture set the browser suite serves is part of the repository.
+!tests/fixtures/data/
 .deploy/
 .wrangler/
 .dev.vars*
 ui-v3/
 tests/old-tree/
 /coverage/
+.svelte-kit/

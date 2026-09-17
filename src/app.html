@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="%lang%">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<meta name="theme-color" content="#f9fbff" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#171826" media="(prefers-color-scheme: dark)" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+		<link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<!-- The saved theme is applied before the first paint; a file of its own, so the pages
+		     can be prerendered under the CSP. -->
+		<script src="/theme.js"></script>
+		%sveltekit.head%
+	</head>
+	<!-- Links load the next page as a new document: the studio's controller (src/lib/studio/app.ts)
+	     wires window and document listeners it does not remove yet, so it must not mount twice in
+	     one document. Goes away when the studio becomes components that clean up after themselves. -->
+	<body data-sveltekit-reload>
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

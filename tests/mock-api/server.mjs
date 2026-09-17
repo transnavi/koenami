@@ -23,15 +23,19 @@ const upstream = process.env.MOCK_API_RECORD;
 const port = Number(process.env.MOCK_API_PORT || 35511);
 const site = join(root, process.env.MOCK_API_STATIC || 'web');
 const types = { html: 'text/html; charset=utf-8', js: 'text/javascript; charset=utf-8', css: 'text/css; charset=utf-8', svg: 'image/svg+xml', png: 'image/png', ico: 'image/x-icon', webmanifest: 'application/manifest+json', txt: 'text/plain; charset=utf-8', json: 'application/json' };
-// Routes as worker.ts serves them: the studio at / and /<lang>/, pages and scripts by
-// name, and everything in web/public at the root.
+// Routes as the Worker serves them. The pinned tree keeps one index.html for / and every
+// /<lang>/ and result.html for /r; a SvelteKit build prerenders each route to
+// <route>/index.html or <route>.html, and web/public sits at the root of both.
 function staticFile(pathname) {
-	if (pathname === '/' || /^\/(ja|zh-CN|en|ko)\/?$/.test(pathname)) return join(site, 'index.html');
+	const name = pathname.replace(/^\/|\/$/g, '');
+	if (name.includes('..')) return null;
+	const candidates = name
+		? [join(site, name), join(site, name, 'index.html'), join(site, `${name}.html`), join(site, 'public', name)]
+		: [join(site, 'index.html')];
+	if (/^(ja|zh-CN|en|ko)$/.test(name)) candidates.push(join(site, 'index.html'));
 	// worker.ts serves the shared-result page at /r (the query carries the measurements).
-	if (pathname === '/r') return join(site, 'result.html');
-	const name = pathname.slice(1);
-	if (!name || name.includes('..')) return null;
-	for (const candidate of [join(site, name), join(site, 'public', name)]) if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
+	if (name === 'r') candidates.push(join(site, 'result.html'));
+	for (const candidate of candidates) if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
 	return null;
 }
 mkdirSync(fixtures, { recursive: true });
@@ -74,7 +78,10 @@ async function record(req, url, body) {
 	return { status: response.status, contentType, body: text ? bytes.toString('utf8') : bytes.toString('base64'), base64: !text };
 }
 
-createServer(async (req, res) => {
+// A client that goes away mid-request (a timed-out test) must not take the server down.
+const server = createServer(async (req, res) => {
+	req.on('error', () => {});
+	res.on('error', () => {});
 	const url = new URL(req.url, 'http://localhost');
 	if ((req.method === 'GET' || req.method === 'HEAD') && !/^\/(api|samples|data)\//.test(url.pathname)) {
 		// The production build bundles this dependency; served unbundled, the bare
@@ -143,4 +150,6 @@ createServer(async (req, res) => {
 	console.error(`mock-api: no fixture for ${candidates[0]}`);
 	res.writeHead(599, { 'content-type': 'text/plain; charset=utf-8' });
 	res.end(`no fixture for ${candidates[0]}`);
-}).listen(port, '127.0.0.1', () => console.log(`mock-api ${upstream ? 'recording from ' + upstream : 'replaying'} on ${port}`));
+});
+server.on('clientError', (_error, socket) => socket.destroy());
+server.listen(port, '127.0.0.1', () => console.log(`mock-api ${upstream ? 'recording from ' + upstream : 'replaying'} on ${port}`));

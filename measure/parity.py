@@ -46,8 +46,16 @@ FEATURES = [
 ]
 SCALARS = [
     "duration", "voiced_seconds", "active_seconds", "clipping_fraction", "level_dbfs", "formant_seconds",
-    "pitch_p10", "pitch_p90", "formant_sensitivity_pct", "resonance_sensitivity_pct", "peak",
+    "pitch_p10", "pitch_p90", "formant_sensitivity_pct", "resonance_sensitivity_pct", "pitch_halving_pct", "peak",
+    "voicing.voiced_fraction",
 ]
+
+
+def scalar(m: dict, key: str):
+    """Top-level scalar, or a nested one written as `parent.child`."""
+    for part in key.split("."):
+        m = m.get(part) if isinstance(m, dict) else None
+    return m
 
 
 def difference(name: str, a: float, b: float) -> float:
@@ -124,7 +132,7 @@ def main() -> int:
                 continue
             feature_diffs[f].append(difference(f, a, b))
         for s in SCALARS:
-            a, b = py.get(s), rs.get(s)
+            a, b = scalar(py, s), scalar(rs, s)
             if a is None or b is None:
                 presence_mismatches += (a is None) != (b is None)
                 continue
