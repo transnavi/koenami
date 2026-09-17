@@ -2140,7 +2140,7 @@ export function mountStudio() {
 	);
 
 	function updateFavorite() {
-		const yes = favorites.has(state.selected?.id ?? '');
+		const yes = favorites.has(state.selected?.id as string);
 		$('favorite-selected').textContent = yes ? '★' : '☆';
 		$('favorite-selected').setAttribute('aria-pressed', String(yes));
 		$('favorite-selected').setAttribute(

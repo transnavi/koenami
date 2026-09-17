@@ -1,5 +1,4 @@
 {
-	"$schema": "./node_modules/oxfmt/configuration_schema.json",
 	"useTabs": true,
 	"singleQuote": true,
 	"trailingComma": "none",
@@ -23,6 +22,7 @@
 		"static/**",
 		"**/*.md",
 		"worker-configuration.d.ts",
+		"scripts/kb-*.mjs",
 		"scripts/kb-*.mjs",
 		"src/lib/measure/pkg/**"
 	]

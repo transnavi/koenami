@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '$lib/studio/studio.css';
-	import { jsonLd } from '$lib/structured-data';
 	const structuredData = `{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://koe.transnavi.jp/#website","url":"https://koe.transnavi.jp/","name":"Koenami","inLanguage":"ja","publisher":{"@id":"https://transnavi.jp/#organization"}},{"@type":"Organization","@id":"https://transnavi.jp/#organization","name":"とらんすナビ","url":"https://transnavi.jp/","logo":"https://transnavi.jp/favicon.svg"},{"@type":"TechArticle","@id":"https://koe.transnavi.jp/method.html#article","url":"https://koe.transnavi.jp/method.html","headline":"測定方法と出典","name":"Koenami · 測定方法と出典","description":"Koenamiの声の分布図の見方、高さ・響き・質感・明るさ・抑揚の測定方法、聴取レビュー、見本の音声の出典と利用条件。","inLanguage":"ja","mainEntityOfPage":"https://koe.transnavi.jp/method.html","image":"https://koe.transnavi.jp/og-method.png","author":{"@id":"https://transnavi.jp/#organization"},"publisher":{"@id":"https://transnavi.jp/#organization"},"isPartOf":{"@id":"https://koe.transnavi.jp/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Koenami","item":"https://koe.transnavi.jp/"},{"@type":"ListItem","position":2,"name":"測定方法と出典","item":"https://koe.transnavi.jp/method.html"}]}]}`;
 </script>
 
@@ -32,7 +31,7 @@
 	/>
 	<meta name="twitter:image" content="https://koe.transnavi.jp/og-method.png" />
 	<link rel="sitemap" href="/sitemap.xml" />
-	{@html jsonLd(structuredData)}
+	{@html `<script type="application/ld+json">${structuredData}</script>`}
 </svelte:head>
 
 <header class="method-header">
