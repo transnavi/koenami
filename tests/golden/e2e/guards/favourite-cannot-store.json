@@ -893,15 +893,15 @@
    "rows": {
     "count": 4,
     "head": [
-     "details#ja:custom:custom-1767236406600|speaker-folder||true|own-b.wav1★own-b.wav176 Hz · 0:04★",
+     "details#ja:custom:custom-1767236406500|speaker-folder||true|own-b.wav1★own-b.wav176 Hz · 0:04★",
      "summary#||||own-b.wav1★",
-     "button#custom-1767236406600|sample-row|true||own-b.wav176 Hz · 0:04",
+     "button#custom-1767236406500|sample-row|true||own-b.wav176 Hz · 0:04",
      "button#|favorite|true||★"
     ],
     "tail": [
-     "details#ja:custom:custom-1767236406600|speaker-folder||true|own-b.wav1★own-b.wav176 Hz · 0:04★",
+     "details#ja:custom:custom-1767236406500|speaker-folder||true|own-b.wav1★own-b.wav176 Hz · 0:04★",
      "summary#||||own-b.wav1★",
-     "button#custom-1767236406600|sample-row|true||own-b.wav176 Hz · 0:04",
+     "button#custom-1767236406500|sample-row|true||own-b.wav176 Hz · 0:04",
      "button#|favorite|true||★"
     ]
    }
@@ -1589,7 +1589,7 @@
     "liveShapeSeconds": 5
    },
    "voice-favorites": [
-    "custom-1767236406600"
+    "custom-1767236406500"
    ],
    "voice-speed": 1
   },

@@ -47,7 +47,7 @@ test.describe('voice map', () => {
 		await studio.tick(200);
 		await page.setViewportSize({ width: 1440, height: 960 });
 		await studio.tick(200);
-		await studio.golden('resized-with-moved-camera');
+		await studio.canvas('2d-resized', '#voice-map');
 		await page.locator('#zoom-out').click();
 		await studio.tick(300);
 		await drag(page, [400, 300], [500, 350]);

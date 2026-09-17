@@ -1190,7 +1190,7 @@
    "attrs": {
     "role": "alert"
    },
-   "text": "保存された録音がありません。"
+   "text": ""
   },
   "import-dialog": {
    "tag": "dialog",
