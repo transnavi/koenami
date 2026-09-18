@@ -66,6 +66,23 @@ describe('TakeStore', () => {
 		);
 		const f3 = await TakeStore.finishRecording('r3', { features: { f0: 3 }, duration: 1 });
 		const afterFinish = await dump();
+		// updateRecording reshapes a stored take's entry and snapshot together (renaming, the
+		// waveform peaks); a take that has no snapshot is left alone.
+		const renamed = await TakeStore.updateRecording(
+			'r3',
+			(snapshot: unknown, metadata: Record<string, unknown>) => ({
+				snapshot,
+				metadata: { ...metadata, name: 'renamed', peaks: [0, 0.5, 1] }
+			})
+		);
+		const updateMissing = await TakeStore.updateRecording(
+			'ghost',
+			(snapshot: unknown, metadata: Record<string, unknown>) => ({
+				snapshot,
+				metadata: { ...metadata, name: 'never' }
+			})
+		);
+		const afterUpdate = await dump();
 		const d2 = await TakeStore.deleteRecording('r2');
 		const dMissing = await TakeStore.deleteRecording('ghost');
 		const d1 = await TakeStore.deleteRecording('r1');
@@ -78,6 +95,9 @@ describe('TakeStore', () => {
 			ranged,
 			f3,
 			afterFinish,
+			renamed,
+			updateMissing,
+			afterUpdate,
 			d2,
 			dMissing,
 			d1,
