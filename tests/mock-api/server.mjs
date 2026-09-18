@@ -67,7 +67,8 @@ function staticFile(pathname, search = '') {
 	// the language of its `l`, where the build has one.
 	if (name === 'r') {
 		const lang = new URLSearchParams(search).get('l');
-		if (/^(zh-CN|en|ko)$/.test(lang || '')) candidates.push(join(site, lang, 'result.html'));
+		if (/^(zh-CN|en|ko)$/.test(lang || ''))
+			candidates.push(join(site, lang, 'result.html'), join(site, lang, 'r.html'));
 		candidates.push(join(site, 'result.html'));
 	}
 	for (const candidate of candidates)
