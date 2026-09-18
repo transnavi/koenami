@@ -20,6 +20,7 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
@@ -48,10 +49,11 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
-  13
+  14
  ],
  [
   "GET",
@@ -69,10 +71,11 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
-  13
+  14
  ],
  [
   "GET",
@@ -90,10 +93,11 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
-  13
+  14
  ],
  [
   "GET",
@@ -111,10 +115,11 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
-  13
+  14
  ],
  [
   "GET",
@@ -132,28 +137,7 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
-   "/theme.js",
-   "/tutorial.html"
-  ],
-  13
- ],
- [
-  "GET",
-  "/_app/immutable/nodes/2.abc.js",
-  "cors",
-  "200",
-  [
-   "/",
-   "/_app/immutable/assets/studio.abc.css",
-   "/_app/immutable/entry/app.abc.js",
-   "/_app/immutable/nodes/2.abc.js",
-   "/en/",
-   "/en/site.webmanifest",
-   "/favicon.svg",
-   "/guide.html",
-   "/icon-192.png",
-   "/method.html",
-   "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
@@ -176,10 +160,34 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
-  14
+  15
+ ],
+ [
+  "GET",
+  "/_app/immutable/nodes/2.abc.js",
+  "cors",
+  "200",
+  [
+   "/",
+   "/_app/immutable/assets/studio.abc.css",
+   "/_app/immutable/entry/app.abc.js",
+   "/_app/immutable/nodes/2.abc.js",
+   "/en/",
+   "/en/site.webmanifest",
+   "/favicon.svg",
+   "/guide.html",
+   "/icon-192.png",
+   "/method.html",
+   "/references.html",
+   "/site.webmanifest",
+   "/theme.js",
+   "/tutorial.html"
+  ],
+  15
  ],
  [
   "GET",
@@ -198,10 +206,11 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
-  15
+  16
  ],
  [
   "GET",
@@ -220,10 +229,11 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
-  16
+  17
  ],
  [
   "GET",
@@ -242,10 +252,11 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
-  17
+  18
  ],
  [
   "GET",
@@ -264,10 +275,11 @@
    "/icon-192.png",
    "/method.html",
    "/references.html",
+   "/site.webmanifest",
    "/theme.js",
    "/tutorial.html"
   ],
-  18
+  19
  ],
  [
   "GET",
@@ -290,7 +302,7 @@
    "/theme.js",
    "/tutorial.html"
   ],
-  19
+  20
  ],
  [
   "GET",
@@ -313,7 +325,7 @@
    "/theme.js",
    "/tutorial.html"
   ],
-  20
+  21
  ],
  [
   "offline",

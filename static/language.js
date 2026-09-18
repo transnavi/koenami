@@ -2,7 +2,7 @@
 // language is sent to that language's page before anything renders; the page itself
 // then loads that language's references. Runs as a classic script in <head>, so the
 // redirect happens before the first paint. The list mirrors LANGUAGES in src/lib/languages.ts
-// without the Japanese root; a new language is added here, in worker.ts and in sw.js as well.
+// without the Japanese root; a new language is added here and in worker.ts as well.
 (function () {
   try {
     if (location.pathname !== '/') return;
