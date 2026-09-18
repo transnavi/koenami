@@ -5,11 +5,30 @@
 // explorer finds the same state again after different paths and the graph stays finite.
 // The full DOM projection is compared at every node besides.
 
+// The transition tables explore.ts writes and compare.ts reads.
+export type Edge = {
+	from: string;
+	op: string;
+	to: string;
+	projection: string;
+	steps: number;
+	note?: string;
+};
+export type Node = { key: string; state: AbstractState; path: Operation[]; projection: string };
+export type Table = {
+	port: string;
+	depth: number;
+	truncated: boolean;
+	nodes: Node[];
+	edges: Edge[];
+};
+
 export type AbstractState = {
 	lang: string;
 	theme: string;
 	phase: 'loading' | 'busy' | 'recording' | 'analysing' | 'idle';
-	reference: 'none' | 'selected' | 'playing';
+	reference: 'none' | 'selected';
+	focus: string | null;
 	own: 'none' | 'loaded' | 'analysed';
 	takes: number;
 	ranges: { own: boolean; ref: boolean };
@@ -49,13 +68,14 @@ export function abstractState(): AbstractState {
 	const dialogs = [...document.querySelectorAll('dialog[open]')].map(
 		(d) => d.id || d.className.split(' ')[0] || 'dialog'
 	);
+	// The open-menu finder is repeated in enabledOperations(): each function is serialised
+	// into the page on its own and cannot share a helper.
 	const menu =
 		[...document.querySelectorAll('koe-select')].find(
 			(k) => k.shadowRoot?.querySelector('button.trigger[aria-expanded="true"]') !== null
 		)?.id ?? null;
 	const value = (id: string) =>
-		(document.getElementById(id) as (HTMLElement & { value?: string }) | null)?.value ?? null;
-	const player = document.getElementById('reference-player') as HTMLMediaElement | null;
+		(document.getElementById(id) as HTMLElement & { value?: string })?.value ?? null;
 	const phase =
 		!s || s.loadingLanguage
 			? 'loading'
@@ -70,7 +90,12 @@ export function abstractState(): AbstractState {
 		lang: document.documentElement.lang,
 		theme: document.documentElement.dataset.theme || 'system',
 		phase,
-		reference: !s?.selected ? 'none' : player && !player.paused ? 'playing' : 'selected',
+		// Whether the reference is playing follows real media time, so it is not part of
+		// the state; the play button's pressed state is, through `toggles`.
+		reference: s?.selected ? 'selected' : 'none',
+		// Space and Escape act on the focused element, so two paths that end with a
+		// different focus are different states.
+		focus: document.activeElement?.id || document.activeElement?.tagName.toLowerCase() || null,
 		own: !s?.ownPCM && !s?.own ? 'none' : s?.ownFull ? 'analysed' : 'loaded',
 		takes: s?.takes?.length ?? 0,
 		ranges: { own: !!s?.ranges?.own, ref: !!s?.ranges?.ref },

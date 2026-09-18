@@ -248,3 +248,40 @@ export async function storageDump() {
 	}
 	return { local, idb };
 }
+
+// What derives from captured microphone samples, masked: the fake device loops its file
+// from launch, so a recording's samples differ between runs. The sample-dependent fields
+// of stored recordings, the session's take and the waveform previews of the take menu are
+// replaced by a marker; the analysis request bodies are the harness's to mask. Runs in
+// the test process, not in the page.
+export const MASKED_AUDIO = '<audio>';
+export function maskAudio(observation: Observation): void {
+	const strip = (value: unknown): unknown => {
+		if (Array.isArray(value)) return value.map(strip);
+		if (value && typeof value === 'object')
+			return Object.fromEntries(
+				Object.entries(value).map(([k, v]) => [
+					k,
+					k === 'waveform' ||
+					k === 'peaks' ||
+					k === 'data-peaks' ||
+					(['sha256', 'duration', 'length'].includes(k) && v !== null && typeof v !== 'object')
+						? MASKED_AUDIO
+						: strip(v)
+				])
+			);
+		return value;
+	};
+	const storage = observation.storage as
+		| { idb: Record<string, unknown>; local: Record<string, unknown> }
+		| undefined;
+	if (storage) {
+		for (const key of Object.keys(storage.idb))
+			if (key.startsWith('recording') || key === 'takes')
+				storage.idb[key] = strip(storage.idb[key]);
+		if (storage.local['koenami-session'])
+			storage.local['koenami-session'] = strip(storage.local['koenami-session']);
+	}
+	const elements = observation.elements;
+	if (elements['take-select']) elements['take-select'] = strip(elements['take-select']);
+}
