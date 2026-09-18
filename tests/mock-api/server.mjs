@@ -51,7 +51,7 @@ function staticFile(pathname, search = '') {
 	// import.meta.env.PROD is false here, see below); a built tree served through
 	// MOCK_API_STATIC would, and a registered worker answers later loads from its cache
 	// and hides them from the recorded request log. The registration swallows the 404.
-	if (name === 'sw.js') return null;
+	if (name === 'sw.js' || name === 'service-worker.js') return null;
 	const candidates = name
 		? [
 				join(site, name),

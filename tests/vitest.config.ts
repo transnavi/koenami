@@ -10,7 +10,12 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const app = tree === 'new' ? `${root}src/lib` : `${root}tests/old-tree/web`;
 
 export default defineConfig({
-	resolve: { alias: { '@app': app } },
+	resolve: {
+		alias: {
+			'@app': app,
+			'$service-worker': `${root}tests/unit/service-worker-stub.ts`
+		}
+	},
 	test: {
 		root,
 		include: ['tests/unit/**/*.test.ts'],
@@ -22,7 +27,10 @@ export default defineConfig({
 			// so both layers merge as source ranges (see tests/coverage/report.mjs).
 			provider: 'custom',
 			customProviderModule: 'vitest-monocart-coverage',
-			include: tree === 'new' ? ['src/lib/**/*.{ts,js,svelte}'] : ['tests/old-tree/web/**/*.js'],
+			include:
+				tree === 'new'
+					? ['src/lib/**/*.{ts,js,svelte}', 'src/service-worker.ts']
+					: ['tests/old-tree/web/**/*.js'],
 			reportsDirectory: 'coverage/unit'
 		}
 	}

@@ -136,9 +136,8 @@ const cache = () => {
 };
 const cached = () => [...(cache().store.keys() ?? [])].map((u) => u.replace(ORIGIN, '')).sort();
 
-// The Kit tree gets a service worker shaped by its own build ($service-worker) together with
-// the studio; its golden is recorded then.
-describe.skipIf((process.env.KOENAMI_TREE || 'old') === 'new')('service worker', () => {
+const tree = process.env.KOENAMI_TREE || 'old';
+describe.skipIf(tree === 'new')('service worker', () => {
 	// @ts-expect-error the worker registers its listeners and exports nothing
 	beforeAll(() => import('@app/public/sw'));
 	it('caches the shell, hashed assets and pages, serves them offline, and prunes what no page references', async () => {
@@ -183,5 +182,69 @@ describe.skipIf((process.env.KOENAMI_TREE || 'old') === 'new')('service worker',
 			log.push(['offline', url, init?.mode || 'cors', await request(url, init), cached()]);
 		}
 		golden('sw.lifecycle', log);
+	});
+});
+
+// The Kit tree's worker knows its build ($service-worker, stood in by
+// tests/unit/service-worker-stub.ts): the hashed files are cached at install and the
+// cache is named by the build, so a new build's activation drops the last one's copies
+// instead of pruning by the pages' references.
+describe.skipIf(tree === 'old')('service worker of the Kit build', () => {
+	beforeAll(() => {
+		vi.stubGlobal('self', globalThis);
+		responses['/_app/immutable/entry/app.abc.js'] = () =>
+			new Response('app', { headers: { 'content-type': 'text/javascript' } });
+		responses['/_app/immutable/assets/studio.abc.css'] = () =>
+			new Response('css', { headers: { 'content-type': 'text/css' } });
+		responses['/_app/immutable/nodes/2.abc.js'] = () =>
+			new Response('page', { headers: { 'content-type': 'text/javascript' } });
+		responses['/en/'] = indexHtml;
+		responses['/references.html'] = html('<p>references</p>');
+		responses['/en/site.webmanifest'] = responses['/site.webmanifest'];
+		responses['/theme.js'] = () =>
+			new Response('theme', { headers: { 'content-type': 'text/javascript' } });
+		return import('../../src/service-worker');
+	});
+	it("caches the build and the shell, serves them offline, and drops another build's cache", async () => {
+		const log: unknown[] = [['handlers', Object.keys(handlers).sort()]];
+		await lifecycle('install');
+		log.push(['installed', cached(), skipWaiting.mock.calls.length]);
+		await lifecycle('activate');
+		log.push(['activated', [...caches.keys()], claim.mock.calls.length]);
+		const requests: [string, Init?][] = [
+			['/api/analyze', { method: 'POST' }],
+			['https://elsewhere.test/x'],
+			['/api/catalog'],
+			['/samples/a.wav'],
+			['/_app/immutable/entry/app.abc.js'],
+			['/_app/immutable/nodes/2.abc.js'],
+			['/_app/immutable/nodes/2.abc.js'],
+			['/_app/immutable/nodes/missing.js'],
+			['/ja/?utm=1', { mode: 'navigate' }],
+			['/guide.html', { mode: 'navigate' }],
+			['/r?v=1', { mode: 'navigate' }],
+			['/site.webmanifest'],
+			['/robots.txt']
+		];
+		for (const [url, init] of requests)
+			log.push([
+				init?.method || 'GET',
+				url,
+				init?.mode || 'cors',
+				await request(url, init),
+				cached(),
+				fetchStub.mock.calls.length
+			]);
+		online = false;
+		for (const [url, init] of [
+			['/en/', { mode: 'navigate' }],
+			['/nope.html', { mode: 'navigate' }],
+			['/site.webmanifest?v=2'],
+			['/_app/immutable/nodes/2.abc.js'],
+			['/_app/immutable/nodes/never.js']
+		] as [string, Init?][]) {
+			log.push(['offline', url, init?.mode || 'cors', await request(url, init), cached()]);
+		}
+		golden('sw.kit-lifecycle', log, { tree: 'new' });
 	});
 });

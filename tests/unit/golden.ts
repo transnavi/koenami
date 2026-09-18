@@ -4,10 +4,7 @@ import { expect } from 'vitest';
 
 const dir = new URL('../golden/unit/', import.meta.url);
 const record = process.env.RECORD === '1';
-// Goldens describe the pinned vanilla tree; recording them from the rewrite would
-// turn the suite into a tautology.
-if (record && (process.env.KOENAMI_TREE || 'old') !== 'old')
-	throw new Error('RECORD=1 is only valid with KOENAMI_TREE=old');
+const tree = process.env.KOENAMI_TREE || 'old';
 
 // Canonical JSON: sorted keys, doubles serialized by JSON.stringify (exact round trip, so
 // a last-ulp difference fails), with undefined, -0, non-finite numbers, Maps, Sets and
@@ -37,17 +34,22 @@ export function canonical(value: unknown): unknown {
 	return value;
 }
 
-// Compares `actual` with the committed golden, or writes it when RECORD=1.
-export function golden(name: string, actual: unknown) {
+// Compares `actual` with the committed golden, or writes it when RECORD=1. Goldens
+// describe the pinned vanilla tree; recording them from the rewrite would turn the suite
+// into a tautology, so recording is refused there except for what only the Kit tree has
+// (`tree: 'new'`), which is pinned from the build that introduced it.
+export function golden(name: string, actual: unknown, { tree: own = 'old' } = {}) {
 	const file = new URL(`${name}.json`, dir);
 	const text = JSON.stringify(canonical(actual), null, 1) + '\n';
 	if (record) {
+		if (tree !== own)
+			throw new Error(`RECORD=1 for ${name} is only valid with KOENAMI_TREE=${own}`);
 		mkdirSync(dir, { recursive: true });
 		writeFileSync(file, text);
 		return;
 	}
 	if (!existsSync(file))
-		throw new Error(`missing golden ${name}; run with RECORD=1 against the old tree`);
+		throw new Error(`missing golden ${name}; run with RECORD=1 against the ${own} tree`);
 	expect(text).toBe(readFileSync(file, 'utf8'));
 }
 
