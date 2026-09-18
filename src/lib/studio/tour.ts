@@ -1,6 +1,7 @@
+import { t } from '$lib/i18n';
 // First-visit guide: a spotlight and a card walk through the studio one area at a
-// time. The lit area stays clickable; four blockers around it hold the rest. Progress lives in localStorage so "あとで" resumes where it stopped on
-// the next visit; "スキップ" and finishing both mark it done. The card is a
+// time. The lit area stays clickable; four blockers around it hold the rest. Progress lives in localStorage so "later" resumes where it stopped on
+// the next visit; "skip" and finishing both mark it done. The card is a
 // non-modal <dialog>, which also makes the app skip its keyboard shortcuts while
 // the guide is open. The ⓘ dialog can start it again.
 const KEY = 'voice-tour';
@@ -26,67 +27,33 @@ const CHIPS = {
 	star: '<span class="tour-key tour-key-plain">☆</span>',
 	R: '<kbd class="tour-key tour-key-kbd">R</kbd>'
 };
-const STEPS = [
-	{
-		art: 'wave',
-		title: 'Koenamiへようこそ',
-		text: '見本を真似して録音し、声の違いを目で確かめられるツールです。主な画面の使い方を1分ほどで順にご紹介します。\nスキップしても、画面右上の{help}からいつでも見直せます。'
-	},
-	{
-		art: 'pick',
-		target: ['.target'],
-		title: '選んだ見本',
-		text: '今選択されている見本を{play}で再生でき、また{star}でお気に入りとして登録できます。'
-	},
-	{
-		art: 'list',
-		target: ['.samples-panel .sample-filters', '#samples-toggle'],
-		title: '見本の一覧',
-		text: '声の種類で絞り込み、並べ替えて、近づきたい声を探します。'
-	},
-	{
-		art: 'mic',
-		target: ['#record'],
-		title: '録音',
-		text: '{mic}か{R}で録音を始め、もう一度押して止めます。'
-	},
-	{
-		art: 'radar',
-		target: ['#indicators'],
-		title: '声の特徴',
-		text: '高さ・響き・質感・明るさ・抑揚を、自分と見本で見比べます。'
-	},
-	{
-		art: 'map',
-		target: ['.graph-area'],
-		title: '声の分布',
-		text: '見本の声の地図です。自分の声が見本にどれだけ近いかが分かります。'
-	},
-	{
-		art: 'signal',
-		target: ['.signal-panel'],
-		title: '波形',
-		text: '高さの推移やスペクトログラムを見比べます。ドラッグで範囲を選べます。'
-	},
-	{
-		art: 'live',
-		target: ['#live-mode'],
-		title: 'リアルタイム',
-		text: '話しながら、声の位置が動くのを見て調整します。'
-	},
-	{
-		art: 'info',
-		target: ['#info-button'],
-		title: '詳しい説明',
-		text: '使い方や声のしくみの解説は{info}から開けます。'
-	}
+// The steps' art and spotlight targets; their titles and texts come from the catalogue in the same order.
+const LAYOUT: { art: keyof typeof ART; target?: string[] }[] = [
+	{ art: 'wave' },
+	{ art: 'pick', target: ['.target'] },
+	{ art: 'list', target: ['.samples-panel .sample-filters', '#samples-toggle'] },
+	{ art: 'mic', target: ['#record'] },
+	{ art: 'radar', target: ['#indicators'] },
+	{ art: 'map', target: ['.graph-area'] },
+	{ art: 'signal', target: ['.signal-panel'] },
+	{ art: 'live', target: ['#live-mode'] },
+	{ art: 'info', target: ['#info-button'] }
 ];
+const STEPS = LAYOUT.map((step, i) => ({
+	...step,
+	...(t.list('tour.steps')[i] as { title: string; text: string })
+}));
 let phoneQuery: MediaQueryList | undefined;
 const phone = {
 	get matches() {
 		return (phoneQuery ??= matchMedia('(max-width:800px),(max-height:520px)')).matches;
 	}
 };
+const esc = (s: unknown) =>
+	String(s).replace(
+		/[&<>"]/g,
+		(c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!
+	);
 const load = (): { step?: number; done?: boolean } => {
 	try {
 		return JSON.parse(localStorage.getItem(KEY) as string) || {};
@@ -122,7 +89,19 @@ function build() {
 	card.className = 'tour-card';
 	card.setAttribute('aria-labelledby', 'tour-title');
 	card.innerHTML =
-		'<div class="tour-head"><svg class="tour-art" viewBox="0 0 24 24" aria-hidden="true"></svg><div><p class="tour-count" id="tour-count"></p><h2 id="tour-title"></h2></div></div><div id="tour-text"></div><div class="tour-actions"><button type="button" class="text-button" data-act="later" title="中断して、次回に続きから">あとで</button><button type="button" class="text-button" data-act="skip" title="ガイドを終了">スキップ</button><span class="tour-spacer"></span><button type="button" class="text-button" data-act="back">戻る</button><button type="button" class="tour-next" data-act="next">次へ</button></div>';
+		'<div class="tour-head"><svg class="tour-art" viewBox="0 0 24 24" aria-hidden="true"></svg><div><p class="tour-count" id="tour-count"></p><h2 id="tour-title"></h2></div></div><div id="tour-text"></div><div class="tour-actions"><button type="button" class="text-button" data-act="later" title="' +
+		esc(t('tour.later_title')) +
+		'">' +
+		esc(t('tour.later')) +
+		'</button><button type="button" class="text-button" data-act="skip" title="' +
+		esc(t('tour.skip_title')) +
+		'">' +
+		esc(t('tour.skip')) +
+		'</button><span class="tour-spacer"></span><button type="button" class="text-button" data-act="back">' +
+		esc(t('tour.back')) +
+		'</button><button type="button" class="tour-next" data-act="next">' +
+		esc(t('tour.next')) +
+		'</button></div>';
 	card.addEventListener('click', (e) => {
 		const act = (e.target as Element).closest<HTMLElement>('[data-act]')?.dataset.act;
 		if (act === 'next') next();
@@ -233,8 +212,9 @@ function show(n: number) {
 		.join('');
 	card.querySelector('.tour-art')!.innerHTML = ART[s.art as keyof typeof ART];
 	card.querySelector<HTMLElement>('[data-act=back]')!.hidden = step === 0;
-	card.querySelector('[data-act=next]')!.textContent =
-		step === STEPS.length - 1 ? 'はじめる' : '次へ';
+	card.querySelector('[data-act=next]')!.textContent = t(
+		step === STEPS.length - 1 ? 'tour.start' : 'tour.next'
+	);
 	shade.hidden = false;
 	if (!card.open) card.show();
 	target()?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });

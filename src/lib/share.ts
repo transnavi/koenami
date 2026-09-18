@@ -1,4 +1,5 @@
 import { cardSVG, CARD_WIDTH, CARD_HEIGHT, type CardScorer } from './card';
+import { translator, known, fontCut } from './i18n';
 import { resultParams, shareText, type ScoreResult, type MetricKey } from './score';
 /* Everything a result needs to leave the app: its URL, the post text, the card
    as SVG and PNG, and the intent links. The result URL carries only the five
@@ -24,12 +25,13 @@ export const icon = (name: string) =>
 /* Render a share control's content: icon plus visible label. */
 export const labelled = (name: string, text: string) => `${icon(name)}<span>${text}</span>`;
 
-let fonts: Record<string, string> | null = null;
-async function loadFonts() {
-	if (fonts) return fonts;
+const fonts = new Map<string, Record<string, string>>();
+async function loadFonts(lang: string) {
+	const cut = fontCut(lang);
+	if (fonts.has(cut)) return fonts.get(cut)!;
 	const load = async (weight: number) => {
 		const bytes = new Uint8Array(
-			await (await fetch(`/fonts/koenami-share-${weight}.ttf`)).arrayBuffer()
+			await (await fetch(`/fonts/koenami-share-${cut}-${weight}.ttf`)).arrayBuffer()
 		);
 		let binary = '';
 		for (let i = 0; i < bytes.length; i += 0x8000)
@@ -37,14 +39,16 @@ async function loadFonts() {
 		return `data:font/ttf;base64,${btoa(binary)}`;
 	};
 	const [regular, bold] = await Promise.all([load(400), load(700)]);
-	return (fonts = { 400: regular, 700: bold });
+	fonts.set(cut, { 400: regular, 700: bold });
+	return fonts.get(cut)!;
 }
 export function resultURL(
 	features: Record<MetricKey, number>,
 	lang: string,
-	origin = location.origin
+	origin = location.origin,
+	extra: { age?: number } = {}
 ) {
-	return `${origin}/r?${resultParams(features, lang)}`;
+	return `${origin}/r?${resultParams(features, lang, extra)}`;
 }
 export type Intent = { id: string; label: string; icon: string; href: string };
 export function intents(url: string, text: string): Intent[] {
@@ -69,15 +73,22 @@ export function intents(url: string, text: string): Intent[] {
 		}
 	];
 }
-export async function cardImage(result: ScoreResult, scorer: CardScorer): Promise<File> {
-	const svg = cardSVG(result, scorer, { fonts: await loadFonts() });
+/* lang: the language the card is written in. */
+export async function cardImage(
+	result: ScoreResult,
+	scorer: CardScorer,
+	lang: string = 'ja'
+): Promise<File> {
+	lang = known(lang);
+	const t = translator(lang);
+	const svg = cardSVG(result, scorer, { fonts: await loadFonts(lang), lang });
 	const image = new Image();
 	image.decoding = 'async';
 	const source = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
 	try {
 		await new Promise<void>((ok, fail) => {
 			image.onload = () => ok();
-			image.onerror = () => fail(new Error('画像を作成できませんでした。'));
+			image.onerror = () => fail(new Error(t('share.image_failed')));
 			image.src = source;
 		});
 	} finally {
@@ -88,21 +99,23 @@ export async function cardImage(result: ScoreResult, scorer: CardScorer): Promis
 	canvas.height = CARD_HEIGHT;
 	canvas.getContext('2d')!.drawImage(image, 0, 0);
 	const blob = await new Promise<Blob | null>((ok) => canvas.toBlob(ok, 'image/png'));
-	if (!blob) throw new Error('画像を作成できませんでした。');
+	if (!blob) throw new Error(t('share.image_failed'));
 	return new File([blob], `koenami-${result.display}.png`, { type: 'image/png' });
 }
-export function shareBundle(result: ScoreResult, scorer: CardScorer, lang: string) {
-	const url = resultURL(result.features, lang),
-		text = shareText(result);
-	return { url, text, svg: cardSVG(result, scorer), intents: intents(url, text) };
+/* lang: the reference language the link recomputes against; ui: the language the text and card are written in. */
+export function shareBundle(result: ScoreResult, scorer: CardScorer, lang: string, ui = lang) {
+	const url = resultURL(result.features, lang, location.origin, { age: result.age }),
+		text = shareText(result, ui);
+	return { url, text, svg: cardSVG(result, scorer, { lang: ui }), intents: intents(url, text) };
 }
 export async function systemShare(
 	result: ScoreResult,
 	scorer: CardScorer,
-	lang: string
+	lang: string,
+	ui = lang
 ): Promise<boolean> {
-	const { url, text } = shareBundle(result, scorer, lang);
-	const file = await cardImage(result, scorer);
+	const { url, text } = shareBundle(result, scorer, lang, ui);
+	const file = await cardImage(result, scorer, ui);
 	const withFile = { title: 'Koenami', text: `${text} #${HASHTAG}`, url, files: [file] };
 	if (navigator.canShare?.(withFile)) {
 		await navigator.share(withFile);
