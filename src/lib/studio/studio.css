@@ -3354,8 +3354,9 @@ input[type='checkbox']:checked:after {
 		gap: 0;
 		padding: 2px;
 		background: color-mix(in srgb, var(--surface) 82%, transparent);
-		/* The prefixed declaration goes first: the CSS minifier keeps the last of the two
-		   as the property's value and would otherwise drop the standard one. */
+		/* The prefixed declaration goes first: Lightning CSS (Vite's minifier) keeps the
+		   last of the two as the property's value and would otherwise drop the standard
+		   one (tests/unit/studio-css.test.ts). */
 		-webkit-backdrop-filter: blur(4px);
 		backdrop-filter: blur(4px);
 	}
