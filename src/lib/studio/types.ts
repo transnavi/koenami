@@ -58,6 +58,7 @@ export type Take = {
 	language?: string;
 	stored?: boolean;
 	quality?: Record<string, number>;
+	peaks?: number[];
 	storedId?: string;
 	pcm?: PCM;
 	[key: string]: unknown;
