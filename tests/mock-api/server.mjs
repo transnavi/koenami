@@ -64,11 +64,12 @@ function staticFile(pathname, search = '') {
 	// of its own and gets the Japanese one, as the dev server gives it.
 	if (/^(ja|zh-CN|en|ko|lab)$/.test(name)) candidates.push(join(site, 'index.html'));
 	// worker.ts serves the shared-result page at /r (the query carries the measurements) in
-	// the language of its `l`, where the build has one.
+	// the language of its `l`, where the build has one; that page comes before the Japanese
+	// r.html a Kit build writes at the root.
 	if (name === 'r') {
 		const lang = new URLSearchParams(search).get('l');
 		if (/^(zh-CN|en|ko)$/.test(lang || ''))
-			candidates.push(join(site, lang, 'result.html'), join(site, lang, 'r.html'));
+			candidates.unshift(join(site, lang, 'result.html'), join(site, lang, 'r.html'));
 		candidates.push(join(site, 'result.html'));
 	}
 	for (const candidate of candidates)
