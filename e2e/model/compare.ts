@@ -1,0 +1,85 @@
+// Compares two transition tables written by explore.ts: the same abstract states must be
+// reachable, every state must offer the same operations, each operation must lead to the
+// same abstract state, and the DOM projection at the end of each operation must hash the
+// same. Prints the differences and exits 1 when there are any.
+//
+//   node --experimental-strip-types e2e/model/compare.ts old.json new.json
+import { readFileSync } from 'node:fs';
+
+import type { AbstractState, Edge, Table } from './state.ts';
+const [a, b] = process.argv.slice(2).map((p) => JSON.parse(readFileSync(p, 'utf8')) as Table);
+
+const label = (key: string) => {
+	const s = JSON.parse(key) as AbstractState;
+	return [
+		s.phase,
+		s.reference,
+		s.own,
+		`takes ${s.takes}`,
+		s.dialogs.length ? `dialog ${s.dialogs.join('+')}` : '',
+		s.menu ? `menu ${s.menu}` : '',
+		s.sheet ? 'sheet' : '',
+		`view ${s.view}`,
+		s.toggles.length ? `on ${s.toggles.join(',')}` : '',
+		s.share,
+		s.theme,
+		s.focus ? `focus ${s.focus}` : '',
+		s.ranges.own || s.ranges.ref
+			? `ranges ${s.ranges.own ? 'own ' : ''}${s.ranges.ref ? 'ref' : ''}`
+			: '',
+		s.live ? 'live' : ''
+	]
+		.filter(Boolean)
+		.join(' / ');
+};
+const index = (t: Table) => {
+	const m = new Map<string, Edge>();
+	for (const e of t.edges) m.set(`${e.from}\t${e.op}`, e);
+	return m;
+};
+const ea = index(a),
+	eb = index(b);
+const problems: string[] = [];
+for (const [name, t] of [
+	['first', a],
+	['second', b]
+] as const)
+	if (t.truncated)
+		problems.push(`the ${name} table hit its state cap, so its states are a prefix of the graph`);
+const statesA = new Set(a.nodes.map((n) => n.key)),
+	statesB = new Set(b.nodes.map((n) => n.key));
+for (const k of statesA)
+	if (!statesB.has(k)) problems.push(`state only on the first tree: ${label(k)}`);
+for (const k of statesB)
+	if (!statesA.has(k)) problems.push(`state only on the second tree: ${label(k)}`);
+let same = 0;
+for (const [k, x] of ea) {
+	const y = eb.get(k);
+	if (!y) {
+		problems.push(`operation only on the first tree: ${label(x.from)} — ${x.op}`);
+		continue;
+	}
+	if (x.to !== y.to)
+		problems.push(
+			`different result: ${label(x.from)} — ${x.op}\n    first:  ${label(x.to)}\n    second: ${label(y.to)}`
+		);
+	else if (x.projection !== y.projection)
+		problems.push(
+			`same state, different page: ${label(x.from)} — ${x.op} → ${label(x.to)} (projection ${x.projection} vs ${y.projection})`
+		);
+	else same++;
+	if ((x.note || '') !== (y.note || ''))
+		problems.push(
+			`different failure: ${label(x.from)} — ${x.op}: ${x.note || 'ok'} vs ${y.note || 'ok'}`
+		);
+}
+for (const [k, y] of eb)
+	if (!ea.has(k)) problems.push(`operation only on the second tree: ${label(y.from)} — ${y.op}`);
+console.log(
+	`${a.nodes.length} / ${b.nodes.length} states, ${a.edges.length} / ${b.edges.length} transitions, ${same} identical (state and page)`
+);
+if (problems.length) {
+	console.log(problems.join('\n'));
+	process.exit(1);
+}
+console.log('the two trees have the same UI state machine over the explored graph');

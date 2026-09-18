@@ -5,7 +5,13 @@ import { fileURLToPath } from 'node:url';
 
 import { test as base, expect, type Page } from '@playwright/test';
 
-import { domProjection, storageDump, type Observation } from './observe';
+import {
+	domProjection,
+	maskAudio as maskAudioIn,
+	MASKED_AUDIO as masked,
+	storageDump,
+	type Observation
+} from './observe';
 
 export { expect, type Page };
 export const record = process.env.RECORD === '1';
@@ -23,7 +29,6 @@ type NetEntry = {
 	body?: string;
 	status?: number | 'failed';
 };
-const masked = '<audio>';
 type Studio = {
 	log: NetEntry[];
 	/** Golden a named observation of the page. `ignore` drops element ids whose state
@@ -339,44 +344,13 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				errors: errors.slice(),
 				...extra
 			};
-			// Microphone audio differs between runs (the fake device loops its file from
-			// launch). Only what derives from the captured samples is masked: the bodies of
-			// analysis requests, the sample-dependent fields of stored recordings and the
-			// waveform previews of the take menu.
+			// Microphone audio differs between runs: the sample-dependent fields of the
+			// observation are masked (observe.ts), and the bodies of analysis requests here.
 			if (maskAudio) {
 				for (const entry of observation.network)
 					if (entry.method === 'POST' && entry.path === '/api/analyze' && entry.body)
 						entry.body = masked;
-				const strip = (value: unknown): unknown => {
-					if (Array.isArray(value)) return value.map(strip);
-					if (value && typeof value === 'object')
-						return Object.fromEntries(
-							Object.entries(value).map(([k, v]) => [
-								k,
-								k === 'waveform' ||
-								k === 'peaks' ||
-								k === 'data-peaks' ||
-								(['sha256', 'duration', 'length'].includes(k) &&
-									v !== null &&
-									typeof v !== 'object')
-									? masked
-									: strip(v)
-							])
-						);
-					return value;
-				};
-				const storage = observation.storage as {
-					idb: Record<string, unknown>;
-					local: Record<string, unknown>;
-				};
-				for (const key of Object.keys(storage.idb))
-					if (key.startsWith('recording') || key === 'takes')
-						storage.idb[key] = strip(storage.idb[key]);
-				// The waveform previews of the take menu are computed from the samples too.
-				const elements = observation.elements;
-				if (elements['take-select']) elements['take-select'] = strip(elements['take-select']);
-				if (storage.local['koenami-session'])
-					storage.local['koenami-session'] = strip(storage.local['koenami-session']);
+				maskAudioIn(observation);
 			}
 			const path = join(dir, `${name}.json`);
 			// The pages build absolute links from their origin; the goldens name it by a
