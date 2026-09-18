@@ -10,7 +10,13 @@ import type { EntryGenerator, PageLoad } from './$types';
 // so the trailing slash is part of the address.
 export const prerender = true;
 export const trailingSlash = 'always';
-export const entries: EntryGenerator = () => [{}, ...LANGUAGES.map((lang) => ({ lang }))];
+// `lab` is the research library, a language of the private analyzer's catalog with no
+// catalogue of its own: its page is the Japanese one at its own address.
+export const entries: EntryGenerator = () => [
+	{},
+	...LANGUAGES.map((lang) => ({ lang })),
+	{ lang: 'lab' }
+];
 export const load: PageLoad = ({ params }) => {
 	const lang = params.lang ?? 'ja';
 	return {

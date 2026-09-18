@@ -25,6 +25,7 @@ type State = {
 	queue: Pair[];
 	at: number;
 	questions: Record<string, string>;
+	rubric: Record<string, string>;
 	answers: Record<string, string>;
 	active: number;
 	log: LogEntry[];
@@ -53,6 +54,7 @@ export function mountPairs() {
 		queue: [],
 		at: 0,
 		questions: {},
+		rubric: {},
 		answers: {},
 		active: 0,
 		log: [],
@@ -157,6 +159,7 @@ export function mountPairs() {
 		if (!r.ok) throw Error(await r.text());
 		const data = await r.json();
 		state.questions = data.questions;
+		state.rubric = data.rubric || {};
 		state.log = data.log;
 		state.judged = data.judged;
 		state.queue = data.queue;
@@ -229,7 +232,10 @@ export function mountPairs() {
 				};
 				choices.append(b);
 			});
-			row.append(label, choices);
+			const hint = document.createElement('small');
+			hint.className = 'rubric';
+			hint.textContent = state.rubric[key] || '';
+			row.append(label, choices, hint);
 			$('questions').append(row);
 		});
 	}
