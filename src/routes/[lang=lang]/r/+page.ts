@@ -6,7 +6,8 @@ import head from '$lib/studio/result-head.html?raw';
 import type { EntryGenerator, PageLoad } from './$types';
 
 // The shared-result page in a language other than Japanese; the Worker serves it for
-// /r?l=<lang>. Prerendered as <lang>/r.html.
+// /r?l=<lang>. Prerendered as <lang>/r.html for the served languages only: the matcher
+// also admits `lab`, which has no result page (nothing links to /lab/r).
 export const prerender = true;
 export const trailingSlash = 'never';
 export const entries: EntryGenerator = () =>

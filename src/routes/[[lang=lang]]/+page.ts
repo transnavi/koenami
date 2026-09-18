@@ -1,4 +1,4 @@
-import { home, renderPage } from '$lib/i18n';
+import { home, known, renderPage } from '$lib/i18n';
 import { LANGUAGES } from '$lib/languages';
 import body from '$lib/studio/body.html?raw';
 import head from '$lib/studio/head.html?raw';
@@ -11,16 +11,16 @@ import type { EntryGenerator, PageLoad } from './$types';
 export const prerender = true;
 export const trailingSlash = 'always';
 // `lab` is the research library, a language of the private analyzer's catalog with no
-// catalogue of its own: its page is the Japanese one at its own address.
+// catalogue of its own: its page is the Japanese document, canonical at the root, as the
+// static server rendered it at /lab/.
 export const entries: EntryGenerator = () => [
 	{},
 	...LANGUAGES.map((lang) => ({ lang })),
 	{ lang: 'lab' }
 ];
 export const load: PageLoad = ({ params }) => {
-	const lang = params.lang ?? 'ja';
+	const lang = known(params.lang);
 	return {
-		lang,
 		head: renderPage(head, lang, home(lang)),
 		body: renderPage(body, lang, home(lang))
 	};
