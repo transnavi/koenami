@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import {
 	LANGUAGES,
 	CATALOGUES,
@@ -98,6 +100,35 @@ describe('i18n', () => {
 			unknownLanguage: renderPage('{{lang}}', 'xx', '/')
 		});
 		expect(() => renderPage('{{nope}}', 'ja', '/')).toThrow('i18n: unknown page field nope');
+	});
+	// The studio's and the result page's real head, rendered per language: the canonical,
+	// hreflang, manifest and sitemap links and the Open Graph address, which the browser
+	// goldens never see (they project the body).
+	it('the head links of the studio and the result page, per language', () => {
+		const tree = process.env.KOENAMI_TREE === 'new' ? 'src/lib/studio' : 'tests/old-tree/web';
+		const read = (name: string) => readFileSync(`${tree}/${name}`, 'utf8');
+		const heads = {
+			studio: read(tree.startsWith('src') ? 'head.html' : 'index.html'),
+			result: read(tree.startsWith('src') ? 'result-head.html' : 'result.html')
+		};
+		const links = (html: string) => ({
+			title: html.match(/<title>([^<]*)<\/title>/)?.[1],
+			url: html.match(/<meta property="og:url" content="([^"]*)"/)?.[1],
+			links: [...html.matchAll(/<link rel="(canonical|alternate|manifest|sitemap)"[^>]*>/g)].map(
+				(m) => m[0]
+			)
+		});
+		golden('i18n.head-links', {
+			studio: Object.fromEntries(
+				[...LANGUAGES, 'lab'].map((l) => [
+					l,
+					links(renderPage(heads.studio, known(l), home(known(l))))
+				])
+			),
+			result: Object.fromEntries(
+				LANGUAGES.map((l) => [l, links(renderPage(heads.result, l, '/r'))])
+			)
+		});
 	});
 	it('renderManifest: the Japanese manifest re-labelled per language', () => {
 		const base = JSON.stringify({

@@ -1,0 +1,96 @@
+{
+ "result": {
+  "en": {
+   "links": [],
+   "title": "Koenami · voice verdict",
+   "url": "https://koe.transnavi.jp/r"
+  },
+  "ja": {
+   "links": [],
+   "title": "Koenami · 声の判定",
+   "url": "https://koe.transnavi.jp/r"
+  },
+  "ko": {
+   "links": [],
+   "title": "Koenami · 목소리 판정",
+   "url": "https://koe.transnavi.jp/r"
+  },
+  "zh-CN": {
+   "links": [],
+   "title": "Koenami · 声音判定",
+   "url": "https://koe.transnavi.jp/r"
+  }
+ },
+ "studio": {
+  "en": {
+   "links": [
+    "<link rel=\"sitemap\" href=\"/sitemap.xml\">",
+    "<link rel=\"canonical\" href=\"https://koe.transnavi.jp/en/\">",
+    "<link rel=\"alternate\" hreflang=\"ja\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"alternate\" hreflang=\"zh-CN\" href=\"https://koe.transnavi.jp/zh-CN/\">",
+    "<link rel=\"alternate\" hreflang=\"en\" href=\"https://koe.transnavi.jp/en/\">",
+    "<link rel=\"alternate\" hreflang=\"ko\" href=\"https://koe.transnavi.jp/ko/\">",
+    "<link rel=\"alternate\" hreflang=\"x-default\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"manifest\" href=\"/en/site.webmanifest\">"
+   ],
+   "title": "Koenami · voice training for feminine and masculine voices",
+   "url": "https://koe.transnavi.jp/en/"
+  },
+  "ja": {
+   "links": [
+    "<link rel=\"sitemap\" href=\"/sitemap.xml\">",
+    "<link rel=\"canonical\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"alternate\" hreflang=\"ja\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"alternate\" hreflang=\"zh-CN\" href=\"https://koe.transnavi.jp/zh-CN/\">",
+    "<link rel=\"alternate\" hreflang=\"en\" href=\"https://koe.transnavi.jp/en/\">",
+    "<link rel=\"alternate\" hreflang=\"ko\" href=\"https://koe.transnavi.jp/ko/\">",
+    "<link rel=\"alternate\" hreflang=\"x-default\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"manifest\" href=\"/site.webmanifest\">"
+   ],
+   "title": "Koenami · 女声・男声のボイトレツール",
+   "url": "https://koe.transnavi.jp/"
+  },
+  "ko": {
+   "links": [
+    "<link rel=\"sitemap\" href=\"/sitemap.xml\">",
+    "<link rel=\"canonical\" href=\"https://koe.transnavi.jp/ko/\">",
+    "<link rel=\"alternate\" hreflang=\"ja\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"alternate\" hreflang=\"zh-CN\" href=\"https://koe.transnavi.jp/zh-CN/\">",
+    "<link rel=\"alternate\" hreflang=\"en\" href=\"https://koe.transnavi.jp/en/\">",
+    "<link rel=\"alternate\" hreflang=\"ko\" href=\"https://koe.transnavi.jp/ko/\">",
+    "<link rel=\"alternate\" hreflang=\"x-default\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"manifest\" href=\"/ko/site.webmanifest\">"
+   ],
+   "title": "Koenami · 여성 목소리・남성 목소리 연습 도구",
+   "url": "https://koe.transnavi.jp/ko/"
+  },
+  "lab": {
+   "links": [
+    "<link rel=\"sitemap\" href=\"/sitemap.xml\">",
+    "<link rel=\"canonical\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"alternate\" hreflang=\"ja\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"alternate\" hreflang=\"zh-CN\" href=\"https://koe.transnavi.jp/zh-CN/\">",
+    "<link rel=\"alternate\" hreflang=\"en\" href=\"https://koe.transnavi.jp/en/\">",
+    "<link rel=\"alternate\" hreflang=\"ko\" href=\"https://koe.transnavi.jp/ko/\">",
+    "<link rel=\"alternate\" hreflang=\"x-default\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"manifest\" href=\"/site.webmanifest\">"
+   ],
+   "title": "Koenami · 女声・男声のボイトレツール",
+   "url": "https://koe.transnavi.jp/"
+  },
+  "zh-CN": {
+   "links": [
+    "<link rel=\"sitemap\" href=\"/sitemap.xml\">",
+    "<link rel=\"canonical\" href=\"https://koe.transnavi.jp/zh-CN/\">",
+    "<link rel=\"alternate\" hreflang=\"ja\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"alternate\" hreflang=\"zh-CN\" href=\"https://koe.transnavi.jp/zh-CN/\">",
+    "<link rel=\"alternate\" hreflang=\"en\" href=\"https://koe.transnavi.jp/en/\">",
+    "<link rel=\"alternate\" hreflang=\"ko\" href=\"https://koe.transnavi.jp/ko/\">",
+    "<link rel=\"alternate\" hreflang=\"x-default\" href=\"https://koe.transnavi.jp/\">",
+    "<link rel=\"manifest\" href=\"/zh-CN/site.webmanifest\">"
+   ],
+   "title": "Koenami · 女声・男声练习工具",
+   "url": "https://koe.transnavi.jp/zh-CN/"
+  }
+ }
+}
