@@ -1,5 +1,4 @@
 import { LANGUAGES, type Language } from '../languages';
-
 import en from './en';
 /* The interface languages: one catalogue per language, a translator over it, and the
    page rendering that writes /, /zh-CN/, /en/ and /ko/ as separate documents. This module

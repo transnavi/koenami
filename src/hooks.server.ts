@@ -1,5 +1,5 @@
-import type { Handle } from '@sveltejs/kit';
 import { languageOf } from '$lib/i18n';
+import type { Handle } from '@sveltejs/kit';
 
 // The non-CSP headers prepare_public.py writes for the static site today (the CSP is
 // kit.csp in svelte.config.js). %lang% is the language the path addresses; the prerendered
