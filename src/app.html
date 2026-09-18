@@ -13,6 +13,9 @@
 		<!-- The saved theme is applied before the first paint; a file of its own, so the pages
 		     can be prerendered under the CSP. -->
 		<script src="/theme.js"></script>
+		<!-- The root sends a visitor whose saved session names another language to that
+		     language's page before anything renders. -->
+		<script src="/language.js"></script>
 		%sveltekit.head%
 	</head>
 	<!-- Links load the next page as a new document: the studio's controller (src/lib/studio/app.ts)
