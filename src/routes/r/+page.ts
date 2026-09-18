@@ -1,6 +1,6 @@
-import { home, renderPage } from '$lib/i18n';
-import head from '$lib/studio/result-head.html?raw';
+import { renderPage } from '$lib/i18n';
 import body from '$lib/studio/result-body.html?raw';
+import head from '$lib/studio/result-head.html?raw';
 
 import type { PageLoad } from './$types';
 
@@ -11,4 +11,8 @@ import type { PageLoad } from './$types';
 // static file the suite loads is the unrewritten shell.
 export const prerender = true;
 export const trailingSlash = 'never';
-export const load: PageLoad = () => ({ lang: 'ja', head: renderPage(head, 'ja', '/r'), body: renderPage(body, 'ja', '/r') });
+export const load: PageLoad = () => ({
+	lang: 'ja',
+	head: renderPage(head, 'ja', '/r'),
+	body: renderPage(body, 'ja', '/r')
+});
