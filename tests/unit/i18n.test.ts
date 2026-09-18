@@ -148,9 +148,41 @@ describe('i18n', () => {
 			withoutScreenshots: renderManifest('{"name":"x"}', 'ko')
 		});
 	});
-	it('catalogues share their keys', () => {
-		const keys = Object.keys(CATALOGUES.ja).sort();
-		for (const lang of LANGUAGES)
-			expect(Object.keys((CATALOGUES as Record<string, object>)[lang]).sort()).toEqual(keys);
+	// Every key exists in every language with the same kind of value (a text, a {one, other}
+	// pair with an `other` form, or a list of the same length) and the same placeholders.
+	it('catalogues share their keys, shapes and placeholders', () => {
+		const ja = CATALOGUES.ja as Record<string, unknown>;
+		const placeholders = (s: unknown) =>
+			[...String(s).matchAll(/\{(\w+)\}/g)]
+				.map((m) => m[1])
+				.sort()
+				.join(',');
+		const shape = (v: unknown) => (Array.isArray(v) ? `list:${v.length}` : 'text');
+		const forms = (v: unknown) => (typeof v === 'string' ? [v] : Object.values(v as object));
+		const itemText = (x: unknown) =>
+			typeof x === 'string'
+				? x
+				: (x as { title: string; text: string }).title + (x as { text: string }).text;
+		for (const lang of LANGUAGES) {
+			const messages = (CATALOGUES as Record<string, Record<string, unknown>>)[lang];
+			expect(Object.keys(messages).sort(), `${lang}: key set`).toEqual(Object.keys(ja).sort());
+			for (const [key, value] of Object.entries(ja)) {
+				const other = messages[key];
+				expect(shape(other), `${lang}: ${key} shape`).toBe(shape(value));
+				if (Array.isArray(value))
+					value.forEach((item, i) =>
+						expect(placeholders(itemText((other as unknown[])[i])), `${lang}: ${key}[${i}]`).toBe(
+							placeholders(itemText(item))
+						)
+					);
+				else {
+					if (typeof other === 'object') expect(other, `${lang}: ${key}`).toHaveProperty('other');
+					for (const form of forms(other))
+						expect(placeholders(form), `${lang}: ${key} placeholders`).toBe(
+							placeholders(forms(value).join(' '))
+						);
+				}
+			}
+		}
 	});
 });
