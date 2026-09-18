@@ -5638,7 +5638,7 @@
 		{
 			"file": "src/routes/[[lang=lang]]/+page.ts",
 			"kind": "function",
-			"line": 15,
+			"line": 16,
 			"column": 39,
 			"code": "() => [",
 			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
@@ -5646,7 +5646,7 @@
 		{
 			"file": "src/routes/[[lang=lang]]/+page.ts",
 			"kind": "function",
-			"line": 17,
+			"line": 18,
 			"column": 18,
 			"code": "(lang) => ({ lang })),",
 			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
@@ -5654,7 +5654,7 @@
 		{
 			"file": "src/routes/[lang=lang]/r/+page.ts",
 			"kind": "function",
-			"line": 12,
+			"line": 13,
 			"column": 39,
 			"code": "() =>",
 			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
@@ -5662,7 +5662,7 @@
 		{
 			"file": "src/routes/[lang=lang]/r/+page.ts",
 			"kind": "function",
-			"line": 13,
+			"line": 14,
 			"column": 18,
 			"code": "(lang) => lang !== 'ja').map((lang) => ({ lang }));",
 			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
@@ -5670,7 +5670,7 @@
 		{
 			"file": "src/routes/[lang=lang]/r/+page.ts",
 			"kind": "function",
-			"line": 13,
+			"line": 14,
 			"column": 47,
 			"code": "(lang) => ({ lang }));",
 			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
