@@ -17,6 +17,9 @@ const config = {
 		// itself; crawling is off because it would also follow the sitemap link, which
 		// prepare_public.py writes at deploy time.
 		prerender: { entries: ['*'], crawl: false },
+		// Absolute asset paths: the Worker serves the root document at /ja/ as well, where a
+		// relative ./_app/… would resolve under /ja/.
+		paths: { relative: false },
 		serviceWorker: { register: false },
 		// The headers prepare_public.py writes for the static site today; Kit nonces its own
 		// bootstrap and the theme script. Cloudflare Web Analytics injects its beacon at the
