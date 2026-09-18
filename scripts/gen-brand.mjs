@@ -1,11 +1,11 @@
 // Renders the favicon set, the web-app icons and the Open Graph card from
-// web/public/favicon.svg and the studio screenshot. Outputs are committed under
-// web/public; rerun after changing the mark or the screenshot.
+// static/favicon.svg and the studio screenshot. Outputs are committed under
+// static; rerun after changing the mark or the screenshot.
 import fs from 'node:fs';
 
 import sharp from 'sharp';
 
-const out = 'web/public';
+const out = 'static';
 const mark = fs.readFileSync(`${out}/favicon.svg`);
 const icon = (size) =>
 	sharp(mark, { density: (72 * size) / 64 })

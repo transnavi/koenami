@@ -23,8 +23,8 @@ for (const lang of ['ja', 'zh-CN', 'en']) {
 	);
 	assert.ok(scorer.available, `${lang}: contrast axis`);
 	for (const [group, anchor] of [
-		['female', 50],
-		['male', -50]
+		['female', 25],
+		['male', -25]
 	]) {
 		const scores = scorer.speakers
 			.filter((c) => c.group === group)

@@ -6,7 +6,7 @@
 
 Run with `uv run build_share_font.py [--fonts DIR]`. The JP, SC and KR variable fonts are
 instanced at 400 and 700 and cut down to the glyphs the card needs in the languages that
-use that cut (web/i18n: Japanese and English share the JP cut), so the Worker and the
+use that cut (src/lib/i18n: Japanese and English share the JP cut), so the Worker and the
 browser both embed a few tens of kilobytes per language instead of 10 MB.
 """
 import argparse
@@ -26,7 +26,7 @@ FONT_DIRS = [Path('/mnt/c/Windows/Fonts'), Path.home() / '.fonts']
 CUTS = {'ja': ('NotoSansJP-VF.ttf', ['ja', 'en']), 'zh-CN': ('NotoSansSC-VF.ttf', ['zh-CN']), 'ko': ('NotoSansKR-VF.ttf', ['ko'])}
 ASCII = ''.join(chr(c) for c in range(0x20, 0x7F))
 EXTRA = '−Δ／・「」（）〜…'
-# The catalogue keys whose text reaches the card (web/card.js and web/score.js).
+# The catalogue keys whose text reaches the card (src/lib/card.ts and src/lib/score.ts).
 CARD_KEYS = ['card.eyebrow', 'card.male', 'card.center', 'card.female', 'card.male_refs', 'card.female_refs',
              'verdict.female', 'verdict.androgynous', 'verdict.male', 'leaning.female', 'leaning.androgynous', 'leaning.male',
              'share.age_label', 'share.age_years',
@@ -35,9 +35,9 @@ CARD_KEYS = ['card.eyebrow', 'card.male', 'card.center', 'card.female', 'card.ma
 
 def card_text():
     """Every card string per language, read from the catalogues through Node."""
-    script = f"import {{ CATALOGUES }} from './web/i18n/index.js'; const keys = {json.dumps(CARD_KEYS)}; " \
+    script = f"import {{ CATALOGUES }} from './src/lib/i18n/index.ts'; const keys = {json.dumps(CARD_KEYS)}; " \
              "console.log(JSON.stringify(Object.fromEntries(Object.entries(CATALOGUES).map(([l, c]) => [l, keys.map((k) => { const v = c[k]; if (v === undefined) throw new Error(`no catalogue entry ${k} in ${l}`); return typeof v === 'string' ? v : Object.values(v).join(''); }).join('')]))));"
-    return json.loads(subprocess.run(['node', '--input-type=module', '-e', script], cwd=ROOT, capture_output=True, text=True, check=True).stdout)
+    return json.loads(subprocess.run(['bun', '-e', script], cwd=ROOT, capture_output=True, text=True, check=True).stdout)
 
 
 def main():
