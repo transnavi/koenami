@@ -210,7 +210,7 @@ function show(n: number) {
 			(t) => `<p>${t.replace(/\{(\w+)\}/g, (_, id: string) => CHIPS[id as keyof typeof CHIPS])}</p>`
 		)
 		.join('');
-	card.querySelector('.tour-art')!.innerHTML = ART[s.art as keyof typeof ART];
+	card.querySelector('.tour-art')!.innerHTML = ART[s.art];
 	card.querySelector<HTMLElement>('[data-act=back]')!.hidden = step === 0;
 	card.querySelector('[data-act=next]')!.textContent = t(
 		step === STEPS.length - 1 ? 'tour.start' : 'tour.next'
