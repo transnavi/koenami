@@ -1,4 +1,4 @@
-// Checks the shareable verdict against the built public libraries: bun score_test.ts
+// Checks the shareable verdict against the built public libraries, by hand after build:public: bun score_test.ts
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 

@@ -47,8 +47,11 @@ def jvs_excerpt(clips):
 def main():
     if OUT.exists():
         shutil.rmtree(OUT)
-    # The Kit build's asset tree; worker.ts is the deployed entry, not the adapter's worker.
-    shutil.copytree(ROOT / '.svelte-kit' / 'cloudflare', OUT / 'assets', ignore=shutil.ignore_patterns('_worker.js'))
+    # The Kit build's asset tree; worker.ts is the deployed entry, not the adapter's worker,
+    # and it serves nothing the adapter's own files describe (its routing table, the build's
+    # version and environment files).
+    shutil.copytree(ROOT / '.svelte-kit' / 'cloudflare', OUT / 'assets',
+                    ignore=shutil.ignore_patterns('_worker.js', '_routes.json', 'version.json', 'env.js'))
     # The listening-review and pairs pages are local curation tools and the research
     # library is private; the public site never serves them.
     for name in ('review.html', 'pairs.html'):
