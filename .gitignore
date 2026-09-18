@@ -23,3 +23,7 @@ tests/old-tree/
 .svelte-kit/
 # wasm-pack writes the browser build of the measurement engine (bun run build:wasm).
 src/lib/measure/pkg/
+# Per-worktree links to the main checkout's data, models and Python environment.
+/data
+/.venv
+/.models
