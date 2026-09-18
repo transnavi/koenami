@@ -47,12 +47,13 @@ def jvs_excerpt(clips):
 def main():
     if OUT.exists():
         shutil.rmtree(OUT)
-    shutil.copytree(ROOT / 'dist', OUT / 'assets')
-    # The listening-review page is a local curation tool; the public site never serves it.
-    for name in ('review', 'pairs'):
-        (OUT / 'assets' / f'{name}.html').unlink()
-        for chunk in (OUT / 'assets' / 'assets').glob(f'{name}-*.js'):
-            chunk.unlink()
+    # The Kit build's asset tree; worker.ts is the deployed entry, not the adapter's worker.
+    shutil.copytree(ROOT / '.svelte-kit' / 'cloudflare', OUT / 'assets', ignore=shutil.ignore_patterns('_worker.js'))
+    # The listening-review and pairs pages are local curation tools and the research
+    # library is private; the public site never serves them.
+    for name in ('review.html', 'pairs.html'):
+        (OUT / 'assets' / name).unlink()
+    shutil.rmtree(OUT / 'assets' / 'lab')
     write(OUT / 'assets' / 'public-api' / 'jvs-index.json', read('jvs-import-index.json'))
     write(OUT / 'data' / 'jvs-import-index.json', read('jvs-import-index.json'))
     libraries = {}
@@ -102,8 +103,9 @@ def main():
     write(OUT / 'manifest.json', manifest)
     # Sitemap with last-modified dates taken from git, so a page's date only
     # moves when its source does.
-    pages = {'/': ['web/index.html', 'web/app.js', 'web/i18n/index.js', 'web/i18n/ja.js'], **{f'/{lang}/': ['web/index.html', 'web/app.js', 'web/i18n/index.js', f'web/i18n/{lang}.js'] for lang in LANGUAGES if lang != 'ja'},
-             '/guide.html': ['web/guide.html'], '/tutorial.html': ['web/tutorial.html'], '/method.html': ['web/method.html'], '/references.html': ['web/references.html']}
+    studio = ['src/lib/studio/head.html', 'src/lib/studio/body.html', 'src/lib/studio/app.ts', 'src/lib/i18n/index.ts']
+    pages = {'/': [*studio, 'src/lib/i18n/ja.ts'], **{f'/{lang}/': [*studio, f'src/lib/i18n/{lang}.ts'] for lang in LANGUAGES if lang != 'ja'},
+             **{f'/{name}.html': [f'src/lib/studio/{name}-head.html', f'src/lib/studio/{name}-body.html'] for name in ('guide', 'tutorial', 'method', 'references')}}
     entries = []
     for path, sources in pages.items():
         modified = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', *sources], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
@@ -113,16 +115,15 @@ def main():
     # admits that script and the endpoint it reports to.
     # No fallback SPA route may expose private baselines or local model files.
     assert not any('baseline' in p.name or p.name == 'x.wav' for p in OUT.rglob('*'))
+    # The adapter's _headers marks the hashed files immutable; the site's own rules go first.
     (OUT / 'assets' / '_headers').write_text("""/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: microphone=(self), camera=(), geolocation=()
   Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'
-/assets/*
-  Cache-Control: public, max-age=31536000, immutable
-/sw.js
+/service-worker.js
   Cache-Control: no-cache
-""")
+""" + (ROOT / '.svelte-kit' / 'cloudflare' / '_headers').read_text())
     print(json.dumps({'public_samples': len(manifest), 'jvs_excerpt': 10, 'languages': catalog['languages'],
                       'audio_mb': round(sum((OUT / 'data' / 'samples' / c['file']).stat().st_size for c in manifest) / 1e6, 1)}, ensure_ascii=False))
 

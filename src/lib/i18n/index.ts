@@ -110,8 +110,8 @@ export function translator(lang: unknown): Translator {
 }
 
 /* The browser's language is the document's; the Worker and the build pass one explicitly. */
-export const lang: Language =
-	typeof document === 'undefined' ? 'ja' : known(document.documentElement.lang);
+const page = (globalThis as { document?: { documentElement: { lang: string } } }).document;
+export const lang: Language = page ? known(page.documentElement.lang) : 'ja';
 export const t = translator(lang);
 
 const escapeHTML = (s: unknown) =>

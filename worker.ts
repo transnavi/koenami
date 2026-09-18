@@ -2,39 +2,48 @@ import { getContainer } from '@cloudflare/containers';
 import { initWasm, Resvg } from '@resvg/resvg-wasm';
 import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm';
 
-import { cardSVG } from './web/card.js';
-import { LANGUAGES, FONTS, fontCut, known, matchLanguage, translator } from './web/i18n/index.js';
-import fontJaRegular from './web/public/fonts/koenami-share-ja-400.ttf';
-import fontJaBold from './web/public/fonts/koenami-share-ja-700.ttf';
-import fontKoRegular from './web/public/fonts/koenami-share-ko-400.ttf';
-import fontKoBold from './web/public/fonts/koenami-share-ko-700.ttf';
-import fontZhRegular from './web/public/fonts/koenami-share-zh-CN-400.ttf';
-import fontZhBold from './web/public/fonts/koenami-share-zh-CN-700.ttf';
+import { cardSVG } from './src/lib/card';
+import {
+	LANGUAGES,
+	FONTS,
+	fontCut,
+	known,
+	matchLanguage,
+	translator,
+	type Key
+} from './src/lib/i18n';
 import {
 	Scorer,
+	type Clip,
 	parseResultParams,
 	resultParams,
 	shareText,
 	formatScore,
 	verdictLabel,
 	leaningLabel
-} from './web/score.js';
+} from './src/lib/score';
+import fontJaRegular from './static/fonts/koenami-share-ja-400.ttf';
+import fontJaBold from './static/fonts/koenami-share-ja-700.ttf';
+import fontKoRegular from './static/fonts/koenami-share-ko-400.ttf';
+import fontKoBold from './static/fonts/koenami-share-ko-700.ttf';
+import fontZhRegular from './static/fonts/koenami-share-zh-CN-400.ttf';
+import fontZhBold from './static/fonts/koenami-share-zh-CN-700.ttf';
 
 export { VoiceAnalyzer } from './worker/analyzer';
 
 const languages = new Set<string>(LANGUAGES);
-// The share font in its three cuts; the card's language picks one (see web/share.js).
+// The share font in its three cuts; the card's language picks one (see src/lib/share.ts).
 const cardFonts: Record<ReturnType<typeof fontCut>, [ArrayBuffer, ArrayBuffer]> = {
 	ja: [fontJaRegular, fontJaBold],
 	'zh-CN': [fontZhRegular, fontZhBold],
 	ko: [fontKoRegular, fontKoBold]
 };
 // Error text in the language the client asked for; the studio sends its own language.
-const say = (request: Request, key: string) =>
-	translator(matchLanguage(request.headers.get('Accept-Language')))(key) as string;
-// Crawler and browser-chrome files at the site root (see web/public and prepare_public.py).
+const say = (request: Request, key: Key) =>
+	translator(matchLanguage(request.headers.get('Accept-Language')))(key);
+// Crawler and browser-chrome files at the site root (see static/ and prepare_public.py).
 const siteFiles =
-	/^\/(robots\.txt|sitemap\.xml|site\.webmanifest|sw\.js|language\.js|og-(image|guide|tutorial|method|references)\.png|screenshot-(wide|narrow)\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
+	/^\/(robots\.txt|sitemap\.xml|site\.webmanifest|service-worker\.js|language\.js|theme\.js|og-(image|guide|tutorial|method|references)\.png|screenshot-(wide|narrow)\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
 const maxBytes = 16000 * 4 * 60;
 const siteOrigin = 'https://koe.transnavi.jp';
 
@@ -46,7 +55,7 @@ function scorer(env: Env, lang: string): Promise<Scorer> {
 		pending = env.ASSETS.fetch(new Request(`${siteOrigin}/public-api/${lang}.json`))
 			.then(async (r) => {
 				if (!r.ok) throw new Error('library');
-				return new Scorer(((await r.json()) as { clips: unknown[] }).clips);
+				return new Scorer(((await r.json()) as { clips: Clip[] }).clips);
 			})
 			.catch((e) => {
 				scorers.delete(lang);
@@ -80,7 +89,7 @@ async function resultPage(request: Request, env: Env, url: URL): Promise<Respons
 	const lang = known(url.searchParams.get('l')),
 		t = translator(lang);
 	const page = await env.ASSETS.fetch(
-		new Request(`${siteOrigin}${lang === 'ja' ? '' : '/' + lang}/result.html`, request)
+		new Request(`${siteOrigin}${lang === 'ja' ? '' : '/' + lang}/r.html`, request)
 	);
 	const shared = await sharedResult(env, url).catch(() => null);
 	if (!shared) return page;
@@ -89,10 +98,10 @@ async function resultPage(request: Request, env: Env, url: URL): Promise<Respons
 		verdict: verdictLabel(verdict, lang),
 		leaning: leaningLabel(verdict, lang),
 		score: formatScore(shared.result.display)
-	}) as string;
+	});
 	const description = t('result.share_description', {
 		text: shareText(shared.result, lang)
-	}) as string;
+	});
 	const content: Record<string, string> = {
 		'og:title': title,
 		'twitter:title': title,
@@ -193,7 +202,8 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
 		return resultImage(request, env, ctx, url);
 	else if (
 		get &&
-		(/^\/(assets|samples|fonts)\/[^/]+$/.test(url.pathname) ||
+		(/^\/(samples|fonts)\/[^/]+$/.test(url.pathname) ||
+			/^\/_app\/immutable\/[\w./-]+$/.test(url.pathname) ||
 			/^\/(method|guide|tutorial|references)\.html$/.test(url.pathname) ||
 			siteFiles.test(url.pathname))
 	)
