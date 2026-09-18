@@ -102,6 +102,10 @@ type State = {
 };
 
 export function mountStudio() {
+	// The service worker of the production build (src/service-worker.ts); the registration
+	// is the studio's, as Kit's own would report a missing file as a page error.
+	if (import.meta.env.PROD && 'serviceWorker' in navigator)
+		navigator.serviceWorker.register('/service-worker.js').catch(() => {});
 	defineKoeSelect();
 	let favorites = new Set<string>();
 	try {

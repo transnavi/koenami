@@ -53,7 +53,7 @@ try {
 		await new Promise((resolve) => setTimeout(resolve, 100));
 	}
 	if (!ready) throw new Error('Audio API did not start');
-	vite = await createServer({ configFile: 'vite.web.config.js', customLogger: logger });
+	vite = await createServer({ configFile: 'vite.config.ts', customLogger: logger });
 	await vite.listen();
 	console.log('Koenami: http://localhost:8766/ja/');
 } catch (error) {

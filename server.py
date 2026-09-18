@@ -42,7 +42,7 @@ MESSAGES = {
 
 
 def language(request):
-    """The served language a client accepts: ranges in quality order, exact tag first, then its primary subtag (matchLanguage in web/i18n/index.js)."""
+    """The served language a client accepts: ranges in quality order, exact tag first, then its primary subtag (matchLanguage in src/lib/i18n/index.ts)."""
     ranges = []
     for i, part in enumerate(request.headers.get('Accept-Language', '').split(',')):
         tag, *params = [p.strip() for p in part.split(';')]

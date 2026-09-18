@@ -31,7 +31,7 @@ PRIVATE_LOG = ROOT / 'data/own/reviews.jsonl'
 PRIVATE_PAIRS = ROOT / 'data/own/pairs.jsonl'
 OWN = 'own-'
 
-# Every rating is 0-6 except `age`. Groups and anchor words follow the literature cited in web/method.html#review.
+# Every rating is 0-6 except `age`. Groups and anchor words follow the literature cited in src/lib/studio/method-body.html#review.
 SCALES = [
     {'key': 'femininity', 'name': '女性らしさ', 'ends': ['感じない', '強く感じる'], 'group': '性別・発音'},
     {'key': 'masculinity', 'name': '男性らしさ', 'ends': ['感じない', '強く感じる'], 'group': '性別・発音'},

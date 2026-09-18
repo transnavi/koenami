@@ -1,8 +1,8 @@
-// Checks the shareable verdict against the built public libraries: node score_test.mjs
+// Checks the shareable verdict against the built public libraries, by hand after build:public: bun score_test.ts
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-import { cardSVG } from './web/card.js';
+import { cardSVG } from './src/lib/card';
 import {
 	Scorer,
 	parseResultParams,
@@ -11,7 +11,7 @@ import {
 	shareText,
 	gateFailure,
 	verdictLabel
-} from './web/score.js';
+} from './src/lib/score';
 
 const quantile = (values, q) => {
 	const s = [...values].sort((a, b) => a - b);
@@ -23,8 +23,8 @@ for (const lang of ['ja', 'zh-CN', 'en']) {
 	);
 	assert.ok(scorer.available, `${lang}: contrast axis`);
 	for (const [group, anchor] of [
-		['female', 25],
-		['male', -25]
+		['female', 50],
+		['male', -50]
 	]) {
 		const scores = scorer.speakers
 			.filter((c) => c.group === group)

@@ -17,6 +17,7 @@ const config = {
 		// itself; crawling is off because it would also follow the sitemap link, which
 		// prepare_public.py writes at deploy time.
 		prerender: { entries: ['*'], crawl: false },
+		serviceWorker: { register: false },
 		// The headers prepare_public.py writes for the static site today; Kit nonces its own
 		// bootstrap and the theme script. Cloudflare Web Analytics injects its beacon at the
 		// edge, so its script and endpoint are admitted. 'wasm-unsafe-eval' lets the
