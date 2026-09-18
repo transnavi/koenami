@@ -9,10 +9,12 @@
 		<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
 		<link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-		<link rel="manifest" href="/site.webmanifest" />
 		<!-- The saved theme is applied before the first paint; a file of its own, so the pages
 		     can be prerendered under the CSP. -->
 		<script src="/theme.js"></script>
+		<!-- The root sends a visitor whose saved session names another language to that
+		     language's page before anything renders. -->
+		<script src="/language.js"></script>
 		%sveltekit.head%
 	</head>
 	<!-- Links load the next page as a new document: the studio's controller (src/lib/studio/app.ts)

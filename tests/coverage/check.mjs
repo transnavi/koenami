@@ -150,7 +150,10 @@ const walk = (dir, deep) => {
 		} else if (
 			/\.(js|ts|svelte)$/.test(name) &&
 			!name.endsWith('.d.ts') &&
+			// Server-only modules (hooks.server.ts, +server.ts endpoints) run in the prerenderer
+			// and the Worker, which the browser coverage cannot see.
 			!name.endsWith('.server.ts') &&
+			name !== '+server.ts' &&
 			!typesOnly(p)
 		)
 			sourceFiles.push(normalize(relative(root, p)));

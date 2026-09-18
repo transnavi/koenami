@@ -1,4 +1,5 @@
 import { DensityCloud } from './cloud';
+import { t } from './i18n';
 import { finite, quantile, clamp } from './math';
 import { AcousticSpace, type Features } from './space';
 
@@ -460,7 +461,7 @@ export class VoiceMap {
 				this.ctx.globalAlpha = active ? 0.25 : 1;
 				this.marker(p, color, own ? 8 : 7, own);
 				this.ctx.globalAlpha = 1;
-				if (!active) this.label(p, own ? '自分' : '見本', color);
+				if (!active) this.label(p, own ? t('common.self') : t('common.reference'), color);
 			}
 		}
 		g.restore();
@@ -698,7 +699,7 @@ export class VoiceMap {
 			g.fill();
 			g.globalAlpha = 1;
 			this.marker(cursor, color, 9, own);
-			this.label(cursor, own ? '自分' : '見本', color);
+			this.label(cursor, own ? t('common.self') : t('common.reference'), color);
 			if (own) this.lastCursor = cursor;
 		} else if (own) this.lastCursor = null;
 	}
@@ -781,7 +782,7 @@ export class VoiceMap {
 		g.globalAlpha = alpha;
 		this.marker(p, color, 9, true);
 		g.globalAlpha = 1;
-		if (fade > 0.5) this.label(p, '自分', color);
+		if (fade > 0.5) this.label(p, t('common.self'), color);
 		this.lastCursor = p;
 	}
 	axes() {

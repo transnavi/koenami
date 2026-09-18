@@ -1,31 +1,23 @@
+import { translator } from './i18n';
 import { finite, quantile, clamp } from './math';
 import { AcousticSpace, type Features } from './space';
 
 /* Shareable result: where a voice sits on the female–male contrast axis of the
    current language's reference speakers, plus the five raw measurements.
    The scale is signed and linear along that axis: 0 is halfway between the two
-   group medians, −25 the male median, +25 the female median. Either direction is
+   group medians, −50 the male median, +50 the female median. Either direction is
    a goal in its own right and 0 is the goal for an androgynous voice, so the
-   number never carries one group's name. The display clamps to ±50.
+   number never carries one group's name. The display clamps to ±100.
    Bump SCORE_VERSION whenever the axis, anchors or verdict bands change; old
    result URLs carry their version. */
-export const SCORE_VERSION = 1;
+export const SCORE_VERSION = 2;
 export type MetricKey = 'f0' | 'delta_f' | 'hnr' | 'balance' | 'pitch_span';
 export const METRIC_KEYS: MetricKey[] = ['f0', 'delta_f', 'hnr', 'balance', 'pitch_span'];
-export const METRIC_LABELS: Record<MetricKey, string> = {
-	f0: '高さ',
-	delta_f: '響き',
-	hnr: '質感',
-	balance: '明るさ',
-	pitch_span: '抑揚'
-};
-export const METRIC_UNITS: Record<MetricKey, string> = {
-	f0: 'Hz',
-	delta_f: 'Hz ΔF',
-	hnr: 'dB',
-	balance: 'dB',
-	pitch_span: '半音'
-};
+/* Labels come from the interface language's catalogue; the Worker renders result pages in the language of the link. */
+export const metricLabel = (key: MetricKey, lang: string = 'ja') =>
+	translator(lang)(`metric.${key}.label`);
+export const metricUnit = (key: MetricKey, lang: string = 'ja') =>
+	translator(lang)(`metric.${key}.unit`);
 export const METRIC_DIGITS: Record<MetricKey, number> = {
 	f0: 0,
 	delta_f: 0,
@@ -34,17 +26,11 @@ export const METRIC_DIGITS: Record<MetricKey, number> = {
 	pitch_span: 1
 };
 export type Verdict = 'female' | 'androgynous' | 'male';
-export const VERDICTS: Record<Verdict, string> = {
-	female: '女性的な声',
-	androgynous: '中間的な声',
-	male: '男性的な声'
-};
-export const LEANINGS: Record<Verdict, string> = {
-	female: '女性寄り',
-	androgynous: '中間',
-	male: '男性寄り'
-};
-export const SCALE_LIMIT = 50;
+export const verdictLabel = (verdict: Verdict, lang: string = 'ja') =>
+	translator(lang)(`verdict.${verdict}`);
+export const leaningLabel = (verdict: Verdict, lang: string = 'ja') =>
+	translator(lang)(`leaning.${verdict}`);
+export const SCALE_LIMIT = 100;
 /* Signed number with an explicit sign; U+2212 for minus. */
 export const formatScore = (v: number) => (v > 0 ? `+${v}` : v < 0 ? `−${-v}` : '0');
 export function distance2(a: Features | null | undefined, b: Features | null | undefined): number {
@@ -89,43 +75,50 @@ export function representatives<T extends Clip>(clips: T[]): T[] {
    (the build_*.py scripts): enough stable voiced speech, no clipping, a resonance estimate that does
    not swing with the analysis settings. Each entry names the measurement and the bound. */
 export type Gate = {
-	key: string;
-	label: string;
-	unit: string;
+	key: 'voiced_seconds' | 'formant_seconds' | 'clipping_fraction' | 'resonance_sensitivity_pct';
+	unit: 'seconds' | '%';
 	min?: number;
 	max?: number;
 	scale?: number;
 	digits: number;
 };
 export const GATE: Gate[] = [
-	{ key: 'voiced_seconds', label: '有声区間', unit: '秒', min: 1, digits: 1 },
-	{ key: 'formant_seconds', label: '安定した響きの区間', unit: '秒', min: 0.35, digits: 2 },
-	{ key: 'clipping_fraction', label: 'クリップ率', unit: '%', max: 0.005, scale: 100, digits: 2 },
-	{ key: 'resonance_sensitivity_pct', label: '響きの推定のぶれ', unit: '%', max: 12, digits: 0 }
+	{ key: 'voiced_seconds', unit: 'seconds', min: 1, digits: 1 },
+	{ key: 'formant_seconds', unit: 'seconds', min: 0.35, digits: 2 },
+	{ key: 'clipping_fraction', unit: '%', max: 0.005, scale: 100, digits: 2 },
+	{ key: 'resonance_sensitivity_pct', unit: '%', max: 12, digits: 0 }
 ];
 export type GateFailure = { label: string; value?: string; need?: string };
 /* Returns null when the measurement passes, otherwise the first failing check with its value. */
 export function gateFailure(
-	detail: Record<string, unknown> | null | undefined
+	detail: Record<string, unknown> | null | undefined,
+	lang: string = 'ja'
 ): GateFailure | null {
-	if (!detail) return { label: '測定なし' };
+	const t = translator(lang);
+	if (!detail) return { label: t('gate.none') };
 	for (const g of GATE) {
 		const raw = detail[g.key];
 		const v = finite(raw) ? raw : g.min !== undefined ? 0 : 0;
-		const shown = (v * (g.scale || 1)).toFixed(g.digits);
+		const shown = (v * (g.scale || 1)).toFixed(g.digits),
+			unit = g.unit === 'seconds' ? t('gate.seconds') : g.unit,
+			label = t(`gate.${g.key}`);
 		if (g.min !== undefined && v < g.min)
-			return { label: g.label, value: `${shown} ${g.unit}`, need: `${g.min} ${g.unit}以上` };
+			return {
+				label,
+				value: `${shown} ${unit}`,
+				need: t('gate.min', { value: String(g.min), unit })
+			};
 		if (g.max !== undefined && v > g.max)
 			return {
-				label: g.label,
-				value: `${shown} ${g.unit}`,
-				need: `${g.max * (g.scale || 1)} ${g.unit}以下`
+				label,
+				value: `${shown} ${unit}`,
+				need: t('gate.max', { value: String(g.max * (g.scale || 1)), unit })
 			};
 	}
 	return null;
 }
 export function verdictOf(score: number): Verdict {
-	return score >= 15 ? 'female' : score <= -15 ? 'male' : 'androgynous';
+	return score >= 30 ? 'female' : score <= -30 ? 'male' : 'androgynous';
 }
 export type ScoreResult = {
 	version: number;
@@ -134,6 +127,7 @@ export type ScoreResult = {
 	verdict: Verdict;
 	point: [number, number] | null;
 	features: Record<MetricKey, number>;
+	age?: number;
 };
 /* Built from the public library alone, never from imported references, so the studio's
    verdict equals what /r and /og.png recompute from the shared numbers. */
@@ -161,7 +155,7 @@ export class Scorer {
 		}
 		this.anchors = { male: quantile(groups.male, 0.5), female: quantile(groups.female, 0.5) };
 		const toScore = (v: number) =>
-			(50 * (v - (this.anchors.male + this.anchors.female) / 2)) /
+			(100 * (v - (this.anchors.male + this.anchors.female) / 2)) /
 			(this.anchors.female - this.anchors.male);
 		this.toScore = toScore;
 		this.bands = { female: [0, 0], male: [0, 0] };
@@ -217,14 +211,24 @@ const PARAM: Record<MetricKey, string> = {
 	balance: 'bal',
 	pitch_span: 'sp'
 };
-export function resultParams(features: Record<MetricKey, number>, lang: string): URLSearchParams {
+/* extra.age (years) is optional and only travels when the user chose to include it. */
+export function resultParams(
+	features: Record<MetricKey, number>,
+	lang: string,
+	extra: { age?: number } = {}
+): URLSearchParams {
 	const p = new URLSearchParams({ v: String(SCORE_VERSION), l: lang });
-	for (const k of METRIC_KEYS) p.set(PARAM[k], features[k].toFixed(METRIC_DIGITS[k] + 1));
+	// The features come from the analyzer's JSON, so a value is coerced before it is formatted.
+	for (const k of METRIC_KEYS)
+		// oxlint-disable-next-line typescript/no-unnecessary-type-conversion
+		p.set(PARAM[k], Number(features[k]).toFixed(METRIC_DIGITS[k] + 1));
+	if (finite(extra.age) && extra.age >= 5 && extra.age <= 100)
+		p.set('age', String(Math.round(extra.age)));
 	return p;
 }
 export function parseResultParams(
 	params: URLSearchParams
-): { features: Record<MetricKey, number>; lang: string; version: number } | null {
+): { features: Record<MetricKey, number>; lang: string; version: number; age?: number } | null {
 	const features = {} as Record<MetricKey, number>;
 	for (const k of METRIC_KEYS) {
 		if (!params.has(PARAM[k])) return null;
@@ -232,8 +236,20 @@ export function parseResultParams(
 		if (!finite(v)) return null;
 		features[k] = v;
 	}
-	return { features, lang: params.get('l') || 'ja', version: Number(params.get('v')) || 1 };
+	const age = Number(params.get('age'));
+	return {
+		features,
+		lang: params.get('l') || 'ja',
+		version: Number(params.get('v')) || 1,
+		age: params.has('age') && finite(age) && age >= 5 && age <= 100 ? Math.round(age) : undefined
+	};
 }
-export function shareText(result: ScoreResult): string {
-	return `私の声は${VERDICTS[result.verdict]}でした（${LEANINGS[result.verdict]} ${formatScore(result.display)}）`;
+export function shareText(result: ScoreResult, lang: string = 'ja'): string {
+	return translator(lang)('share.text', {
+		verdict: verdictLabel(result.verdict, lang),
+		leaning: leaningLabel(result.verdict, lang),
+		score: formatScore(result.display)
+	});
 }
+export const ageText = (years: number, lang: string = 'ja') =>
+	translator(lang)('share.age_years', { n: Math.round(years) });

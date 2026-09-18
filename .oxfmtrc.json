@@ -23,7 +23,7 @@
 		"**/*.md",
 		"worker-configuration.d.ts",
 		"scripts/kb-*.mjs",
-		"scripts/kb-*.mjs",
-		"src/lib/measure/pkg/**"
+		"src/lib/measure/pkg/**",
+		"src/lib/studio/*.html"
 	]
 }

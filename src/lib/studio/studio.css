@@ -230,6 +230,9 @@ koe-select {
 	background: color-mix(in srgb, var(--surface) 82%, transparent);
 	backdrop-filter: blur(6px);
 }
+.graph-toolbar .segment {
+	border: 0;
+}
 .segment {
 	display: flex;
 	border: 1px solid var(--line);
@@ -933,6 +936,20 @@ dialog::backdrop {
 	align-items: center;
 	justify-content: space-between;
 	margin-bottom: 18px;
+}
+.rename-input {
+	width: 100%;
+	padding: 9px 11px;
+	border: 1px solid var(--line);
+	border-radius: 7px;
+	background: var(--bg);
+	color: var(--ink);
+	font-size: 13px;
+	margin-bottom: 16px;
+}
+.rename-save {
+	padding: 8px 18px;
+	font-size: 12px;
 }
 .dialog-heading h2 {
 	font-size: 16px;
@@ -3297,19 +3314,19 @@ input[type='checkbox']:checked:after {
 		grid-template-rows: minmax(0, 1fr) 148px;
 	}
 	.graph-toolbar {
-		padding: 0 8px;
-		gap: 8px;
+		padding: 0 6px;
+		gap: 6px;
 	}
 	.graph-toolbar .segment button {
-		font-size: 12px;
-		padding: 0 10px;
-		min-height: 32px;
+		font-size: 11px;
+		padding: 0 8px;
+		min-height: 28px;
 	}
 	.rotate-button {
-		min-height: 32px;
-		min-width: 32px;
-		padding: 4px 6px;
-		font-size: 15px;
+		min-height: 28px;
+		min-width: 28px;
+		padding: 3px 5px;
+		font-size: 13px;
 	}
 	.rotate-button span {
 		display: none;
@@ -3317,13 +3334,10 @@ input[type='checkbox']:checked:after {
 	#space-label {
 		display: none;
 	}
-	.graph-toolbar .legend {
-		font-size: 11px;
-		gap: 8px;
-	}
-	.legend i {
-		width: 8px;
-		height: 8px;
+	.legend {
+		font-size: 10px;
+		gap: 6px;
+		padding: 4px 6px;
 	}
 	.you-legend {
 		display: inline-flex;
@@ -3614,8 +3628,8 @@ input[type='checkbox']:checked:after {
 	}
 }
 @media (max-width: 359px) {
-	.graph-toolbar .legend {
-		font-size: 10px;
+	.legend {
+		font-size: 9px;
 		gap: 4px;
 	}
 }
@@ -3804,4 +3818,48 @@ input[type='checkbox']:checked:after {
 }
 .text-button.danger {
 	color: var(--danger);
+}
+
+/* Age impression row in the share dialog */
+.share-age {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 4px;
+	font-size: 13px;
+}
+.share-age > span:first-child {
+	color: var(--muted);
+}
+.share-age button {
+	padding: 5px 12px;
+	border-radius: 999px;
+	font-size: 12px;
+}
+.share-age strong {
+	font-size: 15px;
+	color: var(--heading);
+}
+.share-age label {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 12px;
+	color: var(--ink);
+}
+.share-age-note {
+	margin: 0 0 14px;
+}
+.result-age {
+	margin: -14px 0 20px;
+	font-size: 14px;
+	color: var(--ink);
+}
+.result-age strong {
+	font-size: 18px;
+	margin-right: 6px;
+}
+.result-age-note {
+	margin-left: 0.6em;
 }

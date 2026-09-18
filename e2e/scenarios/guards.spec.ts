@@ -75,6 +75,9 @@ test.describe('busy and recording guards', () => {
 		await studio.golden('recording-guards', { maskAudio: true });
 		await studio.choose('take-select', '0');
 		await studio.until(app.stopped + ' && ' + app.idle);
+		// The restore saves the takes and then the session; the write of the takes takes a
+		// database round trip.
+		await studio.until('localStorage.getItem("koenami-session") !== null');
 		await studio.tick(300);
 		await studio.golden('take-restored-cancels-recording', { maskAudio: true });
 	});

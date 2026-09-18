@@ -2,16 +2,20 @@ import captureUrl from '$lib/capture?worker&url';
 import { loadImported, importedAudio, importJVS, type ImportClip } from '$lib/corpus-import';
 /* The studio: one controller over the page's elements, ported from web/app.js with types.
    Its DOM writes, request order and timing are what the browser goldens pin. */
+import { t, lang as uiLang } from '$lib/i18n';
 import { defineKoeSelect } from '$lib/koe-select';
 import { VoiceMap, type MapSample } from '$lib/map';
 import { finite, quantile, clamp, AXES } from '$lib/math';
 import {
 	Scorer,
-	VERDICTS,
-	LEANINGS,
+	verdictLabel,
+	leaningLabel,
 	formatScore,
 	gateFailure,
 	representatives,
+	ageText,
+	SCALE_LIMIT,
+	type MetricKey,
 	type ScoreResult
 } from '$lib/score';
 import { shareBundle, cardImage, systemShare, labelled } from '$lib/share';
@@ -33,7 +37,7 @@ const clock = (t: number | undefined | null) =>
 const icon = (el: Element, name: string) =>
 	el.querySelector('use')?.setAttribute('href', '#i-' + name);
 type Metric = {
-	key: keyof Features;
+	key: MetricKey;
 	label: string;
 	unit: string;
 	n: number;
@@ -41,102 +45,22 @@ type Metric = {
 	factors: string[];
 	caveats: string[];
 };
-const METRICS: Metric[] = [
-	{
-		key: 'f0',
-		label: '高さ',
-		unit: 'Hz',
-		n: 0,
-		description:
-			'声帯の振動の速さです。有声音の基本周波数（F0）の中央値を使います。値が大きいほど高い声です。帯は参照グループの見本の中央80%を示します。',
-		factors: [
-			'声帯の張り（喉頭の筋肉の使い方）と声帯の質量',
-			'喉頭の高さ、息の量、力み',
-			'文の種類と感情。疑問文や強調では上がります'
-		],
-		caveats: [
-			'高さだけでは性別の印象は決まりません。同じ高さでも響きで印象が変わります（<a href="https://doi.org/10.5112/jjlp.50.14" target="_blank" rel="noreferrer">櫻庭ほか 2009</a>）。',
-			'息の音や機械音を拾うと極端な値になります。マイクから10〜20cm離し、静かな場所で試してください。'
-		]
-	},
-	{
-		key: 'delta_f',
-		label: '響き',
-		unit: 'Hz ΔF',
-		n: 0,
-		description:
-			'最初の4つのフォルマントから求めた間隔です。大きいほど、声道が小さく明るい響きに対応する傾向があります。母音でも変わるので、同じ言葉で比べると違いがわかりやすくなります。',
-		factors: [
-			'喉頭の高さ（上げると声道が短くなり、値が上がります）',
-			'口の開き、舌の位置、唇の形',
-			'母音。「い」と「あ」では同じ人でも大きく違います'
-		],
-		caveats: [
-			'推定値です。短い録音や雑音では安定せず、解析設定でも動きます。',
-			'母音の違いが響きの違いに見えることがあります。同じ言葉、できれば同じ母音で比べてください。'
-		]
-	},
-	{
-		key: 'hnr',
-		label: '質感',
-		unit: 'dB',
-		n: 1,
-		description:
-			'声の周期成分と雑音成分の比（HNR）です。小さい値には息やかすれが関係することがありますが、録音の雑音にも左右されます。声の重さを直接測る指標ではありません。',
-		factors: ['息漏れ（声帯の閉じ方）', 'かすれ、がらつき', '録音の雑音。環境音が多いと下がります'],
-		caveats: [
-			'声の「重さ」や「太さ」の指標ではありません。',
-			'静かな部屋で録った見本と、雑音のある自分の録音を直接比べると、雑音の分だけ低く出ます。'
-		]
-	},
-	{
-		key: 'balance',
-		label: '明るさ',
-		unit: 'dB',
-		n: 1,
-		description:
-			'100〜1,000 Hzに対する1,000〜4,000 Hzの音の強さです。大きいほど高域の成分が多くなります。母音、息の量、マイクの特性も影響します。',
-		factors: [
-			'口の開きと舌の位置',
-			'息の量と声帯の閉じ方',
-			'マイクの位置と特性、ブラウザーの音声処理'
-		],
-		caveats: [
-			'機材に強く依存します。録音条件が違う音声どうしでは比べにくい指標です。',
-			'見本との差より、同じ機材で録った自分の録音どうしの変化を見るのに向いています。'
-		]
-	},
-	{
-		key: 'pitch_span',
-		label: '抑揚',
-		unit: '半音',
-		n: 1,
-		description:
-			'声の高さの10〜90パーセンタイルの幅です。女性的な印象に関連する場面もありますが、大きければよいとは限りません。日本語のアクセント、中国語の声調、文の種類、感情で変わります。標準偏差や間の取り方はレポートで確認できます。',
-		factors: [
-			'文の種類と感情',
-			'言語。日本語のアクセント、中国語の声調で幅が変わります',
-			'録音の長さ。長いほど幅が広がりやすくなります'
-		],
-		caveats: [
-			'大きいほど良いわけではありません。',
-			'長さの違う録音は比べにくいので、同じ文か短い句で比べてください。'
-		]
-	}
-];
+const METRICS: Metric[] = (['f0', 'delta_f', 'hnr', 'balance', 'pitch_span'] as MetricKey[]).map(
+	(key, i) => ({
+		key,
+		label: t(`metric.${key}.label`),
+		unit: t(`metric.${key}.unit`),
+		n: [0, 0, 1, 1, 1][i],
+		description: t(`metric.${key}.description`),
+		factors: t.list(`metric.${key}.factors`) as string[],
+		caveats: t.list(`metric.${key}.caveats`) as string[]
+	})
+);
 const VERDICT_HELP = {
-	label: '声の判定',
-	description:
-		'5つの指標を、女性的な声と男性的な声の見本が最も離れる方向（男女差の軸）に投影した位置です。0は両方の見本の中央値のちょうど中間、−25は男性的な見本の中央値、+25は女性的な見本の中央値です。',
-	factors: [
-		'上の5指標すべて。特に高さと響きの寄与が大きくなります',
-		'見本の言語。言語ごとに見本が違うので、言語をまたいで数値は比べられません'
-	],
-	caveats: [
-		'聞き手の評価ではなく、音響指標の位置です。校正は行っていません。',
-		'短い録音や雑音の多い録音では安定しません。同じ文を何度か録音して見比べてください。',
-		'どちらの向きも、また0に近づけることも、目標として扱います。'
-	]
+	label: t('verdict.help.label'),
+	description: t('verdict.help.description'),
+	factors: t.list('verdict.help.factors') as string[],
+	caveats: t.list('verdict.help.caveats') as string[]
 };
 
 type State = {
@@ -265,8 +189,14 @@ export function mountStudio() {
 		$('notice').hidden = false;
 		noticeTimer = setTimeout(() => ($('notice').hidden = true), error ? 9000 : 4500);
 	}
-	async function api<T = Detail>(url: string, options?: RequestInit): Promise<T> {
-		const r = await fetch(url, options);
+	async function api<T = Detail>(
+		url: string,
+		options: Omit<RequestInit, 'headers'> & { headers?: Record<string, string> } = {}
+	): Promise<T> {
+		const r = await fetch(url, {
+			...options,
+			headers: { ...options.headers, 'Accept-Language': uiLang }
+		});
 		if (!r.ok) throw new Error((await r.text()).slice(0, 200) || `Request failed (${r.status})`);
 		return r.json();
 	}
@@ -318,7 +248,7 @@ export function mountStudio() {
 		return state.selected?.group === 'male' ? 'male' : 'female';
 	}
 	function referenceGroupLabel() {
-		return referenceGroup() === 'male' ? '男性的な声' : '女性的な声';
+		return t(referenceGroup() === 'male' ? 'group.male' : 'group.female');
 	}
 	function referenceStats() {
 		return state.representatives.filter((c) => c.group === referenceGroup());
@@ -398,15 +328,23 @@ export function mountStudio() {
 			const b = document.createElement('button');
 			b.className = 'indicator';
 			b.dataset.metric = m.key;
-			b.title = `${m.label}: 自分 ${fmt(f[m.key], m.n)} ${m.unit}・見本 ${fmt(target[m.key], m.n)} ${m.unit}`;
+			b.title = t('indicator.title', {
+				label: m.label,
+				own: fmt(f[m.key], m.n),
+				ref: fmt(target[m.key], m.n),
+				unit: m.unit
+			});
 			b.setAttribute('aria-label', b.title);
 			b.innerHTML = `<span class="indicator-heading">${m.label}<svg aria-hidden="true"><use href="#i-info"></use></svg></span><span class="indicator-values"><strong>${fmt(f[m.key], m.n)}</strong><small>${m.unit}</small><em>${fmt(target[m.key], m.n)}</em></span><span class="indicator-track">${finite(q1) ? `<span class="indicator-band" style="left:${pos(q1)}%;width:${pos(q9) - pos(q1)}%"></span>` : ''}${finite(f[m.key]) ? `<span class="indicator-marker" style="left:${pos(f[m.key]!)}%"></span>` : ''}${finite(target[m.key]) ? `<span class="indicator-target" style="left:${pos(target[m.key]!)}%"></span>` : ''}</span>`;
 			b.onclick = () =>
 				openHelp(m, [
-					['自分', `${fmt(f[m.key], m.n)} ${m.unit}`],
-					['選んだ見本', `${fmt(target[m.key], m.n)} ${m.unit}`],
-					[referenceGroupLabel() + 'の見本 · 中央80%', `${fmt(q1, m.n)}–${fmt(q9, m.n)} ${m.unit}`],
-					['参照話者数', values.length]
+					[t('help.own'), `${fmt(f[m.key], m.n)} ${m.unit}`],
+					[t('help.reference'), `${fmt(target[m.key], m.n)} ${m.unit}`],
+					[
+						t('help.band', { group: referenceGroupLabel() }),
+						`${fmt(q1, m.n)}–${fmt(q9, m.n)} ${m.unit}`
+					],
+					[t('help.speakers'), values.length]
 				]);
 			$('indicators').append(b);
 		}
@@ -418,9 +356,7 @@ export function mountStudio() {
 		updateVerdict();
 		const comparison = map.space?.comparison(f, target, map.dimension, map.projection);
 		$('fit-value').textContent = comparison ? fmt(comparison.distance, 2) : '—';
-		$('report-button').title = comparison
-			? '見本との5指標の標準化距離。0が一致。比較レポートを開く。'
-			: '比較レポートを開く';
+		$('report-button').title = t(comparison ? 'profile.fit_title_ready' : 'profile.fit_title');
 	}
 	function updateMap() {
 		let points: MapSample[] = state.clips.filter(
@@ -551,7 +487,9 @@ export function mountStudio() {
 		star.setAttribute('aria-pressed', String(favorites.has(clip.id)));
 		star.setAttribute(
 			'aria-label',
-			`${clip.text || nameOf(clip)} ${favorites.has(clip.id) ? 'をお気に入りから外す' : 'をお気に入りに追加'}`
+			t(favorites.has(clip.id) ? 'favorite.remove_clip' : 'favorite.add_clip', {
+				name: clip.text || nameOf(clip)
+			})
 		);
 		star.onclick = () => toggleFavorite(clip.id);
 		row.append(b, star);
@@ -582,7 +520,7 @@ export function mountStudio() {
 			folder.open = openSpeakers.has(key);
 			const heading = document.createElement('summary'),
 				favs = items.filter((c) => favorites.has(c.id)).length;
-			heading.innerHTML = `<svg class="folder-chevron" aria-hidden="true"><use href="#i-chevron"></use></svg><strong>${esc(speakerName(items[0]))}</strong>${items[0].synthetic ? '<small class="ai-badge">AI</small>' : ''}<span class="speaker-count">${items.length}</span>${favs ? '<span class="speaker-star" aria-label="お気に入りあり">★</span>' : ''}`;
+			heading.innerHTML = `<svg class="folder-chevron" aria-hidden="true"><use href="#i-chevron"></use></svg><strong>${esc(speakerName(items[0]))}</strong>${items[0].synthetic ? '<small class="ai-badge">AI</small>' : ''}<span class="speaker-count">${items.length}</span>${favs ? `<span class="speaker-star" aria-label="${t('favorite.marked')}">★</span>` : ''}`;
 			const list = document.createElement('div');
 			list.className = 'speaker-clips';
 			const populate = () => {
@@ -592,7 +530,7 @@ export function mountStudio() {
 				if (items.length > limit) {
 					const more = document.createElement('button');
 					more.className = 'speaker-more';
-					more.textContent = 'もっと見る';
+					more.textContent = t('samples.more');
 					more.onclick = () => {
 						speakerLimits.set(key, limit + 30);
 						populate();
@@ -636,7 +574,7 @@ export function mountStudio() {
 	};
 	$('search').oninput = () => renderLibrary(true);
 	for (const id of ['show-female', 'show-male']) $(id).onchange = updateMap;
-	async function changeLanguage(lang: string, push = true) {
+	async function loadLanguage(lang: string) {
 		if (state.recording || state.busy) return;
 		const token = ++state.languageToken;
 		state.loadingLanguage = true;
@@ -658,7 +596,6 @@ export function mountStudio() {
 			signal.set('ref', null);
 			$<HTMLButtonElement>('play-reference').disabled = true;
 			$<HTMLSelectElement>('language').value = lang;
-			if (push) history.pushState({}, '', `/${lang}/`);
 			$('research-controls').hidden = lang !== 'lab';
 			$('group-legend').hidden = lang === 'lab';
 			$<HTMLSelectElement>('library-group').disabled = lang === 'lab';
@@ -691,8 +628,12 @@ export function mountStudio() {
 			map.reset();
 			buildFit();
 			syncProjection();
-			$('corpus-count').textContent =
-				`${state.clips.filter((c) => !c.synthetic).length.toLocaleString()}音声 · ${new Set(state.clips.filter((c) => !c.synthetic).map((c) => c.speaker)).size.toLocaleString()}人`;
+			$('corpus-count').textContent = t('corpus.count', {
+				clips: t('corpus.clips', { n: state.clips.filter((c) => !c.synthetic).length }),
+				speakers: t('corpus.speakers', {
+					n: new Set(state.clips.filter((c) => !c.synthetic).map((c) => c.speaker)).size
+				})
+			});
 			$<HTMLSelectElement>('library-group').value = lang === 'lab' ? 'all' : 'female';
 			$<HTMLSelectElement>('sort').value = lang === 'lab' ? 'name' : 'high';
 			state.loadingLanguage = false;
@@ -714,13 +655,19 @@ export function mountStudio() {
 			}
 		}
 	}
-	$('language').onchange = (e) =>
-		changeLanguage((e.target as HTMLSelectElement).value).catch((e) => notify(e.message, true));
-	window.addEventListener('popstate', () =>
-		changeLanguage(location.pathname.split('/')[1] || 'ja', false).catch((e) =>
-			notify(e.message, true)
-		)
-	);
+	/* Each language is its own page, so choosing one navigates; the session remembers it first so the root page follows. */
+	$('language').onchange = (e) => {
+		const next = (e.target as HTMLSelectElement).value;
+		if (next === state.lang || state.recording || state.busy) {
+			$<HTMLSelectElement>('language').value = state.lang;
+			return;
+		}
+		sessionReady = false;
+		try {
+			localStorage.setItem('koenami-session', JSON.stringify({ ...readView(), lang: next }));
+		} catch {}
+		location.assign(`/${next}/`);
+	};
 	async function selectSample(clip: Clip | undefined, play = false) {
 		if (!clip || state.recording || state.loadingLanguage) return;
 		cancelAB();
@@ -767,7 +714,7 @@ export function mountStudio() {
 		$('selected-name').textContent = nameOf(clip);
 		updateFavorite();
 		$('selected-meta').textContent =
-			`${fmt(clip.features.f0)} Hz · ${fmt(clip.features.delta_f)} ΔF${clip.synthetic ? ' · 合成音声' : ''}`;
+			`${fmt(clip.features.f0)} Hz · ${fmt(clip.features.delta_f)} ΔF${clip.synthetic ? ' · ' + t('target.meta_synthetic') : ''}`;
 		$('selected-text').textContent = clip.text!;
 		$('selected-text').lang = state.lang;
 		$('source-link').hidden = !clip.source;
@@ -791,7 +738,8 @@ export function mountStudio() {
 			updateIndicators();
 			if (signal.source === 'ref') updateRangeLabel();
 		} catch (e) {
-			if (token === state.detailToken) notify('見本の解析：' + (e as Error).message, true);
+			if (token === state.detailToken)
+				notify(t('target.analysis_error', { message: (e as Error).message }), true);
 		}
 	}
 	function controls() {
@@ -815,19 +763,18 @@ export function mountStudio() {
 		$<HTMLButtonElement>('play-mine').disabled = busy || !state.ownFull;
 		$<HTMLButtonElement>('play-reference').disabled = busy || !state.selected;
 		$<HTMLButtonElement>('share-button').disabled = busy || !shareResult();
-		$('share-button').title = state.scorer?.available
-			? '判定を共有'
-			: 'この言語の見本では判定を計算できません';
+		$('share-button').title = t(state.scorer?.available ? 'toolbar.share' : 'share.unavailable');
 		$<HTMLButtonElement>('record').disabled =
 			state.busy || state.loadingLanguage || (state.recording && state.captureMode === 'live');
 		$('record').setAttribute(
 			'aria-pressed',
 			String(state.recording && state.captureMode === 'record')
 		);
-		$('record').setAttribute('aria-label', state.recording ? '録音を停止' : '新しく録音');
+		$('record').setAttribute('aria-label', t(state.recording ? 'record.stop' : 'record.aria'));
 		icon($('record'), state.recording && state.captureMode === 'record' ? 'stop' : 'mic');
-		$('record').title =
-			state.recording && state.captureMode === 'record' ? '録音を停止（R）' : '録音（R）';
+		$('record').title = t(
+			state.recording && state.captureMode === 'record' ? 'record.stop_title' : 'record.title'
+		);
 		$<HTMLButtonElement>('live-mode').disabled =
 			state.busy || state.loadingLanguage || (state.recording && state.captureMode !== 'live');
 		$('live-mode').setAttribute(
@@ -835,25 +782,18 @@ export function mountStudio() {
 			String(state.recording && state.captureMode === 'live')
 		);
 		const isLive = state.recording && state.captureMode === 'live';
-		$('live-mode').setAttribute(
-			'aria-label',
-			isLive ? 'リアルタイム測定を停止' : 'リアルタイム測定を開始'
-		);
-		$('live-mode').title = isLive
-			? 'リアルタイム測定を停止（Esc）'
-			: 'マイクの声をリアルタイムに表示';
-		$('live-mode-label').textContent = isLive ? '測定中' : 'リアルタイム';
+		$('live-mode').setAttribute('aria-label', t(isLive ? 'live.stop' : 'live.start'));
+		$('live-mode').title = t(isLive ? 'live.stop_title' : 'live.title');
+		$('live-mode-label').textContent = t(isLive ? 'live.measuring' : 'live.label');
 		$('live-time').hidden = !isLive;
 		$<HTMLButtonElement>('loopback').disabled = !state.recording || state.busy;
 		renderTakeMenu();
 		$('state').textContent = state.recording
-			? state.captureMode === 'live'
-				? '測定中'
-				: '録音中'
+			? t(state.captureMode === 'live' ? 'live.measuring' : 'state.recording')
 			: state.busy
-				? '準備中'
+				? t('state.preparing')
 				: state.analyzing.has(state.ownTakeId!)
-					? '解析中'
+					? t('state.analyzing')
 					: '';
 		$('state').hidden = !$('state').textContent;
 	}
@@ -918,17 +858,17 @@ export function mountStudio() {
 	] as [Side, HTMLAudioElement, string][]) {
 		el.addEventListener('play', () => {
 			icon($(id), 'pause');
-			$(id).setAttribute('aria-label', side === 'own' ? '自分の声を一時停止' : '見本を一時停止');
+			$(id).setAttribute('aria-label', t(side === 'own' ? 'play.own_pause' : 'target.pause'));
 			map.invalidate();
 		});
 		el.addEventListener('pause', () => {
 			icon($(id), 'play');
-			$(id).setAttribute('aria-label', side === 'own' ? '自分の声を再生' : '見本を再生');
+			$(id).setAttribute('aria-label', t(side === 'own' ? 'play.own' : 'target.play'));
 			map.invalidate();
 			signal.dirty = true;
 		});
 		el.addEventListener('error', () => {
-			if (el.src) notify('再生できませんでした。別の音声を選んでください。', true);
+			if (el.src) notify(t('error.playback'), true);
 		});
 		el.addEventListener('timeupdate', () => {
 			const d = el.duration;
@@ -971,8 +911,7 @@ export function mountStudio() {
 				(state.ranges.ref?.[1] || state.refFull?.duration || state.selected.duration!) - refStart,
 				(state.ranges.own?.[1] || state.ownFull.duration) - ownStart
 			);
-			if (!finite(seconds) || seconds <= 0)
-				throw new Error('両方の音声が読み込まれるまでお待ちください。');
+			if (!finite(seconds) || seconds <= 0) throw new Error(t('error.ab_wait'));
 			$('compare-ab').setAttribute('aria-pressed', 'true');
 			await playSide('ref', true);
 			let phase = 'ref';
@@ -1032,10 +971,9 @@ export function mountStudio() {
 			!available.contrast;
 		for (const el of document.querySelectorAll<HTMLElement>('[data-projection]'))
 			el.setAttribute('aria-pressed', String(el.dataset.projection === map.projection));
-		$('space-label').title =
-			map.projection === 'contrast'
-				? '5つの指標から計算。横軸は女性的な声と男性的な声が最も離れる方向です。'
-				: '5つの指標から計算した主成分空間';
+		$('space-label').title = t(
+			map.projection === 'contrast' ? 'graph.space_title_contrast' : 'graph.space_title'
+		);
 	}
 	$('zoom-in').onclick = () => map.zoomBy(1.2);
 	$('zoom-out').onclick = () => map.zoomBy(1 / 1.2);
@@ -1085,9 +1023,7 @@ export function mountStudio() {
 			'aria-pressed',
 			String(!signal.overlay && signal.source === 'ref')
 		);
-		$('signal-both').title = signal.overlay
-			? '各範囲の長さを0〜100%にそろえます。単語の位置は一致しません。'
-			: '長さをそろえて重ねて表示します';
+		$('signal-both').title = t(signal.overlay ? 'signal.both_title_on' : 'signal.both_title');
 	}
 	function setSignalSource(side: Side) {
 		signal.source = side;
@@ -1175,8 +1111,11 @@ export function mountStudio() {
 	function setLiveShapeWindow(value: unknown) {
 		map.liveShapeSeconds = clamp(Math.round(Number(value) || 5), 1, 30);
 		$<HTMLInputElement>('live-shape-window').value = String(map.liveShapeSeconds);
-		$('live-shape-duration').textContent = map.liveShapeSeconds + ' 秒';
-		$('live-shape-window').setAttribute('aria-valuetext', map.liveShapeSeconds + ' 秒');
+		$('live-shape-duration').textContent = t('settings.seconds', { n: map.liveShapeSeconds });
+		$('live-shape-window').setAttribute(
+			'aria-valuetext',
+			t('settings.seconds', { n: map.liveShapeSeconds })
+		);
 		map.invalidate();
 	}
 	$('live-shape-window').oninput = (e) => {
@@ -1191,7 +1130,7 @@ export function mountStudio() {
 		for (const w of entries) {
 			const b = document.createElement('button');
 			b.textContent = w.text;
-			b.title = `${w.start.toFixed(2)}–${w.end.toFixed(2)}s · 推定位置`;
+			b.title = t('signal.word_title', { start: w.start.toFixed(2), end: w.end.toFixed(2) });
 			b.className = range && w.start >= range[0] - 0.01 && w.end <= range[1] + 0.01 ? 'active' : '';
 			b.onclick = () => {
 				const duration = (side === 'own' ? state.ownFull : state.refFull)?.duration || 0;
@@ -1219,7 +1158,7 @@ export function mountStudio() {
 				result = await api<Words>(`/api/words/${encodeURIComponent(id)}?lang=${lang}`);
 			else {
 				const pcm = side === 'own' ? state.ownPCM : state.refPCM;
-				if (!pcm) throw new Error('先に音声を読み込んでください。');
+				if (!pcm) throw new Error(t('error.words_first'));
 				result = await api<Words>('/api/words?lang=' + lang, { method: 'POST', body: pcm });
 			}
 			if (token === state.wordToken[side]) {
@@ -1230,16 +1169,15 @@ export function mountStudio() {
 			notify((e as Error).message, true);
 		} finally {
 			$<HTMLButtonElement>('words-button').disabled = false;
-			$('words-button').textContent = '単語';
+			$('words-button').textContent = t('signal.words');
 		}
 	};
 	async function decode(blob: Blob): Promise<PCM> {
-		if (blob.size > 150 * 1024 * 1024) throw new Error('150 MB未満の音声を選んでください。');
+		if (blob.size > 150 * 1024 * 1024) throw new Error(t('error.file_size'));
 		const ctx = new AudioContext();
 		try {
 			const decoded = await ctx.decodeAudioData(await blob.arrayBuffer());
-			if (decoded.duration > 900 || decoded.duration < 0.25)
-				throw new Error('0.25秒〜15分の音声を選んでください。');
+			if (decoded.duration > 900 || decoded.duration < 0.25) throw new Error(t('error.duration'));
 			const off = new OfflineAudioContext(1, Math.ceil(decoded.duration * 16000), 16000),
 				source = off.createBufferSource();
 			source.buffer = decoded;
@@ -1286,9 +1224,9 @@ export function mountStudio() {
 			(
 				{
 					'No reliable voiced speech. Check the microphone and speak normally.':
-						'声を検出できませんでした。マイクの入力を確認してください。',
-					'Speak for a little longer.': 'もう少し長く話してください。',
-					'Unstable resonance estimate.': '響きを安定して測定できませんでした。'
+						t('quality.no_voice'),
+					'Speak for a little longer.': t('quality.longer'),
+					'Unstable resonance estimate.': t('quality.resonance')
 				} as Record<string, string>
 			)[reason!] ||
 			reason ||
@@ -1335,11 +1273,7 @@ export function mountStudio() {
 		updateMap();
 		renderWords();
 		updateRangeLabel();
-		const bad =
-			qualityMessage(detail.reason) ||
-			((detail.resonance_sensitivity_pct || 0) > 12
-				? '響きの推定値が解析設定によって変わりやすい音声です。'
-				: '');
+		const bad = qualityMessage(detail.reason);
 		$('quality-state').textContent = bad;
 		$('quality-state').hidden = !bad;
 		controls();
@@ -1350,14 +1284,13 @@ export function mountStudio() {
 		cancelAB();
 		player.pause();
 		reference.pause();
+		stopReplay();
 		state.busy = true;
 		controls();
 		try {
 			const pcm = await decode(file);
 			if (pcm.length / 16000 > (state.capabilities?.maxSeconds || 900))
-				throw new Error(
-					`${(state.capabilities?.maxSeconds || 900) / 60}分以内の音声を選んでください。`
-				);
+				throw new Error(t('error.too_long', { n: (state.capabilities?.maxSeconds || 900) / 60 }));
 			const detail = await api('/api/analyze', { method: 'POST', body: pcm });
 			if (side === 'own') {
 				setOwn(detail, file.name, null, pcm);
@@ -1381,7 +1314,7 @@ export function mountStudio() {
 				$<HTMLSelectElement>('library-group').value = 'custom';
 				await selectSample(c, false);
 			}
-			notify('音声を読み込みました。');
+			notify(t('notice.imported'));
 		} catch (e) {
 			notify((e as Error).message, true);
 		} finally {
@@ -1459,7 +1392,7 @@ export function mountStudio() {
 			map.ownFeatures = m.features;
 			map.ownRange = null;
 			map.invalidate();
-			$('quality-state').textContent = m.active ? '' : '音声を待っています…';
+			$('quality-state').textContent = m.active ? '' : t('quality.waiting');
 			$('quality-state').hidden = !!m.active;
 			updateIndicators();
 		} catch (e) {
@@ -1481,6 +1414,7 @@ export function mountStudio() {
 		cancelAB();
 		player.pause();
 		reference.pause();
+		stopReplay();
 		try {
 			stream = await navigator.mediaDevices.getUserMedia({
 				audio: {
@@ -1556,9 +1490,7 @@ export function mountStudio() {
 			state.captureMode = null;
 			controls();
 			notify(
-				(e as Error).name === 'NotAllowedError'
-					? 'ブラウザーのマイク設定で、このページからの使用を許可してください。'
-					: (e as Error).message,
+				(e as Error).name === 'NotAllowedError' ? t('error.mic_denied') : (e as Error).message,
 				true
 			);
 		}
@@ -1569,7 +1501,7 @@ export function mountStudio() {
 			monitorGain = null;
 		}
 		$('loopback').setAttribute('aria-pressed', 'false');
-		$('loopback').setAttribute('aria-label', '自分の声を聴く');
+		$('loopback').setAttribute('aria-label', t('loopback.aria'));
 		if (worklet) {
 			worklet.port.onmessage = null;
 			worklet.port.close();
@@ -1626,7 +1558,7 @@ export function mountStudio() {
 		const current = state.recording ? recordSnapshot : snapshotOwn();
 		if (!current) return Promise.resolve();
 		return TakeStore.write({ current, previous: state.previousTake || null }).catch(() =>
-			notify('録音を保存できませんでした。必要な音声をダウンロードしてください。', true)
+			notify(t('error.take_save'), true)
 		);
 	}
 	function restoreRecording() {
@@ -1693,8 +1625,13 @@ export function mountStudio() {
 				raw = mergeChunks().subarray(0, Math.floor(rate * maxSeconds));
 			await releaseMic();
 			const pcm = (await resample(raw, rate)).slice(0, 16000 * maxSeconds);
-			if (pcm.length < 4000) throw new Error('0.25秒以上録音してください。');
-			setOwn(pendingAnalysis(pcm), `録音 ${state.takes.length + 1}`, null, pcm);
+			if (pcm.length < 4000) throw new Error(t('error.too_short'));
+			setOwn(
+				pendingAnalysis(pcm),
+				t('takes.default_name', { n: state.takes.length + 1 }),
+				null,
+				pcm
+			);
 			accepted = true;
 			await saveTake();
 			recordSnapshot = null;
@@ -1723,7 +1660,7 @@ export function mountStudio() {
 		const enabled = $('loopback').getAttribute('aria-pressed') !== 'true';
 		monitorGain.gain.setTargetAtTime(enabled ? 0.7 : 0, recordContext.currentTime, 0.015);
 		$('loopback').setAttribute('aria-pressed', String(enabled));
-		$('loopback').setAttribute('aria-label', enabled ? '自分の声の再生を止める' : '自分の声を聴く');
+		$('loopback').setAttribute('aria-label', t(enabled ? 'loopback.stop' : 'loopback.aria'));
 	};
 	$('live-mode').onclick = () => (state.recording ? stopRecording() : startRecording('live'));
 	window.addEventListener('keydown', (e) => {
@@ -1775,7 +1712,8 @@ export function mountStudio() {
 				duration: state.ownFull!.duration,
 				language: state.ownLanguage,
 				stored: true,
-				...(quality && { quality })
+				...(quality && { quality }),
+				...(snapshot?.pcm && { peaks: wavePeaks(snapshot.pcm)! })
 			};
 		const saved = await TakeStore.saveRecording(snapshot, t);
 		state.takes = saved!.index;
@@ -1813,8 +1751,7 @@ export function mountStudio() {
 			updateMap();
 			await persistTakes();
 		} catch {
-			if (state.takes.some((t) => t.id === id))
-				notify('録音を残しました。録音のメニューから再解析できます。', true);
+			if (state.takes.some((t) => t.id === id)) notify(t('error.take_kept'), true);
 		} finally {
 			state.analyzing.delete(id);
 			controls();
@@ -1828,10 +1765,7 @@ export function mountStudio() {
 			try {
 				await saveTake(state.ownTakeId || crypto.randomUUID());
 			} catch {
-				notify(
-					'録音を保存できませんでした。音声をダウンロードしてから、保存容量を確認してください。',
-					true
-				);
+				notify(t('error.take_save_retry'), true);
 				return;
 			} finally {
 				state.busy = false;
@@ -1849,13 +1783,13 @@ export function mountStudio() {
 			refs = referenceStats();
 		const rows = METRICS.map((m) => {
 			const vals = refs.map((c) => c.features[m.key]).filter(finite);
-			return `<tr><td>${m.label} · ${m.unit}</td><td>${fmt(f[m.key], m.n)}</td><td>${fmt(r[m.key], m.n)}</td><td>${fmt(quantile(vals, 0.1), m.n)}〜${fmt(quantile(vals, 0.9), m.n)}</td></tr>`;
+			return `<tr><td>${m.label} · ${m.unit}</td><td>${fmt(f[m.key], m.n)}</td><td>${fmt(r[m.key], m.n)}</td><td>${t('help.band_range', { low: fmt(quantile(vals, 0.1), m.n), high: fmt(quantile(vals, 0.9), m.n) })}</td></tr>`;
 		});
 		for (const [key, label] of [
-			['pitch_sd_hz', '高さの標準偏差 · Hz'],
-			['pitch_sd_st', '高さの標準偏差 · 半音'],
-			['quiet_pct', '無音の割合 · %'],
-			['quiet_mean', '無音区間の平均 · 秒'],
+			['pitch_sd_hz', t('report.pitch_sd_hz')],
+			['pitch_sd_st', t('report.pitch_sd_st')],
+			['quiet_pct', t('report.quiet_pct')],
+			['quiet_mean', t('report.quiet_mean')],
 			['f1', 'F1 · Hz'],
 			['f2', 'F2 · Hz'],
 			['f3', 'F3 · Hz'],
@@ -1866,30 +1800,29 @@ export function mountStudio() {
 			);
 		if (state.words.own?.pace)
 			rows.push(
-				`<tr><td>話す速さ · ${esc(state.words.own.pace_unit)}</td><td>${fmt(state.words.own.pace, 1)}</td><td>${state.words.ref?.pace_unit === state.words.own.pace_unit ? fmt(state.words.ref!.pace, 1) : '—'}</td><td>—</td></tr>`
+				`<tr><td>${esc(t('report.pace', { unit: state.words.own.pace_unit }))}</td><td>${fmt(state.words.own.pace, 1)}</td><td>${state.words.ref?.pace_unit === state.words.own.pace_unit ? fmt(state.words.ref!.pace, 1) : '—'}</td><td>—</td></tr>`
 			);
 		const notes: string[] = [];
 		if (finite(f.f0) && finite(r.f0)) {
 			const diff = 12 * Math.log2(r.f0 / f.f0);
 			notes.push(
-				`見本の高さは自分より${fmt(Math.abs(diff), 1)}半音${diff >= 0 ? '高め' : '低め'}です。速度を落として聴き、無理のない高さで同じ文を試してください。`
+				t('report.note_pitch', {
+					diff: fmt(Math.abs(diff), 1),
+					direction: t(diff >= 0 ? 'report.higher' : 'report.lower')
+				})
 			);
 		}
 		if (finite(f.delta_f) && finite(r.delta_f))
-			notes.push(
-				`響きの推定値は自分 ${fmt(f.delta_f)}、見本 ${fmt(r.delta_f)} Hz ΔF。同じ母音や短い言葉を選び、高さを保ちながら響きの違いを聴き比べてください。`
-			);
-		notes.push(
-			'抑揚は言語や文の内容でも変わります。同じ文章を読み、アクセント、文末、間の取り方を比べてください。'
-		);
-		return `<div class="report-score">${comparison ? fmt(comparison.distance, 2) : '—'}</div><p>見本との音響的な差 · 0で一致</p><p class="small">高さ・響き・質感・明るさ・抑揚の5指標を標準化した距離です。女性らしさや自然さの評価には対応していません。</p>${comparison ? `<p>この2音声の差：図に表示 ${Math.round(comparison.displayedShare * 100)}% · 省略 ${Math.round((1 - comparison.displayedShare) * 100)}%</p><p class="small">5次元での差の二乗を分けた割合です。図で重なっていても、省略された方向では離れていることがあります。</p>` : ''}<table class="report-table"><thead><tr><th>指標</th><th>自分</th><th>見本</th><th>参照音声の中央80%</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(state.ownName)} · ${clock(state.ownFull?.duration)} · 見本 ${esc(nameOf((state.selected || {}) as Clip))}<br>録音言語 ${esc(state.ownLanguage)} · 見本の言語 ${esc(state.lang)}${fit === null ? '' : `<br>${referenceGroupLabel()}の参照分布内の密度順位：${Math.round(fit)}パーセンタイル（聞き手による評価ではありません）。`}<br>分布図は5次元を${map.dimension}次元に投影しています。表示する分散は${Math.round((map.space?.explained(map.dimension, map.projection) || 0) * 100)}%。省略された方向の違いは左の指標で確認できます。</p>`;
+			notes.push(t('report.note_resonance', { own: fmt(f.delta_f), ref: fmt(r.delta_f) }));
+		notes.push(t('report.note_intonation'));
+		return `<div class="report-score">${comparison ? fmt(comparison.distance, 2) : '—'}</div><p>${t('report.distance_caption')}</p><p class="small">${t('report.distance_note')}</p>${comparison ? `<p>${t('report.share', { shown: Math.round(comparison.displayedShare * 100), omitted: Math.round((1 - comparison.displayedShare) * 100) })}</p><p class="small">${t('report.share_note')}</p>` : ''}<table class="report-table"><thead><tr><th>${t('report.col_metric')}</th><th>${t('report.col_own')}</th><th>${t('report.col_ref')}</th><th>${t('report.col_band')}</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(t('report.footer', { name: state.ownName, duration: clock(state.ownFull?.duration), reference: nameOf((state.selected || {}) as Clip) }))}<br>${esc(t('report.languages', { own: state.ownLanguage, ref: state.lang }))}${fit === null ? '' : '<br>' + esc(t('report.density', { group: referenceGroupLabel(), percentile: Math.round(fit) }))}<br>${esc(t('report.projection', { dimension: map.dimension, variance: Math.round((map.space?.explained(map.dimension, map.projection) || 0) * 100) }))}</p>`;
 	}
 	$('report-button').onclick = () => {
 		$('report-content').innerHTML = reportHTML();
 		$<HTMLDialogElement>('report-dialog').showModal();
 	};
 	$('report-save').onclick = () => {
-		const html = `<!doctype html><meta charset="utf-8"><title>声の比較</title><style>body{font:15px system-ui;max-width:850px;margin:40px auto;padding:0 20px;color:#30364c}.report-score{font-size:40px;color:#b44e80}table{width:100%;border-collapse:collapse}td,th{padding:10px;text-align:right;border-bottom:1px solid #ddd}td:first-child,th:first-child{text-align:left}.small{font-size:12px;color:#555;line-height:1.7}li{margin:14px 0;line-height:1.7}</style>${reportHTML()}<p><a href="https://www.isca-archive.org/interspeech_2025/netzorg25_interspeech.html">測定方法の研究</a> · ${new Date().toLocaleDateString()}</p>`;
+		const html = `<!doctype html><html lang="${uiLang}"><meta charset="utf-8"><title>${esc(t('report.file_title'))}</title><style>body{font:15px system-ui;max-width:850px;margin:40px auto;padding:0 20px;color:#30364c}.report-score{font-size:40px;color:#b44e80}table{width:100%;border-collapse:collapse}td,th{padding:10px;text-align:right;border-bottom:1px solid #ddd}td:first-child,th:first-child{text-align:left}.small{font-size:12px;color:#555;line-height:1.7}li{margin:14px 0;line-height:1.7}</style>${reportHTML()}<p><a href="https://www.isca-archive.org/interspeech_2025/netzorg25_interspeech.html">${esc(t('report.method_link'))}</a> · ${new Date().toLocaleDateString(uiLang)}</p>`;
 		download(new Blob([html], { type: 'text/html' }), 'voice-comparison.html');
 	};
 	$('export').onclick = () =>
@@ -1978,7 +1911,7 @@ export function mountStudio() {
 		$('language').replaceChildren(...catalog.languages.map((l) => new Option(l.label, l.id)));
 		const view = readView();
 		setLiveShapeWindow(view?.liveShapeSeconds);
-		const requested = location.pathname.split('/')[1] || view?.lang || 'ja',
+		const requested = location.pathname.split('/')[1] || 'ja',
 			lang = catalog.languages.some((l) => l.id === requested) ? requested : 'ja';
 		const [saved, storedRefs, index] = await Promise.all([
 			TakeStore.read<{ current?: Snapshot; previous?: Snapshot } | undefined>().catch(() => null),
@@ -1994,7 +1927,7 @@ export function mountStudio() {
 			.filter((c) => c.pcm && favorites.has(c.id))
 			.map((c) => ({ ...c, audio: URL.createObjectURL(wav(c.pcm!)) }));
 		state.previousTake = saved?.previous?.pcm ? saved.previous : null;
-		await changeLanguage(lang, false);
+		await loadLanguage(lang);
 		if (saved?.current?.pcm && saved.current.id !== 'baseline') applySnapshot(saved.current);
 		if (view && view.lang === lang) {
 			$<HTMLSelectElement>('library-group').value = view.group || 'female';
@@ -2036,7 +1969,7 @@ export function mountStudio() {
 			fitValue,
 			selectRange,
 			selectSample,
-			changeLanguage,
+			loadLanguage,
 			controls,
 			TakeStore,
 			snapshotOwn,
@@ -2046,13 +1979,6 @@ export function mountStudio() {
 				hasSnapshot: recordSnapshot !== null
 			})
 		};
-		localize();
-	}
-	/* web/locale.js: the page language and the research library's label. */
-	function localize() {
-		document.documentElement.lang = 'ja';
-		const lab = document.querySelector('#language option[value="lab"]');
-		if (lab) lab.textContent = '発声の見本';
 	}
 
 	let profileTheme = '';
@@ -2143,10 +2069,7 @@ export function mountStudio() {
 		const yes = favorites.has(state.selected?.id as string);
 		$('favorite-selected').textContent = yes ? '★' : '☆';
 		$('favorite-selected').setAttribute('aria-pressed', String(yes));
-		$('favorite-selected').setAttribute(
-			'aria-label',
-			yes ? 'お気に入りから外す' : 'お気に入りに追加'
-		);
+		$('favorite-selected').setAttribute('aria-label', t(yes ? 'favorite.remove' : 'favorite.add'));
 	}
 	function toggleFavorite(id: string | undefined) {
 		if (!id) return;
@@ -2155,12 +2078,12 @@ export function mountStudio() {
 		try {
 			localStorage.setItem('voice-favorites', JSON.stringify([...favorites]));
 		} catch {
-			notify('お気に入りを保存できませんでした。', true);
+			notify(t('error.favorite_save'), true);
 		}
 		TakeStore.write(
 			state.custom.filter((c) => favorites.has(c.id)).map(({ audio: _audio, ...c }) => c),
 			'references'
-		).catch(() => notify('見本の音声を保存できませんでした。', true));
+		).catch(() => notify(t('error.reference_save'), true));
 		updateFavorite();
 		renderLibrary();
 	}
@@ -2204,6 +2127,42 @@ export function mountStudio() {
 	}
 
 	let takeChoices: (Snapshot | Take)[] = [];
+	/* 64 bucket maxima of the samples, scaled to the loudest bucket, for the take rows' preview. */
+	const wavePeaks = (pcm: PCM | null | undefined, buckets = 64): number[] | null => {
+		if (!pcm?.length) return null;
+		const peaks: number[] = Array.from({ length: buckets }),
+			size = Math.max(1, Math.floor(pcm.length / buckets));
+		for (let i = 0; i < buckets; i++) {
+			let m = 0;
+			for (let j = i * size, e = Math.min((i + 1) * size, pcm.length); j < e; j += 8) {
+				const v = Math.abs(pcm[j]);
+				if (v > m) m = v;
+			}
+			peaks[i] = m;
+		}
+		const top = Math.max(...peaks) || 1;
+		return peaks.map((v) => Math.round((v / top) * 100) / 100);
+	};
+	const backfilledPeaks = new Set<string>();
+	async function backfillPeaks() {
+		for (const t of state.takes) {
+			if (!t.stored || t.peaks || backfilledPeaks.has(t.id)) continue;
+			backfilledPeaks.add(t.id);
+			const snapshot = await TakeStore.read<Snapshot | undefined>('recording:' + t.id).catch(
+				() => null
+			);
+			const peaks = snapshot?.pcm ? wavePeaks(snapshot.pcm) : null;
+			if (!peaks) continue;
+			const saved = await TakeStore.updateRecording<Take>(t.id, (snap, metadata) => ({
+				snapshot: snap,
+				metadata: { ...metadata!, peaks }
+			})).catch(() => null);
+			if (saved?.index) {
+				state.takes = saved.index;
+				renderTakeMenu();
+			}
+		}
+	}
 	function renderTakeMenu() {
 		const select = $<HTMLSelectElement>('take-select');
 		if (!select) return;
@@ -2228,27 +2187,36 @@ export function mountStudio() {
 		takeChoices.forEach((t, i) => {
 			const option = new Option(t.name, String(i));
 			option.dataset.detail = clock((t as Snapshot).detail?.duration || (t as Take).duration);
-			option.dataset.actions = 'download,delete';
+			option.dataset.actions = 'play,rename,download,delete';
+			const peaks = t.pcm ? wavePeaks(t.pcm) : (t as Take).peaks;
+			if (peaks) option.dataset.peaks = JSON.stringify(peaks);
 			if (state.recording || !((t as Snapshot).takeId || t.storedId))
-				option.dataset.disabledActions = 'delete';
+				option.dataset.disabledActions = 'delete' + (state.recording ? ',play' : '');
 			select.add(option);
 		});
 		if (current?.detail?.analysisPending && !state.analyzing.has(current.takeId!))
-			select.add(new Option('再解析', 'retry'));
+			select.add(new Option(t('takes.retry'), 'retry'));
 		select.disabled = state.busy || !takeChoices.length;
 		select.value = current?.pcm ? '0' : '';
-		select.setAttribute('data-display-label', current?.name || '録音履歴');
+		select.setAttribute('data-display-label', current?.name || t('takes.menu'));
+		if (replayKey) {
+			const i = takeChoices.findIndex((t) => replayKeyOf(t) === replayKey);
+			replayValue = i >= 0 ? i : null;
+			if (i >= 0) setReplayIcon(i, true);
+		}
+		void backfillPeaks();
 	}
 	async function restoreTake(chosen: Snapshot | Take | { storedId: string }) {
 		if (state.busy) return;
 		if ((chosen as Take).storedId)
 			chosen = (await TakeStore.read<Snapshot>('recording:' + (chosen as Take).storedId))!;
-		if (!(chosen as Snapshot)?.pcm) throw new Error('この録音は読み込めませんでした。');
+		if (!(chosen as Snapshot)?.pcm) throw new Error(t('error.take_load'));
 		const current = state.recording ? recordSnapshot : snapshotOwn();
 		if (state.recording) await cancelCapture();
 		cancelAB();
 		player.pause();
 		reference.pause();
+		stopReplay();
 		applySnapshot(chosen as Snapshot);
 		state.previousTake = current || null;
 		await persistTakes();
@@ -2260,6 +2228,7 @@ export function mountStudio() {
 		if (state.busy || state.recording || !id) return;
 		const current = id === state.ownTakeId;
 		state.busy = true;
+		stopReplay();
 		controls();
 		try {
 			state.takes = await TakeStore.deleteRecording<Take>(id);
@@ -2280,9 +2249,9 @@ export function mountStudio() {
 			await TakeStore.write({ current: snapshotOwn(), previous: state.previousTake || null });
 			updateMap();
 			saveView();
-			notify('録音を削除しました。');
+			notify(t('notice.take_deleted'));
 		} catch {
-			notify('録音を削除できませんでした。もう一度お試しください。', true);
+			notify(t('error.take_delete'), true);
 		} finally {
 			state.busy = false;
 			controls();
@@ -2319,16 +2288,135 @@ export function mountStudio() {
 			await deleteTake(chosen as Partial<Snapshot & Take>);
 			return;
 		}
+		if (detail.action === 'play')
+			try {
+				const source = chosen.pcm
+					? chosen
+					: await TakeStore.read<Snapshot>('recording:' + chosen.storedId);
+				if (!source?.pcm) throw new Error(t('error.take_load'));
+				replayTake(source as Snapshot, replayKeyOf(chosen), Number(detail.value));
+			} catch (error) {
+				notify((error as Error).message, true);
+				return;
+			}
+		if (detail.action === 'rename') {
+			renameTarget = chosen;
+			$<HTMLInputElement>('rename-input').value = chosen.name || '';
+			$('rename-status').textContent = '';
+			$<HTMLDialogElement>('rename-dialog').showModal();
+			$<HTMLInputElement>('rename-input').select();
+			return;
+		}
 		if (detail.action === 'download')
 			try {
 				if (chosen.storedId)
 					chosen = (await TakeStore.read<Snapshot>('recording:' + chosen.storedId))!;
-				if (!chosen?.pcm) throw new Error('この録音は読み込めませんでした。');
+				if (!chosen?.pcm) throw new Error(t('error.take_load'));
 				download(wav(chosen.pcm), chosen.name.replace(/\.[^.]+$/, '') + '.wav');
 			} catch (error) {
 				notify((error as Error).message, true);
 			}
 	});
+
+	/* Row-level replay and renaming in the recording history. */
+	let replayAudio: HTMLAudioElement | null = null,
+		replayKey: string | null = null,
+		replayValue: number | null = null,
+		renameTarget: Snapshot | Take | null = null;
+	const replayKeyOf = (take: Snapshot | Take | null | undefined) =>
+		take?.storedId || (take as Snapshot)?.takeId || 'mem:' + (take?.pcm?.length || 0);
+	function setReplayIcon(value: number, playing: boolean) {
+		const button = $('take-select').shadowRoot!.querySelector<HTMLButtonElement>(
+			`.row-action[data-action=play][data-value="${value}"]`
+		);
+		if (!button) return;
+		const path = button.querySelector('path');
+		if (path) path.setAttribute('d', playing ? 'M5 4h3v12H5zM12 4h3v12h-3z' : 'M6 4l10 6-10 6z');
+		const action = t(playing ? 'action.stop' : 'action.play');
+		button.title = action;
+		button.setAttribute(
+			'aria-label',
+			t('action.label', {
+				name: button.closest('.choice-row')?.getAttribute('aria-label') || '',
+				action
+			})
+		);
+	}
+	function stopReplay() {
+		const was = replayValue;
+		if (replayAudio) {
+			URL.revokeObjectURL(replayAudio.src);
+			replayAudio.pause();
+		}
+		replayAudio = null;
+		replayKey = null;
+		replayValue = null;
+		if (was != null) setReplayIcon(was, false);
+	}
+	function replayTake(take: Snapshot, key: string, icon: number) {
+		const stop = replayKey === key;
+		stopReplay();
+		if (stop) return;
+		const url = URL.createObjectURL(wav(take.pcm!));
+		replayAudio = new Audio(url);
+		replayKey = key;
+		replayValue = icon;
+		setReplayIcon(icon, true);
+		replayAudio.onended = () => {
+			if (replayKey === key) {
+				replayKey = null;
+				replayValue = null;
+				setReplayIcon(icon, false);
+			}
+			URL.revokeObjectURL(url);
+			replayAudio = null;
+		};
+		replayAudio.play().catch(() => {
+			stopReplay();
+			URL.revokeObjectURL(url);
+			notify(t('error.replay'), true);
+		});
+	}
+	$('rename-save').onclick = async () => {
+		const name = $<HTMLInputElement>('rename-input').value.trim();
+		if (!name) {
+			$('rename-status').textContent = t('rename.empty');
+			return;
+		}
+		const take = renameTarget;
+		renameTarget = null;
+		$<HTMLDialogElement>('rename-dialog').close();
+		if (!take) return;
+		const id = (take as Snapshot).takeId || take.storedId;
+		if (!id) {
+			state.ownName = name;
+			renderTakeMenu();
+			await persistTakes();
+			return;
+		}
+		try {
+			const saved = await TakeStore.updateRecording<Take>(id, (snapshot, metadata) => ({
+				snapshot,
+				metadata: { ...metadata!, name }
+			}));
+			if (!saved) throw 0;
+			state.takes = saved.index;
+			if (state.ownTakeId === id) {
+				state.ownName = name;
+				await persistTakes();
+			}
+			renderTakeMenu();
+		} catch {
+			notify(t('rename.failed'), true);
+		}
+	};
+	$('rename-input').onkeydown = (e) => {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			$('rename-save').click();
+		}
+	};
+	$('rename-dialog').addEventListener('close', () => (renameTarget = null));
 
 	/* Bulk actions on the recording history: one zip of every saved take, or delete them all. */
 	async function storedTakes() {
@@ -2346,7 +2434,7 @@ export function mountStudio() {
 		controls();
 		try {
 			const takes = await storedTakes();
-			if (!takes.length) throw new Error('保存された録音がありません。');
+			if (!takes.length) throw new Error(t('error.no_takes'));
 			const { ZipWriter, BlobWriter, BlobReader, TextReader } =
 				await import('@zip.js/zip.js/index-native.js');
 			const zip = new ZipWriter(new BlobWriter('application/zip')),
@@ -2368,7 +2456,7 @@ export function mountStudio() {
 			}
 			await zip.add('takes.json', new TextReader(JSON.stringify(manifest, null, 1)));
 			download(await zip.close(), 'koenami-recordings.zip');
-			notify(`${takes.length}件の録音をまとめました。`);
+			notify(t('notice.zipped', { n: takes.length }));
 		} catch (error) {
 			notify((error as Error).message, true);
 		} finally {
@@ -2380,12 +2468,12 @@ export function mountStudio() {
 		if (state.busy || state.recording) return;
 		const stored = state.takes.filter((t) => t.stored);
 		if (!stored.length) {
-			notify('保存された録音がありません。');
+			notify(t('error.no_takes'));
 			return;
 		}
-		if (!confirm(`保存された録音${stored.length}件をすべて削除します。元に戻せません。`)) return;
+		if (!confirm(t('confirm.delete_all', { n: stored.length }))) return;
 		for (const t of stored) await deleteTake({ storedId: t.id });
-		notify(`${stored.length}件の録音を削除しました。`);
+		notify(t('notice.deleted_all', { n: stored.length }));
 	};
 
 	function updateJvsBanner() {
@@ -2395,7 +2483,7 @@ export function mountStudio() {
 	let importController: AbortController | null = null;
 	$('add-reference').onclick = () => {
 		$('jvs-status').textContent = state.imported.length
-			? `${state.imported.length.toLocaleString()}音声を追加済み`
+			? t('jvs.added', { n: state.imported.length })
 			: '';
 		$<HTMLDialogElement>('import-dialog').showModal();
 	};
@@ -2430,21 +2518,20 @@ export function mountStudio() {
 					const pct = (100 * done) / total;
 					$('jvs-progress').setAttribute('aria-valuenow', String(Math.round(pct)));
 					($('jvs-progress').firstElementChild as HTMLElement).style.width = pct + '%';
-					$('jvs-status').textContent = `${done.toLocaleString()} / ${total.toLocaleString()}`;
+					$('jvs-status').textContent =
+						`${done.toLocaleString(uiLang)} / ${total.toLocaleString(uiLang)}`;
 				},
 				controller.signal
 			);
-			$('jvs-status').textContent = `${result.total.toLocaleString()}音声を追加済み`;
+			$('jvs-status').textContent = t('jvs.added', { n: result.total });
 		} catch (e) {
 			$('jvs-status').textContent =
-				(e as Error).name === 'AbortError'
-					? '中止しました。読み込み済みの音声は保存されています。'
-					: (e as Error).message;
+				(e as Error).name === 'AbortError' ? t('jvs.cancelled') : (e as Error).message;
 		} finally {
 			importController = null;
 			state.busy = false;
 			state.imported = await loadImported<Clip & ImportClip>().catch(() => state.imported);
-			if (state.lang === 'ja') await changeLanguage('ja', false);
+			if (state.lang === 'ja') await loadLanguage('ja');
 			for (const id of ['choose-jvs-zip', 'choose-jvs-folder', 'import-audio'])
 				$<HTMLButtonElement>(id).disabled = false;
 			$('cancel-jvs').hidden = true;
@@ -2521,11 +2608,11 @@ export function mountStudio() {
 	}
 	function shareResult(): ScoreResult | null {
 		const m = activeMeasurement();
-		return state.scorer?.available && m && !m.analysisPending && !gateFailure(m)
+		return state.scorer?.available && m && !m.analysisPending && !gateFailure(m, uiLang)
 			? state.scorer.score(m.features || {})
 			: null;
 	}
-	const scalePos = (s: number) => `${clamp((s + 60) / 120, 0, 1) * 100}%`;
+	const scalePos = (s: number) => `${clamp((s + 120) / 240, 0, 1) * 100}%`;
 	function updateVerdict() {
 		const result = shareResult(),
 			scorer = state.scorer;
@@ -2533,22 +2620,22 @@ export function mountStudio() {
 		readout.disabled = !result;
 		$('verdict-main').dataset.verdict = result?.verdict || '';
 		const m = activeMeasurement(),
-			gate = m && !m.analysisPending && scorer?.available ? gateFailure(m) : null;
+			gate = m && !m.analysisPending && scorer?.available ? gateFailure(m, uiLang) : null;
 		$('verdict-word').textContent = result
-			? VERDICTS[result.verdict]
-			: !scorer?.available
-				? 'この言語では計算できません'
-				: !m
-					? '録音すると表示'
-					: m.analysisPending
-						? '解析中'
-						: 'まだ判定できません';
+			? verdictLabel(result.verdict, uiLang)
+			: t(
+					!scorer?.available
+						? 'verdict.unavailable'
+						: !m
+							? 'verdict.record'
+							: m.analysisPending
+								? 'verdict.analyzing'
+								: 'verdict.not_yet'
+				);
 		$('verdict-number').textContent = result ? formatScore(result.display) : '';
 		$('verdict-gate').hidden = !gate || !!result;
 		if (gate && !result)
-			$('verdict-gate').textContent = gate.value
-				? `${gate.label} ${gate.value}（${gate.need}）`
-				: gate.label;
+			$('verdict-gate').textContent = gate.value ? t('verdict.gate', gate) : gate.label;
 		for (const g of ['male', 'female'] as const) {
 			const band = scorer?.available ? scorer.bands[g] : null,
 				el = $('verdict-band-' + g);
@@ -2568,7 +2655,10 @@ export function mountStudio() {
 		return state.takes
 			.filter(
 				(t) =>
-					t.stored && t.language === lang && t.features && !(t.quality && gateFailure(t.quality))
+					t.stored &&
+					t.language === lang &&
+					t.features &&
+					!(t.quality && gateFailure(t.quality, uiLang))
 			)
 			.map((t) => ({ take: t, result: scorer.score(t.features!), unchecked: !t.quality }))
 			.filter((r): r is { take: Take; result: ScoreResult; unchecked: boolean } => !!r.result)
@@ -2586,28 +2676,30 @@ export function mountStudio() {
 			R = 8,
 			T = 8,
 			B = 18,
-			y = (s: number) => T + (H - T - B) * (1 - (clamp(s, -50, 50) + 50) / 100),
+			y = (s: number) =>
+				T +
+				(H - T - B) * (1 - (clamp(s, -SCALE_LIMIT, SCALE_LIMIT) + SCALE_LIMIT) / (2 * SCALE_LIMIT)),
 			x = (i: number) => L + (W - L - R) * (rows.length > 1 ? i / (rows.length - 1) : 0.5);
 		const band = (g: 'male' | 'female', color: string) =>
 			`<rect x="${L}" y="${y(bands[g][1])}" width="${W - L - R}" height="${Math.max(1, y(bands[g][0]) - y(bands[g][1]))}" fill="${color}" opacity=".18"/>`;
 		const points = rows.map((r, i) => [x(i), y(r.result.score)]);
 		const day = (d: string) =>
-			new Date(d).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' });
+			new Date(d).toLocaleDateString(uiLang, { month: 'numeric', day: 'numeric' });
 		$('history-chart').innerHTML =
-			`${band('male', 'var(--sky)')}${band('female', 'var(--pink)')}<line x1="${L}" y1="${y(0)}" x2="${W - R}" y2="${y(0)}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>${[50, 0, -50].map((v) => `<text x="${L - 6}" y="${y(v) + 3}" font-size="8" text-anchor="end" fill="var(--muted)">${formatScore(v)}</text>`).join('')}<polyline points="${points.map((p) => p.join(',')).join(' ')}" fill="none" stroke="var(--self)" stroke-width="1.5"/>${points.map(([px, py], i) => `<circle cx="${px}" cy="${py}" r="${rows[i].take.id === state.ownTakeId ? 4 : 2.5}" fill="var(--self)" stroke="var(--surface)" stroke-width="1"/>`).join('')}<text x="${L}" y="${H - 4}" font-size="8" fill="var(--muted)">${day(rows[0].take.date)}</text><text x="${W - R}" y="${H - 4}" font-size="8" text-anchor="end" fill="var(--muted)">${day(rows.at(-1)!.take.date)}</text>`;
+			`${band('male', 'var(--sky)')}${band('female', 'var(--pink)')}<line x1="${L}" y1="${y(0)}" x2="${W - R}" y2="${y(0)}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>${[100, 50, 0, -50, -100].map((v) => `<text x="${L - 6}" y="${y(v) + 3}" font-size="8" text-anchor="end" fill="var(--muted)">${formatScore(v)}</text>`).join('')}<polyline points="${points.map((p) => p.join(',')).join(' ')}" fill="none" stroke="var(--self)" stroke-width="1.5"/>${points.map(([px, py], i) => `<circle cx="${px}" cy="${py}" r="${rows[i].take.id === state.ownTakeId ? 4 : 2.5}" fill="var(--self)" stroke="var(--surface)" stroke-width="1"/>`).join('')}<text x="${L}" y="${H - 4}" font-size="8" fill="var(--muted)">${day(rows[0].take.date)}</text><text x="${W - R}" y="${H - 4}" font-size="8" text-anchor="end" fill="var(--muted)">${day(rows.at(-1)!.take.date)}</text>`;
 		$('history-list').replaceChildren(
 			...[...rows].reverse().map((r) => {
 				const li = document.createElement('li');
 				li.setAttribute('aria-current', String(r.take.id === state.ownTakeId));
 				const when = new Date(r.take.date);
-				li.innerHTML = `<span class="history-name">${esc(r.take.name)}</span><time datetime="${esc(r.take.date)}">${when.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })} ${when.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}</time><span class="history-verdict" data-verdict="${r.result.verdict}">${VERDICTS[r.result.verdict]}</span><b>${formatScore(r.result.display)}</b>`;
+				li.innerHTML = `<span class="history-name">${esc(r.take.name)}</span><time datetime="${esc(r.take.date)}">${when.toLocaleDateString(uiLang, { month: 'numeric', day: 'numeric' })} ${when.toLocaleTimeString(uiLang, { hour: '2-digit', minute: '2-digit' })}</time><span class="history-verdict" data-verdict="${r.result.verdict}">${verdictLabel(r.result.verdict, uiLang)}</span><b>${formatScore(r.result.display)}</b>`;
 				const b = document.createElement('button');
 				if (r.take.id === state.ownTakeId) {
-					b.textContent = '表示中';
+					b.textContent = t('history.current');
 					b.disabled = true;
 				} else {
-					b.textContent = '開く';
-					b.title = 'この録音を表示';
+					b.textContent = t('history.open');
+					b.title = t('history.open_title');
 					b.onclick = () => {
 						$<HTMLDialogElement>('share-dialog').close();
 						restoreTake({ storedId: r.take.id }).catch((e) => notify(e.message, true));
@@ -2620,6 +2712,7 @@ export function mountStudio() {
 		$('history-note').hidden = !rows.some((r) => r.unchecked);
 	}
 	let shareImage: File | null = null;
+	const ageEstimates = new Map<string, { estimate: number; windowRange: [number, number] }>();
 	$('verdict-readout').onclick = () => $('share-button').click();
 	$('verdict-help').onclick = () => {
 		const s = state.scorer;
@@ -2628,61 +2721,135 @@ export function mountStudio() {
 			s?.available
 				? [
 						[
-							'男性的な見本 · 中央80%',
-							`${formatScore(Math.round(s.bands.male[0]))}〜${formatScore(Math.round(s.bands.male[1]))}`
+							t('help.male_band'),
+							t('help.band_range', {
+								low: formatScore(Math.round(s.bands.male[0])),
+								high: formatScore(Math.round(s.bands.male[1]))
+							})
 						],
 						[
-							'女性的な見本 · 中央80%',
-							`${formatScore(Math.round(s.bands.female[0]))}〜${formatScore(Math.round(s.bands.female[1]))}`
+							t('help.female_band'),
+							t('help.band_range', {
+								low: formatScore(Math.round(s.bands.female[0])),
+								high: formatScore(Math.round(s.bands.female[1]))
+							})
 						],
-						['参照話者数', s.speakers.length]
+						[t('help.speakers'), s.speakers.length]
 					]
 				: []
 		);
 	};
 	$('share-button').onclick = async () => {
-		const result = shareResult();
-		if (!result) return;
+		const scored = shareResult();
+		if (!scored) return;
 		const scorer = state.scorer!,
-			lang = state.lang === 'lab' ? 'en' : state.lang,
-			bundle = shareBundle(result, scorer, lang);
-		$('share-verdict').textContent = VERDICTS[result.verdict];
+			lang = state.lang === 'lab' ? 'en' : state.lang;
+		const ageKey = state.ownTakeId || state.ownId || state.ownName,
+			cachedAge = ageEstimates.get(ageKey);
+		let result: ScoreResult = {
+				...scored,
+				age:
+					cachedAge && $<HTMLInputElement>('share-age-include').checked
+						? cachedAge.estimate
+						: undefined
+			},
+			bundle = shareBundle(result, scorer, lang, uiLang);
+		$('share-verdict').textContent = verdictLabel(result.verdict, uiLang);
 		$('share-verdict').dataset.verdict = result.verdict;
 		$('share-score').querySelector('strong')!.textContent = formatScore(result.display);
-		$('share-score').querySelector('span')!.textContent = LEANINGS[result.verdict];
-		$('share-intents').replaceChildren(
-			...bundle.intents.map((i) => {
-				const a = document.createElement('a');
-				a.href = i.href;
-				a.target = '_blank';
-				a.rel = 'noopener noreferrer';
-				a.innerHTML = labelled(i.icon, i.label);
-				a.title = `${i.label}に投稿`;
-				return a;
-			})
-		);
-		$<HTMLAnchorElement>('share-open').href = bundle.url;
-		$('share-open').innerHTML = labelled('external', '結果ページ');
-		$('share-system').innerHTML = labelled('share', '共有…');
-		$('share-copy').innerHTML = labelled('link', 'リンクをコピー');
-		$('share-save').innerHTML = labelled('image', '画像を保存');
+		$('share-score').querySelector('span')!.textContent = leaningLabel(result.verdict, uiLang);
+		const applyBundle = () => {
+			$('share-intents').replaceChildren(
+				...bundle.intents.map((i) => {
+					const a = document.createElement('a');
+					a.href = i.href;
+					a.target = '_blank';
+					a.rel = 'noopener noreferrer';
+					a.innerHTML = labelled(i.icon, i.label);
+					a.title = t('share.post_to', { name: i.label });
+					return a;
+				})
+			);
+			$<HTMLAnchorElement>('share-open').href = bundle.url;
+		};
+		applyBundle();
+		$('share-open').innerHTML = labelled('external', t('share.open'));
+		$('share-system').innerHTML = labelled('share', t('share.system'));
+		$('share-copy').innerHTML = labelled('link', t('share.copy'));
+		$('share-save').innerHTML = labelled('image', t('share.save'));
 		$('share-status').textContent = '';
 		$('share-image').hidden = true;
 		$('share-copy').onclick = async () => {
 			try {
 				await navigator.clipboard.writeText(bundle.url);
-				$('share-status').textContent = 'リンクをコピーしました。';
+				$('share-status').textContent = t('share.copied');
 			} catch {
 				$('share-status').textContent = bundle.url;
 			}
 		};
 		$('share-system').hidden = !navigator.share;
 		$('share-system').onclick = () =>
-			systemShare(result, scorer, lang).catch((e) => {
+			systemShare(result, scorer, lang, uiLang).catch((e) => {
 				if (e.name !== 'AbortError') $('share-status').textContent = e.message;
 			});
 		shareImage = null;
-		const render = async () => shareImage || (shareImage = await cardImage(result, scorer));
+		const render = async () => shareImage || (shareImage = await cardImage(result, scorer, uiLang));
+		const showAge = () => {
+			const a = ageEstimates.get(ageKey);
+			$('share-age-value').textContent = a
+				? t('share.age_value', {
+						age: ageText(a.estimate, uiLang),
+						low: Math.round(a.windowRange[0]),
+						high: Math.round(a.windowRange[1])
+					})
+				: '';
+			$('share-age-run').hidden = !!a;
+			$('share-age-include-label').hidden = !a;
+		};
+		showAge();
+		const refresh = async () => {
+			const a = ageEstimates.get(ageKey);
+			result = {
+				...scored,
+				age: a && $<HTMLInputElement>('share-age-include').checked ? a.estimate : undefined
+			};
+			bundle = shareBundle(result, scorer, lang, uiLang);
+			applyBundle();
+			shareImage = null;
+			try {
+				const file = await render();
+				if (!$<HTMLDialogElement>('share-dialog').open) return;
+				const img = $<HTMLImageElement>('share-image');
+				if (img.src) URL.revokeObjectURL(img.src);
+				img.src = URL.createObjectURL(file);
+			} catch (e) {
+				$('share-status').textContent = (e as Error).message;
+			}
+		};
+		$('share-age-include').onchange = refresh;
+		$('share-age-run').onclick = async () => {
+			if (!state.ownPCM) return;
+			const r = state.ranges.own,
+				pcm = r
+					? state.ownPCM.slice(Math.round(r[0] * 16000), Math.round(r[1] * 16000))
+					: state.ownPCM;
+			$<HTMLButtonElement>('share-age-run').disabled = true;
+			$('share-age-run').textContent = t('share.age_running');
+			try {
+				const a = await api<{ estimate: number; windowRange: [number, number] }>('/api/age', {
+					method: 'POST',
+					body: pcm
+				});
+				ageEstimates.set(ageKey, a);
+				showAge();
+				$<HTMLInputElement>('share-age-include').checked = false;
+			} catch (e) {
+				$('share-status').textContent = (e as Error).message;
+			} finally {
+				$<HTMLButtonElement>('share-age-run').disabled = false;
+				$('share-age-run').textContent = t('share.age_run');
+			}
+		};
 		$('share-save').onclick = async () => {
 			try {
 				download(await render(), `koenami-${result.display}.png`);
@@ -2698,11 +2865,11 @@ export function mountStudio() {
 			const img = $<HTMLImageElement>('share-image');
 			if (img.src) URL.revokeObjectURL(img.src);
 			img.src = URL.createObjectURL(file);
-			img.alt = `${bundle.text}。5つの指標と見本の分布を描いた画像。`;
+			img.alt = t('share.image_alt', { text: bundle.text });
 			img.hidden = false;
 		} catch (e) {
 			$('share-status').textContent = (e as Error).message;
 		}
 	};
-	init().catch((e) => notify('読み込めませんでした: ' + e.message, true));
+	init().catch((e) => notify(t('error.load', { message: e.message }), true));
 }

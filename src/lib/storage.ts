@@ -134,6 +134,14 @@ export const TakeStore = {
 			};
 		});
 	},
+	updateRecording<M extends TakeMetadata = TakeMetadata>(
+		id: string,
+		change: (snapshot: TakeSnapshot, metadata: M | undefined) => ReturnType<Change<M>>
+	) {
+		return this.recordingTransaction<M>(id, (snapshot, metadata) =>
+			snapshot ? change(snapshot, metadata) : null
+		);
+	},
 	recordingTransaction<M extends TakeMetadata = TakeMetadata>(
 		id: string,
 		change: Change<M>

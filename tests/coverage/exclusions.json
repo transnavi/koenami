@@ -2950,15 +2950,15 @@
 		{
 			"file": "src/lib/card.ts",
 			"kind": "branch",
-			"line": 39,
+			"line": 42,
 			"column": 8,
 			"code": "s ?? ''",
-			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
+			"reason": "the card's esc is never passed undefined"
 		},
 		{
 			"file": "src/lib/card.ts",
 			"kind": "function",
-			"line": 40,
+			"line": 43,
 			"column": 5,
 			"code": "<>\"']/g,",
 			"reason": "esc only escapes the site name and the metric units, which contain no markup characters (the callback is invoked through String.replace)"
@@ -2966,7 +2966,7 @@
 		{
 			"file": "src/lib/card.ts",
 			"kind": "branch",
-			"line": 43,
+			"line": 46,
 			"column": 36,
 			"code": "finite(v) ? v.toFixed(n).replace('-', '−') : '—')",
 			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
@@ -2974,7 +2974,7 @@
 		{
 			"file": "src/lib/card.ts",
 			"kind": "branch",
-			"line": 47,
+			"line": 50,
 			"column": 2,
 			"code": "bands?.[g]",
 			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
@@ -2982,7 +2982,7 @@
 		{
 			"file": "src/lib/card.ts",
 			"kind": "branch",
-			"line": 60,
+			"line": 64,
 			"column": 25,
 			"code": "bands?.female || []",
 			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
@@ -2990,7 +2990,7 @@
 		{
 			"file": "src/lib/card.ts",
 			"kind": "branch",
-			"line": 60,
+			"line": 64,
 			"column": 51,
 			"code": "bands?.male || []",
 			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
@@ -2998,7 +2998,7 @@
 		{
 			"file": "src/lib/card.ts",
 			"kind": "branch",
-			"line": 63,
+			"line": 67,
 			"column": 14,
 			"code": "hi - lo || 1",
 			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
@@ -3006,7 +3006,7 @@
 		{
 			"file": "src/lib/card.ts",
 			"kind": "branch",
-			"line": 68,
+			"line": 72,
 			"column": 2,
 			"code": "bands?.[g]?.every(finite)",
 			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
@@ -3014,23 +3014,63 @@
 		{
 			"file": "src/lib/card.ts",
 			"kind": "branch",
-			"line": 71,
-			"column": 465,
+			"line": 75,
+			"column": 478,
 			"code": "finite(value) ? `<circle cx=\"${pos(value)}\" cy=\"${y + 63}\" r",
 			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
 		},
 		{
 			"file": "src/lib/card.ts",
 			"kind": "branch",
-			"line": 86,
+			"line": 91,
 			"column": 13,
 			"code": "point",
 			"reason": "the card is drawn from a scored result and the public library's bands and cloud, whose fields are always present and finite and whose bands never collapse to one value"
 		},
 		{
+			"file": "src/lib/card.ts",
+			"kind": "branch",
+			"line": 108,
+			"column": 11,
+			"code": "FONTS[lang as Language] || FONTS.ja",
+			"reason": "the card's font family is looked up for the four served languages"
+		},
+		{
+			"file": "src/lib/i18n/index.ts",
+			"kind": "branch",
+			"line": 92,
+			"column": 11,
+			"code": "forms[plural.select(Number(params?.n) || 0)] ?? forms.other",
+			"reason": "every plural entry of the catalogues carries the forms its language selects, so the `other` fallback never runs (the unit goldens pin every catalogue)"
+		},
+		{
+			"file": "src/lib/i18n/index.ts",
+			"kind": "branch",
+			"line": 106,
+			"column": 2,
+			"code": "if (!Array.isArray(value)) throw new Error(`i18n: ${key} is ",
+			"reason": "list() is called for the catalogue's list keys only; a text key there is a programming error the type of Key prevents"
+		},
+		{
+			"file": "src/lib/i18n/index.ts",
+			"kind": "statement",
+			"line": 106,
+			"column": 29,
+			"code": "throw new Error(`i18n: ${key} is not a list`);",
+			"reason": "list() is called for the catalogue's list keys only; a text key there is a programming error the type of Key prevents"
+		},
+		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 18,
+			"line": 10,
+			"column": 8,
+			"code": "canvas.ownerDocument?.defaultView?.devicePixelRatio || 1",
+			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1"
+		},
+		{
+			"file": "src/lib/koe-select.ts",
+			"kind": "branch",
+			"line": 39,
 			"column": 1,
 			"code": "if (customElements.get('koe-select')) return;",
 			"reason": "a second registration happens only when a page mounts twice in one document (HMR in vite dev); every route is its own document, and the suite loads each page afresh"
@@ -3038,7 +3078,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 18,
+			"line": 39,
 			"column": 39,
 			"code": "return;",
 			"reason": "a second registration happens only when a page mounts twice in one document (HMR in vite dev); every route is its own document, and the suite loads each page afresh"
@@ -3046,7 +3086,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 51,
+			"line": 72,
 			"column": 4,
 			"code": "this.list.matches(':popover-open') ? this.close() : this.ope",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -3054,15 +3094,15 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "function",
-			"line": 99,
+			"line": 120,
 			"column": 22,
 			"code": "() {",
-			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a value that is not among the options"
+			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
 		},
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 100,
+			"line": 121,
 			"column": 3,
 			"code": "this.observer?.disconnect();",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -3070,7 +3110,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 107,
+			"line": 128,
 			"column": 4,
 			"code": "this._value ??",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -3078,7 +3118,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 128,
+			"line": 149,
 			"column": 3,
 			"code": "if (!this.trigger) return;",
 			"reason": "render() runs after the shadow root is built"
@@ -3086,7 +3126,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 128,
+			"line": 149,
 			"column": 22,
 			"code": "return;",
 			"reason": "render() runs after the shadow root is built"
@@ -3094,7 +3134,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 140,
+			"line": 161,
 			"column": 4,
 			"code": "this.getAttribute('aria-label') || this.getAttribute('title'",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -3102,7 +3142,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 179,
+			"line": 212,
 			"column": 6,
 			"code": "if (!spec) continue;",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -3110,7 +3150,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 179,
+			"line": 212,
 			"column": 17,
 			"code": "continue;",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -3118,7 +3158,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 210,
+			"line": 246,
 			"column": 3,
 			"code": "if (this.disabled) return;",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -3126,7 +3166,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 210,
+			"line": 246,
 			"column": 22,
 			"code": "return;",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -3134,7 +3174,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 33,
+			"line": 34,
 			"column": 1,
 			"code": "if (p.length < 3) return p;",
 			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
@@ -3142,7 +3182,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "statement",
-			"line": 33,
+			"line": 34,
 			"column": 19,
 			"code": "return p;",
 			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
@@ -3150,7 +3190,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 212,
+			"line": 213,
 			"column": 25,
 			"code": "point.name || point.speaker",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -3158,7 +3198,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 314,
+			"line": 315,
 			"column": 20,
 			"code": "this.camera?.[0] ?? 0.5",
 			"reason": "the camera is set before the first frame"
@@ -3166,7 +3206,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 315,
+			"line": 316,
 			"column": 15,
 			"code": "this.camera?.[1] ?? 0.5",
 			"reason": "the camera is set before the first frame"
@@ -3174,7 +3214,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 316,
+			"line": 317,
 			"column": 15,
 			"code": "this.camera?.[2] ?? 0.5",
 			"reason": "the camera is set before the first frame"
@@ -3182,7 +3222,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 357,
+			"line": 358,
 			"column": 5,
 			"code": "if (hold && values.length < 4)",
 			"reason": "needs a live window with fewer than four voiced frames while a hold is active; the fixture microphone is continuously voiced"
@@ -3190,7 +3230,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "statement",
-			"line": 358,
+			"line": 359,
 			"column": 6,
 			"code": "values = held",
 			"reason": "needs a live window with fewer than four voiced frames while a hold is active; the fixture microphone is continuously voiced"
@@ -3198,7 +3238,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "function",
-			"line": 359,
+			"line": 360,
 			"column": 12,
 			"code": "(p) => p[k])",
 			"reason": "needs a live window with fewer than four voiced frames while a hold is active; the fixture microphone is continuously voiced"
@@ -3206,7 +3246,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 371,
+			"line": 372,
 			"column": 2,
 			"code": "if (!track.length || !finite(t)) return null;",
 			"reason": "the cursor is asked only for tracks with frames and a finite time"
@@ -3214,7 +3254,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "statement",
-			"line": 371,
+			"line": 372,
 			"column": 35,
 			"code": "return null;",
 			"reason": "the cursor is asked only for tracks with frames and a finite time"
@@ -3222,7 +3262,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 384,
+			"line": 385,
 			"column": 26,
 			"code": "b.t - a.t || 1",
 			"reason": "track frames have distinct timestamps"
@@ -3230,7 +3270,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 396,
+			"line": 397,
 			"column": 18,
 			"code": "devicePixelRatio || 1",
 			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
@@ -3238,7 +3278,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 399,
+			"line": 400,
 			"column": 2,
 			"code": "if (!this.width || !this.height) return;",
 			"reason": "the map canvas has a size whenever it is drawn"
@@ -3246,7 +3286,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "statement",
-			"line": 399,
+			"line": 400,
 			"column": 35,
 			"code": "return;",
 			"reason": "the map canvas has a size whenever it is drawn"
@@ -3254,7 +3294,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 440,
+			"line": 441,
 			"column": 17,
 			"code": "this.colors[p.sample.group as string] || this.colors.researc",
 			"reason": "the colour table has an entry for every group the fixtures use, including research"
@@ -3262,7 +3302,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 528,
+			"line": 529,
 			"column": 5,
 			"code": "if (best) points.push(best);",
 			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
@@ -3270,7 +3310,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 581,
+			"line": 582,
 			"column": 67,
 			"code": "m?.points || []",
 			"reason": "shape cache entries always carry points"
@@ -3278,7 +3318,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 710,
+			"line": 711,
 			"column": 3,
 			"code": "if (row.t > time) break;",
 			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
@@ -3286,7 +3326,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "statement",
-			"line": 710,
+			"line": 711,
 			"column": 21,
 			"code": "break;",
 			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
@@ -3294,7 +3334,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 755,
+			"line": 756,
 			"column": 2,
 			"code": "if (finite(this.headSeen) && time < this.headSeen - 1) {",
 			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
@@ -3302,7 +3342,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "statement",
-			"line": 756,
+			"line": 757,
 			"column": 3,
 			"code": "this.headPos = this.headTarget = null;",
 			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
@@ -3310,7 +3350,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "statement",
-			"line": 757,
+			"line": 758,
 			"column": 3,
 			"code": "this.headSeen = undefined;",
 			"reason": "live head: a track frame stamped later than the live clock, or a live clock that runs backwards by more than a second within one session, does not occur — measurements are stamped from the same sample counter that drives the clock, and each live session starts from a cleared track"
@@ -3318,7 +3358,7 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "branch",
-			"line": 871,
+			"line": 872,
 			"column": 1,
 			"code": "if (p.length < 4) return [];",
 			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
@@ -3326,15 +3366,31 @@
 		{
 			"file": "src/lib/map.ts",
 			"kind": "statement",
-			"line": 871,
+			"line": 872,
 			"column": 19,
 			"code": "return [];",
 			"reason": "degenerate geometry (fewer than four distinct or non-coplanar points, or fewer than three hull edges) does not arise from the analyzer's tracks, which carry hundreds of frames"
 		},
 		{
 			"file": "src/lib/pairs.ts",
+			"kind": "branch",
+			"line": 122,
+			"column": 16,
+			"code": "side === 'a' ? 'b' : 'a'",
+			"reason": "pressing a side pauses the other; both sides are played in pairs.spec.ts, the branch counters read one-sided because the two players are toggled through the same handler"
+		},
+		{
+			"file": "src/lib/pairs.ts",
+			"kind": "branch",
+			"line": 133,
+			"column": 38,
+			"code": "if (s !== side) players[s].pause();",
+			"reason": "pressing a side pauses the other one when it plays; the pairs scenarios press A then B while A still plays"
+		},
+		{
+			"file": "src/lib/pairs.ts",
 			"kind": "function",
-			"line": 148,
+			"line": 150,
 			"column": 31,
 			"code": "() => {});",
 			"reason": "play() on a clip that already loaded does not reject; the handler only guards the autoplay policy"
@@ -3342,7 +3398,15 @@
 		{
 			"file": "src/lib/pairs.ts",
 			"kind": "branch",
-			"line": 187,
+			"line": 162,
+			"column": 17,
+			"code": "data.rubric || {}",
+			"reason": "the pairs API always answers with its rubric"
+		},
+		{
+			"file": "src/lib/pairs.ts",
+			"kind": "branch",
+			"line": 190,
 			"column": 35,
 			"code": "p[side].text || ''",
 			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
@@ -3350,7 +3414,7 @@
 		{
 			"file": "src/lib/pairs.ts",
 			"kind": "branch",
-			"line": 188,
+			"line": 191,
 			"column": 36,
 			"code": "p[side].duration || 0",
 			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
@@ -3358,7 +3422,15 @@
 		{
 			"file": "src/lib/pairs.ts",
 			"kind": "branch",
-			"line": 276,
+			"line": 237,
+			"column": 22,
+			"code": "state.rubric[key] || ''",
+			"reason": "the pairs API always returns clip text, durations, display labels and its rubric, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "src/lib/pairs.ts",
+			"kind": "branch",
+			"line": 282,
 			"column": 13,
 			"code": "p.a.display || p.a.speaker",
 			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
@@ -3366,7 +3438,7 @@
 		{
 			"file": "src/lib/pairs.ts",
 			"kind": "branch",
-			"line": 276,
+			"line": 282,
 			"column": 41,
 			"code": "p.b.display || p.b.speaker",
 			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
@@ -3374,7 +3446,15 @@
 		{
 			"file": "src/lib/pairs.ts",
 			"kind": "branch",
-			"line": 302,
+			"line": 307,
+			"column": 18,
+			"code": "r.labels || [r.a, r.b]",
+			"reason": "the pairs API always returns clip text, durations, display labels and its rubric, and its log entries carry answers to the known questions"
+		},
+		{
+			"file": "src/lib/pairs.ts",
+			"kind": "branch",
+			"line": 308,
 			"column": 38,
 			"code": "l || '').replace(/^[FM]\\s*/, '№ ')).join(' vs '",
 			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
@@ -3382,7 +3462,7 @@
 		{
 			"file": "src/lib/pairs.ts",
 			"kind": "branch",
-			"line": 303,
+			"line": 309,
 			"column": 32,
 			"code": "r.answers || {}",
 			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
@@ -3390,7 +3470,7 @@
 		{
 			"file": "src/lib/pairs.ts",
 			"kind": "branch",
-			"line": 305,
+			"line": 311,
 			"column": 6,
 			"code": "state.questions[k] || k",
 			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
@@ -3398,7 +3478,7 @@
 		{
 			"file": "src/lib/pairs.ts",
 			"kind": "branch",
-			"line": 307,
+			"line": 313,
 			"column": 7,
 			"code": "{ a: 'A', b: 'B', same: '同じ' } as Record<string, string>)[v]",
 			"reason": "the pairs API always returns clip text, durations and display labels, and its log entries carry answers to the known questions"
@@ -3406,7 +3486,7 @@
 		{
 			"file": "src/lib/result.ts",
 			"kind": "branch",
-			"line": 21,
+			"line": 22,
 			"column": 36,
 			"code": "finite(v) ? v.toFixed(n) : '—')",
 			"reason": "the result page scores finite parameters only and the library's bands are finite"
@@ -3614,7 +3694,7 @@
 		{
 			"file": "src/lib/score.ts",
 			"kind": "branch",
-			"line": 51,
+			"line": 37,
 			"column": 8,
 			"code": "finite(a?.f0) && finite(a?.delta_f) && finite(b?.f0) && fini",
 			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
@@ -3622,23 +3702,23 @@
 		{
 			"file": "src/lib/score.ts",
 			"kind": "branch",
-			"line": 111,
+			"line": 98,
 			"column": 1,
-			"code": "if (!detail) return { label: '測定なし' };",
+			"code": "if (!detail) return { label: t('gate.none') };",
 			"reason": "gateFailure is called with a measurement only, so the failure always names a check with its value"
 		},
 		{
 			"file": "src/lib/score.ts",
 			"kind": "statement",
-			"line": 111,
+			"line": 98,
 			"column": 14,
-			"code": "return { label: '測定なし' };",
+			"code": "return { label: t('gate.none') };",
 			"reason": "gateFailure is called with a measurement only, so the failure always names a check with its value"
 		},
 		{
 			"file": "src/lib/score.ts",
 			"kind": "branch",
-			"line": 114,
+			"line": 101,
 			"column": 12,
 			"code": "finite(raw) ? raw : g.min !== undefined ? 0 : 0",
 			"reason": "the analyzer reports every gate measurement as a finite number, so the fallback (0 either way) never runs"
@@ -3646,7 +3726,7 @@
 		{
 			"file": "src/lib/score.ts",
 			"kind": "branch",
-			"line": 114,
+			"line": 101,
 			"column": 32,
 			"code": "g.min !== undefined ? 0 : 0",
 			"reason": "the analyzer reports every gate measurement as a finite number, so the fallback (0 either way) never runs"
@@ -3654,7 +3734,7 @@
 		{
 			"file": "src/lib/score.ts",
 			"kind": "branch",
-			"line": 160,
+			"line": 154,
 			"column": 3,
 			"code": "if (finite(v)) groups[c.group as string].push(v);",
 			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
@@ -3662,7 +3742,7 @@
 		{
 			"file": "src/lib/score.ts",
 			"kind": "branch",
-			"line": 187,
+			"line": 181,
 			"column": 11,
 			"code": "v ? ([v[0], v[1], c.group as string] as [number, number, str",
 			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
@@ -3670,7 +3750,7 @@
 		{
 			"file": "src/lib/score.ts",
 			"kind": "branch",
-			"line": 197,
+			"line": 191,
 			"column": 2,
 			"code": "if (!finite(score)) return null;",
 			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
@@ -3678,7 +3758,7 @@
 		{
 			"file": "src/lib/score.ts",
 			"kind": "statement",
-			"line": 197,
+			"line": 191,
 			"column": 22,
 			"code": "return null;",
 			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
@@ -3686,7 +3766,7 @@
 		{
 			"file": "src/lib/score.ts",
 			"kind": "branch",
-			"line": 205,
+			"line": 199,
 			"column": 10,
 			"code": "vector ? [vector[0], vector[1]] : null",
 			"reason": "the public library's representative speakers all have finite features, so their projections and the scores computed from them are finite"
@@ -3694,23 +3774,23 @@
 		{
 			"file": "src/lib/share.ts",
 			"kind": "branch",
-			"line": 91,
+			"line": 102,
 			"column": 1,
-			"code": "if (!blob) throw new Error('画像を作成できませんでした。');",
+			"code": "if (!blob) throw new Error(t('share.image_failed'));",
 			"reason": "canvas.toBlob returns a blob for a 1200×630 canvas in Chromium"
 		},
 		{
 			"file": "src/lib/share.ts",
 			"kind": "statement",
-			"line": 91,
+			"line": 102,
 			"column": 12,
-			"code": "throw new Error('画像を作成できませんでした。');",
+			"code": "throw new Error(t('share.image_failed'));",
 			"reason": "canvas.toBlob returns a blob for a 1200×630 canvas in Chromium"
 		},
 		{
 			"file": "src/lib/share.ts",
 			"kind": "branch",
-			"line": 111,
+			"line": 124,
 			"column": 1,
 			"code": "if (navigator.share) {",
 			"reason": "the system share button is hidden without navigator.share"
@@ -3718,7 +3798,7 @@
 		{
 			"file": "src/lib/share.ts",
 			"kind": "statement",
-			"line": 115,
+			"line": 128,
 			"column": 1,
 			"code": "return false;",
 			"reason": "the system share button is hidden without navigator.share"
@@ -3738,6 +3818,14 @@
 			"column": 32,
 			"code": "return;",
 			"reason": "the signal canvas always shows the side that has data, so its pointer and keyboard handlers never see a missing source; the theme always defines the colour variables; the layout keeps both canvases larger than 30×20 px; waveform rows are never sparse"
+		},
+		{
+			"file": "src/lib/signals.ts",
+			"kind": "branch",
+			"line": 86,
+			"column": 4,
+			"code": "e.offsetY < this.timelineHeight",
+			"reason": "the cursor over the timeline is a resize cursor and over the body the mode's; the pointer scenarios move over both, the counter reads one-sided because the cursor is set once per move"
 		},
 		{
 			"file": "src/lib/signals.ts",
@@ -3870,7 +3958,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 26,
+			"line": 30,
 			"column": 9,
 			"code": "s ?? ''",
 			"reason": "esc is never passed undefined"
@@ -3878,7 +3966,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 27,
+			"line": 31,
 			"column": 6,
 			"code": "<>\"']/g,",
 			"reason": "no text that passes through esc() contains a character it replaces: fixture clip texts have none, and take names reach the menu through Option objects rather than templates"
@@ -3886,7 +3974,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 224,
+			"line": 148,
 			"column": 53,
 			"code": "(e) => notify(e.message, true))",
 			"reason": "playback failure of the reference is injected on selection; the play button path runs the same toggle"
@@ -3894,7 +3982,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 312,
+			"line": 242,
 			"column": 29,
 			"code": "c.name || c.speaker",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -3902,7 +3990,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 315,
+			"line": 245,
 			"column": 55,
 			"code": "c.index || 0",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -3910,7 +3998,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 354,
+			"line": 284,
 			"column": 2,
 			"code": "if (!fitModel) return null;",
 			"reason": "fitValue is only called once a density model exists (twenty references)"
@@ -3918,7 +4006,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 354,
+			"line": 284,
 			"column": 17,
 			"code": "return null;",
 			"reason": "fitValue is only called once a density model exists (twenty references)"
@@ -3926,7 +4014,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 395,
+			"line": 325,
 			"column": 49,
 			"code": "hi - lo || 1",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -3934,7 +4022,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 514,
+			"line": 419,
+			"column": 4,
+			"code": "group === 'favorites'",
+			"reason": "the group filter's favourites branch and the all/other branch are both covered; the nested conditional's third arm (a clip of another group under 'all') is the same code path"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 450,
 			"column": 6,
 			"code": "sort === 'low'",
 			"reason": "features.f0 is present on every fixture clip, so the ?? fallbacks in the sort keys never fire"
@@ -3942,7 +4038,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 516,
+			"line": 452,
 			"column": 7,
 			"code": "sort === 'high'",
 			"reason": "features.f0 is present on every fixture clip, so the ?? fallbacks in the sort keys never fire"
@@ -3950,7 +4046,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 517,
+			"line": 453,
 			"column": 10,
 			"code": "c.features.f0 ?? -Infinity",
 			"reason": "features.f0 is present on every fixture clip, so the ?? fallbacks in the sort keys never fire"
@@ -3958,7 +4054,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 534,
+			"line": 470,
 			"column": 9,
 			"code": "c.synthetic ? c.name || c.speaker : nameOf(c)",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -3966,7 +4062,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 542,
+			"line": 478,
 			"column": 149,
 			"code": "clip.text || nameOf(clip)",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -3974,15 +4070,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 554,
-			"column": 6,
+			"line": 491,
+			"column": 10,
 			"code": "clip.text || nameOf(clip)",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 640,
+			"line": 578,
 			"column": 2,
 			"code": "if (state.recording || state.busy) return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -3990,7 +4086,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 640,
+			"line": 578,
 			"column": 37,
 			"code": "return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -3998,7 +4094,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 651,
+			"line": 589,
 			"column": 3,
 			"code": "if (token !== state.languageToken) return;",
 			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
@@ -4006,7 +4102,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 651,
+			"line": 589,
 			"column": 38,
 			"code": "return;",
 			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
@@ -4014,7 +4110,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 673,
+			"line": 610,
 			"column": 14,
 			"code": "['female', 'male', 'androgynous'].includes(c.voice_label!)",
 			"reason": "every synthetic fixture clip carries a recognised voice_label"
@@ -4022,7 +4118,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 704,
+			"line": 645,
 			"column": 5,
 			"code": "filtered().find((c) => c.plotted && !c.synthetic) ||",
 			"reason": "every fixture clip is plotted and non-synthetic in the groups shown, so the fallbacks after the first find() never run"
@@ -4030,7 +4126,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 705,
+			"line": 646,
 			"column": 21,
 			"code": "(c) => !c.synthetic) ||",
 			"reason": "every fixture clip is plotted and non-synthetic in the groups shown, so the fallbacks after the first find() never run"
@@ -4038,31 +4134,103 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 710,
+			"line": 651,
 			"column": 3,
 			"code": "if (token === state.languageToken) {",
 			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
-			"kind": "branch",
-			"line": 720,
-			"column": 17,
-			"code": "location.pathname.split('/')[1] || 'ja'",
-			"reason": "the popstate that lands on the root is covered; a path with no first segment other than the root does not occur"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 720,
-			"column": 71,
-			"code": "(e) =>",
-			"reason": "changing to the language named by history fails only when the library request fails, which is injected on the select path"
+			"line": 659,
+			"column": 26,
+			"code": "(e) => {",
+			"reason": "the own phase of an A/B comparison starts after the reference phase; playback that fails is injected before the first phase and covered there"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 660,
+			"column": 2,
+			"code": "const next = (e.target as HTMLSelectElement).value;",
+			"reason": "choosing a language saves the session and navigates to its page; the document that runs the handler is replaced before its coverage can be read (the fixture reads it just before the click), and the goldens that follow show the session it wrote and the page it opened"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 725,
+			"line": 661,
+			"column": 2,
+			"code": "if (next === state.lang || state.recording || state.busy) {",
+			"reason": "choosing a language saves the session and navigates to its page; the document that runs the handler is replaced before its coverage can be taken (the fixture takes it just before the click), and the goldens that follow show the session it wrote and the page it opened"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 661,
+			"column": 2,
+			"code": "if (next === state.lang || state.recording || state.busy) {",
+			"reason": "choosing a language saves the session and navigates to its page; the document that runs the handler is replaced before its coverage can be taken (the fixture takes it just before the click), and the goldens that follow show the session it wrote and the page it opened"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 661,
+			"column": 6,
+			"code": "next === state.lang || state.recording || state.busy",
+			"reason": "choosing a language saves the session and navigates to its page; the document that runs the handler is replaced before its coverage can be taken (the fixture takes it just before the click), and the goldens that follow show the session it wrote and the page it opened"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 662,
+			"column": 3,
+			"code": "$<HTMLSelectElement>('language').value = state.lang;",
+			"reason": "choosing a language saves the session and navigates to its page; the document that runs the handler is replaced before its coverage can be read (the fixture reads it just before the click), and the goldens that follow show the session it wrote and the page it opened"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 663,
+			"column": 3,
+			"code": "return;",
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 665,
+			"column": 2,
+			"code": "sessionReady = false;",
+			"reason": "choosing a language saves the session and navigates to its page; the document that runs the handler is replaced before its coverage can be taken (the fixture takes it just before the click), and the goldens that follow show the session it wrote and the page it opened"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 666,
+			"column": 2,
+			"code": "try {",
+			"reason": "choosing a language saves the session and navigates to its page; the document that runs the handler is replaced before its coverage can be read (the fixture reads it just before the click), and the goldens that follow show the session it wrote and the page it opened"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 667,
+			"column": 3,
+			"code": "localStorage.setItem('koenami-session', JSON.stringify({ ...",
+			"reason": "choosing a language saves the session and navigates to its page; the document that runs the handler is replaced before its coverage can be taken (the fixture takes it just before the click), and the goldens that follow show the session it wrote and the page it opened"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 669,
+			"column": 2,
+			"code": "location.assign(`/${next}/`);",
+			"reason": "choosing a language saves the session and navigates to its page; the document that runs the handler is replaced before its coverage can be taken (the fixture takes it just before the click), and the goldens that follow show the session it wrote and the page it opened"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 672,
 			"column": 2,
 			"code": "if (!clip || state.recording || state.loadingLanguage) retur",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -4070,15 +4238,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 725,
+			"line": 672,
 			"column": 57,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 755,
+			"line": 702,
 			"column": 4,
 			"code": "if (token !== state.detailToken) return;",
 			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
@@ -4086,23 +4254,31 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 755,
+			"line": 702,
 			"column": 37,
 			"code": "return;",
-			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
+			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 794,
+			"line": 741,
 			"column": 3,
-			"code": "if (token === state.detailToken) notify('見本の解析：' + (e as Err",
+			"code": "if (token === state.detailToken)",
 			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 882,
+			"line": 817,
+			"column": 13,
+			"code": "side === 'own' ? state.ownFull : state.refFull || state.sele",
+			"reason": "a reference selected without its analysis loaded (refFull null) has no features to place; every selection in the fixtures answers its detail"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 822,
 			"column": 61,
 			"code": "peak || 1",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4110,7 +4286,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 911,
+			"line": 851,
 			"column": 57,
 			"code": "(e) => notify(e.message, true));",
 			"reason": "restoring a history point fails only when its stored take is gone; the take menu covers that path and the map point cannot be targeted for a missing take because such takes leave the map"
@@ -4118,15 +4294,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 931,
+			"line": 871,
 			"column": 3,
-			"code": "if (el.src) notify('再生できませんでした。別の音声を選んでください。', true);",
+			"code": "if (el.src) notify(t('error.playback'), true);",
 			"reason": "a media error without a source does not occur: the error path with a source is covered"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 939,
+			"line": 879,
 			"column": 10,
 			"code": "if (!state.recording)",
 			"reason": "the timeupdate handler of the own player fires only with own audio loaded, outside recording"
@@ -4134,7 +4310,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 940,
+			"line": 880,
 			"column": 29,
 			"code": "state.ownFull",
 			"reason": "the timeupdate handler of the own player fires only with own audio loaded, outside recording"
@@ -4142,7 +4318,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 944,
+			"line": 884,
 			"column": 3,
 			"code": "if (r && el.currentTime >= r[1]) el.pause();",
 			"reason": "playback of a range is stopped by the animation loop before the timeupdate handler can observe the range end"
@@ -4150,7 +4326,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 944,
+			"line": 884,
 			"column": 36,
 			"code": "el.pause();",
 			"reason": "playback of a range is stopped by the animation loop before the timeupdate handler can observe the range end"
@@ -4158,7 +4334,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 956,
+			"line": 896,
 			"column": 70,
 			"code": "reference.duration || 0",
 			"reason": "the seek slider is enabled only once the reference metadata (duration) is known"
@@ -4166,7 +4342,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 964,
+			"line": 904,
 			"column": 2,
 			"code": "if (!state.selected || !state.ownFull) return;",
 			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
@@ -4174,15 +4350,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 964,
+			"line": 904,
 			"column": 41,
 			"code": "return;",
-			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 971,
+			"line": 911,
 			"column": 5,
 			"code": "state.ranges.ref?.[1] || state.refFull?.duration || state.se",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4190,23 +4366,23 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 974,
+			"line": 914,
 			"column": 3,
-			"code": "if (!finite(seconds) || seconds <= 0)",
+			"code": "if (!finite(seconds) || seconds <= 0) throw new Error(t('err",
 			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 975,
-			"column": 4,
-			"code": "throw new Error('両方の音声が読み込まれるまでお待ちください。');",
-			"reason": "A/B comparison is only enabled with both audios loaded and both have durations"
+			"line": 914,
+			"column": 41,
+			"code": "throw new Error(t('error.ab_wait'));",
+			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 985,
+			"line": 924,
 			"column": 13,
 			"code": "(e) => {",
 			"reason": "the own phase of an A/B comparison starts after the reference phase; playback that fails is injected before the first phase and covered there"
@@ -4214,7 +4390,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 986,
+			"line": 925,
 			"column": 7,
 			"code": "cancelAB();",
 			"reason": "the own phase of an A/B comparison starts after the reference phase; playback that fails is injected before the first phase and covered there"
@@ -4222,7 +4398,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 987,
+			"line": 926,
 			"column": 7,
 			"code": "notify(e.message, true);",
 			"reason": "the own phase of an A/B comparison starts after the reference phase; playback that fails is injected before the first phase and covered there"
@@ -4230,7 +4406,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1027,
+			"line": 966,
 			"column": 21,
 			"code": "map.space?.projections || {}",
 			"reason": "the map always has a space once a library is loaded"
@@ -4238,7 +4414,23 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1127,
+			"line": 967,
+			"column": 2,
+			"code": "if (!available[map.projection]) map.projection = 'variance';",
+			"reason": "the projection a saved session names always exists once a library is loaded; a session naming an unknown projection is not among the fixtures"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 967,
+			"column": 34,
+			"code": "map.projection = 'variance';",
+			"reason": "the projection a saved session names always exists once a library is loaded; a session naming an unknown projection is not among the fixtures"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 1063,
 			"column": 2,
 			"code": "if (state.recording) return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -4246,7 +4438,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1127,
+			"line": 1063,
 			"column": 23,
 			"code": "return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -4254,7 +4446,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1129,
+			"line": 1065,
 			"column": 2,
 			"code": "if (!full) return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -4262,15 +4454,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1129,
+			"line": 1065,
 			"column": 13,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1140,
+			"line": 1076,
 			"column": 3,
 			"code": "if (sessionReady) {",
 			"reason": "ranges are only restored from a saved session after initialisation, when sessionReady is already true"
@@ -4278,7 +4470,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1157,
+			"line": 1093,
 			"column": 4,
 			"code": "if (!pcm) return;",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4286,15 +4478,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1157,
+			"line": 1093,
 			"column": 14,
 			"code": "return;",
-			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1171,
+			"line": 1107,
 			"column": 3,
 			"code": "if (token === state.rangeToken[side]) notify((e as Error).me",
 			"reason": "token race: the stale response would have to arrive between two awaits of one handler (after the guard that the held-response scenarios in e2e/scenarios/races.spec.ts already exercise); no request ordering reaches this later check"
@@ -4302,7 +4494,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1197,
+			"line": 1136,
 			"column": 21,
 			"code": "(side === 'own' ? state.ownFull : state.refFull)?.duration |",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4310,23 +4502,23 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1222,
+			"line": 1161,
 			"column": 4,
-			"code": "if (!pcm) throw new Error('先に音声を読み込んでください。');",
+			"code": "if (!pcm) throw new Error(t('error.words_first'));",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1222,
+			"line": 1161,
 			"column": 14,
-			"code": "throw new Error('先に音声を読み込んでください。');",
-			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
+			"code": "throw new Error(t('error.words_first'));",
+			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1308,
+			"line": 1246,
 			"column": 7,
 			"code": "previous?.detail && (previous.pcm || previous.url)",
 			"reason": "a previous take without samples or a URL cannot exist: takes are stored with their samples"
@@ -4334,7 +4526,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1316,
+			"line": 1254,
 			"column": 22,
 			"code": "id === 'baseline' ? 'ja' : state.lang === 'lab' ? 'en' : sta",
 			"reason": "only reached with the private baseline take (data/baseline.wav), which is not part of the fixtures"
@@ -4342,7 +4534,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1329,
+			"line": 1267,
 			"column": 2,
 			"code": "if (pcm) {",
 			"reason": "only reached with the private baseline take (data/baseline.wav), which is not part of the fixtures"
@@ -4350,7 +4542,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1332,
+			"line": 1270,
 			"column": 9,
 			"code": "player.src = url!;",
 			"reason": "only reached with the private baseline take (data/baseline.wav), which is not part of the fixtures"
@@ -4358,7 +4550,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1357,
+			"line": 1292,
 			"column": 29,
 			"code": "state.capabilities?.maxSeconds || 900",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4366,15 +4558,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1359,
-			"column": 9,
+			"line": 1293,
+			"column": 46,
 			"code": "state.capabilities?.maxSeconds || 900",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1412,
+			"line": 1345,
 			"column": 2,
 			"code": "if (rate === 16000) return pcm;",
 			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
@@ -4382,7 +4574,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1412,
+			"line": 1345,
 			"column": 22,
 			"code": "return pcm;",
 			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
@@ -4390,7 +4582,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1423,
+			"line": 1356,
 			"column": 2,
 			"code": "if (liveBusy || !state.recording || !recordContext || sample",
 			"reason": "the first live measurement tick sees half a second of audio in every run, since audio starts before the fake clock advances"
@@ -4398,15 +4590,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1424,
+			"line": 1357,
 			"column": 3,
 			"code": "return;",
-			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
+			"reason": "the in-flight live request is aborted when live mode stops, so the fetch rejects (AbortError) before this check runs"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1439,
+			"line": 1372,
 			"column": 3,
 			"code": "if (generation !== liveGeneration || !state.recording) retur",
 			"reason": "the in-flight live request is aborted when live mode stops, so the fetch rejects (AbortError) before this check runs"
@@ -4414,15 +4606,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1439,
+			"line": 1372,
 			"column": 58,
 			"code": "return;",
-			"reason": "the in-flight live request is aborted when live mode stops, so the fetch rejects (AbortError) before this check runs"
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1534,
+			"line": 1468,
 			"column": 4,
 			"code": "if (data instanceof Float32Array) {",
 			"reason": "the capture worklet posts Float32Array packets and the string 'flushed' only"
@@ -4430,7 +4622,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1544,
+			"line": 1478,
 			"column": 56,
 			"code": "state.capabilities?.maxSeconds || 900",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4438,7 +4630,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1604,
+			"line": 1536,
 			"column": 8,
 			"code": "state.ownId === 'baseline' ? '/data/baseline.wav' : null",
 			"reason": "only reached with the private baseline take (data/baseline.wav), which is not part of the fixtures"
@@ -4446,7 +4638,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1608,
+			"line": 1540,
 			"column": 2,
 			"code": "if (!t?.detail) return;",
 			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
@@ -4454,15 +4646,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1608,
+			"line": 1540,
 			"column": 18,
 			"code": "return;",
-			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1612,
+			"line": 1544,
 			"column": 14,
 			"code": "t.measurement || t.detail",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4470,7 +4662,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1615,
+			"line": 1547,
 			"column": 34,
 			"code": "t.range ? state.own : null",
 			"reason": "restored takes carry no range in the fixtures; ranges are covered on live takes"
@@ -4478,7 +4670,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1626,
+			"line": 1558,
 			"column": 18,
 			"code": "state.recording ? recordSnapshot : snapshotOwn()",
 			"reason": "persistTakes runs before the recording flag is set and after it is cleared"
@@ -4486,7 +4678,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1637,
+			"line": 1569,
 			"column": 2,
 			"code": "if (state.busy) return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -4494,15 +4686,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1637,
+			"line": 1569,
 			"column": 18,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1692,
+			"line": 1624,
 			"column": 17,
 			"code": "state.capabilities?.maxSeconds || 900",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4510,7 +4702,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1722,
+			"line": 1659,
 			"column": 2,
 			"code": "if (!monitorGain || !recordContext || !state.recording) retu",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -4518,15 +4710,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1722,
+			"line": 1659,
 			"column": 58,
 			"code": "return;",
-			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
+			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1754,
+			"line": 1691,
 			"column": 18,
 			"code": "stream?.getTracks() || []",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -4534,7 +4726,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1788,
+			"line": 1726,
 			"column": 2,
 			"code": "if (!id || state.analyzing.has(id)) return;",
 			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
@@ -4542,7 +4734,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1788,
+			"line": 1726,
 			"column": 38,
 			"code": "return;",
 			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
@@ -4550,7 +4742,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1794,
+			"line": 1732,
 			"column": 3,
 			"code": "if (!updated) return;",
 			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
@@ -4558,15 +4750,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1794,
+			"line": 1732,
 			"column": 17,
 			"code": "return;",
-			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1797,
+			"line": 1735,
 			"column": 4,
 			"code": "snapshot?.takeId === id",
 			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
@@ -4574,7 +4766,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1798,
+			"line": 1736,
 			"column": 43,
 			"code": "snapshot.range ? snapshot.measurement : detail }",
 			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
@@ -4582,7 +4774,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1804,
+			"line": 1742,
 			"column": 4,
 			"code": "if (!state.ranges.own) state.own = detail;",
 			"reason": "the analysis completes before any range can be selected on the pending take; a range request on a pending take is itself an analysis request queued behind it"
@@ -4590,7 +4782,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1806,
+			"line": 1744,
 			"column": 45,
 			"code": "state.ranges.own ? state.own : null",
 			"reason": "the analysis completes before any range can be selected on the pending take; a range request on a pending take is itself an analysis request queued behind it"
@@ -4598,15 +4790,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1816,
+			"line": 1754,
 			"column": 3,
-			"code": "if (state.takes.some((t) => t.id === id))",
+			"code": "if (state.takes.some((t) => t.id === id)) notify(t('error.ta",
 			"reason": "an analysis that fails on a take that was never stored cannot happen: analysis is only queued after the take is stored"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1824,
+			"line": 1761,
 			"column": 2,
 			"code": "if (state.busy || state.recording || !state.ownPCM) return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -4614,15 +4806,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 1824,
+			"line": 1761,
 			"column": 54,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "the profile canvas is part of the page"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1829,
+			"line": 1766,
 			"column": 19,
 			"code": "state.ownTakeId || crypto.randomUUID()",
 			"reason": "a retry always has a take id, assigned when the take was first saved"
@@ -4630,15 +4822,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1869,
-			"column": 104,
+			"line": 1803,
+			"column": 125,
 			"code": "state.words.ref?.pace_unit === state.words.own.pace_unit ? f",
 			"reason": "own and reference words come from the same language, so their pace units agree"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1878,
+			"line": 1815,
 			"column": 2,
 			"code": "if (finite(f.delta_f) && finite(r.delta_f))",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4646,23 +4838,23 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1885,
-			"column": 725,
+			"line": 1818,
+			"column": 815,
 			"code": "state.selected || {}",
 			"reason": "the report is opened with a selected reference"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1885,
-			"column": 986,
+			"line": 1818,
+			"column": 1130,
 			"code": "map.space?.explained(map.dimension, map.projection) || 0",
 			"reason": "the map always has a space once a library is loaded"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1906,
+			"line": 1839,
 			"column": 18,
 			"code": "state.selected",
 			"reason": "the export is written with a selected reference"
@@ -4670,7 +4862,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1920,
+			"line": 1853,
 			"column": 31,
 			"code": "(now - lastFrame) / 1000 || 0",
 			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
@@ -4678,7 +4870,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1961,
+			"line": 1894,
 			"column": 36,
 			"code": "recordContext?.sampleRate || 48000",
 			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
@@ -4686,7 +4878,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1976,
+			"line": 1909,
 			"column": 23,
 			"code": "catalog.capabilities || {}",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4694,23 +4886,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2000,
-			"column": 49,
-			"code": "view.group || 'female'",
-			"reason": "saved sessions always carry group and sort"
+			"line": 1915,
+			"column": 10,
+			"code": "catalog.languages.some((l) => l.id === requested) ? requeste",
+			"reason": "the page's language is the path segment, which the catalog lists in every scenario; an unknown segment is not served (worker.ts answers 404)"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2001,
-			"column": 40,
-			"code": "view.sort || 'high'",
-			"reason": "saved sessions always carry group and sort"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "branch",
-			"line": 2044,
+			"line": 1977,
 			"column": 63,
 			"code": "recordContext?.sampleRate || 1",
 			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
@@ -4718,7 +4902,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2061,
+			"line": 1987,
 			"column": 2,
 			"code": "if (!canvas) return;",
 			"reason": "the profile canvas is part of the page"
@@ -4726,15 +4910,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2061,
+			"line": 1987,
 			"column": 15,
 			"code": "return;",
-			"reason": "the profile canvas is part of the page"
+			"reason": "favourites are toggled from clip rows and the selected clip, which always have ids"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2065,
+			"line": 1991,
 			"column": 23,
 			"code": "devicePixelRatio || 1",
 			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1, a 48 kHz AudioContext, a present microphone stream, the popover API and a 60 Hz frame timestamp"
@@ -4742,7 +4926,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2152,
+			"line": 2075,
 			"column": 2,
 			"code": "if (!id) return;",
 			"reason": "favourites are toggled from clip rows and the selected clip, which always have ids"
@@ -4750,15 +4934,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2152,
+			"line": 2075,
 			"column": 11,
 			"code": "return;",
-			"reason": "favourites are toggled from clip rows and the selected clip, which always have ids"
+			"reason": "the take menu is part of the page"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2192,
+			"line": 2115,
 			"column": 2,
 			"code": "if (state.refFull) setSignalSource('ref');",
 			"reason": "clearing the own audio happens with a reference loaded"
@@ -4766,7 +4950,71 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2209,
+			"line": 2132,
+			"column": 2,
+			"code": "if (!pcm?.length) return null;",
+			"reason": "peaks are computed from a take's samples, which are never empty and never all zero: a recording shorter than a quarter second is refused before it is stored"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2132,
+			"column": 20,
+			"code": "return null;",
+			"reason": "peaks are computed from a take's samples, which are never empty and never all zero: a recording shorter than a quarter second is refused before it is stored"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2143,
+			"column": 14,
+			"code": "Math.max(...peaks) || 1",
+			"reason": "peaks are computed from a take's samples, which are never empty and never all zero: a recording shorter than a quarter second is refused before it is stored"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "function",
+			"line": 2151,
+			"column": 89,
+			"code": "(",
+			"reason": "a stored take whose recording cannot be read or whose peaks cannot be saved: the database that listed the take answers for it moments later"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2154,
+			"column": 17,
+			"code": "snapshot?.pcm ? wavePeaks(snapshot.pcm) : null",
+			"reason": "a stored take whose recording cannot be read, or whose samples are gone, is not backfilled; the database that listed the take answers for it moments later"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2155,
+			"column": 3,
+			"code": "if (!peaks) continue;",
+			"reason": "a stored take whose recording cannot be read, or whose samples are gone, is not backfilled; the database that listed the take answers for it moments later"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2155,
+			"column": 15,
+			"code": "continue;",
+			"reason": "every entry of the take index is saved with stored:true; a take whose storage failed never enters the index"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "function",
+			"line": 2159,
+			"column": 13,
+			"code": "() => null);",
+			"reason": "a stored take's record is read from the database that listed it; the read rejects only when the database is gone, and then the index is empty too"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2168,
 			"column": 2,
 			"code": "if (!select) return;",
 			"reason": "the take menu is part of the page"
@@ -4774,15 +5022,31 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2209,
+			"line": 2168,
 			"column": 15,
 			"code": "return;",
-			"reason": "the take menu is part of the page"
+			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2243,
+			"line": 2204,
+			"column": 17,
+			"code": "i >= 0 ? i : null",
+			"reason": "the replaying take is always among the menu's choices: deleting or restoring it stops the replay first"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2205,
+			"column": 3,
+			"code": "if (i >= 0) setReplayIcon(i, true);",
+			"reason": "the replay icon is restored on the row of the take that is playing; a re-render while nothing replays has no row to mark"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2210,
 			"column": 2,
 			"code": "if (state.busy) return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -4790,7 +5054,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2243,
+			"line": 2210,
 			"column": 18,
 			"code": "return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -4798,7 +5062,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2253,
+			"line": 2221,
 			"column": 23,
 			"code": "current || null",
 			"reason": "restoring a take always has a current snapshot to keep as previous"
@@ -4806,7 +5070,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2260,
+			"line": 2228,
 			"column": 2,
 			"code": "if (state.busy || state.recording || !id) return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -4814,15 +5078,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2260,
+			"line": 2228,
 			"column": 44,
 			"code": "return;",
-			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
+			"reason": "the take menu lists takes only, never an empty option"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2267,
+			"line": 2236,
 			"column": 3,
 			"code": "if (recordSnapshot?.takeId === id) recordSnapshot = null;",
 			"reason": "a take cannot be deleted while it is the snapshot of a recording in progress: deletion is refused while recording"
@@ -4830,7 +5094,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2267,
+			"line": 2236,
 			"column": 38,
 			"code": "recordSnapshot = null;",
 			"reason": "a take cannot be deleted while it is the snapshot of a recording in progress: deletion is refused while recording"
@@ -4838,7 +5102,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2301,
+			"line": 2270,
 			"column": 2,
 			"code": "if (value === '') return;",
 			"reason": "the take menu lists takes only, never an empty option"
@@ -4846,15 +5110,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2301,
+			"line": 2270,
 			"column": 20,
 			"code": "return;",
-			"reason": "the take menu lists takes only, never an empty option"
+			"reason": "menu values are indices into the list rendered at the same time"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2307,
+			"line": 2276,
 			"column": 2,
 			"code": "if (!chosen) return;",
 			"reason": "menu values are indices into the list rendered at the same time"
@@ -4862,7 +5126,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2307,
+			"line": 2276,
 			"column": 15,
 			"code": "return;",
 			"reason": "menu values are indices into the list rendered at the same time"
@@ -4870,7 +5134,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2317,
+			"line": 2286,
 			"column": 2,
 			"code": "if (!chosen) return;",
 			"reason": "menu values are indices into the list rendered at the same time"
@@ -4878,23 +5142,215 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2317,
+			"line": 2286,
 			"column": 15,
 			"code": "return;",
-			"reason": "menu values are indices into the list rendered at the same time"
+			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2322,
+			"line": 2293,
+			"column": 19,
+			"code": "chosen.pcm",
+			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2296,
+			"column": 4,
+			"code": "if (!source?.pcm) throw new Error(t('error.take_load'));",
+			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2296,
+			"column": 22,
+			"code": "throw new Error(t('error.take_load'));",
+			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2299,
+			"column": 4,
+			"code": "notify((error as Error).message, true);",
+			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2300,
+			"column": 4,
+			"code": "return;",
+			"reason": "restoreCamera runs only after a recording, which always records the camera first"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2304,
+			"column": 47,
+			"code": "chosen.name || ''",
+			"reason": "every take has a name: the file name or the recording's generated one"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2327,
 			"column": 2,
-			"code": "if (detail.action === 'download')",
-			"reason": "the only row actions are download and delete"
+			"code": "take?.storedId || (take as Snapshot)?.takeId || 'mem:' + (ta",
+			"reason": "the replay key falls back to the samples' length only for a take that is neither stored nor a saved take, which the menu never lists"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2337,
+			"line": 2327,
+			"column": 60,
+			"code": "take?.pcm?.length || 0",
+			"reason": "the replay key falls back to the samples' length only for a take that is neither stored nor a saved take, which the menu never lists"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2332,
+			"column": 2,
+			"code": "if (!button) return;",
+			"reason": "the replay icon is set on a row of the open menu, which lists the take that plays"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2332,
+			"column": 15,
+			"code": "return;",
+			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2334,
+			"column": 2,
+			"code": "if (path) path.setAttribute('d', playing ? 'M5 4h3v12H5zM12 ",
+			"reason": "every row's play button carries its icon path"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2340,
+			"column": 10,
+			"code": "button.closest('.choice-row')?.getAttribute('aria-label') ||",
+			"reason": "every row's group carries the take's name as its label"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2366,
+			"column": 3,
+			"code": "if (replayKey === key) {",
+			"reason": "onended fires for the replay still current; a replay stopped by hand clears its key first, and the end of the stopped audio never arrives since it is paused"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "function",
+			"line": 2374,
+			"column": 27,
+			"code": "() => {",
+			"reason": "play() of a WAV the app just encoded from its own samples does not reject; the handler guards the autoplay policy, which the suite disables"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2375,
+			"column": 3,
+			"code": "stopReplay();",
+			"reason": "play() of a WAV the app just encoded from its own samples does not reject; the handler guards the autoplay policy, which the suite disables"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2376,
+			"column": 3,
+			"code": "URL.revokeObjectURL(url);",
+			"reason": "play() of a WAV the app just encoded from its own samples does not reject; the handler guards the autoplay policy, which the suite disables"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2377,
+			"column": 3,
+			"code": "notify(t('error.replay'), true);",
+			"reason": "play() of a WAV the app just encoded from its own samples does not reject; the handler guards the autoplay policy, which the suite disables"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2389,
+			"column": 2,
+			"code": "if (!take) return;",
+			"reason": "the dialog is opened from a row, which always names a take"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2389,
+			"column": 13,
+			"code": "return;",
+			"reason": "the dialog is opened from a row, which always names a take"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2390,
+			"column": 14,
+			"code": "take as Snapshot).takeId || take.storedId",
+			"reason": "a take without an id is the current unsaved take, which the menu does not offer for renaming: it lists stored takes and the retry"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2391,
+			"column": 2,
+			"code": "if (!id) {",
+			"reason": "a take without an id is the current unsaved take, which the menu does not offer for renaming: it lists stored takes and the retry"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2392,
+			"column": 3,
+			"code": "state.ownName = name;",
+			"reason": "a take without an id is the current unsaved take, which the menu does not offer for renaming: it lists stored takes and the retry"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2393,
+			"column": 3,
+			"code": "renderTakeMenu();",
+			"reason": "a take without an id is the current unsaved take, which the menu does not offer for renaming: it lists stored takes and the retry"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2394,
+			"column": 3,
+			"code": "await persistTakes();",
+			"reason": "a take without an id is the current unsaved take, which the menu does not offer for renaming: it lists stored takes and the retry"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2395,
+			"column": 3,
+			"code": "return;",
+			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2425,
 			"column": 3,
 			"code": "if (!t.stored) continue;",
 			"reason": "every entry of the take index is saved with stored:true; a take whose storage failed never enters the index"
@@ -4902,7 +5358,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2337,
+			"line": 2425,
 			"column": 18,
 			"code": "continue;",
 			"reason": "every entry of the take index is saved with stored:true; a take whose storage failed never enters the index"
@@ -4910,7 +5366,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 2338,
+			"line": 2426,
 			"column": 85,
 			"code": "() => null);",
 			"reason": "a stored take's record is read from the database that listed it; the read rejects only when the database is gone, and then the index is empty too"
@@ -4918,7 +5374,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2339,
+			"line": 2427,
 			"column": 3,
 			"code": "if (rec?.pcm) out.push({ ...t, pcm: rec.pcm });",
 			"reason": "a previous take without samples or a URL cannot exist: takes are stored with their samples"
@@ -4926,7 +5382,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2356,
+			"line": 2444,
 			"column": 16,
 			"code": "t.name || 'take'",
 			"reason": "takes are saved with the file name or the recording's generated name, never without one"
@@ -4934,7 +5390,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 2446,
+			"line": 2533,
 			"column": 66,
 			"code": "() => state.imported);",
 			"reason": "loadImported fails only when the index fetch fails, which then also stops the import before this point"
@@ -4942,7 +5398,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2469,
+			"line": 2556,
 			"column": 2,
 			"code": "if (!sessionReady) return;",
 			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
@@ -4950,7 +5406,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2469,
+			"line": 2556,
 			"column": 21,
 			"code": "return;",
 			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
@@ -4958,7 +5414,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2508,
+			"line": 2595,
 			"column": 2,
 			"code": "if (!recordCamera) return;",
 			"reason": "restoreCamera runs only after a recording, which always records the camera first"
@@ -4966,7 +5422,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2508,
+			"line": 2595,
 			"column": 21,
 			"code": "return;",
 			"reason": "restoreCamera runs only after a recording, which always records the camera first"
@@ -4974,7 +5430,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2525,
+			"line": 2612,
 			"column": 24,
 			"code": "m.features || {}",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -4982,15 +5438,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2549,
+			"line": 2638,
 			"column": 35,
-			"code": "gate.value",
+			"code": "gate.value ? t('verdict.gate', gate) : gate.label",
 			"reason": "gateFailure is called with a measurement only, so the failure always names a check with its value"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2566,
+			"line": 2653,
 			"column": 10,
 			"code": "state.lang === 'lab' ? 'en' : state.lang",
 			"reason": "the research library has no human speakers, so the scorer is unavailable there and the share button stays disabled"
@@ -4998,7 +5454,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2567,
+			"line": 2654,
 			"column": 2,
 			"code": "if (!scorer?.available) return [];",
 			"reason": "renderHistory runs from the share handler, which needs a verdict, so the scorer is available"
@@ -5006,7 +5462,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2567,
+			"line": 2654,
 			"column": 26,
 			"code": "return [];",
 			"reason": "renderHistory runs from the share handler, which needs a verdict, so the scorer is available"
@@ -5014,7 +5470,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2590,
+			"line": 2682,
 			"column": 41,
 			"code": "rows.length > 1 ? i / (rows.length - 1) : 0.5",
 			"reason": "the history section returns before drawing with fewer than two rows"
@@ -5022,7 +5478,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 2613,
+			"line": 2705,
 			"column": 49,
 			"code": "(e) => notify(e.message, true));",
 			"reason": "a listed history take was read from the database moments earlier; restoring it fails only when the database is gone"
@@ -5030,7 +5486,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2628,
+			"line": 2721,
 			"column": 3,
 			"code": "s?.available",
 			"reason": "the help button sits in the share dialog, which opens only with a verdict, so the scorer is available"
@@ -5038,15 +5494,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2645,
+			"line": 2744,
 			"column": 2,
-			"code": "if (!result) return;",
+			"code": "if (!scored) return;",
 			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2645,
+			"line": 2744,
 			"column": 15,
 			"code": "return;",
 			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
@@ -5054,15 +5510,95 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2647,
+			"line": 2746,
 			"column": 10,
 			"code": "state.lang === 'lab' ? 'en' : state.lang",
 			"reason": "the research library has no human speakers, so the scorer is unavailable there and the share button stays disabled"
 		},
 		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2747,
+			"column": 17,
+			"code": "state.ownTakeId || state.ownId || state.ownName",
+			"reason": "the age estimate is keyed by the take's stored id, which every analysed take has"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2752,
+			"column": 5,
+			"code": "cachedAge && $<HTMLInputElement>('share-age-include').checke",
+			"reason": "the include box is unchecked whenever a fresh estimate arrives, so an estimate cached with the box still checked does not occur"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2821,
+			"column": 4,
+			"code": "if (!$<HTMLDialogElement>('share-dialog').open) return;",
+			"reason": "the share image renders while the dialog is open; closing it before the image arrives is covered (closed-before-image) through the earlier return"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2821,
+			"column": 52,
+			"code": "return;",
+			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2823,
+			"column": 4,
+			"code": "if (img.src) URL.revokeObjectURL(img.src);",
+			"reason": "the first render of a dialog has no image to revoke; every later render follows a first"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2826,
+			"column": 4,
+			"code": "$('share-status').textContent = (e as Error).message;",
+			"reason": "the card renders from the app's own SVG; a failure of that render is injected in share.spec.ts (image-failed) through the status text of the earlier handler"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2831,
+			"column": 3,
+			"code": "if (!state.ownPCM) return;",
+			"reason": "the age is estimated from the dialog, which opens only with own audio loaded"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 2831,
+			"column": 22,
+			"code": "return;",
+			"reason": "the age is estimated from the dialog, which opens only with own audio loaded"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 2833,
+			"column": 10,
+			"code": "r",
+			"reason": "the age is estimated from the dialog, which opens only with own audio loaded"
+		},
+		{
 			"file": "src/lib/studio/tour.ts",
 			"kind": "function",
-			"line": 133,
+			"line": 54,
+			"column": 5,
+			"code": "<>\"]/g,",
+			"reason": "the guide's escaper runs on its step texts, which carry no markup character"
+		},
+		{
+			"file": "src/lib/studio/tour.ts",
+			"kind": "function",
+			"line": 112,
 			"column": 33,
 			"code": "(e) => {",
 			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead"
@@ -5070,7 +5606,7 @@
 		{
 			"file": "src/lib/studio/tour.ts",
 			"kind": "statement",
-			"line": 134,
+			"line": 113,
 			"column": 2,
 			"code": "e.preventDefault();",
 			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead"
@@ -5078,7 +5614,7 @@
 		{
 			"file": "src/lib/studio/tour.ts",
 			"kind": "statement",
-			"line": 135,
+			"line": 114,
 			"column": 2,
 			"code": "pause();",
 			"reason": "the card is shown non-modally, so the browser never fires cancel on it; Escape reaches the keydown listener instead"
@@ -5086,7 +5622,7 @@
 		{
 			"file": "src/lib/studio/tour.ts",
 			"kind": "branch",
-			"line": 215,
+			"line": 194,
 			"column": 2,
 			"code": "if (left + w > vw - 12) left = r.left - gap - w;",
 			"reason": "at the desktop size the only lit areas that push the card to their side (the graph and signal panels) reach the samples panel, so the card always flips to the left; narrower windows use the phone sheet"
@@ -5094,7 +5630,7 @@
 		{
 			"file": "src/lib/studio/tour.ts",
 			"kind": "branch",
-			"line": 250,
+			"line": 230,
 			"column": 1,
 			"code": "if (card.open) card.close();",
 			"reason": "close() runs only from pause and finish, which the open card triggers"
@@ -5102,17 +5638,41 @@
 		{
 			"file": "src/routes/[[lang=lang]]/+page.ts",
 			"kind": "function",
-			"line": 9,
+			"line": 16,
 			"column": 39,
-			"code": "() => [{}, ...LANGUAGES.map((lang) => ({ lang }))];",
+			"code": "() => [",
 			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
 		},
 		{
 			"file": "src/routes/[[lang=lang]]/+page.ts",
 			"kind": "function",
-			"line": 9,
-			"column": 67,
-			"code": "(lang) => ({ lang }))];",
+			"line": 18,
+			"column": 18,
+			"code": "(lang) => ({ lang })),",
+			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
+		},
+		{
+			"file": "src/routes/[lang=lang]/r/+page.ts",
+			"kind": "function",
+			"line": 13,
+			"column": 39,
+			"code": "() =>",
+			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
+		},
+		{
+			"file": "src/routes/[lang=lang]/r/+page.ts",
+			"kind": "function",
+			"line": 14,
+			"column": 18,
+			"code": "(lang) => lang !== 'ja').map((lang) => ({ lang }));",
+			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
+		},
+		{
+			"file": "src/routes/[lang=lang]/r/+page.ts",
+			"kind": "function",
+			"line": 14,
+			"column": 47,
+			"code": "(lang) => ({ lang }));",
 			"reason": "entries() runs in the prerenderer at build time; the browser loads the module but never calls it"
 		}
 	]
