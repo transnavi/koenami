@@ -218,7 +218,10 @@ export function resultParams(
 	extra: { age?: number } = {}
 ): URLSearchParams {
 	const p = new URLSearchParams({ v: String(SCORE_VERSION), l: lang });
-	for (const k of METRIC_KEYS) p.set(PARAM[k], features[k].toFixed(METRIC_DIGITS[k] + 1));
+	// The features come from the analyzer's JSON, so a value is coerced before it is formatted.
+	for (const k of METRIC_KEYS)
+		// oxlint-disable-next-line typescript/no-unnecessary-type-conversion
+		p.set(PARAM[k], Number(features[k]).toFixed(METRIC_DIGITS[k] + 1));
 	if (finite(extra.age) && extra.age >= 5 && extra.age <= 100)
 		p.set('age', String(Math.round(extra.age)));
 	return p;
