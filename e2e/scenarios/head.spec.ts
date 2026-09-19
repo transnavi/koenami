@@ -55,14 +55,25 @@ test.describe('document heads', () => {
 			await studio.golden(`page-${name}`, { extra: { head: await page.evaluate(head) } });
 		});
 	}
-	for (const lang of ['ja', 'en', 'ko']) {
-		test(`the shared result in ${lang}`, async ({ page, studio }) => {
-			await studio.open(`/r?v=1&l=${lang}&f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86&age=27`);
+	// The result page in each language with a verdict, and the Japanese page with no
+	// measurements and with an unparsable one. This spec is the first to open `/r` in the
+	// run, so its coverage of the result module carries the block ranges of both the
+	// verdict path and the two early returns; a later document reads the module flat.
+	const results = [
+		['ja', '/r?v=1&l=ja&f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86&age=27'],
+		['en', '/r?v=1&l=en&f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86&age=27'],
+		['ko', '/r?v=1&l=ko&f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86&age=27'],
+		['ja-no-values', '/r?v=1&l=ja'],
+		['ja-unparsable', '/r?v=1&l=ja&f0=abc&df=1&hnr=1&bal=1&sp=1']
+	];
+	for (const [name, path] of results) {
+		test(`the shared result: ${name}`, async ({ page, studio }) => {
+			await studio.open(path);
 			await studio.until(
 				'!document.getElementById("result-image").hidden || document.getElementById("result-status").textContent.trim().length > 0'
 			);
 			await studio.tick(300);
-			await studio.golden(`result-${lang}`, { extra: { head: await page.evaluate(head) } });
+			await studio.golden(`result-${name}`, { extra: { head: await page.evaluate(head) } });
 		});
 	}
 });
