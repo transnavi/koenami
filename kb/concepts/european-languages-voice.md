@@ -53,6 +53,9 @@ A hub for the languages outside this vault's main English/Japanese/Chinese/Korea
 ## Russian
 - The ru Wikipedia article Голосовая терапия для трансгендерных людей names both голосовая терапия and голосовой тренинг [[wikipedia-ru-golosovaya-terapiya]].
 
+## Polish
+- In a survey of 200 Polish trans respondents who had completed or were completing transition, 21 had taken part in gender-affirming vocal therapy, a group whose voice-quality perception was significantly better than controls' on ten elements [[dabrowski2025]].
+
 ## Open questions
 - German and French care pathways are documented only through an expert-interview paper and a five-patient protocol — no controlled trial in either language.
 - The Turkish studies do not separate Turkish-specific phonetic factors (vowel inventory, pitch-accent behaviour) from universal ones [[voice-across-languages]].

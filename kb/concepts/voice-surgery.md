@@ -15,7 +15,10 @@ Procedures that raise pitch by shortening the vibrating folds (Wendler glottopla
 - Laser reduction glottoplasty: F0 132→198 Hz, VHI and TVQ improved, but jitter, shimmer and NHR increased and 32% wanted revision [[yilmaz2021]]; simulation shows anterior fixation raises F0 while loudness falls beyond ¼ fixation [[titze2020]].
 - Wendler glottoplasty F0 gains range 20–112 Hz; postoperative therapy and voice rest are stressed [[catani2024]]; Beijing series: F0 152.7→207.7 Hz, TVQMtF 89.9→50.4 [[zhang2023cn]]; Nanjing series (n = 296): +57.4 Hz, 94.3% satisfied [[sun2025]].
 - Japan: type IV thyroplasty has been the dominant procedure, tuned intraoperatively under local anaesthesia; SFF 133.8→237.8 Hz in 32 patients [[nakamura2007]] [[sanuki2007]]; paired with therapy [[kobayashi2022]]; anterior glottoplasty now compared with it, both exceeding 200 Hz [[hiroshiba2024]].
-- Masculinizing surgery is uncommon and thinly evidenced [[kalra2026]].
+- Tensioning glottoplasty, which combines anterior glottic shortening with anteriorly directed tensioning, raised mean F0 from 126.2 Hz to 241.2 Hz in 20 trans women measured one month after surgery [[birkent2026]].
+- Wendler glottoplasty held at a mean 18.63 months: F0 gains persisted and were comparable to cisgender female controls, while listeners still attributed the wrong gender significantly more often than for those controls, and, apart from a lasting improvement in the emotional domain of the VHI, voice-related quality of life scores fell below their short-term values [[rogalska2025]].
+- A Japanese patient reports about a month of near-total voice rest after Wendler glottoplasty at a Kyoto clinic, and a 230 Hz average two years later that still reads as male when she uses a masculine tone of voice [[note-eri-kyoto]].
+- Masculinizing surgery is uncommon and thinly evidenced: the literature on type III thyroplasty for vocal masculinisation is four studies covering 23 patients, with techniques and outcome measures varying substantially [[kalra2026]] [[rendon2026]].
 - Guidance on indications sits in [[coleman2022]] and [[davies2015]]; Japanese providers are listed on transnavi.jp/voice/.
 
 ## Contested or unclear

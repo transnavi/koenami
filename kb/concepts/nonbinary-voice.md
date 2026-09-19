@@ -15,6 +15,9 @@ Voices that are meant to be, or are heard as, neither clearly masculine nor femi
 - Gender-expansive listeners categorised sibilants differently from cisgender listeners, most for a non-binary synthetic voice [[hope2023]].
 - A large survey of TGD adults (40% non-binary) found hormone therapy and counselling associated with better voice-related outcomes [[shen2026]].
 - Scoring femininity and masculinity as separate scales, rather than one axis, is how Koenami and the 2025 review frame this [[rosi2025]].
+- The VENI, described as the only published questionnaire written exclusively for nonbinary clients, showed internal consistency α = 0.85 across 55 respondents and test–retest r = 0.89 in the 30 who retook it [[shefcik2025]].
+- Of 25 nonbinary patients presenting for voice care, 92% reported dissatisfaction with voice quality and none showed organic findings on videostroboscopy [[marshall2026]].
+- In four nonbinary clients completing twelve weeks of training, acoustic change and self-reported improvement moved independently, one participant improving both F0 and questionnaire scores and the other three showing mixed results [[chadwick2026]].
 
 ## Contested or unclear
 - Whether "androgynous" is a stable perceptual category or the absence of a decision.
