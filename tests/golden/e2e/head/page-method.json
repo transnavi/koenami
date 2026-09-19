@@ -1,0 +1,61 @@
+{
+ "url": "/method.html",
+ "title": "Koenami · 測定方法と出典",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "verdict": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "声の判定と共有"
+  },
+  "review": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "聴取レビュー"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-tour": {
+    "done": true
+   }
+  },
+  "idb": {}
+ },
+ "network": [],
+ "media": [],
+ "errors": [],
+ "head": [
+  "meta viewport: width=device-width,initial-scale=1",
+  "title: Koenami · 測定方法と出典",
+  "meta description: Koenamiの声の分布図の見方、高さ・響き・質感・明るさ・抑揚の測定方法、聴取レビュー、見本の音声の出典と利用条件。",
+  "link canonical: https://koe.transnavi.jp/method.html",
+  "meta og:site_name: Koenami",
+  "meta og:title: Koenami · 測定方法と出典",
+  "meta og:description: Koenamiの声の分布図の見方、高さ・響き・質感・明るさ・抑揚の測定方法、聴取レビュー、見本の音声の出典と利用条件。",
+  "meta og:type: article",
+  "meta og:locale: ja_JP",
+  "meta og:url: https://koe.transnavi.jp/method.html",
+  "meta og:image: https://koe.transnavi.jp/og-method.png",
+  "meta og:image:width: 1200",
+  "meta og:image:height: 630",
+  "meta og:image:alt: Koenami · 測定方法と出典",
+  "meta twitter:card: summary_large_image",
+  "meta twitter:title: Koenami · 測定方法と出典",
+  "meta twitter:description: Koenamiの声の分布図の見方、高さ・響き・質感・明るさ・抑揚の測定方法、聴取レビュー、見本の音声の出典と利用条件。",
+  "meta twitter:image: https://koe.transnavi.jp/og-method.png",
+  "ld+json: {\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://koe.transnavi.jp/#website\",\"url\":\"https://koe.transnavi.jp/\",\"name\":\"Koenami\",\"inLanguage\":\"ja\",\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://transnavi.jp/#organization\",\"name\":\"とらんすナビ\",\"url\":\"https://transnavi.jp/\",\"logo\":\"https://transnavi.jp/favicon.svg\"},{\"@type\":\"TechArticle\",\"@id\":\"https://koe.transnavi.jp/method.html#article\",\"url\":\"https://koe.transnavi.jp/method.html\",\"headline\":\"測定方法と出典\",\"name\":\"Koenami · 測定方法と出典\",\"description\":\"Koenamiの声の分布図の見方、高さ・響き・質感・明るさ・抑揚の測定方法、聴取レビュー、見本の音声の出典と利用条件。\",\"inLanguage\":\"ja\",\"mainEntityOfPage\":\"https://koe.transnavi.jp/method.html\",\"image\":\"https://koe.transnavi.jp/og-method.png\",\"author\":{\"@id\":\"https://transnavi.jp/#organization\"},\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"},\"isPartOf\":{\"@id\":\"https://koe.transnavi.jp/#website\"}},{\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Koenami\",\"item\":\"https://koe.transnavi.jp/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"測定方法と出典\",\"item\":\"https://koe.transnavi.jp/method.html\"}]}]}",
+  "link sitemap: /sitemap.xml",
+  "link manifest: /site.webmanifest"
+ ]
+}
