@@ -1,0 +1,547 @@
+{
+ "GET /": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 女声・男声のボイトレツール",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /ja": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 女声・男声のボイトレツール",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /ja/": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 女声・男声のボイトレツール",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /en": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · voice training for feminine and masculine voices",
+  "lang": "en",
+  "app": "kit"
+ },
+ "GET /en/": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · voice training for feminine and masculine voices",
+  "lang": "en",
+  "app": "kit"
+ },
+ "GET /zh-CN/": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 女声・男声练习工具",
+  "lang": "zh-CN",
+  "app": "kit"
+ },
+ "GET /ko/": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 여성 목소리・남성 목소리 연습 도구",
+  "lang": "ko",
+  "app": "kit"
+ },
+ "GET /EN/": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /fr/": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /lab/": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /index.html": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /ja/index.html": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /guide.html": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 使い方",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /method.html": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 測定方法と出典",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /tutorial.html": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 声のしくみと練習の手引き",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /references.html": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 参考文献",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /review.html": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /pairs.html": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /r": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 声の判定",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /r?v=1&l=ja&f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86&age=27": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 中間的な声（中間 +2）",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /r?v=1&l=en&f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · Voice in between (in the middle +9)",
+  "lang": "en",
+  "app": "kit"
+ },
+ "GET /r?v=1&l=xx&f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 声の判定",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /r?v=1&l=ja&f0=abc": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "Koenami · 声の判定",
+  "lang": "ja",
+  "app": "kit"
+ },
+ "GET /r.html": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /en/r.html": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /og.png?v=1&l=ja&f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86": {
+  "status": 200,
+  "content-type": "image/png",
+  "cache-control": "public, max-age=604800, immutable",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "bytes": "image"
+ },
+ "GET /og.png": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /site.webmanifest": {
+  "status": 200,
+  "content-type": "application/manifest+json",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "keys": "background_color,categories,description,display,display_override,icons,id,lang,name,orientation,scope,screenshots,short_name,start_url,theme_color",
+  "lang": "ja",
+  "start_url": "/"
+ },
+ "GET /en/site.webmanifest": {
+  "status": 200,
+  "content-type": "application/manifest+json",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "keys": "background_color,categories,description,display,display_override,icons,id,lang,name,orientation,scope,screenshots,short_name,start_url,theme_color",
+  "lang": "en",
+  "start_url": "/en/"
+ },
+ "GET /ja/site.webmanifest": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /service-worker.js": {
+  "status": 200,
+  "content-type": "text/javascript",
+  "cache-control": "no-cache",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /sw.js": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /language.js": {
+  "status": 200,
+  "content-type": "text/javascript",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /theme.js": {
+  "status": 200,
+  "content-type": "text/javascript",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /robots.txt": {
+  "status": 200,
+  "content-type": "text/plain",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /sitemap.xml": {
+  "status": 200,
+  "content-type": "application/xml",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /favicon.svg": {
+  "status": 200,
+  "content-type": "image/svg+xml",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /_app/": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /_app/version.json": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /_app/immutable/": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /assets/app.js": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /api/catalog": {
+  "status": 200,
+  "content-type": "application/json",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "keys": "capabilities,languages"
+ },
+ "GET /api/library?lang=ja": {
+  "status": 200,
+  "content-type": "application/json",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "keys": "clips,language"
+ },
+ "GET /api/library?lang=xx": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /api/health": {
+  "status": 200,
+  "content-type": "application/json",
+  "cache-control": "no-store",
+  "content-security-policy": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self'; frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "keys": "ok"
+ },
+ "GET /api/analyze": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /api/nope": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /public-api/ja.json": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /samples/": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /data/samples/": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /models/manifest.json": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /Dockerfile": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /server.py": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "GET /.env": {
+  "status": 404,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "HEAD /": {
+  "status": 200,
+  "content-type": "text/html",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-security-policy": "frame-ancestors 'none'",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "title": "",
+  "lang": "",
+  "app": "none"
+ },
+ "POST /api/analyze from another origin": {
+  "status": 403,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ },
+ "POST /api/analyze too short": {
+  "status": 400,
+  "content-type": "text/plain",
+  "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
+  "permissions-policy": "microphone=(self), camera=(), geolocation=()",
+  "referrer-policy": "strict-origin-when-cross-origin"
+ }
+}

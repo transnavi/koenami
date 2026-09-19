@@ -26,6 +26,7 @@
 		"format": "oxfmt",
 		"prepare": "svelte-kit sync || echo ''",
 		"deploy": "bun run build:public && wrangler deploy",
+		"check:live": "node --experimental-strip-types e2e/live/routes.ts https://koe.transnavi.jp",
 		"checkout:old": "node tests/scripts/checkout-old.mjs",
 		"test:unit": "vitest run --config tests/vitest.config.ts",
 		"test:unit:coverage": "vitest run --config tests/vitest.config.ts --coverage",
