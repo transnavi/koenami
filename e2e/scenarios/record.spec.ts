@@ -20,6 +20,40 @@ const live = {
 	ignore: ['indicators', 'fit-value', 'report-button', 'quality-state', 'live-mode', 'live-time']
 } as const;
 
+// What the audio mask hides, checked within bounds: the captured take's length and level.
+// The samples are 16 kHz mono; a worklet that dropped frames or mixed a channel wrongly
+// would pass the masked goldens and fail here. The cap makes an auto-stopped take exactly
+// two seconds; a manual stop lands between the stop threshold and the cap.
+const captured = (page: Page) =>
+	page.evaluate(() => {
+		const state = (
+			window as unknown as {
+				voiceApp: { state: { ownPCM: Float32Array; own?: { duration?: number } } };
+			}
+		).voiceApp.state;
+		const pcm = state.ownPCM;
+		let sum = 0,
+			peak = 0;
+		for (const x of pcm) {
+			sum += x * x;
+			peak = Math.max(peak, Math.abs(x));
+		}
+		return {
+			samples: pcm.length,
+			seconds: pcm.length / 16000,
+			rmsDb: 10 * Math.log10(sum / pcm.length),
+			peak
+		};
+	});
+const expectTake = (take: Awaited<ReturnType<typeof captured>>, seconds: [number, number]) => {
+	expect(take.seconds).toBeGreaterThanOrEqual(seconds[0]);
+	expect(take.seconds).toBeLessThanOrEqual(seconds[1]);
+	expect(take.rmsDb).toBeGreaterThan(-45);
+	expect(take.rmsDb).toBeLessThan(-3);
+	expect(take.peak).toBeGreaterThan(0.02);
+	expect(take.peak).toBeLessThanOrEqual(1);
+};
+
 test.describe('recording', () => {
 	test('record with R, stop, analyse in the background, and the take menu', async ({
 		page,
@@ -53,6 +87,7 @@ test.describe('recording', () => {
 		await studio.until(app.idle);
 		await studio.tick(1200);
 		await studio.golden('analysed', audio);
+		expectTake(await captured(page), [manualStop, 2]);
 		await expect(page.locator('#take-select')).toHaveAttribute('data-display-label', '録音 1');
 
 		// A second take while the first is still saved, then cancel a third with Escape.
@@ -111,6 +146,9 @@ test.describe('recording', () => {
 		await studio.until(app.idle);
 		await studio.tick(600);
 		await studio.golden('auto-stopped', audio);
+		const take = await captured(page);
+		expectTake(take, [2, 2]);
+		expect(take.samples).toBe(32000);
 	});
 
 	test('a failed analysis keeps the take and offers a retry', async ({ page, studio }) => {
