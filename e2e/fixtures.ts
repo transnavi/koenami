@@ -74,8 +74,10 @@ type Studio = {
 	audio: (name: string) => string;
 };
 
-async function install(page: Page) {
-	await page.addInitScript(() => {
+// The pixel ratio the page sees is the context's, pinned so that a system setting cannot
+// change what the canvases draw; the screens specs choose 1 or 2.
+async function install(page: Page, dpr: number) {
+	await page.addInitScript((dpr) => {
 		let uuid = 0;
 		crypto.randomUUID = () => `00000000-0000-4000-8000-${String(++uuid).padStart(12, '0')}`;
 		let seed = 0x2f6e2b1;
@@ -83,8 +85,8 @@ async function install(page: Page) {
 			seed = (seed * 1664525 + 1013904223) >>> 0;
 			return seed / 0x100000000;
 		};
-		Object.defineProperty(window, 'devicePixelRatio', { get: () => 1 });
-	});
+		Object.defineProperty(window, 'devicePixelRatio', { get: () => dpr });
+	}, dpr);
 	// Installed and paused: page time moves only through tick(), so Date.now(), timers
 	// and animation frames are identical on every run. The pause target sits a few
 	// seconds after the install time, which real time cannot have passed yet.
@@ -230,7 +232,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		{ auto: true }
 	],
 
-	studio: async ({ page }, use, info) => {
+	studio: async ({ page, deviceScaleFactor }, use, info) => {
 		const log: NetEntry[] = [];
 		const file = basename(info.file).replace(/\.spec\.ts$/, '');
 		const dir = join(goldenDir, file);
@@ -478,7 +480,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			options: { tour?: boolean } = {}
 		) => {
 			await flush();
-			await install(page);
+			await install(page, deviceScaleFactor ?? 1);
 			// The guide starts on every first visit; scenarios that are not about it skip it.
 			if (options.tour && tourSkipped)
 				throw new Error(
