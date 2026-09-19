@@ -270,7 +270,7 @@ export default {
 	'metric.hnr.label': 'Texture',
 	'metric.hnr.unit': 'dB',
 	'metric.hnr.description':
-		'The ratio of periodic to noise components in the voice (HNR). Breathiness and roughness lower it, but so does recording noise. It is not a measure of vocal weight.',
+		'The ratio of periodic to noise components in the voice (HNR). Breathiness and roughness lower it, and so does recording noise. It is not a direct measure of vocal weight.',
 	'metric.hnr.factors': [
 		'Breathiness (how the vocal folds close)',
 		'Roughness and rasp',
