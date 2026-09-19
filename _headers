@@ -1,0 +1,12 @@
+# The site's response headers; the adapter appends the immutable-cache rules of the
+# hashed files at build. The content security policy lives in svelte.config.js and is
+# written into every page as a meta tag with the hash of Kit's inline bootstrap script;
+# a policy header would need that hash too, so the header carries only the directive a
+# meta tag cannot (frame-ancestors).
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: microphone=(self), camera=(), geolocation=()
+  Content-Security-Policy: frame-ancestors 'none'
+/service-worker.js
+  Cache-Control: no-cache
