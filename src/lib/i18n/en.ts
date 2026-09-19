@@ -4,7 +4,7 @@ import type { Catalogue } from './ja';
 export default {
 	'page.title': 'Koenami · voice training for feminine and masculine voices',
 	'page.description':
-		'A free voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice, record while imitating it, and see your own voice in the same acoustic space, with the distance to the voice you are aiming for. Real-time measurement included.',
+		'A free voice training tool for transgender people, anyone working toward both a feminine and a masculine voice, and anyone who wants to try a voice they do not have yet. Pick a reference voice, record while imitating it, and see your own voice on the same map as the reference, with the distance to the voice you are aiming for. Real-time measurement is also available.',
 	'page.browser_requirements': 'A browser with microphone access',
 	'page.publisher': 'とらんすナビ',
 
@@ -13,8 +13,7 @@ export default {
 	'toolbar.share': 'Share the verdict',
 	'toolbar.settings': 'Settings',
 	'toolbar.info': 'Sources and related tools',
-	'toolbar.theme': 'Switch light and dark',
-
+	'toolbar.theme': 'Switch between light and dark',
 	'common.self': 'You',
 	'common.reference': 'Reference',
 	'common.close': 'Close',
@@ -35,21 +34,21 @@ export default {
 
 	'graph.aria': 'Voice comparison',
 	'graph.canvas_aria': 'Voice map. Scroll to zoom, drag to rotate, Shift+drag to pan.',
-	'graph.projection_variance': 'Principal',
+	'graph.projection_variance': 'Spread',
 	'graph.projection_variance_title':
-		'Axes follow the directions of greatest overall spread (principal component analysis). Feminine and masculine labels play no part.',
+		'Axes follow the directions of greatest overall spread (principal component analysis). The feminine and masculine labels are not used.',
 	'graph.projection_contrast': 'Contrast',
 	'graph.projection_contrast_title':
 		'The horizontal axis is the direction that separates feminine and masculine references the most, computed from the labeled references.',
 	'graph.auto_rotate': 'Auto-rotate',
-	'graph.auto_rotate_title': 'Toggle the 3D auto-rotation',
+	'graph.auto_rotate_title': 'Toggle 3D auto-rotation',
 	'graph.space_label': 'Voice map',
 	'graph.space_title': 'Principal component space of the five measurements',
 	'graph.space_title_contrast':
 		'Computed from the five measurements. The horizontal axis is the direction that separates feminine and masculine voices the most.',
 	'graph.zoom_in': 'Zoom in',
 	'graph.zoom_out': 'Zoom out',
-	'graph.find_me': 'Fit the view to the voices',
+	'graph.find_me': 'Fit all voices in view',
 	'graph.reset': 'Reset the view',
 	'group.female': 'Feminine voices',
 	'group.male': 'Masculine voices',
@@ -67,7 +66,7 @@ export default {
 	'signal.both': 'Overlay',
 	'signal.both_title': 'Stretch both to the same length and overlay them',
 	'signal.both_title_on':
-		'Each selection is stretched to 0–100% of its length. Word positions do not line up.',
+		'Each selection is shown on its own 0–100% scale, so word positions will not line up.',
 	'signal.words': 'Words',
 	'signal.words_title': 'Transcribe and split into words',
 	'signal.range_reset': 'Clear the selection',
@@ -98,7 +97,7 @@ export default {
 	'lab.weight': 'Weight',
 	'lab.weight_aria': "Teacher's vocal weight",
 	'lab.low': 'Low',
-	'lab.med': 'Middle',
+	'lab.med': 'Medium',
 	'lab.high': 'High',
 	'lab.light': 'Light',
 	'lab.heavy': 'Heavy',
@@ -109,12 +108,12 @@ export default {
 	'jvs.import': 'Import',
 	'jvs.added': { one: '{n} clip imported', other: '{n} clips imported' },
 	'jvs.cancelled': 'Import stopped. The clips imported so far are kept.',
-	'jvs.index_failed': 'The JVS index could not be fetched.',
+	'jvs.index_failed': 'The JVS index could not be loaded.',
 	'jvs.audio_missing': 'The JVS audio is missing. Import it again.',
 	'jvs.no_match':
 		'No matching JVS audio was found. Choose the official ZIP or the folder it unpacks to.',
 	'jvs.quota':
-		'Not enough storage. Choosing one speaker folder at a time imports a part of the corpus.',
+		"Not enough storage. Choose a single speaker's folder to import just part of the corpus.",
 	'jvs.size_mismatch': 'An audio file has an unexpected size.',
 	'jvs.hash_mismatch': 'A file does not match the official audio. Choose the official ZIP again.',
 
@@ -147,15 +146,15 @@ export default {
 	'takes.default_name': 'Recording {n}',
 	'live.label': 'Real-time',
 	'live.measuring': 'Measuring',
-	'live.title': 'Plot the microphone in real time',
+	'live.title': 'Show the microphone input in real time',
 	'live.start': 'Start real-time measurement',
 	'live.stop': 'Stop real-time measurement',
 	'live.stop_title': 'Stop real-time measurement (Esc)',
 	'loopback.aria': 'Hear your own voice',
 	'loopback.title': 'Hear your own voice (headphones recommended)',
-	'loopback.stop': 'Stop hearing your own voice',
+	'loopback.stop': 'Stop playing your voice back',
 	'speed.aria': 'Playback speed',
-	'speed.reset': 'Back to normal speed',
+	'speed.reset': 'Reset to normal speed',
 	'ab.title': 'Play the reference, then your voice',
 	'upload.title': 'Load an audio file',
 	'state.recording': 'Recording',
@@ -173,33 +172,31 @@ export default {
 	'import.progress_aria': 'JVS import',
 	'import.cancel': 'Stop',
 	'import.terms':
-		'Use of the audio follows the JVS terms. Imported references are stored in this browser.',
-
+		'The audio is subject to the JVS terms of use. Imported references are stored in this browser.',
 	'settings.heading': 'Settings',
-	'settings.theme': 'Colors',
+	'settings.theme': 'Appearance',
 	'theme.light': 'Light',
 	'theme.dark': 'Dark',
-	'theme.system': 'Follow the device',
+	'theme.system': 'System',
 	'settings.live_window': 'Real-time analysis window',
 	'settings.live_shape': 'Real-time trail length',
 	'settings.seconds': '{n} s',
-	'settings.normalize': 'Match playback volume',
+	'settings.normalize': 'Normalize playback volume',
 	'settings.export': 'Export measurements',
 	'settings.takes': 'Recordings',
 	'settings.download_all': 'Download all',
 	'settings.delete_all': 'Delete all',
 
 	'info.about1':
-		'A voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice and record while imitating it; your voice appears in the same acoustic space, and you can see how close you are to the voice you are aiming for. Real-time measurement shows which way your voice moves while you adjust it.',
+		'A voice training tool for transgender people, anyone working toward both a feminine and a masculine voice, and anyone who wants to try a voice they do not have yet. Pick a reference voice and record while imitating it; your voice appears on the same map as the reference, and you can see how close you are to the voice you are aiming for. In real-time mode you can watch your position move across the map as you speak, which shows you which way to take your voice.',
 	'info.about2':
 		'The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings stay in your browser.',
 	'info.guide': 'How to use (Japanese) ↗',
-	'info.tutorial': 'How the voice works, a practice guide (Japanese) ↗',
+	'info.tutorial': 'How the voice works and how to practise (Japanese) ↗',
 	'info.method': 'Method and sources (Japanese) ↗',
 	'info.references': 'References (Japanese) ↗',
 	'info.source': 'Source code (GitHub) ↗',
-	'info.colors': 'Colors follow',
-
+	'info.colors': 'Colors based on',
 	'rename.heading': 'Rename',
 	'rename.aria': 'Recording name',
 	'rename.empty': 'Enter a name.',
@@ -216,7 +213,7 @@ export default {
 	'share.age_running': 'Estimating…',
 	'share.age_include': 'Include in the image and link',
 	'share.age_note':
-		'A reference value from an age estimation model (audEERING). Whether it matches how old a Japanese voice, or a voice in training, sounds has not been checked. The audio is sent only for this estimate and is not stored.',
+		'A reference value from an age estimation model (audEERING). It has not been checked against how old Japanese voices, or voices in training, actually sound to listeners. The audio is sent only for this estimate and is not stored.',
 	'share.age_value': '{age} (4-second windows: {low}–{high})',
 	'share.age_years': 'about {n}',
 	'share.group_aria': 'Share the result',
@@ -231,10 +228,10 @@ export default {
 	'share.history_sub': 'recordings on this device',
 	'share.history_aria': 'Verdict of each recording over time',
 	'share.history_note':
-		'Older recordings did not store the verdict conditions (voiced duration and the rest), so they are shown without that check.',
+		'Older recordings did not store the verdict conditions (such as voiced duration), so they are shown without that check.',
 	'share.note':
 		'The link carries only the five measurements; the recording is not sent. <a href="/method.html" target="_blank" hreflang="ja">Method and sources</a> (Japanese) explains how to read the verdict.',
-	'share.unavailable': 'The references in this language cannot give a verdict',
+	'share.unavailable': 'No verdict is available for references in this language',
 	'share.text': 'My voice on Koenami: {verdict} ({leaning} {score})',
 	'share.image_failed': 'The image could not be created.',
 	'history.current': 'Shown',
@@ -257,7 +254,7 @@ export default {
 	'metric.delta_f.label': 'Resonance',
 	'metric.delta_f.unit': 'Hz ΔF',
 	'metric.delta_f.description':
-		'The formant spacing estimated from the first four formants. Larger values tend to go with a smaller vocal tract and a brighter sound. Vowels change it too, so the same words compare best.',
+		'The formant spacing estimated from the first four formants. Larger values tend to go with a shorter vocal tract and a brighter sound. Vowels change it too, so compare the same words.',
 	'metric.delta_f.factors': [
 		'Larynx height (raising it shortens the vocal tract and raises the value)',
 		'Mouth opening, tongue position and lip shape',
@@ -278,7 +275,7 @@ export default {
 	],
 	'metric.hnr.caveats': [
 		'Not a measure of vocal weight or thickness.',
-		'A reference recorded in a quiet room compared with your own noisy recording reads lower by the noise alone.'
+		'If you compare your own noisy recording against a reference recorded in a quiet room, yours reads lower by the noise alone.'
 	],
 	'metric.balance.label': 'Brightness',
 	'metric.balance.unit': 'dB',
@@ -341,7 +338,7 @@ export default {
 	'verdict.not_yet': 'No verdict yet',
 	'verdict.gate': '{label} {value} (needs {need})',
 	'verdict.female': 'Feminine voice',
-	'verdict.androgynous': 'Voice in between',
+	'verdict.androgynous': 'In-between voice',
 	'verdict.male': 'Masculine voice',
 	'leaning.female': 'leaning feminine',
 	'leaning.androgynous': 'in the middle',
@@ -349,7 +346,7 @@ export default {
 	'gate.voiced_seconds': 'Voiced speech',
 	'gate.formant_seconds': 'Stable resonance',
 	'gate.clipping_fraction': 'Clipping',
-	'gate.resonance_sensitivity_pct': 'Resonance estimate swing',
+	'gate.resonance_sensitivity_pct': 'Resonance estimate variability',
 	'gate.seconds': 's',
 	'gate.none': 'No measurement',
 	'gate.min': '{value} {unit} or more',
@@ -358,23 +355,23 @@ export default {
 	'report.pitch_sd_hz': 'Pitch standard deviation · Hz',
 	'report.pitch_sd_st': 'Pitch standard deviation · st',
 	'report.quiet_pct': 'Silence · %',
-	'report.quiet_mean': 'Mean silent stretch · s',
+	'report.quiet_mean': 'Mean pause · s',
 	'report.pace': 'Speaking rate · {unit}',
 	'report.note_pitch':
-		'The reference is {diff} semitones {direction} than you. Slow the playback down and try the same sentence at a pitch that stays comfortable.',
+		'The reference is {diff} semitones {direction} than your voice. Slow the playback down and try the same sentence at a comfortable pitch.',
 	'report.higher': 'higher',
 	'report.lower': 'lower',
 	'report.note_resonance':
-		'Estimated resonance: you {own}, reference {ref} Hz ΔF. Pick the same vowel or a short word and listen for the difference in resonance while holding the pitch.',
+		'Estimated resonance: you {own} Hz ΔF, reference {ref} Hz ΔF. Pick the same vowel or a short word and listen for the difference in resonance while keeping the pitch steady.',
 	'report.note_intonation':
 		'Intonation also depends on the language and the sentence. Read the same text and compare the accent, the sentence endings and the pauses.',
 	'report.distance_caption': 'Acoustic distance to the reference · 0 means equal',
 	'report.distance_note':
 		'A standardized distance across pitch, resonance, texture, brightness and intonation. It does not rate femininity or naturalness.',
 	'report.share':
-		'Difference between the two voices: {shown}% shown in the map · {omitted}% omitted',
+		'Difference between the two voices: {shown}% shown on the map · {omitted}% omitted',
 	'report.share_note':
-		'The squared five-dimensional difference, split into the directions the map shows and the ones it leaves out. Voices that overlap in the map can still differ in the omitted directions.',
+		'The squared difference across all five dimensions, split between the directions the map shows and those it leaves out. Voices that overlap on the map can still differ in the omitted directions.',
 	'report.col_metric': 'Measurement',
 	'report.col_own': 'You',
 	'report.col_ref': 'Reference',
@@ -382,9 +379,9 @@ export default {
 	'report.footer': '{name} · {duration} · reference {reference}',
 	'report.languages': 'Recording language {own} · reference language {ref}',
 	'report.density':
-		'Density rank within the {group} reference distribution: {percentile}th percentile (not a listener rating).',
+		'Density rank within the {group} references: {percentile} percentile (not a listener rating).',
 	'report.projection':
-		'The map projects five dimensions onto {dimension}. It shows {variance}% of the variance; the measurements on the left cover the omitted directions.',
+		'The map projects the five dimensions down to {dimension}, showing {variance}% of the variance. The measurements on the left cover the omitted directions.',
 	'report.file_title': 'Voice comparison',
 	'report.method_link': 'Research behind the measurements',
 
@@ -411,8 +408,8 @@ export default {
 	'error.mic_denied': 'Allow this page to use the microphone in the browser settings.',
 	'error.take_save': 'The recording could not be saved. Download any audio you need.',
 	'error.take_save_retry':
-		'The recording could not be saved. Download the audio, then check the storage space.',
-	'error.take_kept': 'The recording is kept. It can be analyzed again from the recordings menu.',
+		'The recording could not be saved. Download the audio, then check your storage space.',
+	'error.take_kept': 'The recording was kept. You can analyze it again from the recordings menu.',
 	'error.take_load': 'This recording could not be loaded.',
 	'error.take_delete': 'The recording could not be deleted. Try again.',
 	'error.no_takes': 'There are no saved recordings.',
@@ -495,11 +492,11 @@ export default {
 	'result.col_male': 'Masculine references',
 	'result.notes_heading': 'How to read this verdict',
 	'result.notes_p1':
-		"The number is the position of this voice's five measurements along the contrast direction computed from the reference speakers (the direction that separates feminine and masculine voices the most). On a linear scale, 0 is exactly halfway between the masculine and feminine medians, −50 is the masculine median and +50 the feminine median; the display runs from −100 to +100. +30 and above is called a feminine voice, −30 and below a masculine voice, and the range between a voice in between.",
+		"The number is the position of this voice's five measurements along the contrast direction computed from the reference speakers (the direction that separates feminine and masculine voices the most). On a linear scale, 0 is exactly halfway between the masculine and feminine medians, −50 is the masculine median and +50 the feminine median; the display runs from −100 to +100. +30 and above counts as a feminine voice, −30 and below as a masculine voice, and anything between the two as an in-between voice.",
 	'result.notes_p2':
 		'Either direction is a goal. Aim for + for a feminine voice, − for a masculine voice, and toward 0 for a voice that reads as neither.',
 	'result.notes_li1':
-		'It is a position computed from five acoustic measurements. How listeners hear the voice is not measured. The same person moves with the text, the delivery, the microphone and the room.',
+		"It is a position computed from five acoustic measurements; how listeners hear the voice is not measured. The same person's results move with the text, the delivery, the microphone and the room.",
 	'result.notes_li2':
 		'The reference distribution is not a population norm. References differ by language, so numbers do not compare across languages.',
 	'result.notes_li3':
@@ -509,7 +506,7 @@ export default {
 	'result.unavailable': 'This result cannot be shown',
 	'result.no_params': 'The link carries no measurements.',
 	'result.no_library': 'The reference library could not be loaded.',
-	'result.no_verdict': 'The references in this language cannot give a verdict.',
+	'result.no_verdict': 'No verdict is available for references in this language.',
 	'result.version_note':
 		'This link was made with verdict method v{from}. It has been recomputed with the current method (v{to}).',
 
