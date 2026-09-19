@@ -1016,6 +1016,7 @@
      "data": {
       "data-detail": "0:01",
       "data-actions": "play,rename,download,delete",
+      "data-key": "00000000-0000-4000-8000-000000000001",
       "data-peaks": "<audio>"
      }
     },

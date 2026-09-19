@@ -138,11 +138,18 @@ test.describe('recording history rows', () => {
 		await studio.until(app.ownName('朝の声') + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('renamed-current');
+		// Clicking away from the input commits it (focus leaves the row).
+		await editSelected();
+		await page.locator(renameInput).fill('昼の声');
+		await page.locator('#take-select button.trigger').click();
+		await studio.until(app.ownName('昼の声') + ' && ' + app.idle);
+		await studio.tick(200);
+		await studio.golden('rename-committed-on-blur');
 		// Escape leaves the name unchanged.
 		await editSelected();
 		await page.locator(renameInput).fill('捨てる');
 		await page.keyboard.press('Escape');
-		await studio.until(app.ownName('朝の声'));
+		await studio.until(app.ownName('昼の声'));
 		await studio.tick(100);
 		await studio.golden('rename-cancelled');
 		// Selecting the other take makes it current; then its name edits in place.
