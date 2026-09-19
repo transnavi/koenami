@@ -2736,6 +2736,38 @@
 			"column": 1,
 			"code": "if (import.meta.env.PROD && 'serviceWorker' in navigator)",
 			"reason": "the suite runs the production build in Chromium, where both conditions hold; the else path belongs to the dev server and to browsers without service workers"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 849,
+			"column": 3,
+			"code": "if ((e as DOMException).name !== 'AbortError') throw e;",
+			"reason": "play() rejects only when a pause() interrupts it before it starts; the paused test clock resolves play() first, so the real-time race is not reproduced"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "statement",
+			"line": 849,
+			"column": 50,
+			"code": "throw e;",
+			"reason": "play() rejects only when a pause() interrupts it before it starts; the paused test clock resolves play() first, so the real-time race is not reproduced"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "branch",
+			"line": 849,
+			"column": 3,
+			"code": "if ((e as DOMException).name !== 'AbortError') throw e;",
+			"reason": "play() rejects only when a pause() interrupts it before it starts; the paused test clock resolves play() first, so the real-time race is not reproduced"
+		},
+		{
+			"file": "src/lib/studio/app.ts",
+			"kind": "function",
+			"line": 848,
+			"column": 25,
+			"code": "(e) => {",
+			"reason": "play() rejects only when a pause() interrupts it before it starts; the paused test clock resolves play() first, so the real-time race is not reproduced"
 		}
 	]
 }
