@@ -353,7 +353,7 @@
    "class": "",
    "attrs": {
     "tabindex": "0",
-    "aria-label": "Voice map. Scroll to zoom, drag to rotate, Shift+drag to pan. The outline is the central 80% of a 1.2-second moving median."
+    "aria-label": "Voice map. Scroll to zoom, drag to rotate, Shift+drag to pan."
    },
    "text": ""
   },
@@ -1361,7 +1361,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "Koenami A voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice and record while imitating it; your voice appears in the same acoustic space, and you can see how close you are to the voice you are aiming for. Real-time measurement shows which way your voice moves while you adjust it. The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings stay in your browser. Voice training tutorials, analysis from t"
+   "text": "Koenami A voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice and record while imitating it; your voice appears in the same acoustic space, and you can see how close you are to the voice you are aiming for. Real-time measurement shows which way your voice moves while you adjust it. The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings stay in your browser. How to use (Japanese) ↗ How the voice wor"
   },
   "report-dialog": {
    "tag": "dialog",

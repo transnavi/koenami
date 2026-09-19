@@ -347,7 +347,7 @@
    "class": "",
    "attrs": {
     "tabindex": "0",
-    "aria-label": "声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。形は1.2秒の移動中央値のうち中心に近い80%。"
+    "aria-label": "声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。"
    },
    "text": ""
   },
@@ -1371,7 +1371,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "Koenami 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。 見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。 使い方 ↗ 声のしくみと練習の手引き ↗ 測定方法と出典 ↗ 参考文献 ↗ Acoustic Gender Space ↗ Phonia ↗ InFormant ↗ ソースコード（GitHub） ↗ 配色の参考： transnavi.jp"
+   "text": "Koenami 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が見本と同じ地図に表示され、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を変えながら地図の上の位置が動くのを見て、寄せていく方向をつかめます。 見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。 使い方 ↗ 声のしくみと練習の手引き ↗ 測定方法と出典 ↗ 参考文献 ↗ Acoustic Gender Space ↗ Phonia ↗ InFormant ↗ ソースコード（GitHub） ↗ 配色の参考： transnavi.jp"
   },
   "report-dialog": {
    "tag": "dialog",
@@ -1434,7 +1434,7 @@
    "class": "",
    "attrs": {},
    "open": false,
-   "text": "声の判定 — 聞こえる年齢のめやす 推定する 画像とリンクに含める 年齢の推定モデル（audEERING）の参考値です。日本語や練習中の声について「何歳に聞こえるか」との一致は確認していません。音声は推定のためだけに送信され、保存されません。 共有… リンクをコピー 画像を保存 結果ページ ↗ 判定の推移 この端末の録音 古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。 リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は 測定方法と出典 にあります。"
+   "text": "声の判定 — 聞こえる年齢のめやす 推定する 画像とリンクに含める 年齢の推定モデル（audEERING）の参考値です。日本語の声や練習中の声について「何歳に聞こえるか」と合うかは確かめていません。音声は推定のためだけに送信され、保存されません。 共有… リンクをコピー 画像を保存 結果ページ ↗ 判定の推移 この端末の録音 古い録音は判定の条件（有声区間など）を記録していないため、条件を確認せずに表示しています。 リンクには5つの測定値だけが含まれます。録音は送信されません。判定の読み方は 測定方法と出典 にあります。"
   },
   "verdict-help": {
    "tag": "button",
@@ -1615,10 +1615,10 @@
  "head": [
   "meta viewport: width=device-width,initial-scale=1",
   "title: Koenami · 女声・男声のボイトレツール",
-  "meta description: 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方向けの無料ボイトレツール。見本の声を真似して録音すると、自分の声が空間上に映り、近づきたい声との距離が見えます。リアルタイム測定にも対応。",
+  "meta description: 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方向けの無料ボイトレツール。見本の声を真似して録音すると、自分の声が見本と同じ地図に表示され、近づきたい声との距離が見えます。リアルタイム測定にも対応。",
   "meta og:site_name: Koenami",
   "meta og:title: Koenami · 女声・男声のボイトレツール",
-  "meta og:description: 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方向けの無料ボイトレツール。見本の声を真似して録音すると、自分の声が空間上に映り、近づきたい声との距離が見えます。リアルタイム測定にも対応。",
+  "meta og:description: 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方向けの無料ボイトレツール。見本の声を真似して録音すると、自分の声が見本と同じ地図に表示され、近づきたい声との距離が見えます。リアルタイム測定にも対応。",
   "meta og:type: website",
   "meta og:locale: ja_JP",
   "meta og:url: https://koe.transnavi.jp/",
@@ -1628,9 +1628,9 @@
   "meta og:image:alt: Koenami · 女声・男声のボイトレツール",
   "meta twitter:card: summary_large_image",
   "meta twitter:title: Koenami · 女声・男声のボイトレツール",
-  "meta twitter:description: 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方向けの無料ボイトレツール。見本の声を真似して録音すると、自分の声が空間上に映り、近づきたい声との距離が見えます。リアルタイム測定にも対応。",
+  "meta twitter:description: 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方向けの無料ボイトレツール。見本の声を真似して録音すると、自分の声が見本と同じ地図に表示され、近づきたい声との距離が見えます。リアルタイム測定にも対応。",
   "meta twitter:image: https://koe.transnavi.jp/og-image.png",
-  "ld+json: {\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://koe.transnavi.jp/#website\",\"url\":\"https://koe.transnavi.jp/\",\"name\":\"Koenami\",\"inLanguage\":\"ja\",\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://transnavi.jp/#organization\",\"name\":\"とらんすナビ\",\"url\":\"https://transnavi.jp/\",\"logo\":\"https://transnavi.jp/favicon.svg\"},{\"@type\":\"WebApplication\",\"@id\":\"https://koe.transnavi.jp/#app\",\"name\":\"Koenami\",\"url\":\"https://koe.transnavi.jp/\",\"description\":\"両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方向けの無料ボイトレツール。見本の声を真似して録音すると、自分の声が空間上に映り、近づきたい声との距離が見えます。リアルタイム測定にも対応。\",\"inLanguage\":\"ja\",\"image\":\"https://koe.transnavi.jp/og-image.png\",\"applicationCategory\":\"EducationalApplication\",\"operatingSystem\":\"Web\",\"browserRequirements\":\"マイクを使えるブラウザー\",\"isAccessibleForFree\":true,\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"JPY\"},\"license\":\"https://github.com/transnavi/koenami/blob/main/LICENSE\",\"softwareHelp\":{\"@type\":\"CreativeWork\",\"url\":\"https://koe.transnavi.jp/guide.html\"},\"sameAs\":\"https://github.com/transnavi/koenami\",\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"},\"isPartOf\":{\"@id\":\"https://koe.transnavi.jp/#website\"}}]}",
+  "ld+json: {\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://koe.transnavi.jp/#website\",\"url\":\"https://koe.transnavi.jp/\",\"name\":\"Koenami\",\"inLanguage\":\"ja\",\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://transnavi.jp/#organization\",\"name\":\"とらんすナビ\",\"url\":\"https://transnavi.jp/\",\"logo\":\"https://transnavi.jp/favicon.svg\"},{\"@type\":\"WebApplication\",\"@id\":\"https://koe.transnavi.jp/#app\",\"name\":\"Koenami\",\"url\":\"https://koe.transnavi.jp/\",\"description\":\"両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方向けの無料ボイトレツール。見本の声を真似して録音すると、自分の声が見本と同じ地図に表示され、近づきたい声との距離が見えます。リアルタイム測定にも対応。\",\"inLanguage\":\"ja\",\"image\":\"https://koe.transnavi.jp/og-image.png\",\"applicationCategory\":\"EducationalApplication\",\"operatingSystem\":\"Web\",\"browserRequirements\":\"マイクを使えるブラウザー\",\"isAccessibleForFree\":true,\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"JPY\"},\"license\":\"https://github.com/transnavi/koenami/blob/main/LICENSE\",\"softwareHelp\":{\"@type\":\"CreativeWork\",\"url\":\"https://koe.transnavi.jp/guide.html\"},\"sameAs\":\"https://github.com/transnavi/koenami\",\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"},\"isPartOf\":{\"@id\":\"https://koe.transnavi.jp/#website\"}}]}",
   "link sitemap: /sitemap.xml",
   "link canonical: https://koe.transnavi.jp/",
   "link alternate ja: https://koe.transnavi.jp/",
