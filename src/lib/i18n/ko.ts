@@ -197,9 +197,6 @@ export default {
 	'info.source': '소스 코드 (GitHub) ↗',
 	'info.colors': '색상 참고:',
 
-	'rename.heading': '이름 바꾸기',
-	'rename.aria': '녹음 이름',
-	'rename.empty': '이름을 입력해 주세요.',
 	'rename.failed': '이름을 바꾸지 못했습니다. 다시 시도해 주세요.',
 	'report.heading': '비교',
 	'report.save': '보고서 저장',

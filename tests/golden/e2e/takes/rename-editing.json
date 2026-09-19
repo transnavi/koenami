@@ -1039,13 +1039,13 @@
    "attrs": {
     "aria-label": "録音履歴",
     "title": "録音履歴",
-    "data-display-label": "朝の声"
+    "data-display-label": "own-b.wav"
    },
    "value": "0",
    "options": [
     {
      "value": "0",
-     "text": "朝の声",
+     "text": "own-b.wav",
      "disabled": false,
      "data": {
       "data-detail": "0:04",
@@ -1064,9 +1064,17 @@
      }
     }
    ],
-   "trigger": "朝の声",
-   "expanded": "false",
-   "text": "朝の声 own-a.wav"
+   "trigger": "own-b.wav",
+   "expanded": "true",
+   "rowActions": [
+    "0:play:再生",
+    "0:download:ダウンロード",
+    "0:delete:削除",
+    "1:play:再生",
+    "1:download:ダウンロード",
+    "1:delete:削除"
+   ],
+   "text": "own-b.wav own-a.wav"
   },
   "timer": {
    "followsPlayback": true
@@ -1415,36 +1423,6 @@
    "open": false,
    "text": "Koenami 両声類を目指す方、トランスジェンダーの方、女声・男声を出してみたい方のためのボイトレツールです。見本の声を選び、真似するように録音すると、自分の声が空間上に映り、近づきたい声にどれくらい近いかが分かります。リアルタイム測定では、声を調整しながら寄せていく方向をつかめます。 見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。今後は、ボイトレのチュートリアルや、音声学・声楽・音響・解剖学の視点からの分析、より精度の高い評価方法を加えていく予定です。 使い方 ↗ 声のしくみと練習の手引き ↗ 測定方法と出典 ↗ 参考文献 ↗ Acoustic Gender Space ↗ Phonia ↗ InFormant ↗ ソースコード（GitHub） ↗ 配色の参考： transnavi.jp"
   },
-  "rename-dialog": {
-   "tag": "dialog",
-   "class": "",
-   "attrs": {},
-   "open": false,
-   "text": "名前の変更 保存"
-  },
-  "rename-input": {
-   "tag": "input",
-   "class": "",
-   "attrs": {
-    "aria-label": "録音の名前"
-   },
-   "value": "昨日の声",
-   "text": ""
-  },
-  "rename-status": {
-   "tag": "p",
-   "class": "",
-   "attrs": {
-    "role": "status"
-   },
-   "text": ""
-  },
-  "rename-save": {
-   "tag": "button",
-   "class": "",
-   "attrs": {},
-   "text": "保存"
-  },
   "report-dialog": {
    "tag": "dialog",
    "class": "",
@@ -1655,40 +1633,6 @@
    "voice-speed": 1,
    "voice-tour": {
     "done": true
-   },
-   "koenami-session": {
-    "lang": "ja",
-    "group": "female",
-    "sort": "high",
-    "search": "",
-    "reference": "common_voice_ja_36363162",
-    "referenceRange": null,
-    "openSpeakers": [
-     "ja:Common Voice:50a288fb7fb3"
-    ],
-    "dimension": 3,
-    "projection": "variance",
-    "yaw": -0.45,
-    "tilt": 0.3,
-    "zoom": 0.9491637713967666,
-    "camera": [
-     0.48432510759557895,
-     0.6283765936675773,
-     0.7323857022259104
-    ],
-    "center": [
-     0.5,
-     0.5
-    ],
-    "pan": [
-     0,
-     0
-    ],
-    "autoRotate": false,
-    "signal": "pitch",
-    "signalSource": "own",
-    "overlay": true,
-    "liveShapeSeconds": 5
    }
   },
   "idb": {
@@ -1723,7 +1667,7 @@
      },
      "id": "00000000-0000-4000-8000-000000000002",
      "language": "ja",
-     "name": "朝の声",
+     "name": "own-b.wav",
      "peaks": [
       0.09,
       0.14,
@@ -1828,7 +1772,7 @@
      },
      "id": "00000000-0000-4000-8000-000000000001",
      "language": "ja",
-     "name": "昨日の声",
+     "name": "own-a.wav",
      "peaks": [
       0,
       0,
@@ -12046,7 +11990,7 @@
        "voiced_fraction": 0.486
       }
      },
-     "name": "朝の声",
+     "name": "own-b.wav",
      "pcm": {
       "$typed": "Float32Array",
       "length": 76417,
