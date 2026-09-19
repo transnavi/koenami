@@ -114,19 +114,11 @@ def main():
         modified = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', *sources], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
         entries.append(f'<url><loc>https://koe.transnavi.jp{path}</loc>' + (f'<lastmod>{modified}</lastmod>' if modified else '') + '</url>')
     (OUT / 'assets' / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(entries) + '\n</urlset>\n')
-    # Cloudflare Web Analytics injects its beacon into HTML at the edge; the CSP
-    # admits that script and the endpoint it reports to.
     # No fallback SPA route may expose private baselines or local model files.
     assert not any('baseline' in p.name or p.name == 'x.wav' for p in OUT.rglob('*'))
-    # The adapter's _headers marks the hashed files immutable; the site's own rules go first.
-    (OUT / 'assets' / '_headers').write_text("""/*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: microphone=(self), camera=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'
-/service-worker.js
-  Cache-Control: no-cache
-""" + (ROOT / '.svelte-kit' / 'cloudflare' / '_headers').read_text())
+    # The response headers come with the build: the root _headers file plus the adapter's
+    # immutable-cache rules (the content security policy is in every page's meta tag).
+    assert 'frame-ancestors' in (OUT / 'assets' / '_headers').read_text()
     print(json.dumps({'public_samples': len(manifest), 'jvs_excerpt': 10, 'languages': catalog['languages'],
                       'audio_mb': round(sum((OUT / 'data' / 'samples' / c['file']).stat().st_size for c in manifest) / 1e6, 1)}, ensure_ascii=False))
 

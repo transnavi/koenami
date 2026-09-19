@@ -28,6 +28,36 @@ const site = join(root, process.env.MOCK_API_STATIC || 'web');
 // A Kit build has no templates and no such module.
 const i18nModule = join(site, 'i18n/index.js');
 const i18n = existsSync(i18nModule) ? await import(pathToFileURL(i18nModule).href) : null;
+// The site's response headers, as the deployed Worker sends them: a built tree carries the
+// root _headers file (the adapter appends its cache rules), and its rules apply to what
+// the server serves from that tree, so a header that breaks a page (a policy without the
+// hash of Kit's inline script, once) breaks the suite too. The pinned tree has none.
+const siteHeaders = (() => {
+	const file = join(site, '_headers');
+	if (!existsSync(file)) return [];
+	const rules = [];
+	for (const line of readFileSync(file, 'utf8').split('\n')) {
+		if (!line.trim() || line.startsWith('#')) continue;
+		if (!/^\s/.test(line)) rules.push({ path: line.trim(), headers: {} });
+		else if (rules.length) {
+			const [name, ...value] = line.trim().split(':');
+			// A leading "!" removes a header set by an earlier rule.
+			if (name.startsWith('!')) delete rules.at(-1).headers[name.slice(1).trim().toLowerCase()];
+			else rules.at(-1).headers[name.trim().toLowerCase()] = value.join(':').trim();
+		}
+	}
+	return rules;
+})();
+const headersFor = (pathname) => {
+	const out = {};
+	for (const rule of siteHeaders) {
+		const matches = rule.path.endsWith('/*')
+			? pathname.startsWith(rule.path.slice(0, -1)) || rule.path === '/*'
+			: rule.path === pathname;
+		if (matches) Object.assign(out, rule.headers);
+	}
+	return out;
+};
 const types = {
 	html: 'text/html; charset=utf-8',
 	js: 'text/javascript; charset=utf-8',
@@ -179,7 +209,8 @@ const server = createServer(async (req, res) => {
 			);
 		res.writeHead(200, {
 			'content-type': types[path.split('.').pop()] || 'application/octet-stream',
-			'cache-control': 'no-store'
+			'cache-control': 'no-store',
+			...headersFor(url.pathname)
 		});
 		return res.end(req.method === 'HEAD' ? undefined : body);
 	}
