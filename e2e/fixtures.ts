@@ -187,6 +187,9 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 	// navigation (see `flush` in the studio fixture) and written once per test.
 	coverage: [
 		async ({ page }, use) => {
+			// The minified pass verifies pixels against the goldens; it collects no coverage,
+			// so it leaves the coverage build's data in coverage/e2e/raw untouched.
+			if (process.env.E2E_MINIFIED === '1') return use();
 			// Precise coverage is started once per page and read with Profiler.takePreciseCoverage,
 			// which returns the counts since the last read and keeps the instrumentation: a stop
 			// and restart (page.coverage's only way to read) puts functions compiled before the

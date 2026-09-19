@@ -1,5 +1,5 @@
 {
-	"$comment": "Code the characterization suite cannot reach. Each entry names a file, an istanbul kind (statement, branch, function), the line, the column and the source text at the uncovered location in the pinned tree, plus why no input reaches it. check.mjs treats a matching location as covered and fails when an entry matches nothing, so the list cannot go stale.",
+	"$comment": "Code the characterization suite cannot reach. Each entry names a file, an istanbul kind (statement, branch, function), the line, the column and the source text at the uncovered location in the src/ tree, plus why no input reaches it. check.mjs treats a matching location as covered and fails when an entry matches nothing, so the list cannot go stale.",
 	"exclusions": [
 		{
 			"file": "src/lib/card.ts",

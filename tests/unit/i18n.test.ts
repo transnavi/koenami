@@ -86,7 +86,10 @@ describe('i18n', () => {
 		}
 		out.fallback = translator('xx')('nav.guide');
 		golden('i18n.translator', out);
-		expect(() => translator('ja')('no.such.key')).toThrow('i18n: no message for no.such.key');
+		// A key outside the catalogue is a programming error the type forbids; forced here.
+		expect(() => translator('ja')('no.such.key' as never)).toThrow(
+			'i18n: no message for no.such.key'
+		);
 	});
 	it('renderPage: every token kind, the head links per language, the result page, unknown fields', () => {
 		const template = [
@@ -105,12 +108,8 @@ describe('i18n', () => {
 	// hreflang, manifest and sitemap links and the Open Graph address, which the browser
 	// goldens never see (they project the body).
 	it('the head links of the studio and the result page, per language', () => {
-		const tree = 'src/lib/studio';
-		const read = (name: string) => readFileSync(`${tree}/${name}`, 'utf8');
-		const heads = {
-			studio: read(tree.startsWith('src') ? 'head.html' : 'index.html'),
-			result: read(tree.startsWith('src') ? 'result-head.html' : 'result.html')
-		};
+		const read = (name: string) => readFileSync(`src/lib/studio/${name}`, 'utf8');
+		const heads = { studio: read('head.html'), result: read('result-head.html') };
 		const links = (html: string) => ({
 			title: html.match(/<title>([^<]*)<\/title>/)?.[1],
 			url: html.match(/<meta property="og:url" content="([^"]*)"/)?.[1],

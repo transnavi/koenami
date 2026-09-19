@@ -393,7 +393,7 @@ test.describe('verdict and sharing', () => {
 		await studio.golden('result-library-without-clips');
 		await page.unroute('**/api/library**');
 		// The medians of the fixture library's female and male representatives at the pinned
-		// commit, and their midpoint (see Scorer in score.js); defaults for the language and the version.
+		// commit, and their midpoint (see Scorer in src/lib/score.ts); defaults for the language and the version.
 		for (const [name, query] of [
 			['female', 'f0=209.2&df=1146.5&hnr=13.21&bal=-19.05&sp=5.17'],
 			['male', 'f0=128.6&df=1030.3&hnr=9.13&bal=-15.23&sp=6.39'],

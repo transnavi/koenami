@@ -136,7 +136,7 @@ const cache = () => {
 };
 const cached = () => [...(cache().store.keys() ?? [])].map((u) => u.replace(ORIGIN, '')).sort();
 
-describe('service worker of the Kit build', () => {
+describe('service worker', () => {
 	beforeAll(() => {
 		vi.stubGlobal('self', globalThis);
 		responses['/_app/immutable/entry/app.abc.js'] = () =>
@@ -192,6 +192,6 @@ describe('service worker of the Kit build', () => {
 		] as [string, Init?][]) {
 			log.push(['offline', url, init?.mode || 'cors', await request(url, init), cached()]);
 		}
-		golden('sw.kit-lifecycle', log);
+		golden('sw.lifecycle', log);
 	});
 });

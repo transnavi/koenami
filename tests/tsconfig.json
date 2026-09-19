@@ -14,5 +14,11 @@
 		"types": ["node"],
 		"paths": { "@app/*": ["../src/lib/*"], "$lib/*": ["../src/lib/*"] }
 	},
-	"include": ["unit/**/*.ts", "vitest.config.ts", "../e2e/**/*.ts", "../playwright.config.ts"]
+	"include": [
+		"unit/**/*.ts",
+		"vitest.config.ts",
+		"../e2e/**/*.ts",
+		"../playwright.config.ts",
+		"../src/lib/audio-worklet.d.ts"
+	]
 }

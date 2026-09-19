@@ -4,7 +4,6 @@
  * on mid-measurement or the engine fails to start: calls reach the worker
  * one at a time and in order, a call abandoned before its turn is never
  * posted, every call settles, and a worker that cannot start is replaced.
- * The module belongs to the SvelteKit tree, so the run against the pinned
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 

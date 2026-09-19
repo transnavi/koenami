@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { defineConfig } from '@playwright/test';
@@ -9,8 +11,16 @@ const mic = `${root}tests/fixtures/audio/microphone.wav`;
 // A port beside the default dev server (8766), so a developer's session survives a test run.
 const port = Number(process.env.E2E_PORT || 8776);
 // The browser gets the built SvelteKit site: E2E_STATIC names the directory, defaulting to
-// the adapter's output. `bun run build` (or build:coverage) writes it before the suite.
+// the adapter's output. The build must exist, and the coverage gate needs the coverage
+// build (unminified, source maps); the minified pass sets E2E_MINIFIED.
 const site = process.env.E2E_STATIC || '.svelte-kit/cloudflare';
+if (!existsSync(site)) throw new Error(`no build at ${site}; run \`bun run build:coverage\` first`);
+if (process.env.E2E_MINIFIED !== '1') {
+	const marker = join(site, 'BUILD');
+	const build = existsSync(marker) ? readFileSync(marker, 'utf8') : '';
+	if (build !== 'coverage')
+		throw new Error(`${site} is a ${build || 'stale'} build; run \`bun run build:coverage\` first`);
+}
 
 export default defineConfig({
 	testDir: 'e2e/scenarios',

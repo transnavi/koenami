@@ -14,8 +14,8 @@ import MCR from 'monocart-coverage-reports';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 
-// Served URLs and checked-out paths both become repository paths; query strings (the
-// unit tests' cache-busting import) are not part of the file.
+// Served URLs and source paths both become repository paths; query strings (the unit
+// tests' cache-busting import) are not part of the file.
 const sourcePath = (filePath) => {
 	const clean = filePath
 		.replace(/^127\.0\.0\.1[-:]\d+\//, '')

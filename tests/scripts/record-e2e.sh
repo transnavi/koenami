@@ -34,7 +34,8 @@ const meta = JSON.parse(fs.readFileSync("tests/golden/META.json", "utf8"));
 meta.playwright = require("@playwright/test/package.json").version;
 meta.chromium = require("playwright-core").chromium.executablePath().split("/").find((p) => p.startsWith("chromium")) || "";
 meta.recorded = new Date().toISOString().slice(0, 10);
+meta.commit = require("child_process").execSync("git rev-parse HEAD").toString().trim();
 fs.writeFileSync("tests/golden/META.json", JSON.stringify(meta, null, "\t") + "\n");
 '
-bun run build
+bun run build:coverage
 MOCK_API_RECORD=http://127.0.0.1:$analyzer_port RECORD=1 bun x playwright test --config playwright.config.ts --update-snapshots=all "$@"

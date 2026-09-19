@@ -17,7 +17,6 @@ const only = args
 	?.slice(7)
 	.split(',');
 const prefix = 'src/';
-const normalize = (rel) => rel;
 const sourceRoot = root;
 // The browser measurement engine is not wired into the studio yet; its unit tests drive the
 // generated package, and the gate takes it up when the studio loads it.
@@ -55,7 +54,7 @@ for (const path of reports(reportRoot)) {
 	console.log(`merging ${relative(root, path)} (${statSync(path).mtime.toISOString()})`);
 	const report = JSON.parse(readFileSync(path, 'utf8'));
 	for (const [file, data] of Object.entries(report)) {
-		const rel = normalize(relative(root, file.startsWith('/') ? file : join(root, file)));
+		const rel = relative(root, file.startsWith('/') ? file : join(root, file));
 		const fc = libCoverage.createFileCoverage({ ...data, path: join(root, rel) });
 		map.merge(libCoverage.createCoverageMap({ [join(root, rel)]: fc }));
 	}
@@ -153,7 +152,7 @@ const walk = (dir, deep) => {
 			name !== '+server.ts' &&
 			!typesOnly(p)
 		)
-			sourceFiles.push(normalize(relative(root, p)));
+			sourceFiles.push(relative(root, p));
 	}
 };
 walk(join(root, 'src'), true);
