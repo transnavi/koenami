@@ -2,7 +2,7 @@
 
 Every value in `tests/golden/e2e` is a requirement on the rewritten app. This is the
 list of what is meant to be a requirement and what is incidental, so that the goldens
-stay evidence when the SvelteKit tree replaces `web/`.
+stay evidence for the SvelteKit tree.
 
 ## Intended
 

@@ -74,7 +74,7 @@ async function run(input: File[], signal = new AbortController().signal) {
 	}
 }
 async function stored() {
-	const ids = (await TakeStore.read('jvs-index')) || [];
+	const ids = (await TakeStore.read<string[]>('jvs-index')) || [];
 	return {
 		ids,
 		audio: await Promise.all(

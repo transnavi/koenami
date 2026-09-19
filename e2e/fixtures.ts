@@ -187,6 +187,9 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 	// navigation (see `flush` in the studio fixture) and written once per test.
 	coverage: [
 		async ({ page }, use) => {
+			// The minified pass verifies pixels against the goldens; it collects no coverage,
+			// so it leaves the coverage build's data in coverage/e2e/raw untouched.
+			if (process.env.E2E_MINIFIED === '1') return use();
 			// Precise coverage is started once per page and read with Profiler.takePreciseCoverage,
 			// which returns the counts since the last read and keeps the instrumentation: a stop
 			// and restart (page.coverage's only way to read) puts functions compiled before the
@@ -454,10 +457,9 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const flush = async () => {
 			await flushers.get(page)?.();
 		};
-		// The pinned tree is wired at the load event; the Kit tree wires its pages on hydration.
+		// The page wires itself on hydration; the attribute goes up in +layout.svelte's onMount.
 		const ready = async () => {
-			if (process.env.KOENAMI_TREE === 'new')
-				await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+			await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
 		};
 		const back = async () => {
 			await flush();

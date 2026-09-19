@@ -48,10 +48,7 @@ function codepoints(font: Buffer): Set<number> {
 	return set;
 }
 
-const fonts =
-	(process.env.KOENAMI_TREE || 'old') === 'new'
-		? 'static/fonts'
-		: 'tests/old-tree/web/public/fonts';
+const fonts = 'static/fonts';
 const scorer = {
 	bands: { female: [10, 40] as [number, number], male: [-40, -10] as [number, number] },
 	metricBands: Object.fromEntries(
@@ -77,7 +74,7 @@ describe('share font cuts', () => {
 					features: { f0: 200, delta_f: 1100, hnr: 10, balance: -15, pitch_span: 5 },
 					age: 27
 				};
-				// oxlint-disable-next-line typescript/no-explicit-any -- the old tree's card is untyped
+				// oxlint-disable-next-line typescript/no-explicit-any -- cardSVG's scorer stub is partial
 				const text = (cardSVG as any)(result, scorer, { lang })
 					.replace(/<style>.*?<\/style>/s, '')
 					.replace(/<[^>]+>/g, '')
