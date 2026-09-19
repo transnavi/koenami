@@ -1,0 +1,150 @@
+{
+ "url": "/r?v=1&l=ja",
+ "title": "Koenami · 声の判定",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "result-verdict": {
+   "tag": "h1",
+   "class": "",
+   "attrs": {},
+   "text": "この結果は表示できません"
+  },
+  "result-score": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "—"
+  },
+  "result-age": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "聞こえる年齢のめやす： 年齢の推定モデルの参考値。日本語や練習中の声については未検証です。"
+  },
+  "result-image": {
+   "tag": "img",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "result-status": {
+   "tag": "figcaption",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": "リンクに測定値が含まれていません。"
+  },
+  "result-actions": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "自分の声も測る リンクをコピー 画像を保存"
+  },
+  "result-try": {
+   "tag": "a",
+   "class": "",
+   "attrs": {
+    "href": "/"
+   },
+   "text": "自分の声も測る"
+  },
+  "result-intents": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "result-copy": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "リンクをコピー"
+  },
+  "result-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "画像を保存"
+  },
+  "result-metrics": {
+   "tag": "section",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "5つの指標 自分の値と、見本の話者の中央80%（女性的な声・男性的な声）を並べています。 指標 この声 女性的な声の見本 男性的な声の見本"
+  },
+  "result-metric-rows": {
+   "tag": "tbody",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "result-notes": {
+   "tag": "section",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "この判定の読み方 数値は、見本の話者から求めた「男女差」の方向（女性的な声と男性的な声が最も離れる向き）に、この声の5つの指標を投影した位置です。男性的な見本の中央値と女性的な見本の中央値のちょうど中間を0とし、男性的な見本の中央値を−50、女性的な見本の中央値を+50とする直線の目盛りで、−100〜+100の範囲で表示します。+30以上を「女性的な声」、−30以下を「男性的な声」、その間を「中間的な声」と呼んでいます。 どちらの向きも目標になります。女声を目指すなら＋の方向、男声を目指すなら−の方向、性別の印象を薄くしたい・中性的な声を目指すなら0に近づくことが目安です。 聞き手がどう感じるかを測ったものではなく、5つの音響指標の位置です。同じ人でも文章、話し方、マイク、周囲の音で変わります。 見本の分布は一般人口の標準値ではありません。言語ごとに見本が違うため、言語をまたいで数値を比べることはできません。 短い録音や雑音の多い録音では、響きや抑揚の値が安定しません。同じ文をいくつか録音して見比べてください。 判定の計算方法は 測定方法と出典 にあります。判定の方式を変えたときは、この番号（ v1 ）が変わります。"
+  },
+  "result-version": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "v1"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-tour": {
+    "done": true
+   }
+  },
+  "idb": {}
+ },
+ "network": [],
+ "media": [],
+ "errors": [],
+ "head": [
+  "meta viewport: width=device-width,initial-scale=1",
+  "title: Koenami · 声の判定",
+  "meta description: Koenamiで測った声の判定。女性的な声・男性的な声・中間の見本の中で、この声がどこにあるか。",
+  "meta robots: noindex",
+  "meta og:site_name: Koenami",
+  "meta og:title: Koenami · 声の判定",
+  "meta og:description: 女性的な声・男性的な声の見本の中で、この声がどこにあるか。",
+  "meta og:type: website",
+  "meta og:locale: ja_JP",
+  "meta og:url: https://koe.transnavi.jp/r",
+  "meta og:image: https://koe.transnavi.jp/og-image.png",
+  "meta og:image:width: 1200",
+  "meta og:image:height: 630",
+  "meta og:image:alt: Koenami · 声の判定",
+  "meta twitter:card: summary_large_image",
+  "meta twitter:title: Koenami · 声の判定",
+  "meta twitter:description: 女性的な声・男性的な声の見本の中で、この声がどこにあるか。",
+  "meta twitter:image: https://koe.transnavi.jp/og-image.png"
+ ]
+}
