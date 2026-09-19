@@ -454,10 +454,9 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const flush = async () => {
 			await flushers.get(page)?.();
 		};
-		// The pinned tree is wired at the load event; the Kit tree wires its pages on hydration.
+		// The page wires itself on hydration; the attribute goes up in +layout.svelte's onMount.
 		const ready = async () => {
-			if (process.env.KOENAMI_TREE === 'new')
-				await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+			await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
 		};
 		const back = async () => {
 			await flush();

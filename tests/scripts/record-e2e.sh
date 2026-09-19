@@ -36,4 +36,5 @@ meta.chromium = require("playwright-core").chromium.executablePath().split("/").
 meta.recorded = new Date().toISOString().slice(0, 10);
 fs.writeFileSync("tests/golden/META.json", JSON.stringify(meta, null, "\t") + "\n");
 '
+bun run build
 MOCK_API_RECORD=http://127.0.0.1:$analyzer_port RECORD=1 bun x playwright test --config playwright.config.ts --update-snapshots=all "$@"

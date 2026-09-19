@@ -8,11 +8,9 @@ const root = fileURLToPath(new URL('.', import.meta.url));
 const mic = `${root}tests/fixtures/audio/microphone.wav`;
 // A port beside the default dev server (8766), so a developer's session survives a test run.
 const port = Number(process.env.E2E_PORT || 8776);
-// Which tree the browser gets: the pinned vanilla files for `old` (extracted by the
-// global setup), or the directory named by E2E_STATIC for the rewrite.
-const tree = process.env.KOENAMI_TREE || 'old';
-const site = tree === 'old' ? 'tests/old-tree/web' : process.env.E2E_STATIC;
-if (!site) throw new Error('KOENAMI_TREE=new needs E2E_STATIC=<directory with the built site>');
+// The browser gets the built SvelteKit site: E2E_STATIC names the directory, defaulting to
+// the adapter's output. `bun run build` (or build:coverage) writes it before the suite.
+const site = process.env.E2E_STATIC || '.svelte-kit/cloudflare';
 
 export default defineConfig({
 	testDir: 'e2e/scenarios',

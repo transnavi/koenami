@@ -10,26 +10,23 @@ import { describe, it, expect } from 'vitest';
 // The characterization suite runs the unminified coverage build and its screens mask the
 // canvas under that box, so the minified output is checked here: every rule that blurs its
 // backdrop in the source still does after minification.
-describe.skipIf((process.env.KOENAMI_TREE || 'old') !== 'new')(
-	'studio stylesheet through the minifier',
-	() => {
-		it('keeps the standard backdrop-filter of every blurred rule', () => {
-			const source = readFileSync('src/lib/studio/studio.css', 'utf8');
-			const minified = transform({
-				filename: 'studio.css',
-				code: Buffer.from(source),
-				minify: true
-			}).code.toString();
-			const blurred = [
-				...source.matchAll(/([^{}]+)\{[^{}]*?\bbackdrop-filter:\s*(blur\(\d+px\))[^{}]*\}/g)
-			].map((m) => [m[1].trim().replace(/\s+/g, ' '), m[2]] as const);
-			expect(blurred.length).toBeGreaterThan(3);
-			for (const [selector, blur] of blurred) {
-				const rule = new RegExp(
-					`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\{[^{}]*(?<![-\\w])backdrop-filter:${blur.replace(/[()]/g, '\\$&')}`
-				);
-				expect(minified, `${selector} keeps backdrop-filter: ${blur}`).toMatch(rule);
-			}
-		});
-	}
-);
+describe('studio stylesheet through the minifier', () => {
+	it('keeps the standard backdrop-filter of every blurred rule', () => {
+		const source = readFileSync('src/lib/studio/studio.css', 'utf8');
+		const minified = transform({
+			filename: 'studio.css',
+			code: Buffer.from(source),
+			minify: true
+		}).code.toString();
+		const blurred = [
+			...source.matchAll(/([^{}]+)\{[^{}]*?\bbackdrop-filter:\s*(blur\(\d+px\))[^{}]*\}/g)
+		].map((m) => [m[1].trim().replace(/\s+/g, ' '), m[2]] as const);
+		expect(blurred.length).toBeGreaterThan(3);
+		for (const [selector, blur] of blurred) {
+			const rule = new RegExp(
+				`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\{[^{}]*(?<![-\\w])backdrop-filter:${blur.replace(/[()]/g, '\\$&')}`
+			);
+			expect(minified, `${selector} keeps backdrop-filter: ${blur}`).toMatch(rule);
+		}
+	});
+});

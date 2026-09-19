@@ -5,7 +5,7 @@
  * one at a time and in order, a call abandoned before its turn is never
  * posted, every call settles, and a worker that cannot start is replaced.
  * The module belongs to the SvelteKit tree, so the run against the pinned
- * vanilla tree (KOENAMI_TREE=old) skips it. */
+ */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 type Posted = { id: number; kind: string };
@@ -41,14 +41,13 @@ const current = () => FakeWorker.live.at(-1)!;
 const settled = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 beforeEach(async () => {
-	if (process.env.KOENAMI_TREE !== 'new') return;
 	FakeWorker.live = [];
 	vi.resetModules();
 	engine = await import('@app/measure/engine');
 });
 afterEach(() => engine?.stop());
 
-describe.skipIf(process.env.KOENAMI_TREE !== 'new')('the measurement engine', () => {
+describe('the measurement engine', () => {
 	it('posts one call at a time, in order, and answers each with its own result', async () => {
 		const first = engine.analyze(samples());
 		const second = engine.live(samples());

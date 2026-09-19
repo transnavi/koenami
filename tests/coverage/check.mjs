@@ -1,6 +1,6 @@
 // Merges every coverage-final.json under coverage/ and requires 100 % statements,
-// branches, functions and lines over the tree under test, minus the documented
-// exclusions. Usage: node tests/coverage/check.mjs [old|new] [--only=math,space,...]
+// branches, functions and lines over src/, minus the documented
+// exclusions. Usage: node tests/coverage/check.mjs [--only=math,space,...]
 // --only limits the gate to the named modules (basename without extension); the full
 // suite runs without it.
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
@@ -12,16 +12,13 @@ import ts from 'typescript';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 const args = process.argv.slice(2);
-const tree = args.find((a) => !a.startsWith('--')) || process.env.KOENAMI_TREE || 'old';
 const only = args
 	.find((a) => a.startsWith('--only='))
 	?.slice(7)
 	.split(',');
-// Both layers run the pinned copy under tests/old-tree when the tree is `old`; reports
-// name it either way, so paths merge under the short form and are read from the copy.
-const prefix = tree === 'new' ? 'src/' : 'web/';
-const normalize = (rel) => rel.replace(/^tests\/old-tree\//, '');
-const sourceRoot = tree === 'new' ? root : join(root, 'tests/old-tree');
+const prefix = 'src/';
+const normalize = (rel) => rel;
+const sourceRoot = root;
 // The browser measurement engine is not wired into the studio yet; its unit tests drive the
 // generated package, and the gate takes it up when the studio loads it.
 const deferred = (rel) => rel.startsWith('src/lib/measure/');
@@ -35,9 +32,9 @@ const wanted = (rel) =>
 				.pop()
 				.replace(/\.[^.]+$/, '')
 		));
-const exclusions = JSON.parse(readFileSync(join(root, 'tests/coverage/exclusions.json'), 'utf8'))[
-	tree
-];
+const exclusions = JSON.parse(
+	readFileSync(join(root, 'tests/coverage/exclusions.json'), 'utf8')
+).exclusions;
 
 const reportRoot = join(root, 'coverage');
 if (!existsSync(reportRoot)) {
@@ -159,11 +156,7 @@ const walk = (dir, deep) => {
 			sourceFiles.push(normalize(relative(root, p)));
 	}
 };
-if (tree === 'new') walk(join(root, 'src'), true);
-else {
-	walk(join(sourceRoot, 'web'), false);
-	walk(join(sourceRoot, 'web/public'), false);
-}
+walk(join(root, 'src'), true);
 const files = map.files().filter((f) => wanted(relative(root, f)));
 for (const rel of sourceFiles.filter(wanted))
 	if (!files.some((f) => relative(root, f) === rel))

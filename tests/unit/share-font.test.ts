@@ -48,10 +48,7 @@ function codepoints(font: Buffer): Set<number> {
 	return set;
 }
 
-const fonts =
-	(process.env.KOENAMI_TREE || 'old') === 'new'
-		? 'static/fonts'
-		: 'tests/old-tree/web/public/fonts';
+const fonts = 'static/fonts';
 const scorer = {
 	bands: { female: [10, 40] as [number, number], male: [-40, -10] as [number, number] },
 	metricBands: Object.fromEntries(

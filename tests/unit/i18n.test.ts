@@ -105,7 +105,7 @@ describe('i18n', () => {
 	// hreflang, manifest and sitemap links and the Open Graph address, which the browser
 	// goldens never see (they project the body).
 	it('the head links of the studio and the result page, per language', () => {
-		const tree = process.env.KOENAMI_TREE === 'new' ? 'src/lib/studio' : 'tests/old-tree/web';
+		const tree = 'src/lib/studio';
 		const read = (name: string) => readFileSync(`${tree}/${name}`, 'utf8');
 		const heads = {
 			studio: read(tree.startsWith('src') ? 'head.html' : 'index.html'),

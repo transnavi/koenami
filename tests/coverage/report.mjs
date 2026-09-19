@@ -13,7 +13,6 @@ import { fileURLToPath } from 'node:url';
 import MCR from 'monocart-coverage-reports';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const tree = process.env.KOENAMI_TREE || 'old';
 
 // Served URLs and checked-out paths both become repository paths; query strings (the
 // unit tests' cache-busting import) are not part of the file.
@@ -21,18 +20,12 @@ const sourcePath = (filePath) => {
 	const clean = filePath
 		.replace(/^127\.0\.0\.1[-:]\d+\//, '')
 		.replace(/(\.[cm]?js|\.ts|\.svelte)[^/]*$/, '$1')
-		.replace(/^.*?tests\/old-tree\//, '')
-		.replace(/^.*?(src\/lib\/)/, '$1');
-	// The files of web/public are served at the site's root.
-	if (tree === 'old') {
-		const rel = clean.startsWith('web/') ? clean : `web/${clean}`;
-		return rel === 'web/language.js' || rel === 'web/sw.js' ? `web/public/${rel.slice(4)}` : rel;
-	}
+		.replace(/^.*?(src\/(lib\/|service-worker))/, '$1');
 	return clean.replace(/^@fs\/.*?\/src\//, 'src/');
 };
 const entryFilter = (entry) => {
 	const url = entry.url || '';
-	if (url.startsWith('file://')) return /\/(tests\/old-tree\/web|src\/lib)\//.test(url);
+	if (url.startsWith('file://')) return /\/src\/(lib\/|service-worker)/.test(url);
 	const u = new URL(url);
 	return (
 		u.hostname === '127.0.0.1' &&
