@@ -11,6 +11,8 @@ How the folds close and how much noise mixes with the periodic source: breathy v
 
 ## What is known
 - The meta-analysis found mixed results for breathiness as a gender cue [[leung2018]]; morphing found aperiodicity (noise) had no systematic effect on perceived gender [[skuk2014]].
+- In 30 Brazilian trans women and 31 cis women, 14 MDVP measures on a sustained /a/ differed between the groups, with voice turbulence index lower and soft phonation index higher in the trans women, whose voices the authors describe as less aperiodic and softer than the cis women's [[villasboas2021]].
+- Perceptual rating in a trans-women cohort found F0 between 80 and 150 Hz more often, hypernasal resonance focus more frequent, and absence of roughness more frequent among the controls [[schwarz2018]].
 - In synthesis, breathier spectral tilt raised female judgements mainly when the implied tract was already short — tilt interacts with F0 and VTL rather than acting alone [[neuhaus2026]]; spectral level ranked third after F0 and formants [[skuk2014]].
 - Contact quotient from EGG tracks the "weight" dimension a voice teacher controls [[netzorg2025]]; teacher datasets model texture as pitch, resonance and weight [[netzorg2024]].
 - After training, some trans women increased L1–L2 (shifted tilt) and many increased loudness [[sodersten2026]]; after glottoplasty, jitter, shimmer and NHR increased [[yilmaz2021]] and roughness rose [[mora2018]].
