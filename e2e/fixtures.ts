@@ -65,8 +65,10 @@ type Studio = {
 	open: (
 		path?: string,
 		before?: (page: Page) => Promise<unknown>,
-		options?: { tour?: boolean }
+		options?: { tour?: boolean; ready?: boolean }
 	) => Promise<void>;
+	/** Waits until the page is wired (the Kit tree's hydration); `open` does this unless told not to. */
+	ready: () => Promise<void>;
 	/** History navigation with coverage preserved. */
 	back: () => Promise<void>;
 	forward: () => Promise<void>;
@@ -475,7 +477,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const open = async (
 			path = '/ja/',
 			before?: (page: Page) => Promise<unknown>,
-			options: { tour?: boolean } = {}
+			options: { tour?: boolean; ready?: boolean } = {}
 		) => {
 			await flush();
 			await install(page);
@@ -498,6 +500,12 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				prepared = true;
 				await before(page);
 			}
+			// `ready: false` returns as soon as the document has committed, before its
+			// scripts have run, for scenarios about that window; `ready()` is then the test's.
+			if (options.ready === false) {
+				await page.goto(path, { waitUntil: 'commit' });
+				return;
+			}
 			await page.goto(path);
 			await ready();
 		};
@@ -514,6 +522,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			choose,
 			rowAction,
 			open,
+			ready,
 			back,
 			forward,
 			audio: fixtureAudio

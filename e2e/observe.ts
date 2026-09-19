@@ -223,7 +223,10 @@ export async function storageDump() {
 		return value;
 	};
 	const idb: Record<string, unknown> = {};
-	const databases = (await indexedDB.databases?.().catch(() => [])) ?? [];
+	// A browser without IndexedDB (a startup scenario removes it) has no databases.
+	const databases =
+		(await (globalThis as { indexedDB?: IDBFactory }).indexedDB?.databases?.().catch(() => [])) ??
+		[];
 	if (databases.some((d) => d.name === 'koe-takes')) {
 		const db = await new Promise<IDBDatabase>((resolve, reject) => {
 			const r = indexedDB.open('koe-takes');
