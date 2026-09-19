@@ -2,9 +2,9 @@ import type { Catalogue } from './ja';
 
 /* 简体中文。键与 ja.js 相同；{n} 为数量，{one, other} 按数量选择，数组为条目。 */
 export default {
-	'page.title': 'Koenami · 女声・男声练习工具',
+	'page.title': 'Koenami · 女声·男声声音训练工具',
 	'page.description':
-		'面向想练成女声或男声的人、跨性别者、以及想试试另一种声音的人的免费声音训练工具。选一个参考声音，模仿着录下自己的声音，你的声音会显示在同一个声学空间里，与目标声音的距离一目了然。支持实时测量。',
+		'面向两声类（双声）爱好者、跨性别者，以及想尝试发出女声或男声的人的免费声音训练工具。选一个参考声音，模仿着录下自己的声音，你的声音会显示在与参考声音相同的声音地图上，与目标声音的距离一目了然。支持实时测量。',
 	'page.browser_requirements': '能使用麦克风的浏览器',
 	'page.publisher': 'とらんすナビ',
 
@@ -16,7 +16,7 @@ export default {
 	'toolbar.theme': '切换明暗',
 
 	'common.self': '自己',
-	'common.reference': '参考',
+	'common.reference': '参考声音',
 	'common.close': '关闭',
 	'common.save': '保存',
 
@@ -24,9 +24,10 @@ export default {
 	'profile.heading': '声音特征',
 	'profile.canvas_aria': '自己与参考声音五项指标的叠加图',
 	'profile.indicators_aria': '声音指标',
-	'profile.fit': '与参考的差距',
+	'profile.fit': '与参考声音的差异',
 	'profile.fit_title': '打开对比报告',
-	'profile.fit_title_ready': '与参考声音在五项指标上的标准化距离，0表示一致。打开对比报告。',
+	'profile.fit_title_ready':
+		'与参考声音在五项指标上的标准化距离（0表示完全一致）。点击即可打开对比报告。',
 	'verdict.heading': '声音判定',
 	'verdict.end_male': '男性化 −100',
 	'verdict.end_center': '0',
@@ -36,7 +37,7 @@ export default {
 	'graph.canvas_aria': '声音分布图。滚轮缩放，拖动旋转，Shift+拖动平移。',
 	'graph.projection_variance': '主成分',
 	'graph.projection_variance_title':
-		'沿整体离散最大的方向显示（主成分分析），不使用女性・男性标签。',
+		'沿数据整体方差最大的方向显示（主成分分析），不使用“女性/男性”标签。',
 	'graph.projection_contrast': '男女差异',
 	'graph.projection_contrast_title':
 		'横轴取女性化声音与男性化声音相距最远的方向，由带标签的参考声音计算。',
@@ -47,7 +48,7 @@ export default {
 	'graph.space_title_contrast': '由五项指标计算。横轴是女性化声音与男性化声音相距最远的方向。',
 	'graph.zoom_in': '放大',
 	'graph.zoom_out': '缩小',
-	'graph.find_me': '让视图对准声音的范围',
+	'graph.find_me': '缩放至声音分布范围',
 	'graph.reset': '重置视图',
 	'group.female': '女性化声音',
 	'group.male': '男性化声音',
@@ -57,16 +58,16 @@ export default {
 	'group.custom': '导入的声音',
 
 	'signal.aria': '波形与频谱对比',
-	'signal.view_aria': '信号视图',
+	'signal.view_aria': '音频波形视图',
 	'signal.pitch': '音高',
 	'signal.spectrogram': '语谱图',
 	'signal.spectrum': '频谱',
 	'signal.waveform': '波形',
 	'signal.both': '叠加',
-	'signal.both_title': '把两段拉到相同长度后叠加显示',
-	'signal.both_title_on': '各选区分别拉伸到0〜100%的长度，词的位置不会对齐。',
+	'signal.both_title': '将两段音频时长对齐后叠加显示',
+	'signal.both_title_on': '将各选区时长均归一化为0~100%，词语位置不会对齐。',
 	'signal.words': '词',
-	'signal.words_title': '转写并切分成词',
+	'signal.words_title': '语音转写与分词',
 	'signal.range_reset': '取消选区',
 	'signal.range_reset_title': '取消选区（Esc）',
 	'signal.canvas_aria':
@@ -81,46 +82,46 @@ export default {
 	'samples.group_aria': '参考声音的类型',
 	'samples.sort_aria': '排序',
 	'sort.name': '按说话人名称',
-	'sort.near': '最接近我的声音',
+	'sort.near': '按与我的声音接近程度排序',
 	'sort.low': '音高从低到高',
 	'sort.high': '音高从高到低',
 	'samples.search': '搜索',
 	'samples.search_aria': '搜索参考声音',
 	'samples.more': '显示更多',
-	'lab.teacher': '教师',
+	'lab.teacher': '导师',
 	'lab.pitch': '音高',
-	'lab.pitch_aria': '教师的音高',
+	'lab.pitch_aria': '导师声音的音高',
 	'lab.resonance': '共鸣',
-	'lab.resonance_aria': '教师的共鸣',
-	'lab.weight': '重量',
-	'lab.weight_aria': '教师的声音重量',
+	'lab.resonance_aria': '导师声音的共鸣',
+	'lab.weight': '声重',
+	'lab.weight_aria': '导师声音的声重',
 	'lab.low': '低',
 	'lab.med': '中',
 	'lab.high': '高',
 	'lab.light': '轻',
 	'lab.heavy': '重',
 	'jvs.banner_title': '添加JVS参考声音',
-	'jvs.banner_count': '100人 · 5,000段',
+	'jvs.banner_count': '100人 · 5,000段音频',
 	'jvs.download': '下载 ↗',
 	'jvs.download_title': 'JVS官方发布（ZIP，约3.5GB）',
 	'jvs.import': '导入',
-	'jvs.added': '已导入{n}段',
-	'jvs.cancelled': '已中止。已导入的音频保留。',
+	'jvs.added': '已导入{n}段音频',
+	'jvs.cancelled': '已中止。已导入的音频仍保留在本地。',
 	'jvs.index_failed': '无法获取JVS索引。',
 	'jvs.audio_missing': '找不到JVS音频，请重新添加。',
 	'jvs.no_match': '没有找到对应的JVS音频。请选择官方ZIP或解压后的文件夹。',
 	'jvs.quota': '存储空间不足。按说话人文件夹选择可以只导入一部分。',
-	'jvs.size_mismatch': '音频文件大小不一致。',
+	'jvs.size_mismatch': '音频文件大小与官方数据不符。',
 	'jvs.hash_mismatch': '有文件与官方音频不一致。请重新选择官方ZIP。',
 
 	'target.aria': '选中的参考声音',
-	'target.play': '播放参考',
-	'target.pause': '暂停参考',
+	'target.play': '播放参考音频',
+	'target.pause': '暂停参考音频',
 	'target.pick': '选择参考声音',
 	'target.favorite': '收藏',
 	'target.favorite_add': '把参考声音加入收藏',
 	'target.source': '来源',
-	'target.seek_aria': '参考的播放位置',
+	'target.seek_aria': '参考音频的播放位置',
 	'target.meta_synthetic': '合成语音',
 	'target.analysis_error': '参考分析：{message}',
 	'favorite.add': '加入收藏',
@@ -172,7 +173,7 @@ export default {
 	'settings.theme': '配色',
 	'theme.light': '浅色',
 	'theme.dark': '深色',
-	'theme.system': '跟随设备',
+	'theme.system': '跟随系统',
 	'settings.live_window': '实时分析的时长',
 	'settings.live_shape': '实时显示的时长',
 	'settings.seconds': '{n} 秒',
@@ -183,7 +184,7 @@ export default {
 	'settings.delete_all': '全部删除',
 
 	'info.about1':
-		'这是一个面向想练成女声或男声的人、跨性别者、以及想试试另一种声音的人的声音训练工具。选一个参考声音，模仿着录下自己的声音，你的声音会显示在同一个声学空间里，可以看到离目标声音有多近。实时测量能让你一边调整声音一边把握靠近的方向。',
+		'这是一个面向两声类（双声）爱好者、跨性别者，以及想尝试发出女声或男声的人的声音训练工具。选一个参考声音，模仿着录下自己的声音，你的声音会显示在与参考声音相同的声音地图上，可以看到离目标声音有多近。实时测量能让你一边调整发声，一边看着自己在地图上的位置实时移动，从而把握靠拢的方向。',
 	'info.about2': '参考声音除日语外，还收录了普通话、英语和韩语。免费开源，录音保存在浏览器里。',
 	'info.guide': '使用方法（日文） ↗',
 	'info.tutorial': '声音的原理与练习指南（日文） ↗',
@@ -198,7 +199,7 @@ export default {
 	'rename.failed': '无法重命名，请重试。',
 	'report.heading': '对比',
 	'report.save': '保存报告',
-	'metric.factors': '受什么影响',
+	'metric.factors': '影响因素',
 	'metric.caveats': '注意',
 
 	'share.heading': '声音判定',
@@ -209,7 +210,7 @@ export default {
 	'share.age_include': '包含在图片和链接中',
 	'share.age_note':
 		'这是年龄估计模型（audEERING）给出的参考值。对日语以及练习中的声音，它与「听起来几岁」是否一致尚未验证。音频只用于这次估计，不会被保存。',
-	'share.age_value': '{age}（每4秒的估计 {low}〜{high}）',
+	'share.age_value': '{age}（每4秒的估计 {low}~{high}）',
 	'share.age_years': '约{n}岁',
 	'share.group_aria': '分享结果',
 	'share.system': '分享…',
@@ -225,7 +226,7 @@ export default {
 	'share.history_note': '较早的录音没有记录判定条件（有声段长度等），这里未经条件检查直接显示。',
 	'share.note':
 		'链接只包含五项测量值，不会发送录音。判定的解读见<a href="/method.html" target="_blank" hreflang="ja">测量方法与来源</a>（日文）。',
-	'share.unavailable': '这种语言的参考声音无法计算判定',
+	'share.unavailable': '该语言的参考声音暂不支持计算判定',
 	'share.text': '我的声音是{verdict}（{leaning} {score}）',
 	'share.image_failed': '无法生成图片。',
 	'history.current': '显示中',
@@ -243,12 +244,12 @@ export default {
 	],
 	'metric.f0.caveats': [
 		'仅凭音高不能决定性别印象。同样的音高，共鸣不同印象就不同（<a href="https://doi.org/10.5112/jjlp.50.14" target="_blank" rel="noreferrer">櫻庭等 2009</a>）。',
-		'录进气声或机器噪声会出现极端值。请离麦克风10〜20cm，在安静的地方尝试。'
+		'录进气声或机器噪声会出现极端值。请离麦克风10~20cm，在安静的地方尝试。'
 	],
 	'metric.delta_f.label': '共鸣',
 	'metric.delta_f.unit': 'Hz ΔF',
 	'metric.delta_f.description':
-		'由前四个共振峰求得的间距。数值越大，通常对应更小的声道和更明亮的共鸣。元音也会影响它，用相同的话语比较更容易看出差别。',
+		'由前四个共振峰求得的间距。数值越大，通常对应更短的声道和更明亮的共鸣。元音也会影响它，用相同的话语比较更容易看出差别。',
 	'metric.delta_f.factors': [
 		'喉头高度（抬高会缩短声道，数值上升）',
 		'口的开合、舌位、唇形',
@@ -264,13 +265,13 @@ export default {
 		'声音中周期成分与噪声成分的比值（HNR）。气声和沙哑会使它降低，录音噪声也会。它不直接衡量声音的厚重感。',
 	'metric.hnr.factors': ['漏气（声带闭合方式）', '沙哑、粗糙', '录音噪声。环境音多时会下降'],
 	'metric.hnr.caveats': [
-		'它不是声音「厚重」或「粗壮」的指标。',
-		'把安静房间里录的参考声音和有噪声的自己的录音直接比较，会因为噪声而偏低。'
+		'它不是声音“厚重”或“粗壮”的指标。',
+		'把有噪声的自己的录音直接与安静房间里录的参考声音比较时，自己的数值会因为噪声而偏低。'
 	],
 	'metric.balance.label': '明亮度',
 	'metric.balance.unit': 'dB',
 	'metric.balance.description':
-		'1,000〜4,000 Hz相对于100〜1,000 Hz的能量。数值越大高频成分越多。元音、气流量、麦克风特性也有影响。',
+		'1,000~4,000 Hz相对于100~1,000 Hz的能量。数值越大高频成分越多。元音、气流量、麦克风特性也有影响。',
 	'metric.balance.factors': [
 		'口的开合与舌位',
 		'气流量与声带闭合方式',
@@ -283,7 +284,7 @@ export default {
 	'metric.pitch_span.label': '抑扬',
 	'metric.pitch_span.unit': '半音',
 	'metric.pitch_span.description':
-		'音高第10〜90百分位的宽度。它可能与女性化印象有关，但日语的音高重音、汉语的声调、句子类型和情绪也都会改变它，所以并非越大越好。标准差和停顿可在报告中查看。',
+		'音高第10~90百分位的宽度。它可能与女性化印象有关，但日语的音高重音、汉语的声调、句子类型和情绪也都会改变它，所以并非越大越好。标准差和停顿可在报告中查看。',
 	'metric.pitch_span.factors': [
 		'句子类型与情绪',
 		'语言。日语的音高重音、汉语的声调会改变宽度',
@@ -312,9 +313,9 @@ export default {
 	'help.speakers': '参考说话人数',
 	'help.male_band': '男性化参考 · 中间80%',
 	'help.female_band': '女性化参考 · 中间80%',
-	'help.band_range': '{low}〜{high}',
+	'help.band_range': '{low}~{high}',
 
-	'corpus.clips': '{n}段',
+	'corpus.clips': '{n}段音频',
 	'corpus.speakers': '{n}人',
 	'corpus.count': '{clips} · {speakers}',
 
@@ -322,13 +323,13 @@ export default {
 	'quality.longer': '请再多说一会儿。',
 	'quality.resonance': '无法稳定地测量共鸣。',
 	'quality.waiting': '正在等待声音…',
-	'verdict.unavailable': '这种语言无法计算',
+	'verdict.unavailable': '当前语言暂不支持判定计算',
 	'verdict.record': '录音后显示',
 	'verdict.analyzing': '分析中',
 	'verdict.not_yet': '还不能判定',
 	'verdict.gate': '{label} {value}（{need}）',
 	'verdict.female': '女性化声音',
-	'verdict.androgynous': '中间的声音',
+	'verdict.androgynous': '中性声音',
 	'verdict.male': '男性化声音',
 	'leaning.female': '偏女性',
 	'leaning.androgynous': '中间',
@@ -348,18 +349,18 @@ export default {
 	'report.quiet_mean': '静音段平均 · 秒',
 	'report.pace': '语速 · {unit}',
 	'report.note_pitch':
-		'参考的音高比自己{direction}{diff}半音。放慢速度听，用不勉强的音高试试同一句话。',
+		'参考声音的音高比自己{direction}{diff}个半音。建议放慢速度聆听，用自己不费力的音高试试同一句话。',
 	'report.higher': '高',
 	'report.lower': '低',
 	'report.note_resonance':
 		'共鸣估计值：自己 {own}，参考 {ref} Hz ΔF。选相同的元音或短词，在保持音高的同时听辨共鸣的差别。',
 	'report.note_intonation': '抑扬也会随语言和句子内容变化。请读同一段文字，比较重音、句尾和停顿。',
-	'report.distance_caption': '与参考的声学差距 · 0表示一致',
+	'report.distance_caption': '与参考声音的声学差异 · 0表示完全一致',
 	'report.distance_note':
 		'音高、共鸣、质感、明亮度、抑扬五项指标标准化后的距离。它不评价女性化程度或自然度。',
 	'report.share': '这两段声音的差别：图中显示 {shown}% · 省略 {omitted}%',
 	'report.share_note':
-		'五维差异的平方按图中显示与省略的方向拆分的比例。图中重叠的声音，在省略的方向上仍可能相距很远。',
+		'该比例是五维空间中的平方差在图中显示方向与省略方向上的分配占比。即使在图中看似重叠，在被省略的方向上两者仍可能相距较远。',
 	'report.col_metric': '指标',
 	'report.col_own': '自己',
 	'report.col_ref': '参考',
@@ -368,7 +369,7 @@ export default {
 	'report.languages': '录音语言 {own} · 参考语言 {ref}',
 	'report.density': '在{group}参考分布中的密度排名：第{percentile}百分位（不是听者的评价）。',
 	'report.projection':
-		'分布图把五维投影到{dimension}维，显示的方差为{variance}%。省略方向上的差别可在左侧指标中查看。',
+		'分布图将五维空间投影到{dimension}维，所呈现的方差占比为{variance}%。省略方向上的差别可在左侧指标中查看。',
 	'report.file_title': '声音对比',
 	'report.method_link': '测量方法的研究',
 
@@ -383,9 +384,9 @@ export default {
 	'error.ab_wait': '请等两段音频都加载完成。',
 	'error.words_first': '请先导入音频。',
 	'error.file_size': '请选择小于150 MB的音频。',
-	'error.duration': '请选择0.25秒〜15分钟的音频。',
+	'error.duration': '请选择0.25秒~15分钟的音频。',
 	'error.too_long': '请选择{n}分钟以内的音频。',
-	'error.too_short': '请至少录0.25秒。',
+	'error.too_short': '录音时长请至少达到0.25秒。',
 	'error.mic_denied': '请在浏览器的麦克风设置中允许本页面使用麦克风。',
 	'error.take_save': '无法保存录音。请下载需要的音频。',
 	'error.take_save_retry': '无法保存录音。请先下载音频，再检查存储空间。',
@@ -429,12 +430,11 @@ export default {
 	'card.male': '男性化 −100',
 	'card.center': '0',
 	'card.female': '女性化 +100',
-	'card.male_refs': '男性化参考',
-	'card.female_refs': '女性化参考',
-
+	'card.male_refs': '男性化参考声音',
+	'card.female_refs': '女性化参考声音',
 	'result.title': 'Koenami · 声音判定',
 	'result.description':
-		'用Koenami测得的声音判定：这个声音在女性化、男性化和中间的参考声音中处于什么位置。',
+		'用Koenami测得的声音判定：这个声音在女性化、男性化及中性参考声音中处于什么位置。',
 	'result.og_description': '这个声音在女性化与男性化的参考声音中处于什么位置。',
 	'result.share_description': '{text}。这个声音在女性化与男性化的参考声音中处于什么位置。',
 	'result.window_title': 'Koenami · {verdict}（{leaning} {score}）',
@@ -450,15 +450,15 @@ export default {
 	'result.metrics_intro': '这个声音的数值，与参考说话人的中间80%（女性化声音・男性化声音）并列。',
 	'result.col_metric': '指标',
 	'result.col_this': '这个声音',
-	'result.col_female': '女性化参考',
-	'result.col_male': '男性化参考',
+	'result.col_female': '女性化参考声音',
+	'result.col_male': '男性化参考声音',
 	'result.notes_heading': '如何理解这个判定',
 	'result.notes_p1':
-		'数值是把这个声音的五项指标投影到由参考说话人求得的「男女差异」方向（女性化声音与男性化声音相距最远的方向）上的位置。以男性化参考的中位数与女性化参考的中位数正中间为0，男性化参考的中位数为−50，女性化参考的中位数为+50，按线性刻度在−100〜+100的范围内显示。+30以上称为「女性化声音」，−30以下称为「男性化声音」，两者之间称为「中间的声音」。',
+		'数值是把这个声音的五项指标投影到由参考说话人求得的“男女差异”方向（女性化声音与男性化声音相距最远的方向）上的位置。以男性化参考声音的中位数与女性化参考声音的中位数正中间为0，男性化参考声音的中位数为−50，女性化参考声音的中位数为+50，按线性刻度在−100~+100的范围内显示。+30以上称为“女性化声音”，−30以下称为“男性化声音”，两者之间称为“中性声音”。',
 	'result.notes_p2':
 		'两个方向都可以作为目标。想练女声就朝＋的方向，想练男声就朝−的方向，想淡化性别印象或练中性声音就朝0靠近。',
 	'result.notes_li1':
-		'这是由五项声学指标算出的位置。听者听起来如何，并未测量。同一个人也会随文本、说话方式、麦克风和环境音而变化。',
+		'这是由五项声学指标算出的位置，并不代表听者的主观听感。同一个人也会随文本、说话方式、麦克风和环境音而变化。',
 	'result.notes_li2': '参考声音的分布不是一般人群的标准值。各语言的参考不同，数值不能跨语言比较。',
 	'result.notes_li3': '录音短或噪声多时，共鸣和抑扬的数值不稳定。请把同一句话录几次再比较。',
 	'result.notes_footer':
@@ -466,11 +466,11 @@ export default {
 	'result.unavailable': '无法显示这个结果',
 	'result.no_params': '链接中不包含测量值。',
 	'result.no_library': '无法加载参考声音列表。',
-	'result.no_verdict': '这种语言的参考声音无法计算判定。',
+	'result.no_verdict': '该语言的参考声音暂不支持计算判定。',
 	'result.version_note': '这个链接是用判定方式v{from}生成的，已按当前方式（v{to}）重新计算。',
 
-	'manifest.name': 'Koenami · 女声・男声练习工具',
-	'manifest.description': '模仿参考声音录音，查看与目标声音距离的声音训练工具。',
+	'manifest.name': 'Koenami · 女声·男声声音训练工具',
+	'manifest.description': '模仿参考声音录音，在地图上查看与目标声音距离的声音训练工具。',
 	'manifest.screenshot_wide': 'Koenami的工作台：声音分布、五项指标、参考声音列表、波形',
 	'manifest.screenshot_narrow': '手机上的工作台',
 
