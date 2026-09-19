@@ -1,0 +1,158 @@
+{
+ "url": "/r?v=1&l=en&f0=163.54&df=1080.72&hnr=10.9&bal=-16.89&sp=5.86&age=27",
+ "title": "Koenami · voice verdict",
+ "lang": "en",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "result-verdict": {
+   "tag": "h1",
+   "class": "",
+   "attrs": {},
+   "text": "This result cannot be shown"
+  },
+  "result-score": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "—"
+  },
+  "result-age": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Rough perceived age: A reference value from an age estimation model, unverified for Japanese voices and voices in training."
+  },
+  "result-image": {
+   "tag": "img",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "result-status": {
+   "tag": "figcaption",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": "The references in this language cannot give a verdict."
+  },
+  "result-actions": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Measure your own voice Copy link Save image"
+  },
+  "result-try": {
+   "tag": "a",
+   "class": "",
+   "attrs": {
+    "href": "/en/"
+   },
+   "text": "Measure your own voice"
+  },
+  "result-intents": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "result-copy": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "Copy link"
+  },
+  "result-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "Save image"
+  },
+  "result-metrics": {
+   "tag": "section",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "The five measurements This voice next to the central 80% of the reference speakers (feminine and masculine). Measurement This voice Feminine references Masculine references"
+  },
+  "result-metric-rows": {
+   "tag": "tbody",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "result-notes": {
+   "tag": "section",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "How to read this verdict The number is the position of this voice's five measurements along the contrast direction computed from the reference speakers (the direction that separates feminine and masculine voices the most). On a linear scale, 0 is exactly halfway between the masculine and feminine medians, −50 is the masculine median and +50 the feminine median; the display runs from −100 to +100. +30 and above is called a feminine voice, −30 and below a masculine voice, and the range between a voice in between. Either direction is a goal. Aim for + for a feminine voice, − for a masculine voice"
+  },
+  "result-version": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "v1"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-tour": {
+    "done": true
+   }
+  },
+  "idb": {}
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/library",
+   "query": "lang=en",
+   "status": 200
+  }
+ ],
+ "media": [],
+ "errors": [],
+ "head": [
+  "meta viewport: width=device-width,initial-scale=1",
+  "title: Koenami · voice verdict",
+  "meta description: A voice verdict measured with Koenami: where this voice sits among feminine, masculine and in-between references.",
+  "meta robots: noindex",
+  "meta og:site_name: Koenami",
+  "meta og:title: Koenami · voice verdict",
+  "meta og:description: Where this voice sits among feminine and masculine references.",
+  "meta og:type: website",
+  "meta og:locale: en_US",
+  "meta og:url: https://koe.transnavi.jp/r",
+  "meta og:image: https://koe.transnavi.jp/og-image.png",
+  "meta og:image:width: 1200",
+  "meta og:image:height: 630",
+  "meta og:image:alt: Koenami · voice verdict",
+  "meta twitter:card: summary_large_image",
+  "meta twitter:title: Koenami · voice verdict",
+  "meta twitter:description: Where this voice sits among feminine and masculine references.",
+  "meta twitter:image: https://koe.transnavi.jp/og-image.png"
+ ]
+}

@@ -1,0 +1,97 @@
+{
+ "url": "/guide.html",
+ "title": "Koenami · 使い方",
+ "lang": "ja",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "screen": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "画面の見方"
+  },
+  "flow": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "練習の流れ"
+  },
+  "recordings": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "録音の保存と履歴"
+  },
+  "import": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "見本を増やす"
+  },
+  "settings": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "設定"
+  },
+  "trouble": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "うまく測れないとき"
+  },
+  "keys": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "ショートカット"
+  },
+  "privacy": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "音声の扱い"
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-tour": {
+    "done": true
+   }
+  },
+  "idb": {}
+ },
+ "network": [],
+ "media": [],
+ "errors": [],
+ "head": [
+  "meta viewport: width=device-width,initial-scale=1",
+  "title: Koenami · 使い方",
+  "meta description: Koenamiの使い方。画面の見方、見本を選んで録音し見比べる練習の流れ、リアルタイム測定、録音の保存、見本の追加、設定、うまく測れないときの対処、ショートカット。",
+  "link canonical: https://koe.transnavi.jp/guide.html",
+  "meta og:site_name: Koenami",
+  "meta og:title: Koenami · 使い方",
+  "meta og:description: Koenamiの使い方。画面の見方、見本を選んで録音し見比べる練習の流れ、リアルタイム測定、録音の保存、見本の追加、設定、うまく測れないときの対処、ショートカット。",
+  "meta og:type: article",
+  "meta og:locale: ja_JP",
+  "meta og:url: https://koe.transnavi.jp/guide.html",
+  "meta og:image: https://koe.transnavi.jp/og-guide.png",
+  "meta og:image:width: 1200",
+  "meta og:image:height: 630",
+  "meta og:image:alt: Koenamiの使い方",
+  "meta twitter:card: summary_large_image",
+  "meta twitter:title: Koenami · 使い方",
+  "meta twitter:description: Koenamiの使い方。画面の見方、見本を選んで録音し見比べる練習の流れ、リアルタイム測定、録音の保存、見本の追加、設定、うまく測れないときの対処、ショートカット。",
+  "meta twitter:image: https://koe.transnavi.jp/og-guide.png",
+  "ld+json: {\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://koe.transnavi.jp/#website\",\"url\":\"https://koe.transnavi.jp/\",\"name\":\"Koenami\",\"inLanguage\":\"ja\",\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://transnavi.jp/#organization\",\"name\":\"とらんすナビ\",\"url\":\"https://transnavi.jp/\",\"logo\":\"https://transnavi.jp/favicon.svg\"},{\"@type\":\"TechArticle\",\"@id\":\"https://koe.transnavi.jp/guide.html#article\",\"url\":\"https://koe.transnavi.jp/guide.html\",\"headline\":\"使い方\",\"name\":\"Koenami · 使い方\",\"description\":\"Koenamiの使い方。画面の見方、見本を選んで録音し見比べる練習の流れ、リアルタイム測定、録音の保存、見本の追加、設定、うまく測れないときの対処、ショートカット。\",\"inLanguage\":\"ja\",\"mainEntityOfPage\":\"https://koe.transnavi.jp/guide.html\",\"image\":\"https://koe.transnavi.jp/og-guide.png\",\"author\":{\"@id\":\"https://transnavi.jp/#organization\"},\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"},\"isPartOf\":{\"@id\":\"https://koe.transnavi.jp/#website\"}},{\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Koenami\",\"item\":\"https://koe.transnavi.jp/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"使い方\",\"item\":\"https://koe.transnavi.jp/guide.html\"}]}]}",
+  "link sitemap: /sitemap.xml",
+  "link manifest: /site.webmanifest"
+ ]
+}

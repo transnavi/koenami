@@ -1,0 +1,1687 @@
+{
+ "url": "/en/",
+ "title": "Koenami · voice training for feminine and masculine voices",
+ "lang": "en",
+ "theme": "light",
+ "dialogs": [],
+ "focus": "body",
+ "vars": {
+  "--reference": "#d56498",
+  "--self": "#6b4aaf",
+  "--accent": "#1a78c2"
+ },
+ "elements": {
+  "i-book": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-mic": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-stop": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-play": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-pause": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-upload": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-download": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-sun": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-moon": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-globe": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-info": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-share": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-help": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-search": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-close": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-gear": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-history": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-reset": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-focus": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-plus": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-minus": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-link": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-wave": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-chevron": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "i-check": {
+   "tag": "symbol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "language": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "Language (interface and references)"
+   },
+   "value": "en",
+   "options": [
+    {
+     "value": "ja",
+     "text": "日本語",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "zh-CN",
+     "text": "普通话",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "en",
+     "text": "English",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "ko",
+     "text": "한국어",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "lab",
+     "text": "Voice lab",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "English",
+   "expanded": "false",
+   "text": "日本語 普通话 English 한국어 Voice lab"
+  },
+  "corpus-count": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "20 clips · 20 speakers"
+  },
+  "tour-restart": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Screen guide",
+    "aria-label": "Screen guide"
+   },
+   "text": ""
+  },
+  "share-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "The references in this language cannot give a verdict",
+    "aria-label": "Share the verdict",
+    "disabled": ""
+   },
+   "text": ""
+  },
+  "settings-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Settings",
+    "aria-label": "Settings"
+   },
+   "text": ""
+  },
+  "info-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Sources and related tools",
+    "aria-label": "Sources and related tools"
+   },
+   "text": ""
+  },
+  "theme-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Switch light and dark",
+    "aria-label": "Switch light and dark"
+   },
+   "text": ""
+  },
+  "verdict-readout": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Share the verdict",
+    "disabled": ""
+   },
+   "text": "Voice verdict Not available in this language Masculine −100 0 Feminine +100"
+  },
+  "verdict-main": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "data-verdict": ""
+   },
+   "text": "Not available in this language"
+  },
+  "verdict-word": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "Not available in this language"
+  },
+  "verdict-number": {
+   "tag": "b",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "verdict-gate": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "verdict-band-male": {
+   "tag": "i",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "verdict-band-female": {
+   "tag": "i",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "verdict-dot": {
+   "tag": "i",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "profile-canvas": {
+   "tag": "canvas",
+   "class": "",
+   "attrs": {
+    "aria-label": "Your five measurements overlaid on the reference"
+   },
+   "text": ""
+  },
+  "indicators": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "role": "group",
+    "aria-label": "Voice measurements"
+   },
+   "text": "Pitch — Hz 270 Resonance — Hz ΔF 1143 Texture — dB 11.0 Brightness — dB -20.9 Intonation — st 9.4"
+  },
+  "report-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Open the comparison report"
+   },
+   "text": "Distance to reference —"
+  },
+  "fit-value": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "—"
+  },
+  "voice-map": {
+   "tag": "canvas",
+   "class": "",
+   "attrs": {
+    "tabindex": "0",
+    "aria-label": "Voice map. Scroll to zoom, drag to rotate, Shift+drag to pan. The outline is the central 80% of a 1.2-second moving median."
+   },
+   "text": ""
+  },
+  "projection-controls": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Principal Contrast"
+  },
+  "auto-rotate": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "false",
+    "title": "Toggle the 3D auto-rotation"
+   },
+   "text": "↻ Auto-rotate"
+  },
+  "space-label": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "title": "Principal component space of the five measurements"
+   },
+   "text": "Voice map"
+  },
+  "group-legend": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "Feminine voices Masculine voices You"
+  },
+  "show-female": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox",
+    "checked": ""
+   },
+   "value": "on",
+   "checked": true,
+   "text": ""
+  },
+  "show-male": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox",
+    "checked": ""
+   },
+   "value": "on",
+   "checked": true,
+   "text": ""
+  },
+  "map-tooltip": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "zoom-in": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Zoom in",
+    "aria-label": "Zoom in"
+   },
+   "text": ""
+  },
+  "zoom-out": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Zoom out",
+    "aria-label": "Zoom out"
+   },
+   "text": ""
+  },
+  "find-me": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Fit the view to the voices",
+    "aria-label": "Fit the view to the voices"
+   },
+   "text": ""
+  },
+  "reset-view": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Reset the view",
+    "aria-label": "Reset the view"
+   },
+   "text": ""
+  },
+  "quality-state": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "signal-view": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "Signal view"
+   },
+   "value": "pitch",
+   "options": [
+    {
+     "value": "pitch",
+     "text": "Pitch",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "spectrogram",
+     "text": "Spectrogram",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "spectrum",
+     "text": "Spectrum",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "waveform",
+     "text": "Waveform",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "Pitch",
+   "expanded": "false",
+   "text": "Pitch Spectrogram Spectrum Waveform"
+  },
+  "signal-own": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "false"
+   },
+   "text": "You"
+  },
+  "signal-both": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "true",
+    "title": "Each selection is stretched to 0–100% of its length. Word positions do not line up."
+   },
+   "text": "Overlay"
+  },
+  "signal-ref": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "false"
+   },
+   "text": "Reference"
+  },
+  "words-button": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Transcribe and split into words"
+   },
+   "text": "Words"
+  },
+  "range-label": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "0:03"
+  },
+  "range-reset": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Clear the selection (Esc)",
+    "aria-label": "Clear the selection",
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "signal-canvas": {
+   "tag": "canvas",
+   "class": "",
+   "attrs": {
+    "tabindex": "0",
+    "aria-label": "Click the waveform to seek, drag to select a range. Left and right arrow keys move the playback position. Click the pitch scale to switch between Hz and note names."
+   },
+   "text": ""
+  },
+  "word-list": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "role": "group",
+    "aria-label": "Estimated word positions"
+   },
+   "text": ""
+  },
+  "sample-browser": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {
+    "aria-label": "Choose a reference"
+   },
+   "open": false,
+   "text": "Reference voices 10 Feminine voices Androgynous voices Masculine voices All voices ★ Favorites Imported voices By speaker name Closest to your voice Lowest pitch first Highest pitch first Teacher 001 002 003 DSFD Pitch Low Middle High Resonance Low Middle High Weight Light Middle Heavy Add the JVS references 100 speakers · 5,000 clips Download ↗ Import F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆ F 004 1 F 006 1 F 002 1 F 001 1 F 007 1 F 003 1 F 005 1 F 008 1 F 009 1 Show more"
+  },
+  "library-count": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "10"
+  },
+  "add-reference": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Import reference audio",
+    "aria-label": "Import reference audio"
+   },
+   "text": ""
+  },
+  "library-group": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "Kind of reference"
+   },
+   "value": "female",
+   "options": [
+    {
+     "value": "female",
+     "text": "Feminine voices",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "androgynous",
+     "text": "Androgynous voices",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "male",
+     "text": "Masculine voices",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "all",
+     "text": "All voices",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "favorites",
+     "text": "★ Favorites",
+     "disabled": false,
+     "data": {
+      "data-divider": ""
+     }
+    },
+    {
+     "value": "custom",
+     "text": "Imported voices",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "Feminine voices",
+   "expanded": "false",
+   "text": "Feminine voices Androgynous voices Masculine voices All voices ★ Favorites Imported voices"
+  },
+  "reference-upload": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "file",
+    "aria-label": "Import reference audio",
+    "hidden": ""
+   },
+   "value": "",
+   "files": 0,
+   "text": ""
+  },
+  "sort": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "Sort order"
+   },
+   "value": "high",
+   "options": [
+    {
+     "value": "name",
+     "text": "By speaker name",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "near",
+     "text": "Closest to your voice",
+     "disabled": true,
+     "data": {}
+    },
+    {
+     "value": "low",
+     "text": "Lowest pitch first",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "high",
+     "text": "Highest pitch first",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "Highest pitch first",
+   "expanded": "false",
+   "text": "By speaker name Closest to your voice Lowest pitch first Highest pitch first"
+  },
+  "search": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "search",
+    "placeholder": "Search",
+    "aria-label": "Search references"
+   },
+   "value": "",
+   "text": ""
+  },
+  "research-controls": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Teacher 001 002 003 DSFD Pitch Low Middle High Resonance Low Middle High Weight Light Middle Heavy"
+  },
+  "teacher": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "Teacher"
+   },
+   "value": "all",
+   "options": [
+    {
+     "value": "all",
+     "text": "Teacher",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "001",
+     "text": "001",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "002",
+     "text": "002",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "003",
+     "text": "003",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "DSFD",
+     "text": "DSFD",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "Teacher",
+   "expanded": "false",
+   "text": "Teacher 001 002 003 DSFD"
+  },
+  "teacher-pitch": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "Teacher's pitch"
+   },
+   "value": "all",
+   "options": [
+    {
+     "value": "all",
+     "text": "Pitch",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "low",
+     "text": "Low",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "med",
+     "text": "Middle",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "high",
+     "text": "High",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "Pitch",
+   "expanded": "false",
+   "text": "Pitch Low Middle High"
+  },
+  "teacher-resonance": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "Teacher's resonance"
+   },
+   "value": "all",
+   "options": [
+    {
+     "value": "all",
+     "text": "Resonance",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "low",
+     "text": "Low",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "med",
+     "text": "Middle",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "high",
+     "text": "High",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "Resonance",
+   "expanded": "false",
+   "text": "Resonance Low Middle High"
+  },
+  "teacher-weight": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "Teacher's vocal weight"
+   },
+   "value": "all",
+   "options": [
+    {
+     "value": "all",
+     "text": "Weight",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "low",
+     "text": "Light",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "med",
+     "text": "Middle",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "high",
+     "text": "Heavy",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "Weight",
+   "expanded": "false",
+   "text": "Weight Light Middle Heavy"
+  },
+  "sample-scroll": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": "Add the JVS references 100 speakers · 5,000 clips Download ↗ Import F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆ F 004 1 F 006 1 F 002 1 F 001 1 F 007 1 F 003 1 F 005 1 F 008 1 F 009 1 Show more"
+  },
+  "jvs-banner": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Add the JVS references 100 speakers · 5,000 clips Download ↗ Import"
+  },
+  "jvs-download": {
+   "tag": "a",
+   "class": "",
+   "attrs": {
+    "title": "Official JVS release (ZIP, about 3.5 GB)",
+    "href": "https://drive.google.com/file/d/19oAw8wWn3Y7z6CKChRdAyGOB9yupL_Xt/view",
+    "target": "_blank",
+    "rel": "noreferrer"
+   },
+   "text": "Download ↗"
+  },
+  "jvs-banner-import": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Import"
+  },
+  "sample-list": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "rows": {
+    "count": 22,
+    "head": [
+     "details#en:female:1c1f78f06fdf|speaker-folder||true|F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆",
+     "summary#||||F 010 1",
+     "button#common_voice_en_17839501|sample-row|true||Roll the dice, please. 270 Hz · 0:03",
+     "button#|favorite|false||☆",
+     "details#en:female:470a80e28937|speaker-folder||false|F 004 1",
+     "summary#||||F 004 1",
+     "details#en:female:a2f52a649528|speaker-folder||false|F 006 1",
+     "summary#||||F 006 1",
+     "details#en:female:bcb7c332cbfa|speaker-folder||false|F 002 1",
+     "summary#||||F 002 1",
+     "details#en:female:03ebc9c1104d|speaker-folder||false|F 001 1",
+     "summary#||||F 001 1",
+     "details#en:female:033b81304fd7|speaker-folder||false|F 007 1",
+     "summary#||||F 007 1",
+     "details#en:female:a2b0960b9858|speaker-folder||false|F 003 1",
+     "summary#||||F 003 1",
+     "details#en:female:0edcaafb8336|speaker-folder||false|F 005 1",
+     "summary#||||F 005 1",
+     "details#en:female:826c4a40b1c1|speaker-folder||false|F 008 1",
+     "summary#||||F 008 1",
+     "details#en:female:6d06f0216c70|speaker-folder||false|F 009 1",
+     "summary#||||F 009 1"
+    ],
+    "tail": [
+     "summary#||||F 005 1",
+     "details#en:female:826c4a40b1c1|speaker-folder||false|F 008 1",
+     "summary#||||F 008 1",
+     "details#en:female:6d06f0216c70|speaker-folder||false|F 009 1",
+     "summary#||||F 009 1"
+    ]
+   }
+  },
+  "load-more": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Show more"
+  },
+  "play-reference": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Play the reference",
+    "aria-label": "Play the reference"
+   },
+   "text": ""
+  },
+  "samples-toggle": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Choose a reference"
+   },
+   "text": "F 010 270 Hz · 1143 ΔF"
+  },
+  "selected-name": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": "F 010"
+  },
+  "selected-meta": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "270 Hz · 1143 ΔF"
+  },
+  "favorite-selected": {
+   "tag": "button",
+   "class": "favorite",
+   "attrs": {
+    "aria-label": "Add to favorites",
+    "title": "Favorite",
+    "aria-pressed": "false"
+   },
+   "text": "☆"
+  },
+  "source-link": {
+   "tag": "a",
+   "class": "",
+   "attrs": {
+    "title": "Source",
+    "aria-label": "Source",
+    "target": "_blank",
+    "rel": "noreferrer",
+    "href": "https://huggingface.co/datasets/fsicoli/common_voice_17_0/resolve/8262c16bf297c87a9cd88c51997c4758ed7a8ba2/audio/en/test/en_test_0.tar"
+   },
+   "text": ""
+  },
+  "reference-seek": {
+   "followsPlayback": true
+  },
+  "reference-time": {
+   "followsPlayback": true
+  },
+  "selected-text": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "lang": "en"
+   },
+   "text": "Roll the dice, please."
+  },
+  "record": {
+   "tag": "button",
+   "class": "record-button",
+   "attrs": {
+    "title": "Record (R)",
+    "aria-label": "New recording",
+    "aria-pressed": "false"
+   },
+   "text": ""
+  },
+  "play-mine": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Play your voice (Space)",
+    "aria-label": "Play your voice",
+    "disabled": ""
+   },
+   "text": "Play"
+  },
+  "take-select": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {
+    "aria-label": "Recordings",
+    "title": "Recordings",
+    "data-display-label": "Recordings"
+   },
+   "value": "",
+   "options": [],
+   "trigger": "Recordings",
+   "expanded": "false",
+   "text": ""
+  },
+  "timer": {
+   "followsPlayback": true
+  },
+  "state": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "live-mode": {
+   "tag": "button",
+   "class": "live-button",
+   "attrs": {
+    "role": "switch",
+    "aria-checked": "false",
+    "title": "Plot the microphone in real time",
+    "aria-label": "Start real-time measurement"
+   },
+   "text": "Real-time <time>"
+  },
+  "live-mode-label": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": "Real-time"
+  },
+  "live-time": {
+   "followsPlayback": true
+  },
+  "loopback": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "aria-pressed": "false",
+    "aria-label": "Hear your own voice",
+    "title": "Hear your own voice (headphones recommended)",
+    "disabled": ""
+   },
+   "text": ""
+  },
+  "playback-speed": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "range",
+    "min": "0.5",
+    "max": "1.5",
+    "step": "0.05",
+    "aria-label": "Playback speed"
+   },
+   "value": "1",
+   "text": ""
+  },
+  "speed-reset": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Back to normal speed",
+    "aria-label": "Back to normal speed"
+   },
+   "text": "1×"
+  },
+  "compare-ab": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "Play the reference, then your voice",
+    "aria-label": "Play the reference, then your voice",
+    "aria-pressed": "false"
+   },
+   "text": "A/B"
+  },
+  "upload": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "file",
+    "aria-label": "Load an audio file"
+   },
+   "value": "",
+   "files": 0,
+   "text": ""
+  },
+  "player": {
+   "tag": "audio",
+   "class": "",
+   "attrs": {},
+   "media": {
+    "src": null,
+    "paused": true,
+    "rate": 1,
+    "volume": 1,
+    "muted": false,
+    "loop": false
+   },
+   "text": ""
+  },
+  "reference-player": {
+   "tag": "audio",
+   "class": "",
+   "attrs": {
+    "src": "/samples/common_voice_en_17839501.mp3"
+   },
+   "media": {
+    "src": "/samples/common_voice_en_17839501.mp3",
+    "paused": true,
+    "rate": 1,
+    "volume": 1,
+    "muted": false,
+    "loop": false
+   },
+   "text": ""
+  },
+  "notice": {
+   "tag": "div",
+   "class": "toast",
+   "attrs": {
+    "role": "status",
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "live-status": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "role": "status",
+    "aria-live": "polite"
+   },
+   "text": ""
+  },
+  "live-alert": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "role": "alert"
+   },
+   "text": ""
+  },
+  "import-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "Add a reference × Choose an audio file ↗ Add JVS Download from the official site ↗ Choose the official ZIP or the folder it unpacks to. Adds 100 speakers and 5,000 clips. Choose ZIP Choose folder Stop Use of the audio follows the JVS terms. Imported references are stored in this browser."
+  },
+  "import-audio": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Choose an audio file ↗"
+  },
+  "choose-jvs-zip": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Choose ZIP"
+  },
+  "choose-jvs-folder": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Choose folder"
+  },
+  "jvs-zip": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "file",
+    "hidden": ""
+   },
+   "value": "",
+   "files": 0,
+   "text": ""
+  },
+  "jvs-folder": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "file",
+    "hidden": ""
+   },
+   "value": "",
+   "files": 0,
+   "text": ""
+  },
+  "jvs-progress": {
+   "tag": "div",
+   "class": "",
+   "attrs": {
+    "role": "progressbar",
+    "aria-label": "JVS import",
+    "aria-valuemin": "0",
+    "aria-valuemax": "100",
+    "aria-valuenow": "0",
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "jvs-status": {
+   "tag": "span",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "cancel-jvs": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Stop"
+  },
+  "settings-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "Settings Colors Light Dark Follow the device Real-time analysis window 1.5 s 3 s 6 s 12 s Real-time trail length 5 s Match playback volume Export measurements Recordings Download all Delete all"
+  },
+  "theme-select": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {},
+   "value": "system",
+   "options": [
+    {
+     "value": "light",
+     "text": "Light",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "dark",
+     "text": "Dark",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "system",
+     "text": "Follow the device",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "Follow the device",
+   "expanded": "false",
+   "text": "Light Dark Follow the device"
+  },
+  "live-window": {
+   "tag": "koe-select",
+   "class": "",
+   "attrs": {},
+   "value": "3",
+   "options": [
+    {
+     "value": "1.5",
+     "text": "1.5 s",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "3",
+     "text": "3 s",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "6",
+     "text": "6 s",
+     "disabled": false,
+     "data": {}
+    },
+    {
+     "value": "12",
+     "text": "12 s",
+     "disabled": false,
+     "data": {}
+    }
+   ],
+   "trigger": "3 s",
+   "expanded": "false",
+   "text": "1.5 s 3 s 6 s 12 s"
+  },
+  "live-shape-window": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "range",
+    "min": "1",
+    "max": "30",
+    "step": "1",
+    "aria-valuetext": "5 s"
+   },
+   "value": "5",
+   "text": ""
+  },
+  "live-shape-duration": {
+   "tag": "output",
+   "class": "",
+   "attrs": {
+    "for": "live-shape-window"
+   },
+   "value": "5 s",
+   "text": "5 s"
+  },
+  "normalize": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox",
+    "checked": ""
+   },
+   "value": "on",
+   "checked": true,
+   "text": ""
+  },
+  "export": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Export measurements"
+  },
+  "download-all": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Download all"
+  },
+  "delete-all": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Delete all"
+  },
+  "info-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "Koenami A voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice and record while imitating it; your voice appears in the same acoustic space, and you can see how close you are to the voice you are aiming for. Real-time measurement shows which way your voice moves while you adjust it. The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings stay in your browser. Voice training tutorials, analysis from t"
+  },
+  "rename-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "Rename Save"
+  },
+  "rename-input": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "aria-label": "Recording name"
+   },
+   "value": "",
+   "text": ""
+  },
+  "rename-status": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "rename-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Save"
+  },
+  "report-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "Comparison × Save the report"
+  },
+  "report-content": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "report-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {},
+   "text": "Save the report"
+  },
+  "metric-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "What changes it Caveats"
+  },
+  "metric-title": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "metric-description": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "metric-details": {
+   "tag": "div",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "metric-factors": {
+   "tag": "ul",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "metric-caveats": {
+   "tag": "ul",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-dialog": {
+   "tag": "dialog",
+   "class": "",
+   "attrs": {},
+   "open": false,
+   "text": "Voice verdict — Rough perceived age Estimate Include in the image and link A reference value from an age estimation model (audEERING). Whether it matches how old a Japanese voice, or a voice in training, sounds has not been checked. The audio is sent only for this estimate and is not stored. Share… Copy link Save image Result page ↗ Verdict over time recordings on this device Older recordings did not store the verdict conditions (voiced duration and the rest), so they are shown without that check. The link carries only the five measurements; the recording is not sent. Method and sources (Japan"
+  },
+  "verdict-help": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "title": "How to read the verdict",
+    "aria-label": "How to read the verdict"
+   },
+   "text": ""
+  },
+  "share-verdict": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-score": {
+   "tag": "p",
+   "class": "",
+   "attrs": {},
+   "text": "—"
+  },
+  "share-image": {
+   "tag": "img",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": ""
+  },
+  "share-status": {
+   "tag": "figcaption",
+   "class": "",
+   "attrs": {
+    "role": "status"
+   },
+   "text": ""
+  },
+  "share-age-run": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "Estimate"
+  },
+  "share-age-value": {
+   "tag": "strong",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-age-include-label": {
+   "tag": "label",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Include in the image and link"
+  },
+  "share-age-include": {
+   "tag": "input",
+   "class": "",
+   "attrs": {
+    "type": "checkbox"
+   },
+   "value": "on",
+   "checked": false,
+   "text": ""
+  },
+  "share-intents": {
+   "tag": "span",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "share-system": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button",
+    "hidden": ""
+   },
+   "text": "Share…"
+  },
+  "share-copy": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "Copy link"
+  },
+  "share-save": {
+   "tag": "button",
+   "class": "",
+   "attrs": {
+    "type": "button"
+   },
+   "text": "Save image"
+  },
+  "share-open": {
+   "tag": "a",
+   "class": "",
+   "attrs": {
+    "href": "/r",
+    "target": "_blank",
+    "rel": "noopener"
+   },
+   "text": "Result page ↗"
+  },
+  "share-history": {
+   "tag": "section",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Verdict over time recordings on this device Older recordings did not store the verdict conditions (voiced duration and the rest), so they are shown without that check."
+  },
+  "history-chart": {
+   "tag": "svg",
+   "class": "",
+   "attrs": {
+    "role": "img",
+    "aria-label": "Verdict of each recording over time"
+   },
+   "text": ""
+  },
+  "history-list": {
+   "tag": "ol",
+   "class": "",
+   "attrs": {},
+   "text": ""
+  },
+  "history-note": {
+   "tag": "p",
+   "class": "",
+   "attrs": {
+    "hidden": ""
+   },
+   "text": "Older recordings did not store the verdict conditions (voiced duration and the rest), so they are shown without that check."
+  }
+ },
+ "storage": {
+  "local": {
+   "voice-speed": 1,
+   "voice-tour": {
+    "done": true
+   }
+  },
+  "idb": {}
+ },
+ "network": [
+  {
+   "seq": 1,
+   "method": "GET",
+   "path": "/api/catalog",
+   "query": "",
+   "status": 200
+  },
+  {
+   "seq": 2,
+   "method": "GET",
+   "path": "/api/library",
+   "query": "lang=en",
+   "status": 200
+  },
+  {
+   "seq": 3,
+   "method": "GET",
+   "path": "/api/detail/common_voice_en_17839501",
+   "query": "",
+   "status": 200
+  }
+ ],
+ "media": [],
+ "errors": [],
+ "head": [
+  "meta viewport: width=device-width,initial-scale=1",
+  "title: Koenami · voice training for feminine and masculine voices",
+  "meta description: A free voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice, record while imitating it, and see your own voice in the same acoustic space, with the distance to the voice you are aiming for. Real-time measurement included.",
+  "meta og:site_name: Koenami",
+  "meta og:title: Koenami · voice training for feminine and masculine voices",
+  "meta og:description: A free voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice, record while imitating it, and see your own voice in the same acoustic space, with the distance to the voice you are aiming for. Real-time measurement included.",
+  "meta og:type: website",
+  "meta og:locale: en_US",
+  "meta og:url: https://koe.transnavi.jp/en/",
+  "meta og:image: https://koe.transnavi.jp/og-image.png",
+  "meta og:image:width: 1200",
+  "meta og:image:height: 630",
+  "meta og:image:alt: Koenami · voice training for feminine and masculine voices",
+  "meta twitter:card: summary_large_image",
+  "meta twitter:title: Koenami · voice training for feminine and masculine voices",
+  "meta twitter:description: A free voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice, record while imitating it, and see your own voice in the same acoustic space, with the distance to the voice you are aiming for. Real-time measurement included.",
+  "meta twitter:image: https://koe.transnavi.jp/og-image.png",
+  "ld+json: {\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://koe.transnavi.jp/#website\",\"url\":\"https://koe.transnavi.jp/\",\"name\":\"Koenami\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://transnavi.jp/#organization\",\"name\":\"とらんすナビ\",\"url\":\"https://transnavi.jp/\",\"logo\":\"https://transnavi.jp/favicon.svg\"},{\"@type\":\"WebApplication\",\"@id\":\"https://koe.transnavi.jp/#app\",\"name\":\"Koenami\",\"url\":\"https://koe.transnavi.jp/\",\"description\":\"A free voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice, record while imitating it, and see your own voice in the same acoustic space, with the distance to the voice you are aiming for. Real-time measurement included.\",\"inLanguage\":\"en\",\"image\":\"https://koe.transnavi.jp/og-image.png\",\"applicationCategory\":\"EducationalApplication\",\"operatingSystem\":\"Web\",\"browserRequirements\":\"A browser with microphone access\",\"isAccessibleForFree\":true,\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"JPY\"},\"license\":\"https://github.com/transnavi/koenami/blob/main/LICENSE\",\"softwareHelp\":{\"@type\":\"CreativeWork\",\"url\":\"https://koe.transnavi.jp/guide.html\"},\"sameAs\":\"https://github.com/transnavi/koenami\",\"publisher\":{\"@id\":\"https://transnavi.jp/#organization\"},\"isPartOf\":{\"@id\":\"https://koe.transnavi.jp/#website\"}}]}",
+  "link sitemap: /sitemap.xml",
+  "link canonical: https://koe.transnavi.jp/en/",
+  "link alternate ja: https://koe.transnavi.jp/",
+  "link alternate zh-CN: https://koe.transnavi.jp/zh-CN/",
+  "link alternate en: https://koe.transnavi.jp/en/",
+  "link alternate ko: https://koe.transnavi.jp/ko/",
+  "link alternate x-default: https://koe.transnavi.jp/",
+  "link manifest: /en/site.webmanifest",
+  "meta mobile-web-app-capable: yes",
+  "meta apple-mobile-web-app-title: Koenami",
+  "meta apple-mobile-web-app-status-bar-style: default"
+ ]
+}
