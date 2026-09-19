@@ -34,8 +34,7 @@ export default {
 	'verdict.end_female': 'Feminine +100',
 
 	'graph.aria': 'Voice comparison',
-	'graph.canvas_aria':
-		'Voice map. Scroll to zoom, drag to rotate, Shift+drag to pan. The outline is the central 80% of a 1.2-second moving median.',
+	'graph.canvas_aria': 'Voice map. Scroll to zoom, drag to rotate, Shift+drag to pan.',
 	'graph.projection_variance': 'Principal',
 	'graph.projection_variance_title':
 		'Axes follow the directions of greatest overall spread (principal component analysis). Feminine and masculine labels play no part.',
@@ -193,7 +192,7 @@ export default {
 	'info.about1':
 		'A voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice and record while imitating it; your voice appears in the same acoustic space, and you can see how close you are to the voice you are aiming for. Real-time measurement shows which way your voice moves while you adjust it.',
 	'info.about2':
-		'The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings stay in your browser. Voice training tutorials, analysis from the angles of phonetics, vocal pedagogy, acoustics and anatomy, and evaluation closer to how listeners hear a voice are planned.',
+		'The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings stay in your browser.',
 	'info.guide': 'How to use (Japanese) ↗',
 	'info.tutorial': 'How the voice works, a practice guide (Japanese) ↗',
 	'info.method': 'Method and sources (Japanese) ↗',
@@ -271,7 +270,7 @@ export default {
 	'metric.hnr.label': 'Texture',
 	'metric.hnr.unit': 'dB',
 	'metric.hnr.description':
-		'The ratio of periodic to noise components in the voice (HNR). Low values can come with breathiness or roughness, but recording noise lowers them as well. It does not measure vocal weight directly.',
+		'The ratio of periodic to noise components in the voice (HNR). Breathiness and roughness lower it, but so does recording noise. It is not a measure of vocal weight.',
 	'metric.hnr.factors': [
 		'Breathiness (how the vocal folds close)',
 		'Roughness and rasp',
@@ -297,7 +296,7 @@ export default {
 	'metric.pitch_span.label': 'Intonation',
 	'metric.pitch_span.unit': 'st',
 	'metric.pitch_span.description':
-		'The width of the 10th to 90th percentile of pitch. It relates to a feminine impression in some settings, but larger is not better. Japanese pitch accent, Mandarin tones, sentence type and emotion all change it. The standard deviation and pauses are in the report.',
+		'The width of the 10th to 90th percentile of pitch. It can relate to a feminine impression, but Japanese pitch accent, Mandarin tones, sentence type and emotion change it too, so wider is not better. The standard deviation and pauses are in the report.',
 	'metric.pitch_span.factors': [
 		'Sentence type and emotion',
 		'The language: Japanese pitch accent and Mandarin tones widen or narrow it',
@@ -500,7 +499,7 @@ export default {
 	'result.notes_p2':
 		'Either direction is a goal. Aim for + for a feminine voice, − for a masculine voice, and toward 0 for a voice that reads as neither.',
 	'result.notes_li1':
-		'It is a position among five acoustic measurements, not a measure of how listeners hear the voice. The same person moves with the text, the delivery, the microphone and the room.',
+		'It is a position computed from five acoustic measurements. How listeners hear the voice is not measured. The same person moves with the text, the delivery, the microphone and the room.',
 	'result.notes_li2':
 		'The reference distribution is not a population norm. References differ by language, so numbers do not compare across languages.',
 	'result.notes_li3':
