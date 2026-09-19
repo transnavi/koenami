@@ -25,6 +25,8 @@ const drawWave = (canvas: HTMLCanvasElement, peaks: number[], progress = 0) => {
 	}
 };
 type RowPlaying = { playing: boolean; progress: number };
+// A wave button's peaks, parsed once at render rather than on every progress tick.
+const wavePeaksOf = new WeakMap<HTMLElement, number[]>();
 /* Paints a wave button's playing state: the glyph (play or stop), its label, and the bars
    repainted up to the progress. */
 const applyRowPlaying = (wave: HTMLElement, playing: boolean, progress = 0) => {
@@ -37,10 +39,8 @@ const applyRowPlaying = (wave: HTMLElement, playing: boolean, progress = 0) => {
 		playing ? wave.dataset.stopLabel || '' : wave.dataset.playLabel || ''
 	);
 	const canvas = wave.querySelector('canvas');
-	if (canvas && wave.dataset.peaks) {
-		const peaks = wave.dataset.peaks;
-		queueMicrotask(() => drawWave(canvas, JSON.parse(peaks), progress));
-	}
+	const peaks = wavePeaksOf.get(wave);
+	if (canvas && peaks) queueMicrotask(() => drawWave(canvas, peaks, progress));
 };
 /* The element's interface for callers; the class itself is created on registration, so the
    module also loads where HTMLElement does not exist (prerendering). */
@@ -78,7 +78,7 @@ export function defineKoeSelect() {
 		}
 		connectedCallback() {
 			this.style.display = 'inline-flex';
-			this.shadowRoot!.innerHTML = `<style>:host{position:relative;min-width:0;color:var(--ink);font:inherit}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.trigger{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;height:100%;min-height:28px;padding:5px 8px;background:var(--surface);border:1px solid var(--line);border-radius:6px;font-size:inherit;text-align:left}.trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.icon{width:16px;height:16px;flex-shrink:0;color:var(--muted);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.trigger:after{content:'';width:5px;height:5px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);margin:0 3px 3px 0;flex-shrink:0}.trigger:disabled{opacity:.4;cursor:default}.list{position:fixed;inset:auto;margin:0;padding:4px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow);min-width:120px;max-height:min(320px,55vh);overflow:auto;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;overscroll-behavior:contain;z-index:1000}.list::-webkit-scrollbar{width:7px}.list::-webkit-scrollbar-track{background:transparent}.list::-webkit-scrollbar-thumb{background:var(--muted);border:2px solid var(--surface);border-radius:8px}.list::-webkit-scrollbar-button{display:none}.list[role=menu]{width:min(340px,calc(100vw - 24px));max-height:min(420px,65vh);padding:6px}.choice-row+.choice-row{margin-top:2px}.item{display:block;border:0;background:transparent;padding:8px 10px;width:100%;text-align:left;white-space:nowrap;border-radius:5px;font-size:12px}.item:hover,.item:focus{background:var(--raised);outline:0}.item[aria-selected=true],.item[aria-checked=true]{background:var(--selected);color:var(--accent)}.item:disabled{opacity:.4}.item .detail{display:block;color:var(--muted);font-size:10px;margin-top:3px;font-variant-numeric:tabular-nums}.item.divider{border-top:1px solid var(--line);border-radius:0;margin-top:5px;padding-top:12px}.choice-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:2px;max-width:min(400px,calc(100vw - 24px))}.choice-row .item{grid-column:1;grid-row:1;min-width:0;width:auto;overflow:hidden;text-overflow:ellipsis}.choice-row .rename{grid-column:1;grid-row:1;min-width:0;width:100%;font:inherit;font-size:12px;color:var(--ink);background:var(--surface);border:1px solid var(--accent);border-radius:5px;padding:5px 7px}.choice-row .row-actions{grid-column:2;grid-row:1;display:flex}.choice-row .row-action{width:28px;height:28px;padding:4px}.row-action{display:grid;place-items:center;flex-shrink:0;border:0;border-radius:5px;background:transparent;color:var(--muted)}.row-action:hover,.row-action:focus-visible{background:var(--raised);color:var(--accent)}.row-action[data-action=delete]:hover,.row-action[data-action=delete]:focus-visible{color:var(--danger)}.row-action:disabled{opacity:.3;cursor:default}.row-action svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.choice-row .wave{grid-column:1/-1;grid-row:2;position:relative;display:block;border:0;background:transparent;border-radius:5px;padding:1px 2px 3px;width:100%;height:21px;color:var(--muted)}.wave:hover:not(:disabled),.wave:focus-visible{color:var(--accent)}.wave:disabled{opacity:.35;cursor:default}.wave.playing{color:var(--accent)}.wave canvas{display:block;width:100%;height:17px}.wave .glyph{position:absolute;left:1px;top:50%;translate:0 -50%;width:13px;height:13px;color:var(--accent);fill:currentColor;stroke:none;opacity:0;transition:opacity .12s;pointer-events:none;filter:drop-shadow(0 0 3px var(--surface)) drop-shadow(0 0 2px var(--surface))}.wave:hover:not(:disabled) .glyph,.wave:focus-visible .glyph,.wave.playing .glyph{opacity:1}</style><button part="trigger" class="trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.uid}"><span></span></button><div class="list" id="${this.uid}" role="listbox" popover="auto"></div>`;
+			this.shadowRoot!.innerHTML = `<style>:host{position:relative;min-width:0;color:var(--ink);font:inherit}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.trigger{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;height:100%;min-height:28px;padding:5px 8px;background:var(--surface);border:1px solid var(--line);border-radius:6px;font-size:inherit;text-align:left}.trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.icon{width:16px;height:16px;flex-shrink:0;color:var(--muted);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.trigger:after{content:'';width:5px;height:5px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);margin:0 3px 3px 0;flex-shrink:0}.trigger:disabled{opacity:.4;cursor:default}.list{position:fixed;inset:auto;margin:0;padding:4px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow);min-width:120px;max-height:min(320px,55vh);overflow:auto;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;overscroll-behavior:contain;z-index:1000}.list::-webkit-scrollbar{width:7px}.list::-webkit-scrollbar-track{background:transparent}.list::-webkit-scrollbar-thumb{background:var(--muted);border:2px solid var(--surface);border-radius:8px}.list::-webkit-scrollbar-button{display:none}.list[role=menu]{width:min(340px,calc(100vw - 24px));max-height:min(420px,65vh);padding:6px}.choice-row+.choice-row{margin-top:2px}.item{display:block;border:0;background:transparent;padding:8px 10px;width:100%;text-align:left;white-space:nowrap;border-radius:5px;font-size:12px}.item:hover,.item:focus{background:var(--raised);outline:0}.item[aria-selected=true],.item[aria-checked=true]{background:var(--selected);color:var(--accent)}.item:disabled{opacity:.4}.item .detail{display:block;color:var(--muted);font-size:10px;margin-top:3px;font-variant-numeric:tabular-nums}.item.divider{border-top:1px solid var(--line);border-radius:0;margin-top:5px;padding-top:12px}.choice-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:2px;max-width:min(400px,calc(100vw - 24px))}.choice-row .item{grid-column:1;grid-row:1;min-width:0;width:auto;overflow:hidden;text-overflow:ellipsis}.choice-row .rename{grid-column:1;grid-row:1;min-width:0;width:100%;font:inherit;font-size:12px;color:var(--ink);background:var(--surface);border:1px solid var(--accent);border-radius:5px;padding:5px 7px}.choice-row .row-actions{grid-column:2;grid-row:1;display:flex}.choice-row .row-action{width:28px;height:28px;padding:4px}.row-action{display:grid;place-items:center;flex-shrink:0;border:0;border-radius:5px;background:transparent;color:var(--muted)}.row-action:hover,.row-action:focus-visible{background:var(--raised);color:var(--accent)}.row-action[data-action=delete]:hover,.row-action[data-action=delete]:focus-visible{color:var(--danger)}.row-action:disabled{opacity:.3;cursor:default}.row-action svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.choice-row .wave{grid-column:1/-1;grid-row:2;position:relative;display:block;border:0;background:transparent;border-radius:5px;padding:1px 2px 3px;width:100%;height:21px}.wave:disabled{opacity:.35;cursor:default}.wave canvas{display:block;width:100%;height:17px}.wave .glyph{position:absolute;left:1px;top:50%;translate:0 -50%;width:13px;height:13px;color:var(--accent);fill:currentColor;stroke:none;opacity:0;transition:opacity .12s;pointer-events:none;filter:drop-shadow(0 0 3px var(--surface)) drop-shadow(0 0 2px var(--surface))}.wave:hover:not(:disabled) .glyph,.wave:focus-visible .glyph,.wave.playing .glyph{opacity:1}</style><button part="trigger" class="trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.uid}"><span></span></button><div class="list" id="${this.uid}" role="listbox" popover="auto"></div>`;
 			this.trigger = this.shadowRoot!.querySelector('.trigger')!;
 			const symbol =
 				this.getAttribute('icon') && document.getElementById(this.getAttribute('icon')!);
@@ -263,8 +263,9 @@ export function defineKoeSelect() {
 								})
 							);
 						row.append(wave);
-						const peaks = o.dataset.peaks;
-						queueMicrotask(() => drawWave(wave.querySelector('canvas')!, JSON.parse(peaks)));
+						const peaks = JSON.parse(o.dataset.peaks);
+						wavePeaksOf.set(wave, peaks);
+						queueMicrotask(() => drawWave(wave.querySelector('canvas')!, peaks));
 						const playing = this._rowPlaying?.[wave.dataset.rowKey];
 						if (playing) applyRowPlaying(wave, playing.playing, playing.progress);
 					}
@@ -315,14 +316,20 @@ export function defineKoeSelect() {
 			// hidden item (an edit keeps the list open, so its focus is restored).
 			if (focusedValue && this.list.matches(':popover-open'))
 				this.list
-					.querySelector<HTMLButtonElement>(`.item[data-value="${CSS.escape(focusedValue)}"]`)
+					.querySelector<HTMLButtonElement>(
+						`.item[data-value="${CSS.escape(focusedValue)}"], .wave[data-value="${CSS.escape(focusedValue)}"]`
+					)
 					?.focus();
 		}
 
 		// Paints a take's wave button as playing (or not) at a progress, and remembers it so a
 		// re-render restores it. The app drives this as the take plays.
 		setRowPlaying(key: string, playing: boolean, progress = 0) {
-			(this._rowPlaying ??= {})[key] = { playing, progress };
+			this._rowPlaying ??= {};
+			if (playing) this._rowPlaying[key] = { playing, progress };
+			else delete this._rowPlaying[key];
+			// A closed menu holds no wave button; open() re-renders and restores the state.
+			if (!this.list.matches(':popover-open')) return;
 			const wave = this.shadowRoot!.querySelector<HTMLElement>(
 				`.wave[data-row-key="${CSS.escape(key)}"]`
 			);

@@ -1,8 +1,8 @@
 import { test } from '../fixtures';
 import { app } from '../hooks';
 
-// The recording history's rows: a waveform preview per take, replay from the row, and
-// renaming through a dialog.
+// The recording history's rows: a waveform that plays the take, replay from the row, and
+// renaming the selected row in place.
 test.describe('recording history rows', () => {
 	// The waveform is the play control: it clicks to play, gains a `playing` class while its
 	// take plays, and shows the stop glyph then.

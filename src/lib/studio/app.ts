@@ -2192,8 +2192,7 @@ export function mountStudio() {
 			const option = new Option(t.name, String(i));
 			option.dataset.detail = clock((t as Snapshot).detail?.duration || (t as Take).duration);
 			option.dataset.actions = 'play,rename,download,delete';
-			option.dataset.key =
-				(t as Snapshot).takeId || (t as Take).storedId || 'mem:' + (t.pcm?.length || 0);
+			option.dataset.key = takeKeyOf(t);
 			const peaks = t.pcm ? wavePeaks(t.pcm) : (t as Take).peaks;
 			if (peaks) option.dataset.peaks = JSON.stringify(peaks);
 			if (state.recording || !((t as Snapshot).takeId || t.storedId))
@@ -2205,7 +2204,6 @@ export function mountStudio() {
 		select.disabled = state.busy || !takeChoices.length;
 		select.value = current?.pcm ? '0' : '';
 		select.setAttribute('data-display-label', current?.name || t('takes.menu'));
-		if (replayKey) $<KoeSelectElement>('take-select').setRowPlaying(replayKey, true);
 		void backfillPeaks();
 	}
 	async function restoreTake(chosen: Snapshot | Take | { storedId: string }) {
@@ -2315,8 +2313,14 @@ export function mountStudio() {
 	/* Row-level replay and renaming in the recording history. */
 	let replayAudio: HTMLAudioElement | null = null,
 		replayKey: string | null = null;
-	const replayKeyOf = (take: Snapshot | Take | null | undefined) =>
-		take?.storedId || (take as Snapshot)?.takeId || 'mem:' + (take?.pcm?.length || 0);
+	// One identity per take: a recording's takeId, a stored take's storedId, else a memory
+	// take keyed by its name and length. Used for the menu's data-key, the replay state, and
+	// the wave button's row key, so all three agree.
+	const takeKeyOf = (take: Snapshot | Take | null | undefined) =>
+		(take as Snapshot)?.takeId ||
+		take?.storedId ||
+		'mem:' + (take?.name || '') + ':' + (take?.pcm?.length || 0);
+	const replayKeyOf = takeKeyOf;
 	const setReplaying = (key: string, playing: boolean, progress = 0) =>
 		$<KoeSelectElement>('take-select').setRowPlaying(key, playing, progress);
 	function stopReplay() {
@@ -2338,8 +2342,8 @@ export function mountStudio() {
 		replayKey = key;
 		setReplaying(key, true);
 		replayAudio.ontimeupdate = () => {
-			if (replayKey === key && replayAudio)
-				setReplaying(key, true, replayAudio.currentTime / (replayAudio.duration || 1));
+			if (replayKey === key && replayAudio && finite(replayAudio.duration))
+				setReplaying(key, true, replayAudio.currentTime / replayAudio.duration);
 		};
 		replayAudio.onended = () => {
 			if (replayKey === key) {
