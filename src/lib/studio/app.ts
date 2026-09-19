@@ -2192,10 +2192,11 @@ export function mountStudio() {
 			const option = new Option(t.name, String(i));
 			option.dataset.detail = clock((t as Snapshot).detail?.duration || (t as Take).duration);
 			option.dataset.actions = 'play,rename,download,delete';
+			option.dataset.key = (t as Snapshot).takeId || (t as Take).storedId || '';
 			const peaks = t.pcm ? wavePeaks(t.pcm) : (t as Take).peaks;
 			if (peaks) option.dataset.peaks = JSON.stringify(peaks);
 			if (state.recording || !((t as Snapshot).takeId || t.storedId))
-				option.dataset.disabledActions = 'delete' + (state.recording ? ',play' : '');
+				option.dataset.disabledActions = 'delete' + (state.recording ? ',play,rename' : '');
 			select.add(option);
 		});
 		if (current?.detail?.analysisPending && !state.analyzing.has(current.takeId!))
@@ -2303,14 +2304,6 @@ export function mountStudio() {
 				notify((error as Error).message, true);
 				return;
 			}
-		if (detail.action === 'rename') {
-			renameTarget = chosen;
-			$<HTMLInputElement>('rename-input').value = chosen.name || '';
-			$('rename-status').textContent = '';
-			$<HTMLDialogElement>('rename-dialog').showModal();
-			$<HTMLInputElement>('rename-input').select();
-			return;
-		}
 		if (detail.action === 'download')
 			try {
 				if (chosen.storedId)
@@ -2325,8 +2318,7 @@ export function mountStudio() {
 	/* Row-level replay and renaming in the recording history. */
 	let replayAudio: HTMLAudioElement | null = null,
 		replayKey: string | null = null,
-		replayValue: number | null = null,
-		renameTarget: Snapshot | Take | null = null;
+		replayValue: number | null = null;
 	const replayKeyOf = (take: Snapshot | Take | null | undefined) =>
 		take?.storedId || (take as Snapshot)?.takeId || 'mem:' + (take?.pcm?.length || 0);
 	function setReplayIcon(value: number, playing: boolean) {
@@ -2381,19 +2373,21 @@ export function mountStudio() {
 			notify(t('error.replay'), true);
 		});
 	}
-	$('rename-save').onclick = async () => {
-		const name = $<HTMLInputElement>('rename-input').value.trim();
-		if (!name) {
-			$('rename-status').textContent = t('rename.empty');
-			return;
-		}
-		const take = renameTarget;
-		renameTarget = null;
-		$<HTMLDialogElement>('rename-dialog').close();
+	// The recording menu renames a take in place: koe-select emits `optionrename` with the
+	// take and its new name; the same storage path persists it, and the shown name rolls
+	// back (a re-render) if the write fails.
+	$('take-select').addEventListener('optionrename', async (e) => {
+		// A rename mid-recording or mid-analysis is ignored (a re-render then drops the input);
+		// the take is found by its stable key, not its row position, which a re-render shifts.
+		if (state.recording || state.busy) return;
+		const detail = (e as CustomEvent<{ value: string; key: string; name: string }>).detail;
+		const take =
+			takeChoices.find((c) => ((c as Snapshot).takeId || (c as Take).storedId) === detail.key) ||
+			takeChoices[Number(detail.value)];
 		if (!take) return;
 		const id = (take as Snapshot).takeId || take.storedId;
 		if (!id) {
-			state.ownName = name;
+			state.ownName = detail.name;
 			renderTakeMenu();
 			await persistTakes();
 			return;
@@ -2401,26 +2395,20 @@ export function mountStudio() {
 		try {
 			const saved = await TakeStore.updateRecording<Take>(id, (snapshot, metadata) => ({
 				snapshot,
-				metadata: { ...metadata!, name }
+				metadata: { ...metadata!, name: detail.name }
 			}));
 			if (!saved) throw 0;
 			state.takes = saved.index;
 			if (state.ownTakeId === id) {
-				state.ownName = name;
+				state.ownName = detail.name;
 				await persistTakes();
 			}
 			renderTakeMenu();
 		} catch {
 			notify(t('rename.failed'), true);
+			renderTakeMenu();
 		}
-	};
-	$('rename-input').onkeydown = (e) => {
-		if (e.key === 'Enter') {
-			e.preventDefault();
-			$('rename-save').click();
-		}
-	};
-	$('rename-dialog').addEventListener('close', () => (renameTarget = null));
+	});
 
 	/* Bulk actions on the recording history: one zip of every saved take, or delete them all. */
 	async function storedTakes() {
