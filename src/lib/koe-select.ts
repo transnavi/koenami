@@ -50,7 +50,6 @@ export function defineKoeSelect() {
 			super();
 			this.attachShadow({ mode: 'open' });
 			this._value = null;
-			this._editing = false;
 			this._disabled = false;
 			this.active = 0;
 			this.uid = 'choice-' + ++menuId;
@@ -150,7 +149,8 @@ export function defineKoeSelect() {
 		}
 		render() {
 			if (!this.trigger) return;
-			// A rename in progress owns the row; a re-render would drop its input.
+			// A rename in progress owns the row; a re-render would drop its input. It is
+			// skipped here and re-run when the edit ends: finish() always calls render().
 			if (this._editing) return;
 			const options = this.options;
 			let selected = options.find((o) => o.value === this.value);
@@ -169,6 +169,8 @@ export function defineKoeSelect() {
 			const actionMenu = options.some((o) => o.dataset.actions);
 			this.list.role = actionMenu ? 'menu' : 'listbox';
 			this.trigger.setAttribute('aria-haspopup', actionMenu ? 'menu' : 'listbox');
+			// The rebuilt list drops focus; the item that had it (by value) is refocused.
+			const focusedValue = (this.shadowRoot!.activeElement as HTMLElement | null)?.dataset.value;
 			this.list.replaceChildren(
 				...options.map((o) => {
 					const b = document.createElement('button');
@@ -253,6 +255,12 @@ export function defineKoeSelect() {
 					return row;
 				})
 			);
+			// Only while the list is open: a render that closes it must not pull focus back to a
+			// hidden item (an edit keeps the list open, so its focus is restored).
+			if (focusedValue && this.list.matches(':popover-open'))
+				this.list
+					.querySelector<HTMLButtonElement>(`.item[data-value="${CSS.escape(focusedValue)}"]`)
+					?.focus();
 		}
 
 		// Replaces the selected row's name with an input; Enter or blur commits, Escape
@@ -274,6 +282,9 @@ export function defineKoeSelect() {
 				if (done) return;
 				done = true;
 				this._editing = false;
+				// Focus returns to the row so a keyboard user is not dropped on the body; the
+				// render restores it from the item that had it.
+				item.focus();
 				const name = input.value.trim();
 				if (commit && name && name !== o.textContent) {
 					o.textContent = name;
@@ -285,9 +296,6 @@ export function defineKoeSelect() {
 					);
 				}
 				this.render();
-				this.list
-					.querySelector<HTMLButtonElement>(`.item[data-value="${CSS.escape(o.value)}"]`)
-					?.focus();
 			};
 			input.onkeydown = (e) => {
 				e.stopPropagation();
@@ -299,7 +307,10 @@ export function defineKoeSelect() {
 					finish(false);
 				}
 			};
-			input.onblur = () => finish(true);
+			input.addEventListener('focusout', (e: FocusEvent) => {
+				const to = e.relatedTarget as Node | null;
+				finish(!(to && row.contains(to)));
+			});
 			row.replaceChild(input, item);
 			input.focus();
 			input.select();

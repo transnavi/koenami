@@ -2195,6 +2195,7 @@ export function mountStudio() {
 			const option = new Option(t.name, String(i));
 			option.dataset.detail = clock((t as Snapshot).detail?.duration || (t as Take).duration);
 			option.dataset.actions = 'play,rename,download,delete';
+			option.dataset.key = (t as Snapshot).takeId || (t as Take).storedId || '';
 			const peaks = t.pcm ? wavePeaks(t.pcm) : (t as Take).peaks;
 			if (peaks) option.dataset.peaks = JSON.stringify(peaks);
 			if (state.recording || !((t as Snapshot).takeId || t.storedId))
@@ -2379,8 +2380,13 @@ export function mountStudio() {
 	// take and its new name; the same storage path persists it, and the shown name rolls
 	// back (a re-render) if the write fails.
 	$('take-select').addEventListener('optionrename', async (e) => {
-		const detail = (e as CustomEvent<{ value: string; name: string }>).detail;
-		const take = takeChoices[Number(detail.value)];
+		// A rename mid-recording or mid-analysis is ignored (a re-render then drops the input);
+		// the take is found by its stable key, not its row position, which a re-render shifts.
+		if (state.recording || state.busy) return;
+		const detail = (e as CustomEvent<{ value: string; key: string; name: string }>).detail;
+		const take =
+			takeChoices.find((c) => ((c as Snapshot).takeId || (c as Take).storedId) === detail.key) ||
+			takeChoices[Number(detail.value)];
 		if (!take) return;
 		const id = (take as Snapshot).takeId || take.storedId;
 		if (!id) {
