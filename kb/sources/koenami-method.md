@@ -10,7 +10,7 @@ url: https://koe.transnavi.jp/method.html
 language: ja
 kind: documentation
 evidence: community
-verified: "repository file web/method.html read 2026-09-17; live page https://koe.transnavi.jp/method.html"
+verified: "repository file web/method.html read 2026-09-17, re-read 2026-09-18 after the verdict scale change (PR #108); live page https://koe.transnavi.jp/method.html"
 topics: ["[[tools]]", "[[fundamental-frequency]]", "[[formants]]", "[[voice-quality]]", "[[intonation]]", "[[machine-gender-scoring]]"]
 ---
 
@@ -23,7 +23,7 @@ topics: ["[[tools]]", "[[fundamental-frequency]]", "[[formants]]", "[[voice-qual
 - 高さの標準偏差: shown in Hz and semitones in the report; the page notes it also reflects Japanese pitch accent, Chinese tone, phrase ends and emotion, and that a larger span is not uniformly feminine.
 - 滑舌 (articulatory clarity) is a listening-review scale, not an acoustic measure; the page cites Leung et al. 2018 for articulation as a perceptual factor and ParaSpeechCaps' crisp/slurred/stammering tags.
 - 話す速さ: from the transcript, counted in mora (Japanese, via Sudachi readings), characters (Chinese), Hangul syllables (Korean) or words (English); not comparable across languages.
-- 声の判定 (the shared verdict): a projection of the five measures on a Fisher linear-discriminant axis fitted to labelled sample speakers, scaled so that the masculine samples' median is 25 and the feminine samples' median is 75; 65 and above is called 女性的な声, 35 and below 男性的な声. The page states it is not calibrated against listener ratings and that the sample distribution is not a population norm.
+- 声の判定 (the shared verdict): a projection of the five measures on a Fisher linear-discriminant axis fitted to labelled sample speakers, on a straight scale whose 0 is the midpoint between the masculine and feminine samples' medians, with the masculine median at −50 and the feminine median at +50; the display is clamped to −100…+100, +30 and above is called 女性的な声, −30 and below 男性的な声, and the band between 中間的な声. The page says either direction, and moving toward 0, are treated as goals (as of the 2026-09-17 revision that doubled the earlier ±25/±15 scale). The page states it is not calibrated against listener ratings and that the sample distribution is not a population norm.
 - Reference bands are the middle 80% of the chosen reference group's speakers.
 
 ## Bearing on voice training
