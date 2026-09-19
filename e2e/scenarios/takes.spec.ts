@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures';
+import { test } from '../fixtures';
 import { app } from '../hooks';
 
 // The recording history's rows: a waveform preview per take, replay from the row, and
@@ -98,10 +98,21 @@ test.describe('recording history rows', () => {
 		await studio.golden('peaks-backfilled');
 	});
 
-	test('renaming a take: the dialog, an empty name, the current take, a stored take, a take that vanished', async ({
+	test('renaming a take in place: an empty name, a commit, another take, Escape, a vanished take', async ({
 		page,
 		studio
 	}) => {
+		const menu = '#take-select';
+		const selectedName = `${menu} .item[aria-checked="true"]`;
+		const renameInput = `${menu} input.rename`;
+		const openMenu = async () => {
+			await page.locator(`${menu} button.trigger`).click();
+			await studio.tick(100);
+		};
+		const editSelected = async () => {
+			await page.locator(selectedName).click();
+			await page.locator(renameInput).waitFor();
+		};
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
@@ -109,50 +120,71 @@ test.describe('recording history rows', () => {
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
 		await studio.until(app.ownName('own-b.wav') + ' && ' + app.analysed);
 		await studio.tick(300);
-		await studio.rowAction('take-select', '0', 'rename');
+		// The current take's name becomes an input in place.
+		await openMenu();
+		await editSelected();
 		await studio.tick(100);
-		await studio.golden('rename-dialog');
-		await page.locator('#rename-input').fill('   ');
-		await page.locator('#rename-save').click();
+		await studio.golden('rename-editing');
+		// A blank name commits nothing; the row keeps its name.
+		await page.locator(renameInput).fill('   ');
+		await page.keyboard.press('Enter');
+		await studio.until(app.ownName('own-b.wav'));
 		await studio.tick(100);
 		await studio.golden('rename-empty-refused');
-		await page.locator('#rename-input').fill('朝の声');
+		// A real name is saved on Enter.
+		await editSelected();
+		await page.locator(renameInput).fill('朝の声');
 		await page.keyboard.press('Enter');
 		await studio.until(app.ownName('朝の声') + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('renamed-current');
-		// A stored take that is not the current one is renamed in the database.
-		await studio.rowAction('take-select', '1', 'rename');
-		await page.locator('#rename-input').fill('昨日の声');
-		await page.locator('#rename-save').click();
-		await studio.until(app.idle);
-		await studio.tick(300);
-		await studio.golden('renamed-stored');
-		// Escape leaves the dialog without renaming.
-		await studio.rowAction('take-select', '1', 'rename');
+		// Escape leaves the name unchanged.
+		await editSelected();
+		await page.locator(renameInput).fill('捨てる');
 		await page.keyboard.press('Escape');
+		await studio.until(app.ownName('朝の声'));
 		await studio.tick(100);
 		await studio.golden('rename-cancelled');
-		// A take whose recording is gone cannot be renamed.
+		// Selecting the other take makes it current; then its name edits in place.
+		await openMenu();
+		await page.locator(`${menu} .item[data-value="1"]`).click();
+		await studio.until(app.ownName('own-a.wav') + ' && ' + app.idle);
+		await openMenu();
+		await editSelected();
+		await page.locator(renameInput).fill('昨日の声');
+		await page.keyboard.press('Enter');
+		await studio.until(app.ownName('昨日の声') + ' && ' + app.idle);
+		await studio.tick(300);
+		await studio.golden('renamed-second');
+		// A take whose stored recording is gone cannot be renamed: the update finds no
+		// snapshot, so the name rolls back and an error shows. The selected take's own
+		// recording is removed behind the app's back.
+		const storedId = await page.evaluate(() => {
+			const s = (
+				window as unknown as { voiceApp: { state: { ownTakeId?: string; ownId?: string } } }
+			).voiceApp.state;
+			return s.ownTakeId || s.ownId;
+		});
 		await page.evaluate(
-			() =>
+			(id) =>
 				new Promise<void>((resolve) => {
 					const open = indexedDB.open('koe-takes');
 					open.onsuccess = () => {
 						const tx = open.result.transaction('session', 'readwrite');
-						tx.objectStore('session').delete('recording:00000000-0000-4000-8000-000000000001');
+						tx.objectStore('session').delete('recording:' + id);
 						tx.oncomplete = () => resolve();
 					};
-				})
+				}),
+			storedId
 		);
-		await studio.rowAction('take-select', '1', 'rename');
-		await page.locator('#rename-input').fill('消えた声');
-		await page.locator('#rename-save').click();
-		await studio.until('document.getElementById("notice").textContent.length > 0');
+		await openMenu();
+		await editSelected();
+		await page.locator(renameInput).fill('消えた声');
+		await page.keyboard.press('Enter');
+		await studio.until(
+			`document.getElementById("notice").textContent === ${JSON.stringify('名前を変更できませんでした。もう一度お試しください。')}`
+		);
 		await studio.tick(300);
 		await studio.golden('rename-vanished');
-		expect(
-			await page.locator('#rename-dialog').evaluate((d) => (d as HTMLDialogElement).open)
-		).toBe(false);
 	});
 });

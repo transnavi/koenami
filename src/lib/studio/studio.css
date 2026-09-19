@@ -937,20 +937,6 @@ dialog::backdrop {
 	justify-content: space-between;
 	margin-bottom: 18px;
 }
-.rename-input {
-	width: 100%;
-	padding: 9px 11px;
-	border: 1px solid var(--line);
-	border-radius: 7px;
-	background: var(--bg);
-	color: var(--ink);
-	font-size: 13px;
-	margin-bottom: 16px;
-}
-.rename-save {
-	padding: 8px 18px;
-	font-size: 12px;
-}
 .dialog-heading h2 {
 	font-size: 16px;
 	font-weight: 600;

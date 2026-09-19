@@ -189,9 +189,6 @@ export default {
 	'info.source': '源代码（GitHub） ↗',
 	'info.colors': '配色参考：',
 
-	'rename.heading': '重命名',
-	'rename.aria': '录音名称',
-	'rename.empty': '请输入名称。',
 	'rename.failed': '无法重命名，请重试。',
 	'report.heading': '对比',
 	'report.save': '保存报告',

@@ -80,7 +80,7 @@ async function stored() {
 		audio: await Promise.all(
 			ids.map(async (id: string) => [
 				id,
-				await sha256(await ((await TakeStore.read('jvs-audio:' + id)) as Blob).arrayBuffer())
+				await sha256(await (await TakeStore.read<Blob>('jvs-audio:' + id)).arrayBuffer())
 			])
 		)
 	};
