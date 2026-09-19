@@ -1078,10 +1078,8 @@
    "trigger": "own-b.wav",
    "expanded": "true",
    "rowActions": [
-    "0:play:再生:disabled",
     "0:download:ダウンロード",
     "0:delete:削除:disabled",
-    "1:play:再生:disabled",
     "1:download:ダウンロード",
     "1:delete:削除:disabled"
    ],
