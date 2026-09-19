@@ -3,7 +3,7 @@ import { loadImported, importedAudio, importJVS, type ImportClip } from '$lib/co
 /* The studio: one controller over the page's elements, ported from web/app.js with types.
    Its DOM writes, request order and timing are what the browser goldens pin. */
 import { t, lang as uiLang } from '$lib/i18n';
-import { defineKoeSelect } from '$lib/koe-select';
+import { defineKoeSelect, type KoeSelectElement } from '$lib/koe-select';
 import { VoiceMap, type MapSample } from '$lib/map';
 import { finite, quantile, clamp, AXES } from '$lib/math';
 import {
@@ -2192,7 +2192,7 @@ export function mountStudio() {
 			const option = new Option(t.name, String(i));
 			option.dataset.detail = clock((t as Snapshot).detail?.duration || (t as Take).duration);
 			option.dataset.actions = 'play,rename,download,delete';
-			option.dataset.key = (t as Snapshot).takeId || (t as Take).storedId || '';
+			option.dataset.key = takeKeyOf(t);
 			const peaks = t.pcm ? wavePeaks(t.pcm) : (t as Take).peaks;
 			if (peaks) option.dataset.peaks = JSON.stringify(peaks);
 			if (state.recording || !((t as Snapshot).takeId || t.storedId))
@@ -2204,11 +2204,6 @@ export function mountStudio() {
 		select.disabled = state.busy || !takeChoices.length;
 		select.value = current?.pcm ? '0' : '';
 		select.setAttribute('data-display-label', current?.name || t('takes.menu'));
-		if (replayKey) {
-			const i = takeChoices.findIndex((t) => replayKeyOf(t) === replayKey);
-			replayValue = i >= 0 ? i : null;
-			if (i >= 0) setReplayIcon(i, true);
-		}
 		void backfillPeaks();
 	}
 	async function restoreTake(chosen: Snapshot | Take | { storedId: string }) {
@@ -2299,7 +2294,7 @@ export function mountStudio() {
 					? chosen
 					: await TakeStore.read<Snapshot>('recording:' + chosen.storedId);
 				if (!source?.pcm) throw new Error(t('error.take_load'));
-				replayTake(source as Snapshot, replayKeyOf(chosen), Number(detail.value));
+				replayTake(source as Snapshot, replayKeyOf(chosen));
 			} catch (error) {
 				notify((error as Error).message, true);
 				return;
@@ -2317,52 +2312,43 @@ export function mountStudio() {
 
 	/* Row-level replay and renaming in the recording history. */
 	let replayAudio: HTMLAudioElement | null = null,
-		replayKey: string | null = null,
-		replayValue: number | null = null;
-	const replayKeyOf = (take: Snapshot | Take | null | undefined) =>
-		take?.storedId || (take as Snapshot)?.takeId || 'mem:' + (take?.pcm?.length || 0);
-	function setReplayIcon(value: number, playing: boolean) {
-		const button = $('take-select').shadowRoot!.querySelector<HTMLButtonElement>(
-			`.row-action[data-action=play][data-value="${value}"]`
-		);
-		if (!button) return;
-		const path = button.querySelector('path');
-		if (path) path.setAttribute('d', playing ? 'M5 4h3v12H5zM12 4h3v12h-3z' : 'M6 4l10 6-10 6z');
-		const action = t(playing ? 'action.stop' : 'action.play');
-		button.title = action;
-		button.setAttribute(
-			'aria-label',
-			t('action.label', {
-				name: button.closest('.choice-row')?.getAttribute('aria-label') || '',
-				action
-			})
-		);
-	}
+		replayKey: string | null = null;
+	// One identity per take: a recording's takeId, a stored take's storedId, else a memory
+	// take keyed by its name and length. Used for the menu's data-key, the replay state, and
+	// the wave button's row key, so all three agree.
+	const takeKeyOf = (take: Snapshot | Take | null | undefined) =>
+		(take as Snapshot)?.takeId ||
+		take?.storedId ||
+		'mem:' + (take?.name || '') + ':' + (take?.pcm?.length || 0);
+	const replayKeyOf = takeKeyOf;
+	const setReplaying = (key: string, playing: boolean, progress = 0) =>
+		$<KoeSelectElement>('take-select').setRowPlaying(key, playing, progress);
 	function stopReplay() {
-		const was = replayValue;
+		const was = replayKey;
 		if (replayAudio) {
 			URL.revokeObjectURL(replayAudio.src);
 			replayAudio.pause();
 		}
 		replayAudio = null;
 		replayKey = null;
-		replayValue = null;
-		if (was != null) setReplayIcon(was, false);
+		if (was) setReplaying(was, false);
 	}
-	function replayTake(take: Snapshot, key: string, icon: number) {
+	function replayTake(take: Snapshot, key: string) {
 		const stop = replayKey === key;
 		stopReplay();
 		if (stop) return;
 		const url = URL.createObjectURL(wav(take.pcm!));
 		replayAudio = new Audio(url);
 		replayKey = key;
-		replayValue = icon;
-		setReplayIcon(icon, true);
+		setReplaying(key, true);
+		replayAudio.ontimeupdate = () => {
+			if (replayKey === key && replayAudio && finite(replayAudio.duration))
+				setReplaying(key, true, replayAudio.currentTime / replayAudio.duration);
+		};
 		replayAudio.onended = () => {
 			if (replayKey === key) {
 				replayKey = null;
-				replayValue = null;
-				setReplayIcon(icon, false);
+				setReplaying(key, false);
 			}
 			URL.revokeObjectURL(url);
 			replayAudio = null;
