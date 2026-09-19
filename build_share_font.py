@@ -20,7 +20,7 @@ from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
 
 ROOT = Path(__file__).parent
-OUT = ROOT / 'web' / 'public' / 'fonts'
+OUT = ROOT / 'static' / 'fonts'
 FONT_DIRS = [Path('/mnt/c/Windows/Fonts'), Path.home() / '.fonts']
 # Cut → (variable font file, languages written in it).
 CUTS = {'ja': ('NotoSansJP-VF.ttf', ['ja', 'en']), 'zh-CN': ('NotoSansSC-VF.ttf', ['zh-CN']), 'ko': ('NotoSansKR-VF.ttf', ['ko'])}
