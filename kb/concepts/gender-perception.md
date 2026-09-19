@@ -24,11 +24,13 @@ What listeners use when they assign a gender, or a degree of masculinity/feminin
 - Cisgender and TGD listeners agreed strongly on the masculine and feminine recordings drawn from r/transvoice (r(s) = 0.72 and 0.75) but not on the gender-neutral ones, where agreement was weak and non-significant [[kenny2025]].
 - Telling listeners that a speaker is trans changes how they categorise /s/, in opposite directions for trans women and trans men [[jessee2025]].
 - The Voice Resource Project wiki's example list sorts public voices under feminine and masculine headings, tags each entry with vocal weight, resonance, a pitch range in Hz and a difficulty rating, and the feminine list read is far longer than the masculine one, the pitch figures being the wiki's own ranges [[sumi-voice-examples]].
+- A French-language sociophonetic design put acoustic analysis and perceptual experiments together and then used interviews with the speakers themselves to explain the results, from which the author reads non-passing as a conflict between the gender identity a speaker means their voice to convey and the attitudes, postures or other identities the same voice indexes [[arnold2015]].
 
 ## Contested or unclear
 - The relative weight of F0 versus formants (material-dependent; see [[fundamental-frequency]]).
 - Whether listener identity matters: small effect in [[brown2021]], possible differences reported in [[rosi2025]] [[hope2023]].
 - A note.com opinion piece, without measurements, argues that 声パス depends on the listener's expectations and the quality of the channel as much as on the voice [[note-kyanaru-voicepass]].
+- A German-language argument from doing-gender theory leaves the target itself unstable: gender is not a biological given but «ein individuell nicht kontrollierbarer Effekt kommunikativen Handelns», an effect of communicative action the individual does not control, so the acoustic profile a speaker trains towards is not set by the speaker [[azul2013]].
 
 ## Open questions
 - No Japanese-listener study of trans or 両声類 voices with modern methods exists in this vault; [[hasegawa2017]] and [[tanaka2022]] are the nearest, and a 2017 Acoustical Society of Japan conference paper by 北原鉄朗 on the features behind female-voice-likeness in male 両声類 has no deposited abstract and no reachable text [[kitahara2017]].
