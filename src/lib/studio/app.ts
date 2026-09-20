@@ -622,7 +622,6 @@ export function mountStudio() {
 				index[c.group] = (index[c.group] || 0) + 1;
 				c.index = index[c.group];
 			});
-			updateJvsBanner();
 			state.scorer = new Scorer(lib.clips);
 			state.representatives = representatives(state.clips);
 			map.space = new AcousticSpace(
@@ -2484,20 +2483,12 @@ export function mountStudio() {
 		notify(t('notice.deleted_all', { n: stored.length }));
 	};
 
-	function updateJvsBanner() {
-		const count = new Set(state.clips.filter((c) => c.dataset === 'JVS').map((c) => c.id)).size;
-		$('jvs-banner').hidden = state.lang !== 'ja' || count >= 5000;
-	}
 	let importController: AbortController | null = null;
 	$('add-reference').onclick = () => {
 		$('jvs-status').textContent = state.imported.length
 			? t('jvs.added', { n: state.imported.length })
 			: '';
 		$<HTMLDialogElement>('import-dialog').showModal();
-	};
-	$('jvs-banner-import').onclick = () => {
-		$('add-reference').click();
-		$('choose-jvs-zip').focus();
 	};
 	$('import-audio').onclick = () => {
 		$<HTMLDialogElement>('import-dialog').close();

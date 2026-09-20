@@ -34,14 +34,14 @@ function folder(dir: string, clips = index.clips) {
 const speakerOf = (id: string) => id.split('-')[0];
 
 test.describe('JVS import', () => {
-	test('banner, dialog, zip import, playback and persistence', async ({ page, studio }, info) => {
+	test('dialog, zip import, playback and persistence', async ({ page, studio }, info) => {
 		await studio.open('/ja/');
 		await studio.until(app.ready);
 		await studio.tick(200);
-		await expect(page.locator('#jvs-banner')).toBeVisible();
-		await page.locator('#jvs-banner-import').click();
+		await expect(page.locator('#jvs-banner')).toHaveCount(0);
+		await page.locator('#add-reference').click();
 		await studio.tick(100);
-		await studio.golden('dialog-from-banner');
+		await studio.golden('dialog-from-add-reference');
 		await page.locator('#choose-jvs-zip').click();
 		await page.locator('#jvs-zip').setInputFiles(await archive(info.outputPath()));
 		await studio.until('document.getElementById("jvs-status").textContent.includes("追加済み")');

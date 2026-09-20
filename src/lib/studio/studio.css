@@ -2658,42 +2658,6 @@ input[type='checkbox']:checked:after {
 	width: 17px;
 	height: 17px;
 }
-.jvs-banner {
-	position: sticky;
-	top: 0;
-	z-index: 2;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
-	padding: 10px 12px;
-	background: var(--selected);
-	border-bottom: 1px solid var(--line);
-}
-.jvs-banner strong {
-	display: block;
-	font-size: 11px;
-	font-weight: 600;
-	color: var(--heading);
-}
-.jvs-banner small {
-	display: block;
-	margin-top: 3px;
-	font-size: 10px;
-	color: var(--muted);
-}
-.jvs-banner-actions {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	font-size: 10px;
-	white-space: nowrap;
-}
-.jvs-banner-actions button {
-	padding: 5px 7px;
-	background: var(--surface);
-}
-
 .recording-summary {
 	display: flex;
 	align-items: center;

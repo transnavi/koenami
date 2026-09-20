@@ -9,10 +9,10 @@ from server import create_app, RATE
 async def main():
  async with TestClient(TestServer(create_app())) as client:
   response=await client.get('/api/catalog'); assert response.status==200
-  catalog=await response.json(); assert catalog['capabilities']=={'words':False,'maxSeconds':60,'review':False}
+  catalog=await response.json(); assert catalog['capabilities']=={'words':False,'maxSeconds':60,'review':False,'similar':[]}
   response=await client.get('/api/library?lang=ja'); library=await response.json()
   assert len(library['clips'])>1550
-  assert sum(c.get('dataset')=='JVS' for c in library['clips'])==10
+  assert sum(c.get('dataset')=='JVS' for c in library['clips'])==5000
   assert sum(c.get('dataset')=='Common Voice' for c in library['clips'])>1500
   assert not any(c['speaker'] in {'ce8c56a9dbfb','927b34792e63'} for c in library['clips'])
   clip=next(c for c in library['clips'] if c.get('dataset')=='JVS')
