@@ -4,7 +4,7 @@ import json
 import shutil
 import subprocess
 from pathlib import Path
-from statistics import median
+from collections import Counter
 
 from curation import Verdicts
 
@@ -27,20 +27,35 @@ def write(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, separators=(',', ':'), allow_nan=False))
 
 
-def jvs_excerpt(clips):
-    # The author permits ~10 recordings on a webpage. This is a ten-file excerpt.
-    result = []
-    for group in ('female', 'male'):
-        speakers = {}
-        for clip in clips:
-            if clip.get('dataset') == 'JVS' and clip['group'] == group and clip['plotted'] and 2 <= clip['duration'] <= 10:
-                speakers.setdefault(clip['speaker'], []).append(clip)
-        ordered = sorted(speakers.values(), key=lambda group: median(c['features']['f0'] for c in group))
-        for q in (.1, .3, .5, .7, .9):
-            group = ordered[round(q * (len(ordered) - 1))]
-            target = median(c['features']['f0'] for c in group)
-            result.append(min(group, key=lambda c: abs(c['features']['f0'] - target)))
-    assert len(result) == len({c['id'] for c in result}) == 10
+def jvs_publication(clips):
+    """The 5,000 normal-speech references covered by Koenami's permission."""
+    permission = json.loads((ROOT / 'curation/jvs-publication.json').read_text())
+    result = [dict(c, license=permission['audio_license'], credit=permission['credit'])
+              for c in clips if c.get('dataset') == 'JVS']
+    if len(result) != permission['clips'] or len({c['id'] for c in result}) != len(result):
+        raise ValueError('JVS publication requires exactly 5,000 distinct references')
+    speakers = {f'jvs{i:03d}' for i in range(1, permission['speakers'] + 1)}
+    counts = Counter()
+    parallel = {f'VOICEACTRESS100_{n:03d}' for n in permission['parallel_sentences']}
+    for clip in result:
+        parts = clip.get('archive_member', '').split('/')
+        if len(parts) != 5:
+            raise ValueError(f"Invalid JVS source: {clip['id']}")
+        corpus, speaker, subset, folder, filename = parts
+        utterance = Path(filename).stem
+        if (corpus != 'jvs_ver1' or speaker not in speakers or speaker != clip['speaker']
+                or folder != 'wav24kHz16bit' or not filename.endswith('.wav')
+                or clip.get('style') != 'normal reading'
+                or subset not in {'parallel100', 'nonpara30'}
+                or (subset == 'parallel100' and utterance not in parallel)
+                or clip['id'] != f'{speaker}-{subset}-{utterance}'):
+            raise ValueError(f"JVS reference outside the permitted selection: {clip['id']}")
+        counts[speaker, subset] += 1
+    expected = {(speaker, subset): count for speaker in speakers
+                for subset, count in [('parallel100', len(parallel)),
+                                      ('nonpara30', permission['nonparallel_per_speaker'])]}
+    if counts != expected:
+        raise ValueError('JVS publication requires 20 parallel and 30 nonparallel clips per speaker')
     return result
 
 
@@ -67,7 +82,8 @@ def main():
                and c.get('selection_basis') in {'reviewed_speaker', 'declared_japanese_accent', 'common_voice_validated'}
                and c['speaker'] not in verdicts.excluded_speakers for c in common_voice)
     assert not any(c['id'] in verdicts.excluded_clips for c in common_voice)
-    native = jvs_excerpt(native) + common_voice
+    jvs = jvs_publication(native)
+    native = jvs + common_voice
     assert len(native) == len({c['id'] for c in native})
     for lang in LANGUAGES:
         source = native if lang == 'ja' else read(f'libraries/{lang}.json')['clips']
@@ -119,7 +135,7 @@ def main():
     # The response headers come with the build: the root _headers file plus the adapter's
     # immutable-cache rules (the content security policy is in every page's meta tag).
     assert 'frame-ancestors' in (OUT / 'assets' / '_headers').read_text()
-    print(json.dumps({'public_samples': len(manifest), 'jvs_excerpt': 10, 'languages': catalog['languages'],
+    print(json.dumps({'public_samples': len(manifest), 'jvs_clips': len(jvs), 'languages': catalog['languages'],
                       'audio_mb': round(sum((OUT / 'data' / 'samples' / c['file']).stat().st_size for c in manifest) / 1e6, 1)}, ensure_ascii=False))
 
 
