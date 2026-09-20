@@ -843,7 +843,11 @@ export function mountStudio() {
 		other.pause();
 		if (fromStart || (r && (el.currentTime < r[0] || el.currentTime >= r[1] - 0.02)) || el.ended)
 			el.currentTime = r?.[0] || 0;
-		await el.play();
+		// A play() interrupted by a pause() before it starts (switching sides, a quick stop)
+		// rejects with AbortError; that is the pause taking effect, not a failure to report.
+		await el.play().catch((e) => {
+			if ((e as DOMException).name !== 'AbortError') throw e;
+		});
 	}
 	async function toggle(side: Side) {
 		cancelAB();
