@@ -573,7 +573,7 @@
     "aria-label": "Choose a reference"
    },
    "open": false,
-   "text": "Reference voices 10 Feminine voices Androgynous voices Masculine voices All voices ★ Favorites Imported voices By speaker name Closest to your voice Lowest pitch first Highest pitch first Teacher 001 002 003 DSFD Pitch Low Middle High Resonance Low Middle High Weight Light Middle Heavy Add the JVS references 100 speakers · 5,000 clips Download ↗ Import F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆ F 004 1 F 006 1 F 002 1 F 001 1 F 007 1 F 003 1 F 005 1 F 008 1 F 009 1 Show more"
+   "text": "Reference voices 10 Feminine voices Androgynous voices Masculine voices All voices ★ Favorites Imported voices By speaker name Closest to your voice Lowest pitch first Highest pitch first Teacher 001 002 003 DSFD Pitch Low Middle High Resonance Low Middle High Weight Light Middle Heavy F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆ F 004 1 F 006 1 F 002 1 F 001 1 F 007 1 F 003 1 F 005 1 F 008 1 F 009 1 Show more"
   },
   "library-count": {
    "tag": "span",
@@ -867,32 +867,7 @@
    "tag": "div",
    "class": "",
    "attrs": {},
-   "text": "Add the JVS references 100 speakers · 5,000 clips Download ↗ Import F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆ F 004 1 F 006 1 F 002 1 F 001 1 F 007 1 F 003 1 F 005 1 F 008 1 F 009 1 Show more"
-  },
-  "jvs-banner": {
-   "tag": "div",
-   "class": "",
-   "attrs": {
-    "hidden": ""
-   },
-   "text": "Add the JVS references 100 speakers · 5,000 clips Download ↗ Import"
-  },
-  "jvs-download": {
-   "tag": "a",
-   "class": "",
-   "attrs": {
-    "title": "Official JVS release (ZIP, about 3.5 GB)",
-    "href": "https://drive.google.com/file/d/19oAw8wWn3Y7z6CKChRdAyGOB9yupL_Xt/view",
-    "target": "_blank",
-    "rel": "noreferrer"
-   },
-   "text": "Download ↗"
-  },
-  "jvs-banner-import": {
-   "tag": "button",
-   "class": "",
-   "attrs": {},
-   "text": "Import"
+   "text": "F 010 1 Roll the dice, please. 270 Hz · 0:03 ☆ F 004 1 F 006 1 F 002 1 F 001 1 F 007 1 F 003 1 F 005 1 F 008 1 F 009 1 Show more"
   },
   "sample-list": {
    "tag": "div",
