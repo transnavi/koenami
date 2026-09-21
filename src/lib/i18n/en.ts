@@ -4,12 +4,12 @@ import type { Catalogue } from './ja';
 export default {
 	'page.title': 'Koenami · voice training for feminine and masculine voices',
 	'page.description':
-		'A free voice training tool for transgender people, anyone working toward both a feminine and a masculine voice, and anyone who wants to try a voice they do not have yet. Pick a reference voice, record while imitating it, and see your own voice on the same map as the reference, with the distance to the voice you are aiming for. Real-time measurement is also available.',
+		'A free voice training tool for anyone who wants a feminine or masculine voice they do not have yet: transgender people, and people learning to switch between the two. Pick a reference voice, record yourself imitating it, and see where your voice lands on the same map and how far it is from the voice you want. Real-time measurement included.',
 	'page.browser_requirements': 'A browser with microphone access',
 	'page.publisher': 'とらんすナビ',
 
 	'toolbar.language': 'Language (interface and references)',
-	'toolbar.guide': 'Screen guide',
+	'toolbar.guide': 'Guided tour',
 	'toolbar.share': 'Share the verdict',
 	'toolbar.settings': 'Settings',
 	'toolbar.info': 'Sources and related tools',
@@ -26,7 +26,7 @@ export default {
 	'profile.fit': 'Distance to reference',
 	'profile.fit_title': 'Open the comparison report',
 	'profile.fit_title_ready':
-		'Standardized distance to the reference across the five measurements; 0 means equal. Opens the comparison report.',
+		'Standardized distance to the reference across the five measurements; 0 means equal. Open the comparison report.',
 	'verdict.heading': 'Voice verdict',
 	'verdict.end_male': 'Masculine −100',
 	'verdict.end_center': '0',
@@ -36,10 +36,10 @@ export default {
 	'graph.canvas_aria': 'Voice map. Scroll to zoom, drag to rotate, Shift+drag to pan.',
 	'graph.projection_variance': 'Spread',
 	'graph.projection_variance_title':
-		'Axes follow the directions of greatest overall spread (principal component analysis). The feminine and masculine labels are not used.',
+		'The axes follow the directions of greatest spread (principal component analysis); the feminine and masculine labels are not used.',
 	'graph.projection_contrast': 'Contrast',
 	'graph.projection_contrast_title':
-		'The horizontal axis is the direction that separates feminine and masculine references the most, computed from the labeled references.',
+		'The horizontal axis is the direction that best separates the feminine and masculine references, computed from the labeled references.',
 	'graph.auto_rotate': 'Auto-rotate',
 	'graph.auto_rotate_title': 'Toggle 3D auto-rotation',
 	'graph.space_label': 'Voice map',
@@ -188,7 +188,7 @@ export default {
 	'settings.delete_all': 'Delete all',
 
 	'info.about1':
-		'A voice training tool for transgender people, anyone working toward both a feminine and a masculine voice, and anyone who wants to try a voice they do not have yet. Pick a reference voice and record while imitating it; your voice appears on the same map as the reference, and you can see how close you are to the voice you are aiming for. In real-time mode you can watch your position move across the map as you speak, which shows you which way to take your voice.',
+		'Koenami is a voice training tool for anyone who wants a feminine or masculine voice they do not have yet: transgender people, and people learning to switch between the two. Pick a reference voice and record yourself imitating it; your voice appears on the same map as the reference, so you can see how close you are to the voice you want. In real-time mode you watch your own position move across the map as you speak, which shows you which way to take your voice.',
 	'info.about2':
 		'The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings stay in your browser.',
 	'info.guide': 'How to use (Japanese) ↗',
@@ -230,7 +230,7 @@ export default {
 	'share.unavailable': 'No verdict is available for references in this language',
 	'share.text': 'My voice on Koenami: {verdict} ({leaning} {score})',
 	'share.image_failed': 'The image could not be created.',
-	'history.current': 'Shown',
+	'history.current': 'Current',
 	'history.open': 'Open',
 	'history.open_title': 'Show this recording',
 
@@ -244,7 +244,7 @@ export default {
 		'Sentence type and emotion; questions and emphasis raise it'
 	],
 	'metric.f0.caveats': [
-		'Pitch alone does not settle how a voice is gendered. At the same pitch, resonance changes the impression (<a href="https://doi.org/10.5112/jjlp.50.14" target="_blank" rel="noreferrer">Sakuraba et al. 2009</a>).',
+		'Pitch alone does not decide how a voice is gendered. At the same pitch, resonance changes the impression (<a href="https://doi.org/10.5112/jjlp.50.14" target="_blank" rel="noreferrer">Sakuraba et al. 2009</a>).',
 		'Breath noise and machine hum produce extreme values. Keep 10–20 cm from the microphone and try a quiet room.'
 	],
 	'metric.delta_f.label': 'Resonance',
@@ -257,7 +257,7 @@ export default {
 		'The vowel: "ee" and "ah" differ a lot in the same person'
 	],
 	'metric.delta_f.caveats': [
-		'An estimate. It is unstable on short or noisy recordings and moves with the analysis settings.',
+		'An estimate: unstable on short or noisy recordings, and it moves with the analysis settings.',
 		'A difference in vowels can look like a difference in resonance. Compare the same words, ideally the same vowels.'
 	],
 	'metric.hnr.label': 'Texture',
@@ -283,13 +283,13 @@ export default {
 		"Microphone position and character, and the browser's audio processing"
 	],
 	'metric.balance.caveats': [
-		'Strongly equipment-dependent. Recordings made under different conditions are hard to compare.',
-		'Better suited to watching your own recordings change on the same equipment than to comparing with a reference.'
+		'Strongly equipment-dependent; recordings made under different conditions are hard to compare.',
+		'Better for tracking your own recordings on the same equipment than for comparing against a reference.'
 	],
 	'metric.pitch_span.label': 'Intonation',
 	'metric.pitch_span.unit': 'st',
 	'metric.pitch_span.description':
-		'The width of the 10th to 90th percentile of pitch. It can relate to a feminine impression, but Japanese pitch accent, Mandarin tones, sentence type and emotion change it too, so wider is not better. The standard deviation and pauses are in the report.',
+		'The span between the 10th and 90th percentiles of pitch. It can relate to a feminine impression, but Japanese pitch accent, Mandarin tones, sentence type and emotion change it too, so wider is not better. The standard deviation and pauses are in the report.',
 	'metric.pitch_span.factors': [
 		'Sentence type and emotion',
 		'The language: Japanese pitch accent and Mandarin tones widen or narrow it',
@@ -307,7 +307,7 @@ export default {
 		'The reference language. References differ by language, so numbers do not compare across languages'
 	],
 	'verdict.help.caveats': [
-		'A position among acoustic measurements, not a listener rating; it is not calibrated.',
+		'A position among acoustic measurements, not a listener rating, and not calibrated.',
 		'Unstable on short or noisy recordings. Record the same sentence a few times and compare.',
 		'Either direction, and moving toward 0, counts as a goal.'
 	],
@@ -442,7 +442,7 @@ export default {
 		{ title: 'Recording', text: 'Start recording with {mic} or {R}; press again to stop.' },
 		{
 			title: 'Voice profile',
-			text: 'Pitch, resonance, texture, brightness and intonation, yours next to the reference.'
+			text: "Your pitch, resonance, texture, brightness and intonation next to the reference's."
 		},
 		{
 			title: 'Voice map',
@@ -452,7 +452,7 @@ export default {
 		{ title: 'Real-time', text: 'Speak and watch your voice move on the map while you adjust it.' },
 		{
 			title: 'More detail',
-			text: 'The guide and the explanation of how the voice works open from {info}.'
+			text: 'The how-to guide and the explanation of how the voice works are under {info}.'
 		}
 	],
 
@@ -477,11 +477,11 @@ export default {
 	'result.loading': 'Loading…',
 	'result.age_label': 'Rough perceived age: ',
 	'result.age_note':
-		'A reference value from an age estimation model, unverified for Japanese voices and voices in training.',
+		'A reference value from an age estimation model; not verified for Japanese voices or voices in training.',
 	'result.try': 'Measure your own voice',
 	'result.metrics_heading': 'The five measurements',
 	'result.metrics_intro':
-		'This voice next to the central 80% of the reference speakers (feminine and masculine).',
+		'This voice, next to the central 80% of the feminine and masculine reference speakers.',
 	'result.col_metric': 'Measurement',
 	'result.col_this': 'This voice',
 	'result.col_female': 'Feminine references',
@@ -490,7 +490,7 @@ export default {
 	'result.notes_p1':
 		"The number is the position of this voice's five measurements along the contrast direction computed from the reference speakers (the direction that separates feminine and masculine voices the most). On a linear scale, 0 is exactly halfway between the masculine and feminine medians, −50 is the masculine median and +50 the feminine median; the display runs from −100 to +100. +30 and above counts as a feminine voice, −30 and below as a masculine voice, and anything between the two as an in-between voice.",
 	'result.notes_p2':
-		'Either direction is a goal. Aim for + for a feminine voice, − for a masculine voice, and toward 0 for a voice that reads as neither.',
+		'Either direction is a goal. Aim for + for a feminine voice, − for a masculine voice, and toward 0 for a softer gender impression or an androgynous voice.',
 	'result.notes_li1':
 		"It is a position computed from five acoustic measurements; how listeners hear the voice is not measured. The same person's results move with the text, the delivery, the microphone and the room.",
 	'result.notes_li2':
