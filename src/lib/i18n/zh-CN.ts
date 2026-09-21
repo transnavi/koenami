@@ -9,6 +9,7 @@ export default {
 	'page.publisher': 'とらんすナビ',
 
 	'toolbar.language': '语言（界面与参考声音）',
+	'toolbar.tutorial': '声音原理与练习指南（日文）',
 	'toolbar.guide': '界面向导',
 	'toolbar.share': '分享判定',
 	'toolbar.settings': '设置',
@@ -183,7 +184,7 @@ export default {
 	'info.about2':
 		'参考声音除日语外，还收录了普通话、英语和韩语。免费开源，录音保存在浏览器里。今后计划加入声音训练教程、从语音学・声乐・声学・解剖学角度的分析，以及更接近听者感受的评价方法。',
 	'info.guide': '使用方法（日文） ↗',
-	'info.tutorial': '声音的原理与练习指南（日文） ↗',
+	'info.tutorial': '声音原理与练习指南（日文） ↗',
 	'info.method': '测量方法与来源（日文） ↗',
 	'info.references': '参考文献（日文） ↗',
 	'info.source': '源代码（GitHub） ↗',
@@ -432,7 +433,7 @@ export default {
 	'result.share_description': '{text}。这个声音在女性化与男性化的参考声音中处于什么位置。',
 	'result.window_title': 'Koenami · {verdict}（{leaning} {score}）',
 	'nav.guide': '使用方法',
-	'nav.tutorial': '声音的原理',
+	'nav.tutorial': '声音原理',
 	'nav.method': '测量方法与来源',
 	'result.eyebrow': '这个声音的判定',
 	'result.loading': '正在加载…',
