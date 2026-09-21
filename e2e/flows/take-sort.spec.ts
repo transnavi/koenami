@@ -43,6 +43,15 @@ test('all four history orders preserve selection and the chosen order survives r
 			'microphone.wav'
 		);
 	}
+	await page.locator('#take-select .item[aria-checked="true"]').click();
+	await expect(page.locator('#take-select button.trigger')).toHaveAttribute(
+		'aria-expanded',
+		'false'
+	);
+	await expect
+		.poll(() => page.evaluate('window.voiceApp.state.previousTake.name'))
+		.toBe('own-b.wav');
+	await page.locator('#take-select button.trigger').click();
 	await page.locator('#take-select .choice-row[aria-label="own-a.wav"] .item').click();
 	await studio.until(app.ownName('own-a.wav') + ' && ' + app.idle);
 	await studio.open('/ja/');
@@ -83,7 +92,10 @@ test('keyboard sorting and a rename keep focus on the intended control or take',
 	await control(page, 'name').click();
 	const key = await current.getAttribute('data-key');
 	expect(key).toBeTruthy();
-	await current.click();
+	await current.hover();
+	await page
+		.locator('#take-select .item[aria-checked="true"] + .row-action[data-action="rename"]')
+		.click();
 	await page.locator('#take-select input.rename').fill('zzz');
 	await page.keyboard.press('Enter');
 	await studio.until(app.ownName('zzz') + ' && ' + app.idle);

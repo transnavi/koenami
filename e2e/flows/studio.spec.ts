@@ -58,7 +58,8 @@ test('uploaded audio can be played, renamed, restored, exported and deleted', as
 	await page.locator('#play-mine').click();
 	await expect(page.locator('#player')).toHaveJSProperty('paused', true);
 	await page.locator('#take-select button.trigger').click();
-	await page.locator('#take-select .item[aria-checked="true"]').click();
+	await page.locator('#take-select .item[aria-checked="true"]').hover();
+	await page.locator('#take-select .row-action[data-value="0"][data-action="rename"]').click();
 	await page.locator('#take-select input.rename').fill('朝の練習');
 	await page.keyboard.press('Enter');
 	await expect(page.locator('#take-select')).toHaveAttribute('data-display-label', '朝の練習');

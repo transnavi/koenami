@@ -2150,7 +2150,9 @@ export function mountStudio() {
 		controls();
 	}
 
-	let takeChoices: (Snapshot | Take)[] = [];
+	let takeChoices: (Snapshot | Take)[] = [],
+		// The row of the current take in `takeChoices` (its checked row), or -1 without one.
+		takeCurrentIndex = -1;
 	/* The recording menu's order. A choice is sorted by its stored index entry (the current
 	   and previous takes are snapshots that carry no date); a take without one is the
 	   session's own audio, which counts as the newest. */
@@ -2258,7 +2260,8 @@ export function mountStudio() {
 		if (current?.detail?.analysisPending && !state.analyzing.has(current.takeId!))
 			select.add(new Option(t('takes.retry'), 'retry'));
 		select.disabled = state.busy || !takeChoices.length;
-		select.value = current?.pcm ? String(takeChoices.indexOf(current)) : '';
+		takeCurrentIndex = current?.pcm ? takeChoices.indexOf(current) : -1;
+		select.value = takeCurrentIndex < 0 ? '' : String(takeCurrentIndex);
 		select.setAttribute('data-display-label', current?.name || t('takes.menu'));
 		void backfillPeaks();
 	}
@@ -2329,7 +2332,10 @@ export function mountStudio() {
 			return;
 		}
 		const chosen = takeChoices[Number(value)];
-		if (!chosen) return;
+		// The current take chosen again is nothing to restore (it would become its own
+		// previous take); the menu just closes. While recording, that row is the capture,
+		// and choosing it cancels the capture as any row does.
+		if (!chosen || (!state.recording && Number(value) === takeCurrentIndex)) return;
 		try {
 			await restoreTake(chosen);
 		} catch (error) {
@@ -2433,22 +2439,29 @@ export function mountStudio() {
 		if (!take) return;
 		const id = (take as Snapshot).takeId || take.storedId;
 		if (!id) {
-			state.ownName = detail.name;
+			// Only the current take can lack an id (audio not saved yet); an id-less row
+			// elsewhere has nothing to rename and rolls back.
+			if (takeChoices.indexOf(take) === takeCurrentIndex) {
+				state.ownName = detail.name;
+				await persistTakes();
+			} else notify(t('rename.failed'), true);
 			renderTakeMenu();
-			await persistTakes();
 			return;
 		}
 		try {
+			// The stored snapshot carries the name too: a later restore reads it, not the index.
 			const saved = await TakeStore.updateRecording<Take>(id, (snapshot, metadata) => ({
-				snapshot,
+				snapshot: { ...snapshot, name: detail.name },
 				metadata: { ...metadata!, name: detail.name }
 			}));
 			if (!saved) throw 0;
 			state.takes = saved.index;
-			if (state.ownTakeId === id) {
-				state.ownName = detail.name;
-				await persistTakes();
-			}
+			// The current and previous takes are held as snapshots with names of their own,
+			// which the menu shows ahead of the stored entry; they follow the rename.
+			if (state.previousTake?.takeId === id)
+				state.previousTake = { ...state.previousTake, name: detail.name };
+			if (state.ownTakeId === id) state.ownName = detail.name;
+			if (state.ownTakeId === id || state.previousTake?.takeId === id) await persistTakes();
 			renderTakeMenu();
 		} catch {
 			notify(t('rename.failed'), true);

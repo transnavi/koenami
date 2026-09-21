@@ -84,7 +84,7 @@ export function defineKoeSelect() {
 		}
 		connectedCallback() {
 			this.style.display = 'inline-flex';
-			this.shadowRoot!.innerHTML = `<style>:host{position:relative;min-width:0;color:var(--ink);font:inherit}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.trigger{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;height:100%;min-height:28px;padding:5px 8px;background:var(--surface);border:1px solid var(--line);border-radius:6px;font-size:inherit;text-align:left}.trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.icon{width:16px;height:16px;flex-shrink:0;color:var(--muted);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.trigger:after{content:'';width:5px;height:5px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);margin:0 3px 3px 0;flex-shrink:0}.trigger:disabled{opacity:.4;cursor:default}.list{position:fixed;inset:auto;margin:0;padding:4px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow);min-width:120px;max-height:min(320px,55vh);overflow:auto;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;overscroll-behavior:contain;z-index:1000}.list::-webkit-scrollbar{width:7px}.list::-webkit-scrollbar-track{background:transparent}.list::-webkit-scrollbar-thumb{background:var(--muted);border:2px solid var(--surface);border-radius:8px}.list::-webkit-scrollbar-button{display:none}.list[role=menu]{width:min(340px,calc(100vw - 24px));max-height:min(420px,65vh);padding:6px}.choice-row+.choice-row{margin-top:2px}.item{display:block;border:0;background:transparent;padding:8px 10px;width:100%;text-align:left;white-space:nowrap;border-radius:5px;font-size:12px}.item:hover,.item:focus{background:var(--raised);outline:0}.item[aria-selected=true],.item[aria-checked=true]{background:var(--selected);color:var(--accent)}.item:disabled{opacity:.4}.item .detail{color:var(--muted);font-size:10px;margin-left:7px;font-variant-numeric:tabular-nums}.item.divider{border-top:1px solid var(--line);border-radius:0;margin-top:5px;padding-top:12px}.choice-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:2px;max-width:min(400px,calc(100vw - 24px))}.choice-row .item{grid-column:1;grid-row:1;min-width:0;width:auto;overflow:hidden;text-overflow:ellipsis}.choice-row .rename{grid-column:1;grid-row:1;min-width:0;width:100%;font:inherit;font-size:12px;color:var(--ink);background:var(--surface);border:1px solid var(--accent);border-radius:5px;padding:5px 7px}.choice-row .row-actions{grid-column:2;grid-row:1;display:flex}.choice-row .row-action{width:28px;height:28px;padding:4px}.row-action{display:grid;place-items:center;flex-shrink:0;border:0;border-radius:5px;background:transparent;color:var(--muted)}.row-action:hover,.row-action:focus-visible{background:var(--raised);color:var(--accent)}.row-action[data-action=delete]:hover,.row-action[data-action=delete]:focus-visible{color:var(--danger)}.row-action:disabled{opacity:.3;cursor:default}.row-action svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.choice-row .wave{grid-column:1/-1;grid-row:2;display:flex;align-items:center;gap:6px;border:0;background:transparent;border-radius:5px;padding:1px 2px 3px;width:100%;height:21px}.wave:disabled{opacity:.35;cursor:default}.wave canvas{display:block;flex:1;min-width:0;height:17px}.wave .glyph{flex-shrink:0;width:16px;height:16px;color:var(--muted);fill:currentColor;stroke:none;transition:color .12s}.wave:hover:not(:disabled) .glyph,.wave:focus-visible .glyph,.wave.playing .glyph{color:var(--accent)}</style><button part="trigger" class="trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.uid}"><span></span></button><div class="list" id="${this.uid}" role="listbox" popover="auto"><div class="items"></div></div>`;
+			this.shadowRoot!.innerHTML = `<style>:host{position:relative;min-width:0;color:var(--ink);font:inherit}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.trigger{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;height:100%;min-height:28px;padding:5px 8px;background:var(--surface);border:1px solid var(--line);border-radius:6px;font-size:inherit;text-align:left}.trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.icon{width:16px;height:16px;flex-shrink:0;color:var(--muted);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.trigger:after{content:'';width:5px;height:5px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);margin:0 3px 3px 0;flex-shrink:0}.trigger:disabled{opacity:.4;cursor:default}.list{position:fixed;inset:auto;margin:0;padding:4px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow);min-width:120px;max-height:min(320px,55vh);overflow:auto;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;overscroll-behavior:contain;z-index:1000}.list::-webkit-scrollbar{width:7px}.list::-webkit-scrollbar-track{background:transparent}.list::-webkit-scrollbar-thumb{background:var(--muted);border:2px solid var(--surface);border-radius:8px}.list::-webkit-scrollbar-button{display:none}.list[role=menu]{width:min(340px,calc(100vw - 24px));max-height:min(420px,65vh);padding:6px}.choice-row+.choice-row{margin-top:2px}.item{display:block;border:0;background:transparent;padding:8px 10px;width:100%;text-align:left;white-space:nowrap;border-radius:5px;font-size:12px}.item:hover,.item:focus{background:var(--raised);outline:0}.item[aria-selected=true],.item[aria-checked=true]{background:var(--selected);color:var(--accent)}.item:disabled{opacity:.4}.item .detail{color:var(--muted);font-size:10px;margin-left:7px;font-variant-numeric:tabular-nums}.item.divider{border-top:1px solid var(--line);border-radius:0;margin-top:5px;padding-top:12px}.choice-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:2px;max-width:min(400px,calc(100vw - 24px))}.choice-row .title{grid-column:1;grid-row:1;display:flex;align-items:center;min-width:0}.choice-row .item{flex:1;min-width:0;width:auto;overflow:hidden;text-overflow:ellipsis}.choice-row .rename{flex:1;min-width:0;width:100%;font:inherit;font-size:12px;color:var(--ink);background:var(--surface);border:1px solid var(--accent);border-radius:5px;padding:5px 7px}.choice-row .row-action[data-action=rename]{opacity:0;transition:opacity .12s}.choice-row:hover .row-action[data-action=rename],.choice-row:focus-within .row-action[data-action=rename]{opacity:1}.choice-row.editing .row-action[data-action=rename]{display:none}@media (hover:none){.choice-row .row-action[data-action=rename]{opacity:1}}.choice-row .row-actions{grid-column:2;grid-row:1;display:flex}.choice-row .row-action{width:28px;height:28px;padding:4px}.row-action{display:grid;place-items:center;flex-shrink:0;border:0;border-radius:5px;background:transparent;color:var(--muted)}.row-action:hover,.row-action:focus-visible{background:var(--raised);color:var(--accent)}.row-action[data-action=delete]:hover,.row-action[data-action=delete]:focus-visible{color:var(--danger)}.row-action:disabled{opacity:.3;cursor:default}.row-action svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.choice-row .wave{grid-column:1/-1;grid-row:2;display:flex;align-items:center;gap:6px;border:0;background:transparent;border-radius:5px;padding:1px 2px 3px;width:100%;height:21px}.wave:disabled{opacity:.35;cursor:default}.wave canvas{display:block;flex:1;min-width:0;height:17px}.wave .glyph{flex-shrink:0;width:16px;height:16px;color:var(--muted);fill:currentColor;stroke:none;transition:color .12s}.wave:hover:not(:disabled) .glyph,.wave:focus-visible .glyph,.wave.playing .glyph{color:var(--accent)}</style><button part="trigger" class="trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.uid}"><span></span></button><div class="list" id="${this.uid}" role="listbox" popover="auto"><div class="items"></div></div>`;
 			this.trigger = this.shadowRoot!.querySelector('.trigger')!;
 			const symbol =
 				this.getAttribute('icon') && document.getElementById(this.getAttribute('icon')!);
@@ -235,17 +235,41 @@ export function defineKoeSelect() {
 					row.className = 'choice-row';
 					row.role = 'group';
 					row.setAttribute('aria-label', o.textContent);
-					row.append(b);
-					// The selected row's name is renamed in place: clicking it (or Enter on it)
-					// swaps the label for an input rather than re-selecting the take.
-					const canRename =
-						o.dataset.actions.split(',').includes('rename') &&
-						!o.dataset.disabledActions?.split(',').includes('rename');
-					if (canRename && o === selected) {
-						b.title = t('action.rename');
-						b.onclick = () => this.editName(o, b);
-					}
+					const title = document.createElement('div');
+					title.className = 'title';
+					title.append(b);
+					row.append(title);
 					const wanted = o.dataset.actions.split(',');
+					const actionButton = (action: string, label: string, path: string) => {
+						const button = document.createElement('button');
+						button.className = 'row-action';
+						button.type = 'button';
+						button.role = 'menuitem';
+						button.dataset.value = o.value;
+						button.dataset.action = action;
+						button.disabled = Boolean(
+							o.disabled || o.dataset.disabledActions?.split(',').includes(action)
+						);
+						button.setAttribute(
+							'aria-label',
+							t('action.label', { name: o.textContent, action: label })
+						);
+						button.title = label;
+						button.innerHTML =
+							'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="' + path + '"/></svg>';
+						return button;
+					};
+					// A pencil beside the name, shown when the row is hovered or focused, swaps the
+					// name for an input; the name itself always selects the take.
+					if (wanted.includes('rename')) {
+						const rename = actionButton(
+							'rename',
+							t('action.rename'),
+							'M4 16h3l8.5-8.5-3-3L4 13v3zM12.5 4.5l3 3'
+						);
+						rename.onclick = () => this.editName(o, b);
+						title.append(rename);
+					}
 					// The waveform is the play control: a full-width button whose bars fill with the
 					// accent colour as the take plays, with a play/stop glyph at its left.
 					if (o.dataset.peaks && wanted.includes('play')) {
@@ -297,22 +321,7 @@ export function defineKoeSelect() {
 					for (const action of wanted) {
 						const spec = actions[action];
 						if (!spec) continue;
-						const button = document.createElement('button');
-						button.className = 'row-action';
-						button.type = 'button';
-						button.role = 'menuitem';
-						button.dataset.value = o.value;
-						button.dataset.action = action;
-						button.disabled = Boolean(
-							o.disabled || o.dataset.disabledActions?.split(',').includes(action)
-						);
-						button.setAttribute(
-							'aria-label',
-							t('action.label', { name: o.textContent, action: spec.label })
-						);
-						button.title = spec.label;
-						button.innerHTML =
-							'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="' + spec.path + '"/></svg>';
+						const button = actionButton(action, spec.label, spec.path);
 						button.onclick = () => {
 							this.close();
 							this.dispatchEvent(
@@ -356,14 +365,15 @@ export function defineKoeSelect() {
 			if (wave) applyRowPlaying(wave, playing, progress);
 		}
 
-		// Replaces the selected row's name with an input; Enter or blur commits, Escape
-		// cancels. A commit emits `optionrename` with the take's stable key; the app persists
-		// it and re-renders. Only one row edits at a time.
+		// Replaces a row's name with an input; Enter or blur commits, Escape cancels. A commit
+		// emits `optionrename` with the take's stable key; the app persists it and re-renders.
+		// Only one row edits at a time.
 		editName(o: HTMLOptionElement, item: HTMLButtonElement) {
 			if (this._editing) return;
 			const row = item.closest<HTMLElement>('.choice-row');
 			if (!row) return;
 			this._editing = true;
+			row.classList.add('editing');
 			const input = document.createElement('input');
 			input.className = 'rename';
 			input.type = 'text';
@@ -410,7 +420,7 @@ export function defineKoeSelect() {
 			// Any focus-out commits the name (moving to another control is not a reason to
 			// discard the edit); only Escape cancels.
 			input.addEventListener('focusout', () => finish(true));
-			row.replaceChild(input, item);
+			item.replaceWith(input);
 			input.focus();
 			input.select();
 		}
