@@ -6,7 +6,7 @@ import { golden } from './golden';
 const { TakeStore } = await import('@app/storage');
 
 async function dump() {
-	const db = (await TakeStore.open()) as unknown as IDBDatabase;
+	const db = await TakeStore.open();
 	return new Promise<Record<string, unknown>>((resolve, reject) => {
 		const store = db.transaction('session').objectStore('session');
 		const keys = store.getAllKeys(),
@@ -68,20 +68,14 @@ describe('TakeStore', () => {
 		const afterFinish = await dump();
 		// updateRecording reshapes a stored take's entry and snapshot together (renaming, the
 		// waveform peaks); a take that has no snapshot is left alone.
-		const renamed = await TakeStore.updateRecording(
-			'r3',
-			(snapshot: unknown, metadata: Record<string, unknown>) => ({
-				snapshot,
-				metadata: { ...metadata, name: 'renamed', peaks: [0, 0.5, 1] }
-			})
-		);
-		const updateMissing = await TakeStore.updateRecording(
-			'ghost',
-			(snapshot: unknown, metadata: Record<string, unknown>) => ({
-				snapshot,
-				metadata: { ...metadata, name: 'never' }
-			})
-		);
+		const renamed = await TakeStore.updateRecording('r3', (snapshot, metadata) => ({
+			snapshot,
+			metadata: { ...metadata!, name: 'renamed', peaks: [0, 0.5, 1] }
+		}));
+		const updateMissing = await TakeStore.updateRecording('ghost', (snapshot, metadata) => ({
+			snapshot,
+			metadata: { ...metadata!, name: 'never' }
+		}));
 		const afterUpdate = await dump();
 		const d2 = await TakeStore.deleteRecording('r2');
 		const dMissing = await TakeStore.deleteRecording('ghost');
@@ -132,7 +126,7 @@ describe('TakeStore', () => {
 		// A transaction that reports failure through onerror/onabort, as a quota error would.
 		const original = IDBDatabase.prototype.transaction;
 		let error: Error | null = new Error('quota');
-		const results: string[] = [];
+		const results: unknown[] = [];
 		try {
 			IDBDatabase.prototype.transaction = function () {
 				const tx = {
@@ -172,7 +166,7 @@ describe('TakeStore', () => {
 		} finally {
 			IDBDatabase.prototype.transaction = original;
 		}
-		results.push(String((await TakeStore.read('recording-index'))?.length));
+		results.push(String((await TakeStore.read<unknown[]>('recording-index'))?.length));
 		golden('storage.failures', results);
 	});
 

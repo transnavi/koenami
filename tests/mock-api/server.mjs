@@ -1,21 +1,20 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-// Test server for the browser suite. It serves the app's own files from web/ exactly
-// as committed (so coverage ranges line up with the unit layer), recorded API responses
-// from tests/fixtures/api, and the audio under tests/fixtures/data/samples.
+// Test server for the browser suite. It serves the built SvelteKit site (the coverage
+// build, so coverage ranges line up with the unit layer), recorded API responses from
+// tests/fixtures/api, and the audio under tests/fixtures/data/samples.
 //
-//   node tests/mock-api/server.mjs                 replay
+//   node tests/mock-api/server.mjs                 replay (serves .svelte-kit/cloudflare)
 //   MOCK_API_RECORD=http://127.0.0.1:35512 node tests/mock-api/server.mjs
 //                                                  proxy API calls to a real server.py and save every answer
-//   MOCK_API_STATIC=web                            directory served for page and script requests (default web;
-//                                                  a templated tree's pages are rendered per language)
+//   MOCK_API_STATIC=<dir>                          directory served for page and script requests
 //
 // Fixture key: METHOD path?sorted-query [sha256(body)]. Recordings of the microphone
 // vary with capture timing, so POST /api/analyze also stores a copy keyed by the
 // sample count rounded to half a second, which replay falls back to.
 import { createServer } from 'node:http';
 import { join, basename } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 const fixtures = join(root, 'tests/fixtures/api');
@@ -23,15 +22,10 @@ const samples = join(root, 'tests/fixtures/data/samples');
 const upstream = process.env.MOCK_API_RECORD;
 const port = Number(process.env.MOCK_API_PORT || 35511);
 const site = join(root, process.env.MOCK_API_STATIC || 'web');
-// The pinned tree's pages are templates that its build renders into one document per
-// language; served raw, the server renders them the same way with the tree's own module.
-// A Kit build has no templates and no such module.
-const i18nModule = join(site, 'i18n/index.js');
-const i18n = existsSync(i18nModule) ? await import(pathToFileURL(i18nModule).href) : null;
 // The site's response headers, as the deployed Worker sends them: a built tree carries the
 // root _headers file (the adapter appends its cache rules), and its rules apply to what
 // the server serves from that tree, so a header that breaks a page (a policy without the
-// hash of Kit's inline script, once) breaks the suite too. The pinned tree has none.
+// hash of Kit's inline script, once) breaks the suite too.
 const siteHeaders = (() => {
 	const file = join(site, '_headers');
 	if (!existsSync(file)) return [];
@@ -69,38 +63,24 @@ const types = {
 	txt: 'text/plain; charset=utf-8',
 	json: 'application/json'
 };
-// Routes as the Worker serves them. The pinned tree keeps one index.html for / and every
-// /<lang>/ and result.html for /r; the current build writes <lang>/index.html and
-// <lang>/result.html per language (served for /r by its `l`), and a SvelteKit build
-// prerenders each route to <route>/index.html or <route>.html. web/public sits at the
-// root of all of them.
+// Routes as the Worker serves them. The build prerenders each route to <route>/index.html
+// or <route>.html, one document per language, and <lang>/r.html for the shared result.
 function staticFile(pathname, search = '') {
 	const name = pathname.replace(/^\/|\/$/g, '');
 	if (name.includes('..')) return null;
-	// The service worker is never served. The pinned pages do not register it (their
-	// import.meta.env.PROD is false here, see below); a built tree served through
-	// MOCK_API_STATIC would, and a registered worker answers later loads from its cache
-	// and hides them from the recorded request log. The registration swallows the 404.
+	// The registration of the service worker is swallowed: it is never served, so a
+	// registered worker cannot answer later loads from its cache and hide them from the
+	// recorded request log.
 	if (name === 'sw.js' || name === 'service-worker.js') return null;
 	const candidates = name
-		? [
-				join(site, name),
-				join(site, name, 'index.html'),
-				join(site, `${name}.html`),
-				join(site, 'public', name)
-			]
+		? [join(site, name), join(site, name, 'index.html'), join(site, `${name}.html`)]
 		: [join(site, 'index.html')];
-	// A language page; the research library (`lab`, KOENAMI_PUBLIC=0 only) has no document
-	// of its own and gets the Japanese one, as the dev server gives it.
-	if (/^(ja|zh-CN|en|ko|lab)$/.test(name)) candidates.push(join(site, 'index.html'));
 	// worker.ts serves the shared-result page at /r (the query carries the measurements) in
 	// the language of its `l`, where the build has one; that page comes before the Japanese
-	// r.html a Kit build writes at the root.
+	// r.html the build writes at the root.
 	if (name === 'r') {
 		const lang = new URLSearchParams(search).get('l');
-		if (/^(zh-CN|en|ko)$/.test(lang || ''))
-			candidates.unshift(join(site, lang, 'result.html'), join(site, lang, 'r.html'));
-		candidates.push(join(site, 'result.html'));
+		if (/^(zh-CN|en|ko)$/.test(lang || '')) candidates.unshift(join(site, lang, 'r.html'));
 	}
 	for (const candidate of candidates)
 		if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
@@ -185,11 +165,6 @@ const server = createServer(async (req, res) => {
 			return res.end('not found');
 		}
 		let body = readFileSync(path);
-		if (i18n && path.endsWith('.html') && body.includes('{{')) {
-			const lang = i18n.languageOf(url.pathname + url.search);
-			const page = path.endsWith('result.html') ? '/r' : i18n.home(lang);
-			body = Buffer.from(i18n.renderPage(body.toString('utf8'), lang, page));
-		}
 		if (path.endsWith('.html'))
 			body = Buffer.from(
 				body
@@ -198,14 +173,6 @@ const server = createServer(async (req, res) => {
 						'<head>',
 						'<head><script type="importmap">{"imports":{"@zip.js/zip.js/index-native.js":"/node_modules/@zip.js/zip.js/index-native.js"}}</script>'
 					)
-			);
-		// Vite defines import.meta.env at build time; served raw, the module would throw. The
-		// development value (not production) keeps the service worker unregistered, as Vite does.
-		if (path.startsWith(site) && path.endsWith('.js'))
-			body = Buffer.from(
-				body
-					.toString('utf8')
-					.replaceAll('import.meta.env.PROD', 'false'.padEnd('import.meta.env.PROD'.length))
 			);
 		res.writeHead(200, {
 			'content-type': types[path.split('.').pop()] || 'application/octet-stream',

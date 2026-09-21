@@ -207,7 +207,7 @@
   "x-content-type-options": "nosniff",
   "permissions-policy": "microphone=(self), camera=(), geolocation=()",
   "referrer-policy": "strict-origin-when-cross-origin",
-  "title": "Koenami · 中間的な声（中間 +2）",
+  "title": "Koenami · 中間的な声（中間 +1）",
   "lang": "ja",
   "app": "kit"
  },
