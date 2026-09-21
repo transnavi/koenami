@@ -18,8 +18,7 @@
 		"check": "bun run build:wasm && svelte-kit sync && svelte-check --tsgo --tsconfig ./tsconfig.json",
 		"check:worker": "wrangler types && tsc -p tsconfig.worker.json",
 		"check:tests": "tsc -p tests/tsconfig.json",
-		"check:all": "bun run build:coverage && bun run test:unit:coverage && bun run test:e2e && bun run coverage:report && bun run coverage:check && bun run test:e2e:minified",
-		"test:e2e:minified": "bun run build && E2E_MINIFIED=1 E2E_KEEP_COVERAGE=1 playwright test --config playwright.config.ts e2e/scenarios/screens.spec.ts e2e/scenarios/pages.spec.ts e2e/scenarios/cold-start.spec.ts",
+		"check:all": "bun run check && bun run check:tests && bun run lint && bun run build && bun run test:unit && bun run test:e2e",
 		"lint": "oxlint && oxfmt --check",
 		"format": "oxfmt",
 		"prepare": "svelte-kit sync || echo ''",
@@ -28,9 +27,11 @@
 		"test:unit": "vitest run --config tests/vitest.config.ts",
 		"test:unit:coverage": "vitest run --config tests/vitest.config.ts --coverage",
 		"test:e2e": "playwright test --config playwright.config.ts",
-		"test:e2e:record": "tests/scripts/record-e2e.sh",
 		"coverage:report": "node tests/coverage/report.mjs",
-		"coverage:check": "node tests/coverage/check.mjs"
+		"test:e2e:characterization": "E2E_CHARACTERIZATION=1 playwright test --config playwright.config.ts",
+		"test:e2e:visual": "E2E_CHARACTERIZATION=1 playwright test --config playwright.config.ts screens.spec.ts",
+		"test:characterization:record": "tests/scripts/record-e2e.sh",
+		"test:coverage": "bun run build:coverage && bun run test:unit:coverage && E2E_COVERAGE=1 bun run test:e2e && bun run coverage:report"
 	},
 	"dependencies": {
 		"@resvg/resvg-wasm": "^2.6.2",
@@ -46,7 +47,6 @@
 		"@types/node": "22.20.3",
 		"@typescript/native": "npm:typescript@7",
 		"fake-indexeddb": "6.2.5",
-		"istanbul-lib-coverage": "3.2.2",
 		"monocart-coverage-reports": "2.13.0",
 		"oxfmt": "0.68.0",
 		"oxlint": "1.83.0",

@@ -167,7 +167,10 @@ test.describe('server and storage faults', () => {
 		await studio.golden('delete-failed');
 	});
 
-	test('an interrupted A/B start-up cancels instead of skipping ahead', async ({ page, studio }) => {
+	test('an interrupted A/B start-up cancels instead of skipping ahead', async ({
+		page,
+		studio
+	}) => {
 		await studio.open('/ja/', async (p) =>
 			p.addInitScript(() => {
 				const play = HTMLMediaElement.prototype.play;

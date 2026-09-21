@@ -426,7 +426,10 @@ test.describe('verdict and sharing', () => {
 		await studio.until(app.analysed);
 		await studio.until(app.shareReady);
 		// The goldens are pinned to a tree; before it includes the age row there is nothing to characterize.
-		test.skip((await page.locator('#share-age-run').count()) === 0, 'the pinned tree predates the age impression');
+		test.skip(
+			(await page.locator('#share-age-run').count()) === 0,
+			'the pinned tree predates the age impression'
+		);
 		await page.locator('#share-button').click();
 		await studio.until(app.shareImage);
 		await studio.tick(200);
