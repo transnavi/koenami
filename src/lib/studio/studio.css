@@ -222,15 +222,20 @@ koe-select {
 	z-index: 3;
 	display: flex;
 	align-items: center;
-	gap: 6px;
+	gap: 10px;
 	min-width: 0;
 	max-width: calc(100% - 20px);
 }
+/* The two halves of a choice sit closer together than the choices do. */
+.graph-toolbar [data-dimension='2'] {
+	margin-right: -6px;
+}
 #projection-controls {
 	display: flex;
-	gap: 6px;
+	gap: 4px;
 	flex-shrink: 0;
 }
+/* `display: flex` would otherwise beat the browser's own `[hidden]` rule. */
 #projection-controls[hidden] {
 	display: none;
 }
@@ -244,6 +249,10 @@ koe-select {
 	color: var(--muted);
 	white-space: nowrap;
 	flex-shrink: 0;
+}
+.graph-toolbar button:hover {
+	background: var(--raised);
+	color: var(--ink);
 }
 .graph-toolbar button[aria-pressed='true'] {
 	background: var(--selected);
@@ -3267,7 +3276,10 @@ input[type='checkbox']:checked:after {
 		grid-template-rows: minmax(0, 1fr) 148px;
 	}
 	.graph-toolbar {
-		gap: 5px;
+		gap: 8px;
+	}
+	.graph-toolbar [data-dimension='2'] {
+		margin-right: -4px;
 	}
 	.graph-toolbar button {
 		font-size: 11px;
