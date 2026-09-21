@@ -1081,7 +1081,9 @@ dialog::backdrop {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	vertical-align: middle;
+	/* `middle` hangs the box on the x-height, below the centre of CJK glyphs; the box is about as tall
+	   as the text's content area, so bottom-aligning to it centres on the glyphs instead. */
+	vertical-align: text-bottom;
 	height: 18px;
 	min-width: 18px;
 	margin: 0 2px;
