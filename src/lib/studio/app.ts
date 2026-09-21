@@ -833,8 +833,10 @@ export function mountStudio() {
 		}
 		$('compare-ab').setAttribute('aria-pressed', 'false');
 	}
-	async function playSide(side: Side, fromStart = false) {
-		if (state.recording || state.busy || state.loadingLanguage) return;
+	// Resolves to whether the play() started rather than being cut short by a pause(), so a
+	// caller (A/B) can tell a real start from an interrupted one.
+	async function playSide(side: Side, fromStart = false): Promise<boolean> {
+		if (state.recording || state.busy || state.loadingLanguage) return false;
 		await audioReady();
 		const el = side === 'own' ? player : reference,
 			other = side === 'own' ? reference : player,
@@ -844,9 +846,12 @@ export function mountStudio() {
 			el.currentTime = r?.[0] || 0;
 		// A play() interrupted by a pause() before it starts (switching sides, a quick stop)
 		// rejects with AbortError; that is the pause taking effect, not a failure to report.
+		let started = true;
 		await el.play().catch((e) => {
 			if ((e as DOMException).name !== 'AbortError') throw e;
+			started = false;
 		});
+		return started;
 	}
 	async function toggle(side: Side) {
 		cancelAB();
@@ -920,14 +925,25 @@ export function mountStudio() {
 			);
 			if (!finite(seconds) || seconds <= 0) throw new Error(t('error.ab_wait'));
 			$('compare-ab').setAttribute('aria-pressed', 'true');
-			await playSide('ref', true);
+			// If a pause() cut the reference short (the user stopped it during start-up), do not
+			// start the timer — otherwise the comparison would carry on into the own phase.
+			if (!(await playSide('ref', true))) {
+				cancelAB();
+				return;
+			}
 			let phase = 'ref';
 			abTimer = setInterval(() => {
+				// The reference hands over when it reaches its window; `reference.paused` also
+				// hands over if it stopped on its own (a user pause goes through toggle(), which
+				// cancels A/B first, so it never reaches here).
 				if (phase === 'ref' && (reference.paused || reference.currentTime - refStart >= seconds)) {
 					reference.pause();
 					phase = 'starting';
 					playSide('own', true)
-						.then(() => (phase = 'own'))
+						.then((started) => {
+							if (started) phase = 'own';
+							else cancelAB();
+						})
 						.catch((e) => {
 							cancelAB();
 							notify(e.message, true);
@@ -2357,20 +2373,25 @@ export function mountStudio() {
 		stopReplay();
 		if (stop) return;
 		const url = URL.createObjectURL(wav(take.pcm!));
-		replayAudio = new Audio(url);
+		// Keep this run's element to compare identity: a take's key can come round again
+		// (play, stop, play), so only the element itself tells this replay from its successor.
+		const audio = (replayAudio = new Audio(url));
 		replayKey = key;
 		replayValue = icon;
 		setReplayIcon(icon, true);
-		replayAudio.onended = () => {
-			if (replayKey === key) {
-				replayKey = null;
-				replayValue = null;
-				setReplayIcon(icon, false);
-			}
+		audio.onended = () => {
 			URL.revokeObjectURL(url);
+			if (replayAudio !== audio) return;
+			replayKey = null;
+			replayValue = null;
+			setReplayIcon(icon, false);
 			replayAudio = null;
 		};
-		replayAudio.play().catch(() => {
+		audio.play().catch((e) => {
+			// A stop or a switch to another take pauses this audio, so its play() rejects with
+			// AbortError; that is the stop taking effect. A replay this element no longer drives
+			// (a newer one took over) is not ours to report either.
+			if ((e as DOMException).name === 'AbortError' || replayAudio !== audio) return;
 			stopReplay();
 			URL.revokeObjectURL(url);
 			notify(t('error.replay'), true);
