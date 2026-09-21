@@ -1228,6 +1228,71 @@ html:has(.method) body {
 	color: var(--muted);
 	font-size: 11px;
 }
+.method h3 {
+	font-size: 15px;
+	margin: 22px 0 6px;
+}
+.method dt {
+	font-weight: 600;
+	margin-top: 14px;
+}
+.method dd {
+	margin: 4px 0 0;
+}
+.method .cite {
+	white-space: nowrap;
+}
+.method figure {
+	margin: 20px 0;
+}
+.method figure img {
+	display: block;
+	max-width: 100%;
+	max-height: 540px;
+	width: auto;
+	height: auto;
+	margin: 0 auto;
+	padding: 8px;
+	box-sizing: border-box;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: #fff;
+}
+.method figure.fig-pair {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+.method figure.fig-pair figcaption {
+	grid-column: 1 / -1;
+}
+.method figure.fig-inline svg {
+	display: block;
+	width: 100%;
+	height: auto;
+	color: var(--ink);
+	stroke: none;
+	stroke-width: 1;
+}
+.method figure.fig-inline svg text {
+	stroke: none;
+	fill: currentColor;
+}
+.method figure.fig-wide {
+	margin-left: calc(50% - min(50vw - 12px, 420px));
+	width: min(100vw - 24px, 840px);
+}
+.method figcaption {
+	font-size: 11px;
+	line-height: 1.7;
+	color: var(--muted);
+	margin-top: 8px;
+}
+@media (max-width: 600px) {
+	.method figure.fig-pair {
+		grid-template-columns: 1fr;
+	}
+}
 .method-header {
 	padding: 16px 24px;
 	border-bottom: 1px solid var(--line);
