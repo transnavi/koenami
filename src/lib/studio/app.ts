@@ -23,7 +23,7 @@ import { SignalView, type Side, type SignalMode } from '$lib/signals';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
-import type { Clip, Detail, PCM, Snapshot, Take, View, Words } from './types';
+import type { Clip, Detail, PCM, Snapshot, Take, TakeSort, View, Words } from './types';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T,
 	esc = (s: string | number | null | undefined) =>
@@ -1934,6 +1934,7 @@ export function mountStudio() {
 		$('language').replaceChildren(...catalog.languages.map((l) => new Option(l.label, l.id)));
 		const view = readView();
 		setLiveShapeWindow(view?.liveShapeSeconds);
+		setTakeSort(view?.takeSort);
 		const requested = location.pathname.split('/')[1] || 'ja',
 			lang = catalog.languages.some((l) => l.id === requested) ? requested : 'ja';
 		const [saved, storedRefs, index] = await Promise.all([
@@ -2149,7 +2150,44 @@ export function mountStudio() {
 		controls();
 	}
 
-	let takeChoices: (Snapshot | Take)[] = [];
+	let takeChoices: (Snapshot | Take)[] = [],
+		// The row of the current take in `takeChoices` (its checked row), or -1 without one.
+		takeCurrentIndex = -1;
+	/* The recording menu's order. A choice is sorted by its stored index entry (the current
+	   and previous takes are snapshots that carry no date); a take without one is the
+	   session's own audio, which counts as the newest. */
+	const TAKE_SORTS = new Set<string>(['newest', 'oldest', 'name', 'longest']);
+	let takeSort: TakeSort = 'newest';
+	function sortTakeChoices(choices: (Snapshot | Take)[]) {
+		const entry = (take: Snapshot | Take) =>
+			state.takes.find((t) => t.id === ((take as Snapshot).takeId || take.storedId));
+		const date = (take: Snapshot | Take) => entry(take)?.date ?? '\uffff';
+		const length = (take: Snapshot | Take) =>
+			(take as Snapshot).detail?.duration ?? (take as Take).duration ?? 0;
+		const by: Record<TakeSort, (a: Snapshot | Take, b: Snapshot | Take) => number> = {
+			newest: (a, b) => date(b).localeCompare(date(a)),
+			oldest: (a, b) => date(a).localeCompare(date(b)),
+			name: (a, b) => a.name.localeCompare(b.name, uiLang, { numeric: true }),
+			longest: (a, b) => length(b) - length(a)
+		};
+		return choices.slice().sort((a, b) => by[takeSort](a, b) || by.newest(a, b));
+	}
+	const takeSortControl = $<KoeSelectElement>('take-select').header!;
+	function setTakeSort(sort: TakeSort | undefined) {
+		takeSort = sort && TAKE_SORTS.has(sort) ? sort : 'newest';
+		for (const button of takeSortControl.querySelectorAll('button')) {
+			const on = button.dataset.sort === takeSort;
+			button.setAttribute('aria-checked', String(on));
+			button.part.toggle('pressed', on);
+		}
+	}
+	takeSortControl.addEventListener('click', (e) => {
+		const sort = (e.target as HTMLElement).closest('button')?.dataset.sort as TakeSort | undefined;
+		if (!sort || sort === takeSort) return;
+		setTakeSort(sort);
+		renderTakeMenu();
+		saveView();
+	});
 	/* 64 bucket maxima of the samples, scaled to the loudest bucket, for the take rows' preview. */
 	const wavePeaks = (pcm: PCM | null | undefined, buckets = 64): number[] | null => {
 		if (!pcm?.length) return null;
@@ -2206,7 +2244,8 @@ export function mountStudio() {
 			seen.add(key);
 			takeChoices.push(take);
 		}
-		select.replaceChildren();
+		takeChoices = sortTakeChoices(takeChoices);
+		for (const option of select.options) option.remove();
 		takeChoices.forEach((t, i) => {
 			const option = new Option(t.name, String(i));
 			option.dataset.detail = clock((t as Snapshot).detail?.duration || (t as Take).duration);
@@ -2221,7 +2260,8 @@ export function mountStudio() {
 		if (current?.detail?.analysisPending && !state.analyzing.has(current.takeId!))
 			select.add(new Option(t('takes.retry'), 'retry'));
 		select.disabled = state.busy || !takeChoices.length;
-		select.value = current?.pcm ? '0' : '';
+		takeCurrentIndex = current?.pcm ? takeChoices.indexOf(current) : -1;
+		select.value = takeCurrentIndex < 0 ? '' : String(takeCurrentIndex);
 		select.setAttribute('data-display-label', current?.name || t('takes.menu'));
 		void backfillPeaks();
 	}
@@ -2292,7 +2332,10 @@ export function mountStudio() {
 			return;
 		}
 		const chosen = takeChoices[Number(value)];
-		if (!chosen) return;
+		// The current take chosen again is nothing to restore (it would become its own
+		// previous take); the menu just closes. While recording, that row is the capture,
+		// and choosing it cancels the capture as any row does.
+		if (!chosen || (!state.recording && Number(value) === takeCurrentIndex)) return;
 		try {
 			await restoreTake(chosen);
 		} catch (error) {
@@ -2396,22 +2439,29 @@ export function mountStudio() {
 		if (!take) return;
 		const id = (take as Snapshot).takeId || take.storedId;
 		if (!id) {
-			state.ownName = detail.name;
+			// Only the current take can lack an id (audio not saved yet); an id-less row
+			// elsewhere has nothing to rename and rolls back.
+			if (takeChoices.indexOf(take) === takeCurrentIndex) {
+				state.ownName = detail.name;
+				await persistTakes();
+			} else notify(t('rename.failed'), true);
 			renderTakeMenu();
-			await persistTakes();
 			return;
 		}
 		try {
+			// The stored snapshot carries the name too: a later restore reads it, not the index.
 			const saved = await TakeStore.updateRecording<Take>(id, (snapshot, metadata) => ({
-				snapshot,
+				snapshot: { ...snapshot, name: detail.name },
 				metadata: { ...metadata!, name: detail.name }
 			}));
 			if (!saved) throw 0;
 			state.takes = saved.index;
-			if (state.ownTakeId === id) {
-				state.ownName = detail.name;
-				await persistTakes();
-			}
+			// The current and previous takes are held as snapshots with names of their own,
+			// which the menu shows ahead of the stored entry; they follow the rename.
+			if (state.previousTake?.takeId === id)
+				state.previousTake = { ...state.previousTake, name: detail.name };
+			if (state.ownTakeId === id) state.ownName = detail.name;
+			if (state.ownTakeId === id || state.previousTake?.takeId === id) await persistTakes();
 			renderTakeMenu();
 		} catch {
 			notify(t('rename.failed'), true);
@@ -2570,7 +2620,8 @@ export function mountStudio() {
 					signal: signal.mode,
 					signalSource: signal.source,
 					overlay: signal.overlay,
-					liveShapeSeconds: map.liveShapeSeconds
+					liveShapeSeconds: map.liveShapeSeconds,
+					...(takeSort !== 'newest' && { takeSort })
 				})
 			);
 		} catch {}
