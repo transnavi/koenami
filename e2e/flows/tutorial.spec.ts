@@ -8,12 +8,16 @@ for (const lang of ['ja', 'en', 'zh-CN', 'ko']) {
 	}) => {
 		await studio.open(`/${lang}/`);
 		await studio.until(app.languageLoaded(lang));
-		const link = page.locator('.toolbar a[href="/tutorial.html"]');
+		const tutorialPath = lang === 'en' ? '/en/tutorial.html' : '/tutorial.html';
+		const tutorialLang = lang === 'en' ? 'en' : 'ja';
+		const link = page.locator(`.toolbar a[href="${tutorialPath}"]`);
 		await expect(link).toBeVisible();
 		await expect(link).toHaveAttribute('target', '_blank');
+		await expect(link).toHaveAttribute('hreflang', tutorialLang);
+		if (lang === 'en') await expect(link).not.toHaveAccessibleName(/Japanese/);
 		await expect(link).toHaveAccessibleName(/\S/);
 		await page.locator('#info-button').click();
-		await expect(page.locator('#info-dialog a').first()).toHaveAttribute('href', '/tutorial.html');
+		await expect(page.locator('#info-dialog a').first()).toHaveAttribute('href', tutorialPath);
 		await page.keyboard.press('Escape');
 		for (const width of [390, 375, 360, 320]) {
 			await page.setViewportSize({ width, height: 844 });
@@ -27,7 +31,8 @@ for (const lang of ['ja', 'en', 'zh-CN', 'ko']) {
 		const opened = page.waitForEvent('popup');
 		await link.click();
 		const tutorial = await opened;
-		await expect(tutorial).toHaveURL(/\/tutorial\.html$/);
+		await expect(tutorial).toHaveURL(new URL(tutorialPath, page.url()).href);
+		await expect(tutorial.locator('html')).toHaveAttribute('lang', tutorialLang);
 		await expect(tutorial.locator('h1')).toBeVisible();
 		await tutorial.close();
 	});

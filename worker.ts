@@ -202,9 +202,9 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
 		return resultImage(request, env, ctx, url);
 	else if (
 		get &&
-		(/^\/(samples|fonts)\/[^/]+$/.test(url.pathname) ||
+		(/^\/(samples|fonts|img)\/[^/]+$/.test(url.pathname) ||
 			/^\/_app\/immutable\/[\w./-]+$/.test(url.pathname) ||
-			/^\/(method|guide|tutorial|references)\.html$/.test(url.pathname) ||
+			/^\/(method|guide|tutorial|references|en\/tutorial)\.html$/.test(url.pathname) ||
 			siteFiles.test(url.pathname))
 	)
 		asset = url.pathname;
