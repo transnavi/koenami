@@ -1016,13 +1016,13 @@
    "attrs": {
     "aria-label": "録音履歴",
     "title": "録音履歴",
-    "data-display-label": "朝の声"
+    "data-display-label": "昼の声"
    },
    "value": "0",
    "options": [
     {
      "value": "0",
-     "text": "朝の声",
+     "text": "昼の声",
      "disabled": false,
      "data": {
       "data-detail": "0:04",
@@ -1033,7 +1033,7 @@
     },
     {
      "value": "1",
-     "text": "own-a.wav",
+     "text": "昨日の声",
      "disabled": false,
      "data": {
       "data-detail": "0:06",
@@ -1043,7 +1043,7 @@
      }
     }
    ],
-   "trigger": "朝の声",
+   "trigger": "昼の声",
    "expanded": "true",
    "rowActions": [
     "0:rename:名前を変更",
@@ -1053,7 +1053,7 @@
     "1:download:ダウンロード",
     "1:delete:削除"
    ],
-   "text": "朝の声 own-a.wav"
+   "text": "昼の声 昨日の声"
   },
   "timer": {
    "followsPlayback": true
@@ -1680,7 +1680,7 @@
      },
      "id": "00000000-0000-4000-8000-000000000002",
      "language": "ja",
-     "name": "朝の声",
+     "name": "昼の声",
      "peaks": [
       0.09,
       0.14,
@@ -1785,7 +1785,7 @@
      },
      "id": "00000000-0000-4000-8000-000000000001",
      "language": "ja",
-     "name": "own-a.wav",
+     "name": "昨日の声",
      "peaks": [
       0,
       0,
@@ -12003,7 +12003,7 @@
        "voiced_fraction": 0.486
       }
      },
-     "name": "朝の声",
+     "name": "昼の声",
      "pcm": {
       "$typed": "Float32Array",
       "length": 76417,
@@ -16167,7 +16167,7 @@
        "voiced_fraction": 0.765
       }
      },
-     "name": "own-a.wav",
+     "name": "昨日の声",
      "pcm": {
       "$typed": "Float32Array",
       "length": 107136,

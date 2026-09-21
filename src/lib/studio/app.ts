@@ -2149,7 +2149,9 @@ export function mountStudio() {
 		controls();
 	}
 
-	let takeChoices: (Snapshot | Take)[] = [];
+	let takeChoices: (Snapshot | Take)[] = [],
+		// The row of the current take in `takeChoices` (its checked row), or -1 without one.
+		takeCurrentIndex = -1;
 	/* 64 bucket maxima of the samples, scaled to the loudest bucket, for the take rows' preview. */
 	const wavePeaks = (pcm: PCM | null | undefined, buckets = 64): number[] | null => {
 		if (!pcm?.length) return null;
@@ -2221,7 +2223,8 @@ export function mountStudio() {
 		if (current?.detail?.analysisPending && !state.analyzing.has(current.takeId!))
 			select.add(new Option(t('takes.retry'), 'retry'));
 		select.disabled = state.busy || !takeChoices.length;
-		select.value = current?.pcm ? '0' : '';
+		takeCurrentIndex = current?.pcm ? 0 : -1;
+		select.value = takeCurrentIndex < 0 ? '' : String(takeCurrentIndex);
 		select.setAttribute('data-display-label', current?.name || t('takes.menu'));
 		void backfillPeaks();
 	}
@@ -2292,7 +2295,10 @@ export function mountStudio() {
 			return;
 		}
 		const chosen = takeChoices[Number(value)];
-		if (!chosen) return;
+		// The current take chosen again is nothing to restore (it would become its own
+		// previous take); the menu just closes. While recording, that row is the capture,
+		// and choosing it cancels the capture as any row does.
+		if (!chosen || (!state.recording && Number(value) === takeCurrentIndex)) return;
 		try {
 			await restoreTake(chosen);
 		} catch (error) {
@@ -2392,8 +2398,7 @@ export function mountStudio() {
 		if (state.recording || state.busy) return;
 		const detail = (e as CustomEvent<{ value: string; key: string; name: string }>).detail;
 		const take =
-			takeChoices.find((c) => takeKeyOf(c) === detail.key) ||
-			takeChoices[Number(detail.value)];
+			takeChoices.find((c) => takeKeyOf(c) === detail.key) || takeChoices[Number(detail.value)];
 		if (!take) return;
 		const id = (take as Snapshot).takeId || take.storedId;
 		if (!id) {
@@ -2409,10 +2414,12 @@ export function mountStudio() {
 			}));
 			if (!saved) throw 0;
 			state.takes = saved.index;
-			if (state.ownTakeId === id) {
-				state.ownName = detail.name;
-				await persistTakes();
-			}
+			// The current and previous takes are held as snapshots with names of their own,
+			// which the menu shows ahead of the stored entry; they follow the rename.
+			if (state.previousTake?.takeId === id)
+				state.previousTake = { ...state.previousTake, name: detail.name };
+			if (state.ownTakeId === id) state.ownName = detail.name;
+			if (state.ownTakeId === id || state.previousTake?.takeId === id) await persistTakes();
 			renderTakeMenu();
 		} catch {
 			notify(t('rename.failed'), true);

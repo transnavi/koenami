@@ -2,7 +2,7 @@ import { test } from '../fixtures';
 import { app } from '../hooks';
 
 // The recording history's rows: a waveform that plays the take, replay from the row, and
-// renaming the selected row in place.
+// renaming a row in place from the pencil beside its name.
 test.describe('recording history rows', () => {
 	// The waveform is the play control: it clicks to play, gains a `playing` class while its
 	// take plays, and shows the stop glyph then.
@@ -109,8 +109,10 @@ test.describe('recording history rows', () => {
 			await page.locator(`${menu} button.trigger`).click();
 			await studio.tick(100);
 		};
+		// The pencil beside the selected row's name opens the edit; it shows on hover.
 		const editSelected = async () => {
-			await page.locator(selectedName).click();
+			await page.locator(selectedName).hover();
+			await page.locator(`${selectedName} + .row-action[data-action="rename"]`).click();
 			await page.locator(renameInput).waitFor();
 		};
 		await studio.open('/ja/');
@@ -120,8 +122,17 @@ test.describe('recording history rows', () => {
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
 		await studio.until(app.ownName('own-b.wav') + ' && ' + app.analysed);
 		await studio.tick(300);
-		// The current take's name becomes an input in place.
+		// The selected row's name selects it like any other (the menu closes, nothing edits);
+		// the pencil beside it is what renames.
 		await openMenu();
+		await page.locator(selectedName).click();
+		await page.locator(`${menu} button.trigger[aria-expanded="false"]`).waitFor();
+		await studio.tick(100);
+		await studio.golden('name-click-selects');
+		await openMenu();
+		await page.locator(selectedName).hover();
+		await studio.tick(100);
+		await studio.golden('rename-pencil-on-hover');
 		await editSelected();
 		await studio.tick(100);
 		await studio.golden('rename-editing');
@@ -152,15 +163,26 @@ test.describe('recording history rows', () => {
 		await studio.until(app.ownName('昼の声'));
 		await studio.tick(100);
 		await studio.golden('rename-cancelled');
-		// Selecting the other take makes it current; then its name edits in place.
+		// Any row renames, not only the selected one: the other take (the previous one, which
+		// the menu shows from its own snapshot) takes the new name in the list at once.
 		await openMenu();
-		await page.locator(`${menu} .item[data-value="1"]`).click();
-		await studio.until(app.ownName('own-a.wav') + ' && ' + app.idle);
-		await openMenu();
-		await editSelected();
+		await page.locator(`${menu} .item[data-value="1"]`).hover();
+		await page.locator(`${menu} .row-action[data-value="1"][data-action="rename"]`).click();
 		await page.locator(renameInput).fill('昨日の声');
 		await page.keyboard.press('Enter');
+		await studio.until(
+			`document.getElementById('take-select').options[1].textContent === '昨日の声' && ` + app.idle
+		);
+		await studio.tick(300);
+		await studio.golden('renamed-other-row');
+		// Selecting that take makes it current under its new name; its name edits again.
+		await page.locator(`${menu} .item[data-value="1"]`).click();
 		await studio.until(app.ownName('昨日の声') + ' && ' + app.idle);
+		await openMenu();
+		await editSelected();
+		await page.locator(renameInput).fill('一昨日の声');
+		await page.keyboard.press('Enter');
+		await studio.until(app.ownName('一昨日の声') + ' && ' + app.idle);
 		await studio.tick(300);
 		await studio.golden('renamed-second');
 		// A take whose stored recording is gone cannot be renamed: the update finds no

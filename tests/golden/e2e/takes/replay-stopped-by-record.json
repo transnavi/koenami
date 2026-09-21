@@ -1055,8 +1055,10 @@
    "trigger": "own-b.wav",
    "expanded": "true",
    "rowActions": [
+    "0:rename:名前を変更:disabled",
     "0:download:ダウンロード",
     "0:delete:削除:disabled",
+    "1:rename:名前を変更:disabled",
     "1:download:ダウンロード",
     "1:delete:削除:disabled"
    ],
