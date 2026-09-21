@@ -379,7 +379,7 @@ export default {
 	'report.footer': '{name} · {duration} · reference {reference}',
 	'report.languages': 'Recording language {own} · reference language {ref}',
 	'report.density':
-		'Density rank within the {group} references: {percentile} percentile (not a listener rating).',
+		'Density rank within the {group} references: percentile {percentile} (not a listener rating).',
 	'report.projection':
 		'The map projects the five dimensions down to {dimension}, showing {variance}% of the variance. The measurements on the left cover the omitted directions.',
 	'report.file_title': 'Voice comparison',
