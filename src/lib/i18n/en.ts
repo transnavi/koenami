@@ -194,7 +194,6 @@ export default {
 	'info.method': 'Method and sources (Japanese) ↗',
 	'info.references': 'References (Japanese) ↗',
 	'info.source': 'Source code (GitHub) ↗',
-	'info.colors': 'Colors follow',
 
 	'rename.failed': 'The recording could not be renamed. Try again.',
 	'report.heading': 'Comparison',
