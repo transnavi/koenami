@@ -8,6 +8,7 @@ const ja = {
 	'page.publisher': 'とらんすナビ',
 
 	'toolbar.language': '言語（画面と見本）',
+	'toolbar.tutorial': '声の仕組みと練習の手引き',
 	'toolbar.guide': '画面ガイド',
 	'toolbar.share': '判定を共有',
 	'toolbar.settings': '設定',
@@ -190,7 +191,7 @@ const ja = {
 	'info.about2':
 		'見本は日本語のほか、中国語・英語・韓国語を収録しています。無料・オープンソースで公開しており、録音はブラウザーの中に保存されます。',
 	'info.guide': '使い方 ↗',
-	'info.tutorial': '声のしくみと練習の手引き ↗',
+	'info.tutorial': '声の仕組みと練習の手引き ↗',
 	'info.method': '測定方法と出典 ↗',
 	'info.references': '参考文献 ↗',
 	'info.source': 'ソースコード（GitHub） ↗',
@@ -430,10 +431,13 @@ const ja = {
 		{ title: '見本の一覧', text: '声の種類で絞り込み、並べ替えて、近づきたい声を探します。' },
 		{ title: '録音', text: '{mic}か{R}で録音を始め、もう一度押して止めます。' },
 		{ title: '声の特徴', text: '高さ・響き・質感・明るさ・抑揚を、自分と見本で見比べます。' },
-		{ title: '声の分布', text: '見本の声の分布図です。自分の声が見本にどれだけ近いかが分かります。' },
+		{
+			title: '声の分布',
+			text: '見本の声の分布図です。自分の声が見本にどれだけ近いかが分かります。'
+		},
 		{ title: '波形', text: '高さの推移やスペクトログラムを見比べます。ドラッグで範囲を選べます。' },
 		{ title: 'リアルタイム', text: '話しながら、声の位置が動くのを見て調整します。' },
-		{ title: '詳しい説明', text: '使い方や声のしくみの解説は{info}から開けます。' }
+		{ title: '詳しい説明', text: '使い方や声の仕組みの解説は{info}から開けます。' }
 	],
 
 	'card.eyebrow': 'KOENAMI · 声の判定',
@@ -450,7 +454,7 @@ const ja = {
 	'result.share_description': '{text}。女性的な声・男性的な声の見本の中で、この声がどこにあるか。',
 	'result.window_title': 'Koenami · {verdict}（{leaning} {score}）',
 	'nav.guide': '使い方',
-	'nav.tutorial': '声のしくみ',
+	'nav.tutorial': '声の仕組み',
 	'nav.method': '測定方法と出典',
 	'result.eyebrow': 'この声の判定',
 	'result.loading': '読み込んでいます…',
