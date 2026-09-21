@@ -1363,36 +1363,6 @@
    "open": false,
    "text": "Koenami A voice training tool for anyone working toward a feminine or masculine voice: people who want both, transgender people, and anyone curious about a voice they do not have yet. Pick a reference voice and record while imitating it; your voice appears in the same acoustic space, and you can see how close you are to the voice you are aiming for. Real-time measurement shows which way your voice moves while you adjust it. The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings stay in your browser. Voice training tutorials, analysis from t"
   },
-  "rename-dialog": {
-   "tag": "dialog",
-   "class": "",
-   "attrs": {},
-   "open": false,
-   "text": "Rename Save"
-  },
-  "rename-input": {
-   "tag": "input",
-   "class": "",
-   "attrs": {
-    "aria-label": "Recording name"
-   },
-   "value": "",
-   "text": ""
-  },
-  "rename-status": {
-   "tag": "p",
-   "class": "",
-   "attrs": {
-    "role": "status"
-   },
-   "text": ""
-  },
-  "rename-save": {
-   "tag": "button",
-   "class": "",
-   "attrs": {},
-   "text": "Save"
-  },
   "report-dialog": {
    "tag": "dialog",
    "class": "",

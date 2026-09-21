@@ -39,6 +39,7 @@ export function defineKoeSelect() {
 	if (customElements.get('koe-select')) return;
 	class KoeSelect extends HTMLElement {
 		_value: string | null;
+		_editing = false;
 		_disabled: boolean;
 		active: number;
 		uid: string;
@@ -55,7 +56,7 @@ export function defineKoeSelect() {
 		}
 		connectedCallback() {
 			this.style.display = 'inline-flex';
-			this.shadowRoot!.innerHTML = `<style>:host{position:relative;min-width:0;color:var(--ink);font:inherit}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.trigger{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;height:100%;min-height:28px;padding:5px 8px;background:var(--surface);border:1px solid var(--line);border-radius:6px;font-size:inherit;text-align:left}.trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.icon{width:16px;height:16px;flex-shrink:0;color:var(--muted);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.trigger:after{content:'';width:5px;height:5px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);margin:0 3px 3px 0;flex-shrink:0}.trigger:disabled{opacity:.4;cursor:default}.list{position:fixed;inset:auto;margin:0;padding:4px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow);min-width:120px;max-height:min(320px,55vh);overflow:auto;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;overscroll-behavior:contain;z-index:1000}.list::-webkit-scrollbar{width:7px}.list::-webkit-scrollbar-track{background:transparent}.list::-webkit-scrollbar-thumb{background:var(--muted);border:2px solid var(--surface);border-radius:8px}.list::-webkit-scrollbar-button{display:none}.list[role=menu]{width:min(340px,calc(100vw - 24px));max-height:min(420px,65vh);padding:6px}.choice-row+.choice-row{margin-top:2px}.item{display:block;border:0;background:transparent;padding:8px 10px;width:100%;text-align:left;white-space:nowrap;border-radius:5px;font-size:12px}.item:hover,.item:focus{background:var(--raised);outline:0}.item[aria-selected=true],.item[aria-checked=true]{background:var(--selected);color:var(--accent)}.item:disabled{opacity:.4}.item .detail{color:var(--muted);font-size:10px;margin-left:7px;font-variant-numeric:tabular-nums}.item.divider{border-top:1px solid var(--line);border-radius:0;margin-top:5px;padding-top:12px}.item .wave{display:block;height:18px;margin-top:6px;flex:none}.choice-row{display:flex;align-items:center;gap:2px;max-width:min(400px,calc(100vw - 24px))}.choice-row .item{flex:1;min-width:0;width:auto;overflow:hidden;text-overflow:ellipsis}.row-action{display:grid;place-items:center;width:36px;height:36px;flex-shrink:0;padding:6px;border:0;border-radius:5px;background:transparent;color:var(--muted)}.row-action:hover,.row-action:focus-visible{background:var(--raised);color:var(--accent)}.row-action[data-action=delete]:hover,.row-action[data-action=delete]:focus-visible{color:var(--danger)}.row-action:disabled{opacity:.3;cursor:default}.row-action svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}</style><button part="trigger" class="trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.uid}"><span></span></button><div class="list" id="${this.uid}" role="listbox" popover="auto"></div>`;
+			this.shadowRoot!.innerHTML = `<style>:host{position:relative;min-width:0;color:var(--ink);font:inherit}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.trigger{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;height:100%;min-height:28px;padding:5px 8px;background:var(--surface);border:1px solid var(--line);border-radius:6px;font-size:inherit;text-align:left}.trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.icon{width:16px;height:16px;flex-shrink:0;color:var(--muted);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.trigger:after{content:'';width:5px;height:5px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);margin:0 3px 3px 0;flex-shrink:0}.trigger:disabled{opacity:.4;cursor:default}.list{position:fixed;inset:auto;margin:0;padding:4px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow);min-width:120px;max-height:min(320px,55vh);overflow:auto;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;overscroll-behavior:contain;z-index:1000}.list::-webkit-scrollbar{width:7px}.list::-webkit-scrollbar-track{background:transparent}.list::-webkit-scrollbar-thumb{background:var(--muted);border:2px solid var(--surface);border-radius:8px}.list::-webkit-scrollbar-button{display:none}.list[role=menu]{width:min(340px,calc(100vw - 24px));max-height:min(420px,65vh);padding:6px}.choice-row+.choice-row{margin-top:2px}.item{display:block;border:0;background:transparent;padding:8px 10px;width:100%;text-align:left;white-space:nowrap;border-radius:5px;font-size:12px}.item:hover,.item:focus{background:var(--raised);outline:0}.item[aria-selected=true],.item[aria-checked=true]{background:var(--selected);color:var(--accent)}.item:disabled{opacity:.4}.item .detail{color:var(--muted);font-size:10px;margin-left:7px;font-variant-numeric:tabular-nums}.item.divider{border-top:1px solid var(--line);border-radius:0;margin-top:5px;padding-top:12px}.item .wave{display:block;height:18px;margin-top:6px;flex:none}.choice-row{display:flex;align-items:center;gap:2px;max-width:min(400px,calc(100vw - 24px))}.choice-row .item{flex:1;min-width:0;width:auto;overflow:hidden;text-overflow:ellipsis}.choice-row .rename{flex:1;min-width:0;width:100%;font:inherit;font-size:12px;color:var(--ink);background:var(--surface);border:1px solid var(--accent);border-radius:5px;padding:5px 7px}.row-action{display:grid;place-items:center;width:36px;height:36px;flex-shrink:0;padding:6px;border:0;border-radius:5px;background:transparent;color:var(--muted)}.row-action:hover,.row-action:focus-visible{background:var(--raised);color:var(--accent)}.row-action[data-action=delete]:hover,.row-action[data-action=delete]:focus-visible{color:var(--danger)}.row-action:disabled{opacity:.3;cursor:default}.row-action svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}</style><button part="trigger" class="trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.uid}"><span></span></button><div class="list" id="${this.uid}" role="listbox" popover="auto"></div>`;
 			this.trigger = this.shadowRoot!.querySelector('.trigger')!;
 			const symbol =
 				this.getAttribute('icon') && document.getElementById(this.getAttribute('icon')!);
@@ -81,6 +82,7 @@ export function defineKoeSelect() {
 				}
 			};
 			this.list.onkeydown = (e: KeyboardEvent) => {
+				if ((e.target as HTMLElement).tagName === 'INPUT') return;
 				e.stopPropagation();
 				const buttons = [...this.list.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')],
 					i = buttons.indexOf(this.shadowRoot!.activeElement as HTMLButtonElement);
@@ -147,6 +149,9 @@ export function defineKoeSelect() {
 		}
 		render() {
 			if (!this.trigger) return;
+			// A rename in progress owns the row; a re-render would drop its input. It is
+			// skipped here and re-run when the edit ends: finish() always calls render().
+			if (this._editing) return;
 			const options = this.options;
 			let selected = options.find((o) => o.value === this.value);
 			if (!selected && this._value !== '') {
@@ -164,6 +169,8 @@ export function defineKoeSelect() {
 			const actionMenu = options.some((o) => o.dataset.actions);
 			this.list.role = actionMenu ? 'menu' : 'listbox';
 			this.trigger.setAttribute('aria-haspopup', actionMenu ? 'menu' : 'listbox');
+			// The rebuilt list drops focus; the item that had it (by value) is refocused.
+			const focusedValue = (this.shadowRoot!.activeElement as HTMLElement | null)?.dataset.value;
 			this.list.replaceChildren(
 				...options.map((o) => {
 					const b = document.createElement('button');
@@ -198,9 +205,17 @@ export function defineKoeSelect() {
 					row.role = 'group';
 					row.setAttribute('aria-label', o.textContent);
 					row.append(b);
+					// The selected row's name is renamed in place: clicking it (or Enter on it)
+					// swaps the label for an input rather than re-selecting the take.
+					const canRename =
+						o.dataset.actions.split(',').includes('rename') &&
+						!o.dataset.disabledActions?.split(',').includes('rename');
+					if (canRename && o === selected) {
+						b.title = t('action.rename');
+						b.onclick = () => this.editName(o, b);
+					}
 					const actions: Record<string, { label: string; path: string }> = {
 						play: { label: t('action.play'), path: 'M6 4l10 6-10 6z' },
-						rename: { label: t('action.rename'), path: 'M13.5 3.5l3 3L7 16l-4 1 1-4z' },
 						download: { label: t('action.download'), path: 'M10 3v10m-4-4 4 4 4-4M4 13v4h12v-4' },
 						delete: {
 							label: t('action.delete'),
@@ -240,6 +255,66 @@ export function defineKoeSelect() {
 					return row;
 				})
 			);
+			// Only while the list is open: a render that closes it must not pull focus back to a
+			// hidden item (an edit keeps the list open, so its focus is restored).
+			if (focusedValue && this.list.matches(':popover-open'))
+				this.list
+					.querySelector<HTMLButtonElement>(`.item[data-value="${CSS.escape(focusedValue)}"]`)
+					?.focus();
+		}
+
+		// Replaces the selected row's name with an input; Enter or blur commits, Escape
+		// cancels. A commit emits `optionrename` with the take's stable key; the app persists
+		// it and re-renders. Only one row edits at a time.
+		editName(o: HTMLOptionElement, item: HTMLButtonElement) {
+			if (this._editing) return;
+			const row = item.closest<HTMLElement>('.choice-row');
+			if (!row) return;
+			this._editing = true;
+			const input = document.createElement('input');
+			input.className = 'rename';
+			input.type = 'text';
+			input.maxLength = 60;
+			input.value = o.textContent!;
+			input.setAttribute('aria-label', t('action.rename'));
+			let done = false;
+			const finish = (commit: boolean) => {
+				if (done) return;
+				done = true;
+				this._editing = false;
+				const name = input.value.trim();
+				if (commit && name && name !== o.textContent) {
+					o.textContent = name;
+					this.dispatchEvent(
+						new CustomEvent('optionrename', {
+							bubbles: true,
+							detail: { value: o.value, key: o.dataset.key || '', name }
+						})
+					);
+				}
+				this.render();
+				// The input replaced (and detached) the name button, so focus it afresh from the
+				// rebuilt row; without this a keyboard user is dropped on the body.
+				this.list
+					.querySelector<HTMLButtonElement>(`.item[data-value="${CSS.escape(o.value)}"]`)
+					?.focus();
+			};
+			input.onkeydown = (e) => {
+				e.stopPropagation();
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					finish(true);
+				} else if (e.key === 'Escape') {
+					e.preventDefault();
+					finish(false);
+				}
+			};
+			// Any focus-out commits the name (moving to another control is not a reason to
+			// discard the edit); only Escape cancels.
+			input.addEventListener('focusout', () => finish(true));
+			row.replaceChild(input, item);
+			input.focus();
+			input.select();
 		}
 
 		open(direction = 0) {
