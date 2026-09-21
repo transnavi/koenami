@@ -3935,3 +3935,28 @@ input[type='checkbox']:checked:after {
 .result-age-note {
 	margin-left: 0.6em;
 }
+
+/* The tutorial’s source–filter diagram keeps its labels readable on a phone. */
+.voice-flow {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+	padding: 0;
+	list-style: none;
+}
+.method .voice-flow li {
+	margin: 0;
+	padding: 16px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	text-align: center;
+}
+.voice-flow strong,
+.voice-flow span {
+	display: block;
+}
+@media (max-width: 560px) {
+	.voice-flow {
+		grid-template-columns: 1fr;
+	}
+}

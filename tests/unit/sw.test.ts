@@ -1,4 +1,4 @@
-import { beforeAll, describe, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { golden } from './golden';
 
@@ -193,5 +193,16 @@ describe('service worker', () => {
 			log.push(['offline', url, init?.mode || 'cors', await request(url, init), cached()]);
 		}
 		golden('sw.lifecycle', log);
+	});
+	it('opens the English tutorial offline immediately after installation', async () => {
+		online = true;
+		responses['/en/tutorial.html'] = html('<h1>How the voice works</h1>');
+		vi.resetModules();
+		const { prerendered } = await import('./service-worker-stub');
+		prerendered.push('/en/tutorial.html');
+		await import('../../src/service-worker');
+		await lifecycle('install');
+		online = false;
+		expect(await request('/en/tutorial.html', { mode: 'navigate' })).toBe('200');
 	});
 });
