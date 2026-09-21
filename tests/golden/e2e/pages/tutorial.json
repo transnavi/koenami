@@ -23,11 +23,41 @@
    "attrs": {},
    "text": "声とは何か：音源とフィルター"
   },
-  "how": {
+  "body": {
    "tag": "h2",
    "class": "",
    "attrs": {},
-   "text": "人はどうやって声を出しているか"
+   "text": "声はどこで作られるか：喉頭・声帯・声道・呼吸"
+  },
+  "scale": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "高さの尺度：ヘルツと半音"
+  },
+  "fig-scale-t": {
+   "tag": "title",
+   "class": "",
+   "attrs": {},
+   "text": "周波数の対数目盛りとオクターブ"
+  },
+  "spectrum": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "倍音とフォルマント：スペクトログラムの読み方"
+  },
+  "registers": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "声区：地声・裏声・ミックス、そして裏声は女声ではない"
+  },
+  "puberty": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "思春期の声変わり"
   },
   "perception": {
    "tag": "h2",
@@ -35,13 +65,37 @@
    "attrs": {},
    "text": "聞き手は声の性別を何で判断しているか"
   },
+  "japanese": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "日本語の声と日本の実情"
+  },
   "change": {
    "tag": "h2",
    "class": "",
    "attrs": {},
    "text": "声はどこまで、どうやって変えられるか"
   },
-  "koenami": {
+  "menu": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "練習メニュー"
+  },
+  "fig-targets-t": {
+   "tag": "title",
+   "class": "",
+   "attrs": {},
+   "text": "資料が報告している話し声の高さの数字"
+  },
+  "weight": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "声の重さと質感"
+  },
+  "metrics": {
    "tag": "h2",
    "class": "",
    "attrs": {},
@@ -53,13 +107,19 @@
    "attrs": {},
    "text": "無理をしないために"
   },
-  "todo": {
+  "faq": {
    "tag": "h2",
    "class": "",
    "attrs": {},
-   "text": "これから書く節"
+   "text": "よくある質問"
   },
-  "refs": {
+  "review": {
+   "tag": "h2",
+   "class": "",
+   "attrs": {},
+   "text": "聴こえ方の評価の根拠"
+  },
+  "sources": {
    "tag": "h2",
    "class": "",
    "attrs": {},

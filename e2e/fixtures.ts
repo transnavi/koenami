@@ -19,6 +19,13 @@ export const root = fileURLToPath(new URL('..', import.meta.url));
 export const goldenDir = join(root, 'tests/golden/e2e');
 export const fixtureAudio = (name: string) => join(root, 'tests/fixtures/audio', name);
 
+function requireCharacterization() {
+	if (process.env.E2E_CHARACTERIZATION !== '1')
+		throw new Error(
+			'Whole-page goldens belong in test:e2e:characterization; use focused assertions in e2e/flows.'
+		);
+}
+
 const START = Date.UTC(2026, 0, 1, 3, 0, 0); // 2026-01-01 12:00 JST
 
 type NetEntry = {
@@ -187,6 +194,8 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 	// navigation (see `flush` in the studio fixture) and written once per test.
 	coverage: [
 		async ({ page }, use) => {
+			// Ordinary browser checks leave coverage data untouched.
+			if (process.env.E2E_COVERAGE !== '1') return use();
 			// Precise coverage is started once per page and read with Profiler.takePreciseCoverage,
 			// which returns the counts since the last read and keeps the instrumentation: a stop
 			// and restart (page.coverage's only way to read) puts functions compiled before the
@@ -238,7 +247,6 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const log: NetEntry[] = [];
 		const file = basename(info.file).replace(/\.spec\.ts$/, '');
 		const dir = join(goldenDir, file);
-		mkdirSync(dir, { recursive: true });
 		let seq = 0;
 		// Media elements fetch /samples in a variable number of range requests, so those
 		// are kept as the set of files touched rather than as log entries.
@@ -338,6 +346,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 				extra = {}
 			}: { ignore?: readonly string[]; maskAudio?: boolean; extra?: Record<string, unknown> } = {}
 		) => {
+			requireCharacterization();
 			const dom = await page.evaluate(domProjection);
 			for (const id of ignore) dom.elements[id] = { ignored: true };
 			let observation: Observation & { network: NetEntry[]; media: string[]; errors: string[] } = {
@@ -370,6 +379,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			// observation, which stays as it was recorded.
 			await flush();
 			if (record) {
+				mkdirSync(dir, { recursive: true });
 				writeFileSync(path, text);
 				return;
 			}
@@ -390,6 +400,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		// include the controls composited over it, whose rounded corners rasterise with
 		// ±1 differences between runs.
 		const canvas = async (name: string, selector: string) => {
+			requireCharacterization();
 			await settle();
 			const data = await page
 				.locator(selector)
@@ -405,6 +416,7 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		// timer is masked, and so are the map and signal canvases: their pixels have goldens
 		// of their own, and a playback cursor on them follows real time.
 		const screen = async (name: string) => {
+			requireCharacterization();
 			await settle();
 			await page.evaluate(() => document.fonts.ready).catch(() => {});
 			// A mask covers the element's box whatever lies over it, so the canvases are masked
@@ -454,10 +466,9 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 		const flush = async () => {
 			await flushers.get(page)?.();
 		};
-		// The pinned tree is wired at the load event; the Kit tree wires its pages on hydration.
+		// The page wires itself on hydration; the attribute goes up in +layout.svelte's onMount.
 		const ready = async () => {
-			if (process.env.KOENAMI_TREE === 'new')
-				await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+			await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
 		};
 		const back = async () => {
 			await flush();

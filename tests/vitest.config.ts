@@ -2,17 +2,14 @@ import { fileURLToPath } from 'node:url';
 
 import { defineConfig } from 'vitest/config';
 
-// KOENAMI_TREE selects which implementation the characterization tests run against:
-//   old  — the pinned vanilla modules extracted by tests/scripts/checkout-old.mjs
-//   new  — the SvelteKit library under src/lib
-const tree = process.env.KOENAMI_TREE || 'old';
+// The characterization tests run against the studio's library under src/lib; the service
+// worker's `$service-worker` module is stood in for.
 const root = fileURLToPath(new URL('..', import.meta.url));
-const app = tree === 'new' ? `${root}src/lib` : `${root}tests/old-tree/web`;
 
 export default defineConfig({
 	resolve: {
 		alias: {
-			'@app': app,
+			'@app': `${root}src/lib`,
 			'$service-worker': `${root}tests/unit/service-worker-stub.ts`
 		}
 	},
@@ -20,17 +17,13 @@ export default defineConfig({
 		root,
 		include: ['tests/unit/**/*.test.ts'],
 		setupFiles: ['tests/unit/setup.ts'],
-		globalSetup: ['tests/unit/global-setup.ts'],
 		environment: 'node',
 		coverage: {
 			// Native V8 coverage through monocart, the same converter the browser layer uses,
 			// so both layers merge as source ranges (see tests/coverage/report.mjs).
 			provider: 'custom',
 			customProviderModule: 'vitest-monocart-coverage',
-			include:
-				tree === 'new'
-					? ['src/lib/**/*.{ts,js,svelte}', 'src/service-worker.ts']
-					: ['tests/old-tree/web/**/*.js'],
+			include: ['src/lib/**/*.{ts,js,svelte}', 'src/service-worker.ts'],
 			reportsDirectory: 'coverage/unit'
 		}
 	}

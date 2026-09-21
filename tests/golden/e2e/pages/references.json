@@ -21,31 +21,31 @@
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "書籍 Fant, G. (1960). Acoustic Theory of Speech Production . The Hague: Mouton. 使用箇所： 声のしくみ ：声とは何か"
+   "text": "書籍 Fant, G. (1960). Acoustic Theory of Speech Production . The Hague: Mouton. 使用箇所： 声のしくみ ：声とは何か、倍音とフォルマント"
   },
   "ref-titze-book": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "書籍 Titze, I. R. (1994). Principles of Voice Production . Englewood Cliffs: Prentice Hall. 使用箇所： 声のしくみ ：声とは何か、人はどうやって声を出しているか"
+   "text": "書籍 Titze, I. R. (1994). Principles of Voice Production . Englewood Cliffs: Prentice Hall. 使用箇所： 声のしくみ ：声はどこで作られるか"
   },
   "ref-titze-1989": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 Titze, I. R. (1989). Physiologic and acoustic differences between male and female voices. The Journal of the Acoustical Society of America , 85(4), 1699–1707. doi:10.1121/1.397959 使用箇所： 声のしくみ ：人はどうやって声を出しているか"
+   "text": "査読誌 Titze, I. R. (1989). Physiologic and acoustic differences between male and female voices. The Journal of the Acoustical Society of America , 85(4), 1699–1707. doi:10.1121/1.397959 使用箇所： 声のしくみ ：声はどこで作られるか"
   },
   "ref-fitch": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 Fitch, W. T., & Giedd, J. (1999). Morphology and development of the human vocal tract: A study using magnetic resonance imaging. The Journal of the Acoustical Society of America , 106(3), 1511–1522. doi:10.1121/1.427148 使用箇所： 声のしくみ ：人はどうやって声を出しているか"
+   "text": "査読誌 Fitch, W. T., & Giedd, J. (1999). Morphology and development of the human vocal tract: A study using magnetic resonance imaging. The Journal of the Acoustical Society of America , 106(3), 1511–1522. doi:10.1121/1.427148 使用箇所： 声のしくみ ：声はどこで作られるか"
   },
   "ref-simpson": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 Simpson, A. P. (2009). Phonetic differences between male and female speech. Language and Linguistics Compass , 3(2), 621–640. doi:10.1111/j.1749-818X.2009.00125.x 使用箇所： 声のしくみ ：人はどうやって声を出しているか"
+   "text": "査読誌 Simpson, A. P. (2009). Phonetic differences between male and female speech. Language and Linguistics Compass , 3(2), 621–640. doi:10.1111/j.1749-818X.2009.00125.x 使用箇所： 声のしくみ ：日本語の声と日本の実情"
   },
   "ref-praat": {
    "tag": "li",
@@ -63,13 +63,259 @@
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "国際会議 Netzorg, R., Carvalho, N., Guzman, A., Wang, L., Francis, J., Garoute, K. V., Johnson, K., & Anumanchipalli, G. K. (2025). On the production and perception of a single speaker's gender. Interspeech 2025 . isca-archive.org 使用箇所：響き（ΔF）の計算の参考。 声のしくみ ：聞き手は声の性別を何で判断しているか 本アプリの有声判定やF0の集計は同じ手順ではありません。"
+   "text": "国際会議 Netzorg, R., Carvalho, N., Guzman, A., Wang, L., Francis, J., Garoute, K. V., Johnson, K., & Anumanchipalli, G. K. (2025). On the production and perception of a single speaker's gender. Interspeech 2025 . isca-archive.org 使用箇所：響き（ΔF）の計算の参考。 声のしくみ ：聞き手は何で判断しているか、Koenamiの指標との対応、聴こえ方の評価の根拠 本アプリの有声判定やF0の集計は同じ手順ではありません。"
   },
   "ref-fisher": {
    "tag": "li",
    "class": "",
    "attrs": {},
    "text": "査読誌 Fisher, R. A. (1936). The use of multiple measurements in taxonomic problems. Annals of Eugenics , 7(2), 179–188. doi:10.1111/j.1469-1809.1936.tb02137.x 使用箇所：2D図の「男女差」の軸と声の判定（線形判別の方向）"
+  },
+  "ref-wikipedia-ja-koe": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia日本語版「声」（2026年9月17日閲覧）. ja.wikipedia.org/wiki/%E5%A3%B0 使用箇所： 声のしくみ ：声とは何か、高さの尺度、声区、練習メニュー コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-wikipedia-larynx": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Larynx (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Larynx 使用箇所： 声のしくみ ：声はどこで作られるか コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-wikipedia-thyroid-cartilage": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Thyroid cartilage (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Thyroid_cartilage 使用箇所： 声のしくみ ：声はどこで作られるか コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-wikipedia-cricoid-cartilage": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Cricoid cartilage (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Cricoid_cartilage 使用箇所： 声のしくみ ：声はどこで作られるか コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-wikipedia-arytenoid-cartilage": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Arytenoid cartilage (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Arytenoid_cartilage 使用箇所： 声のしくみ ：声はどこで作られるか コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-wikipedia-cricothyroid-muscle": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Cricothyroid muscle (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Cricothyroid_muscle 使用箇所： 声のしくみ ：声はどこで作られるか コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-wikipedia-thyroarytenoid-muscle": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Thyroarytenoid muscle (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Thyroarytenoid_muscle 使用箇所： 声のしくみ ：声はどこで作られるか コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-herbst2020": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー） Herbst, C. T. (2020). Registers—The Snake Pit of Voice Pedagogy, Part 1: Proprioception, Perception, and Laryngeal Mechanisms. Journal of Singing 77(2) 175–190 . nats.org/_Library/JOS_On_Point/JOS-077-02-2020-175.pdf 使用箇所： 声のしくみ ：声はどこで作られるか、倍音とフォルマント、声区、声の重さと質感、よくある質問"
+  },
+  "ref-hirano1974": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hirano, M. (1974). Morphological Structure of the Vocal Cord as a Vibrator and its Variations. Folia Phoniatrica 26(2) 89–94 . doi:10.1159/000263771 使用箇所： 声のしくみ ：声はどこで作られるか"
+  },
+  "ref-titze1988": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Titze, I. R. (1988). The physics of small-amplitude oscillation of the vocal folds. Journal of the Acoustical Society of America 83(4) 1536–1552 . doi:10.1121/1.395910 使用箇所： 声のしくみ ：声はどこで作られるか"
+  },
+  "ref-vandenberg1958": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 van den Berg, J. (1958). Myoelastic-Aerodynamic Theory of Voice Production. Journal of Speech and Hearing Research 1(3) 227–244 . doi:10.1044/jshr.0103.227 使用箇所： 声のしくみ ：声はどこで作られるか"
+  },
+  "ref-titze2008": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "一般誌 Titze, I. R. (2008). The Human Instrument. Scientific American 298(1) 94–101 . doi:10.1038/scientificamerican0108-94 使用箇所： 声のしくみ ：声はどこで作られるか 一般向けの解説記事。"
+  },
+  "ref-holmberg1988": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Holmberg, E. B., Hillman, R. E., & Perkell, J. S. (1988). Glottal airflow and transglottal air pressure measurements for male and female speakers in soft, normal, and loud voice. Journal of the Acoustical Society of America 84(2) 511–529 . doi:10.1121/1.396829 使用箇所： 声のしくみ ：声はどこで作られるか、練習メニュー、声の重さと質感"
+  },
+  "ref-hixon1976": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hixon, T. J., Mead, J., & Goldman, M. D. (1976). Dynamics of the chest wall during speech production: function of the thorax, rib cage, diaphragm, and abdomen. Journal of Speech and Hearing Research 19(2) 297–356 . doi:10.1044/jshr.1902.297 使用箇所： 声のしくみ ：声はどこで作られるか"
+  },
+  "ref-iwarsson1998": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Iwarsson, J., & Sundberg, J. (1998). Effects of lung volume on vertical larynx position during phonation. Journal of Voice 12(2) 159–165 . doi:10.1016/s0892-1997(98)80035-0 使用箇所： 声のしくみ ：声はどこで作られるか"
+  },
+  "ref-wikipedia-octave": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Octave (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Octave 使用箇所： 声のしくみ ：高さの尺度 コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-wikipedia-semitone": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Semitone (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Semitone 使用箇所： 声のしくみ ：高さの尺度 コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-diamant2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Diamant, N., & Amir, O. (2021). Examining the voice of Israeli transgender women: Acoustic measures, voice femininity and voice-related quality-of-life. International Journal of Transgender Health 22(3) 281–293 . doi:10.1080/26895269.2020.1798838 使用箇所： 声のしくみ ：高さの尺度"
+  },
+  "ref-wikipedia-harmonic": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Harmonic (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Harmonic 使用箇所： 声のしくみ ：倍音とフォルマント コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-wikipedia-spectrogram": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Spectrogram (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Spectrogram 使用箇所： 声のしくみ ：倍音とフォルマント コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-wikipedia-formant": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Formant (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Formant 使用箇所： 声のしくみ ：倍音とフォルマント コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-peterson1952": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Peterson, G. E., & Barney, H. L. (1952). Control Methods Used in a Study of the Vowels. Journal of the Acoustical Society of America 24(2) 175–184 . doi:10.1121/1.1906875 使用箇所： 声のしくみ ：倍音とフォルマント"
+  },
+  "ref-hillenbrand1995": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hillenbrand, J., Getty, L. A., Clark, M. J., & Wheeler, K. (1995). Acoustic characteristics of American English vowels. Journal of the Acoustical Society of America 97(5 Pt 1) 3099–3111 . doi:10.1121/1.411872 使用箇所： 声のしくみ ：倍音とフォルマント、Koenamiの指標との対応"
+  },
+  "ref-bozeman2022": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Bozeman, K. W. (2022). The Case for Acoustic Registers. Journal of Singing 79(2) 181–187 . doi:10.53830/TXTB1962 使用箇所： 声のしくみ ：倍音とフォルマント 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-sundberg1974": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Sundberg, J. (1974). Articulatory interpretation of the \\\"singing formant\\. The Journal of the Acoustical Society of America 55(4) 838–844 . doi:10.1121/1.1914609 使用箇所： 声のしくみ ：倍音とフォルマント"
+  },
+  "ref-roubeau2009": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Roubeau, B., Henrich, N., & Castellengo, M. (2009). Laryngeal Vibratory Mechanisms: The Notion of Vocal Register Revisited. Journal of Voice 23(4) 425–438 . doi:10.1016/j.jvoice.2007.10.014 使用箇所： 声のしくみ ：声区、よくある質問"
+  },
+  "ref-echternach2010": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Echternach, M., Dippold, S., Sundberg, J., Arndt, S., Zander, M. F., & Richter, B. (2010). High-speed imaging and electroglottography measurements of the open quotient in untrained male voices' register transitions. Journal of Voice 24(6) 644–650 . doi:10.1016/j.jvoice.2009.05.003 使用箇所： 声のしくみ ：声区"
+  },
+  "ref-wikipedia-ja-seiku": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia日本語版「声区」（2026年9月17日閲覧）. ja.wikipedia.org/wiki/%E5%A3%B0%E5%8C%BA 使用箇所： 声のしくみ ：声区 コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-lee2023": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Lee, Y., Oya, M., Kaburagi, T., Hidaka, S., & Nakagawa, T. (2023). Differences Among Mixed, Chest, and Falsetto Registers: A Multiparametric Study. Journal of Voice 37(2) 298.e11–298.e29 . doi:10.1016/j.jvoice.2020.12.028 使用箇所： 声のしくみ ：声区、声の重さと質感"
+  },
+  "ref-wikipedia-puberphonia": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia（英語版）「Puberphonia (English Wikipedia)」（2026年9月17日閲覧）. en.wikipedia.org/wiki/Puberphonia 使用箇所： 声のしくみ ：声区 コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-kahane1978": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Kahane, J. C. (1978). A morphological study of the human prepubertal and pubertal larynx. American Journal of Anatomy 151(1) 11–19 . doi:10.1002/aja.1001510103 使用箇所： 声のしくみ ：思春期の声変わり"
+  },
+  "ref-harries1997": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Harries, M. L., Walker, J. M., Williams, D. M., Hawkins, S., & Hughes, I. A. (1997). Changes in the male voice at puberty. Archives of Disease in Childhood 77(5) 445–447 . doi:10.1136/adc.77.5.445 使用箇所： 声のしくみ ：思春期の声変わり"
+  },
+  "ref-harries1998": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Harries, M., Hawkins, S., Hacking, J., & Hughes, I. (1998). Changes in the male voice at puberty: vocal fold length and its relationship to the fundamental frequency of the voice. The Journal of Laryngology & Otology 112(5) 451–454 . doi:10.1017/s0022215100140757 使用箇所： 声のしくみ ：思春期の声変わり"
+  },
+  "ref-hollien1994": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hollien, H., Green, R., & Massey, K. (1994). Longitudinal research on adolescent voice change in males. Journal of the Acoustical Society of America 96(5 Pt 1) 2646–2654 . doi:10.1121/1.411275 使用箇所： 声のしくみ ：思春期の声変わり"
+  },
+  "ref-lee1999": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Lee, S., Potamianos, A., & Narayanan, S. (1999). Acoustics of children's speech: developmental changes of temporal and spectral parameters. Journal of the Acoustical Society of America 105(3) 1455–1468 . doi:10.1121/1.426686 使用箇所： 声のしくみ ：思春期の声変わり"
+  },
+  "ref-hacki1999": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hacki, T., & Heitmüller, S. (1999). Development of the child's voice: premutation, mutation. International Journal of Pediatric Otorhinolaryngology 49 Suppl 1 S141–S144 . doi:10.1016/s0165-5876(99)00150-0 使用箇所： 声のしくみ ：思春期の声変わり"
+  },
+  "ref-pedersen1990": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Pedersen, M. F., Møller, S., Krabbe, S., Bennett, P., & Svenstrup, B. (1990). Fundamental voice frequency in female puberty measured with electroglottography during continuous speech as a secondary sex characteristic. A comparison between voice, pubertal stages, oestrogens and androgens. International Journal of Pediatric Otorhinolaryngology 20(1) 17–24 . doi:10.1016/0165-5876(90)90331-k 使用箇所： 声のしくみ ：思春期の声変わり"
+  },
+  "ref-wikipedia-melanie-ho": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia日本語版「メラニー法」（2026年9月17日閲覧）. ja.wikipedia.org/wiki/%E3%83%A1%E3%83%A9%E3%83%8B%E3%83%BC%E 使用箇所： 声のしくみ ：日本語の声と日本の実情 コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-hanson1997": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hanson, H. M. (1997). Glottal characteristics of female speakers: Acoustic correlates. Journal of the Acoustical Society of America 101(1) 466–481 . doi:10.1121/1.417991 使用箇所： 声のしくみ ：声の重さと質感"
+  },
+  "ref-hanson1999": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hanson, H. M., & Chuang, E. S. (1999). Glottal characteristics of male speakers: Acoustic correlates and comparison with female data. Journal of the Acoustical Society of America 106(2) 1064–1077 . doi:10.1121/1.427116 使用箇所： 声のしくみ ：声の重さと質感"
+  },
+  "ref-kreiman2007": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Kreiman, J., Gerratt, B. R., & Antoñanzas-Barroso, N. (2007). Measures of the glottal source spectrum. Journal of Speech, Language, and Hearing Research 50(3) 595–610 . doi:10.1044/1092-4388(2007/042) 使用箇所： 声のしくみ ：声の重さと質感"
   },
   "perception": {
    "tag": "h2",
@@ -81,31 +327,31 @@
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌（メタ分析） Leung, Y., Oates, J., & Chan, S. P. (2018). Voice, articulation, and prosody contribute to listener perceptions of speaker gender: A systematic review and meta-analysis. Journal of Speech, Language, and Hearing Research , 61(2), 266–297. doi:10.1044/2017_JSLHR-S-17-0067 使用箇所：滑舌の聴取レビュー尺度の根拠。 声のしくみ ：聞き手は声の性別を何で判断しているか、声はどこまで、どうやって変えられるか"
+   "text": "査読誌（メタ分析） Leung, Y., Oates, J., & Chan, S. P. (2018). Voice, articulation, and prosody contribute to listener perceptions of speaker gender: A systematic review and meta-analysis. Journal of Speech, Language, and Hearing Research , 61(2), 266–297. doi:10.1044/2017_JSLHR-S-17-0067 使用箇所：滑舌の聴取レビュー尺度の根拠。 声のしくみ ：声区、聞き手は何で判断しているか、日本語の声と日本の実情、練習メニュー、よくある質問、聴こえ方の評価の根拠"
   },
   "ref-hillenbrand": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 Hillenbrand, J. M., & Clark, M. J. (2009). The role of f0 and formant frequencies in distinguishing the voices of men and women. Attention, Perception, & Psychophysics , 71(5), 1150–1166. doi:10.3758/APP.71.5.1150 使用箇所： 声のしくみ ：聞き手は声の性別を何で判断しているか"
+   "text": "査読誌 Hillenbrand, J. M., & Clark, M. J. (2009). The role of f0 and formant frequencies in distinguishing the voices of men and women. Attention, Perception, & Psychophysics , 71(5), 1150–1166. doi:10.3758/APP.71.5.1150 使用箇所： 声のしくみ ：聞き手は何で判断しているか"
   },
   "ref-gelfer": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 Gelfer, M. P., & Schofield, K. J. (2000). Comparison of acoustic and perceptual measures of voice in male-to-female transsexuals perceived as female versus those perceived as male. Journal of Voice , 14(1), 22–33. doi:10.1016/S0892-1997(00)80092-2 使用箇所： 声のしくみ ：聞き手は声の性別を何で判断しているか"
+   "text": "査読誌 Gelfer, M. P., & Schofield, K. J. (2000). Comparison of acoustic and perceptual measures of voice in male-to-female transsexuals perceived as female versus those perceived as male. Journal of Voice , 14(1), 22–33. doi:10.1016/S0892-1997(00)80092-2 使用箇所： 声のしくみ ：聞き手は何で判断しているか、練習メニュー、Koenamiの指標との対応"
   },
   "ref-rsos": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌（レビュー） Rosi, V., & McGettigan, C. (2025). Voice gender diversity: expression, perception and acoustics. Royal Society Open Science , 12(10). doi:10.1098/rsos.251193 使用箇所： 測定方法 の研究資料。 声のしくみ ：聞き手は声の性別を何で判断しているか、声はどこまで、どうやって変えられるか"
+   "text": "査読誌（レビュー） Rosi, V., & McGettigan, C. (2025). Voice gender diversity: expression, perception and acoustics. Royal Society Open Science , 12(10). doi:10.1098/rsos.251193 使用箇所： 測定方法 の研究資料。 声のしくみ ：聞き手は何で判断しているか、聴こえ方の評価の根拠"
   },
   "ref-sakuraba": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 櫻庭京子・今泉敏・峯松信明・田山二朗・堀川直史（2009）「女性と判定される声の特徴 ─性同一性障害者の話声位─」『音声言語医学』50(1), 14–20. doi:10.5112/jjlp.50.14 使用箇所：高さの説明の注意書き：高さだけでは性別の印象が決まらないこと"
+   "text": "査読誌 櫻庭京子・今泉敏・峯松信明・田山二朗・堀川直史（2009）「女性と判定される声の特徴 ─性同一性障害者の話声位─」『音声言語医学』50(1), 14–20. doi:10.5112/jjlp.50.14 使用箇所：高さの説明の注意書き：高さだけでは性別の印象が決まらないこと。 声のしくみ ：日本語の声と日本の実情、練習メニュー、よくある質問"
   },
   "ref-nieber": {
    "tag": "li",
@@ -117,19 +363,19 @@
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 McAleer, P., Todorov, A., & Belin, P. (2014). How do you say 'hello'? Personality impressions from brief novel voices. PLoS ONE , 9(3), e90779. doi:10.1371/journal.pone.0090779 使用箇所：聴取レビューの印象尺度の参考。 声のしくみ ：聞き手は声の性別を何で判断しているか"
+   "text": "査読誌 McAleer, P., Todorov, A., & Belin, P. (2014). How do you say 'hello'? Personality impressions from brief novel voices. PLoS ONE , 9(3), e90779. doi:10.1371/journal.pone.0090779 使用箇所：聴取レビューの印象尺度の参考。 声のしくみ ：聞き手は何で判断しているか"
   },
   "ref-kido": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 木戸博・粕谷英樹（2001）「通常発話の声質に関連した日常表現語—聴取評価による抽出」『日本音響学会誌』57(5). J-STAGE 使用箇所：聴取レビューの声質の語彙。 声のしくみ ：聞き手は声の性別を何で判断しているか"
+   "text": "査読誌 木戸博・粕谷英樹（2001）「通常発話の声質に関連した日常表現語—聴取評価による抽出」『日本音響学会誌』57(5). J-STAGE 使用箇所：聴取レビューの声質の語彙。 声のしくみ ：聞き手は何で判断しているか、聴こえ方の評価の根拠"
   },
   "ref-kanato": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 金礪愛・中野倫靖・後藤真孝・菊池英明（2016）「歌声の印象評価尺度の構築に基づく多様な印象の自動推定手法」『情報処理学会論文誌』57(5), 1375–1388. PDF 使用箇所：聴取レビューの印象尺度の参考"
+   "text": "査読誌 金礪愛・中野倫靖・後藤真孝・菊池英明（2016）「歌声の印象評価尺度の構築に基づく多様な印象の自動推定手法」『情報処理学会論文誌』57(5), 1375–1388. PDF 使用箇所：聴取レビューの印象尺度の参考。 声のしくみ ：聴こえ方の評価の根拠"
   },
   "ref-coconut": {
    "tag": "li",
@@ -141,13 +387,145 @@
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "プレプリント Diwan, A., Zheng, Z., Harwath, D., & Choi, E. (2025). Scaling rich style-prompted text-to-speech datasets (ParaSpeechCaps). arXiv:2503.04713. arxiv.org/abs/2503.04713 使用箇所：滑舌の尺度（clarity群）の参考"
+   "text": "プレプリント Diwan, A., Zheng, Z., Harwath, D., & Choi, E. (2025). Scaling rich style-prompted text-to-speech datasets (ParaSpeechCaps). arXiv:2503.04713. arxiv.org/abs/2503.04713 使用箇所：滑舌の尺度（clarity群）の参考。 声のしくみ ：聴こえ方の評価の根拠"
   },
   "ref-hasegawa": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "学部論文 長谷川翔太（2017）「男性両声類の女声らしさに関わる特徴量の分析」日本大学卒業論文. PDF 使用箇所：両声類の声の特徴についての参考。 声のしくみ ：声はどこまで、どうやって変えられるか 1回のコンテスト音声に基づく学部論文で、証拠としては弱い。"
+   "text": "学部論文 長谷川翔太（2017）「男性両声類の女声らしさに関わる特徴量の分析」日本大学卒業論文. PDF 使用箇所：両声類の声の特徴についての参考。 声のしくみ ：日本語の声と日本の実情、練習メニュー 1回のコンテスト音声に基づく学部論文で、証拠としては弱い。"
+  },
+  "ref-cartei2013": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Cartei, V., & Reby, D. (2013). Effect of Formant Frequency Spacing on Perceived Gender in Pre-Pubertal Children's Voices. PLoS ONE 8(11) e81022 . doi:10.1371/journal.pone.0081022 使用箇所： 声のしくみ ：声とは何か、聞き手は何で判断しているか、練習メニュー、よくある質問"
+  },
+  "ref-gelfer2013": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Gelfer, M. P., & Bennett, Q. E. (2013). Speaking fundamental frequency and vowel formant frequencies: effects on perception of gender. Journal of Voice 27(5) 556–566 . doi:10.1016/j.jvoice.2012.11.008 使用箇所： 声のしくみ ：聞き手は何で判断しているか、練習メニュー、よくある質問"
+  },
+  "ref-skuk2014": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Skuk, V. G., & Schweinberger, S. R. (2013). Influences of Fundamental Frequency, Formant Frequencies, Aperiodicity, and Spectrum Level on the Perception of Voice Gender. Journal of Speech, Language, and Hearing Research 57(1) 285–296 . doi:10.1044/1092-4388(2013/12-0314) 使用箇所： 声のしくみ ：聞き手は何で判断しているか"
+  },
+  "ref-neuhaus2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Neuhaus, J., Scherer, R. C., & Whitfield, J. A. (2026). Gender Perception of Speech: Dependence on Fundamental Frequency, Implied Vocal Tract Length, and Source Spectral Tilt. Journal of Voice . doi:10.1016/j.jvoice.2024.01.014 使用箇所： 声のしくみ ：聞き手は何で判断しているか、練習メニュー"
+  },
+  "ref-hardy2020": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hardy, T. L. D., Rieger, J. M., Wells, K., & Boliek, C. A. (2020). Acoustic Predictors of Gender Attribution, Masculinity–Femininity, and Vocal Naturalness Ratings Amongst Transgender and Cisgender Speakers. Journal of Voice 34(2) 300.e11–300.e26 . doi:10.1016/j.jvoice.2018.10.002 使用箇所： 声のしくみ ：聞き手は何で判断しているか、よくある質問"
+  },
+  "ref-taylor2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Taylor, J., & McDougall, K. (2026). Perceiving Gender in the Voice: Accuracy, Confidence, and Reasoning in Listener Attributions. Journal of Voice . doi:10.1016/j.jvoice.2026.08.002 使用箇所： 声のしくみ ：聞き手は何で判断しているか"
+  },
+  "ref-munson2017": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Munson, B., Ryherd, K., & Kemper, S. (2017). Implicit and explicit gender priming in English lingual sibilant fricative perception. Linguistics 55(5) . doi:10.1515/ling-2017-0021 使用箇所： 声のしくみ ：聞き手は何で判断しているか"
+  },
+  "ref-funk2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "国際会議 Funk, R., Weirich, M., & Simpson, A. P. (2025). How sibilant spectra shape gender perception in prepubertal children: A voice morphing study. Interspeech 2025 . doi:10.21437/interspeech.2025-125 使用箇所： 声のしくみ ：聞き手は何で判断しているか 国際会議の予稿で、小規模な予備的研究。"
+  },
+  "ref-brown2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Brown, K. M., Dahl, K. L., Cler, G. J., & Stepp, C. E. (2021). Listener Age and Gender Diversity: Effects on Voice-based Perception of Gender. Journal of Voice 35(5) 739–745 . doi:10.1016/j.jvoice.2020.02.004 使用箇所： 声のしくみ ：聞き手は何で判断しているか"
+  },
+  "ref-quinn2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Quinn, S., Oates, J., & Dacakis, G. (2021). Perceived Gender and Client Satisfaction in Transgender Voice Work: Comparing Self and Listener Rating Scales across a Training Program. Folia Phoniatrica et Logopaedica . doi:10.1159/000521226 使用箇所： 声のしくみ ：聞き手は何で判断しているか、練習メニュー、Koenamiの指標との対応、よくある質問"
+  },
+  "ref-hancock2011": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hancock, A. B., Krissinger, J., & Owen, K. (2011). Voice Perceptions and Quality of Life of Transgender People. Journal of Voice 25(5) 553–558 . doi:10.1016/j.jvoice.2010.07.013 使用箇所： 声のしくみ ：聞き手は何で判断しているか、練習メニュー"
+  },
+  "ref-imaizumi2003": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "学会抄録 今泉敏・櫻庭京子・新美成二・筧一彦・広瀬啓吉（2003）「女声と聴取された性同一性障害者(MtF)の音声の音響分析」日本音響学会研究発表会講演論文集 2003(1) 449–450（NAID 10018035900）. cir.nii.ac.jp/crid/1570572700389235584 使用箇所： 声のしくみ ：日本語の声と日本の実情、よくある質問 学会の抄録で、本文は参照できていない。"
+  },
+  "ref-maruyama2007": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "修士論文 丸山和孝（2007）「話者認識技術に基づく知覚的女声度の自動推定」東京大学大学院情報理工学系研究科 修士論文. repository.dl.itc.u-tokyo.ac.jp/records/1801 使用箇所： 声のしくみ ：日本語の声と日本の実情、よくある質問 修士論文で、臨床での使用は著者の報告のみ。"
+  },
+  "ref-tanaka2022": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Tanaka, Y. (2022). 女性の声の魅力に対する基本周波数とフォルマント間隔の影響. 人間科学研究 (Human Psychology Studies Journal / hpsj) 11(1) 19 . doi:10.60186/hpsj.11.1_19 使用箇所： 声のしくみ ：日本語の声と日本の実情、練習メニュー"
+  },
+  "ref-vanbezooijen1995": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 van Bezooijen, R. (1995). Sociocultural Aspects of Pitch Differences between Japanese and Dutch Women. Language and Speech 38(3) 253–265 . doi:10.1177/002383099503800303 使用箇所： 声のしくみ ：日本語の声と日本の実情、よくある質問"
+  },
+  "ref-yuasa2010": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Yuasa, I. P. (2010). Creaky Voice: A New Feminine Voice Quality for Young Urban-Oriented Upwardly Mobile American Women?. American Speech 85(3) 315–337 . doi:10.1215/00031283-2010-018 使用箇所： 声のしくみ ：日本語の声と日本の実情、よくある質問"
+  },
+  "ref-anderson2014": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Anderson, R. C., Klofstad, C. A., Mayew, W. J., & Venkatachalam, M. (2014). Vocal Fry May Undermine the Success of Young Women in the Labor Market. PLoS ONE 9(5) e97506 . doi:10.1371/journal.pone.0097506 使用箇所： 声のしくみ ：日本語の声と日本の実情、よくある質問"
+  },
+  "ref-munson2007": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Munson, B. (2007). The Acoustic Correlates of Perceived Masculinity, Perceived Femininity, and Perceived Sexual Orientation. Language and Speech 50(1) 125–142 . doi:10.1177/00238309070500010601 使用箇所： 声のしくみ ：聴こえ方の評価の根拠"
+  },
+  "ref-yasuda2023": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "学会抄録 Yasuda, M., & Kitamura, T. (2023). 女性声優の声質表現語抽出の試み. 音声コミュニケーション研究会資料 (Technical Committee on Speech Communication proceedings, asjsc) 3(2) SC-2023-10 . doi:10.60274/asjsc.SC-2023-10 使用箇所： 声のしくみ ：聴こえ方の評価の根拠 学会の抄録で、本文は参照できていない。"
+  },
+  "ref-kenny2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Kenny, C., & White, M. (2025). Agreement in Voice Gender Perception Between Cisgender and Transgender/Gender-Diverse Listeners: An Observational Study Using Reddit Recordings. Journal of Voice (online ahead of print) S0892-1997(25)00508-9 . doi:10.1016/j.jvoice.2025.11.028 使用箇所： 声のしくみ ：聞き手は何で判断しているか"
+  },
+  "ref-marchandknight2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Marchand Knight, J., & Deroche, M. L. D. (2026). Visual biases from cis and trans judges in evaluation of voices with pitch and timbre manipulations. Frontiers in Psychology 17 1755303 . doi:10.3389/fpsyg.2026.1755303 使用箇所： 声のしくみ ：聞き手は何で判断しているか"
+  },
+  "ref-simon2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Simon, S., Silverstein, E., Timmons-Sund, L., Pinto, J. M., Castro, M. E., O'Dell, K., Johns III, M. M., Mack, W. J., & Bensoussan, Y. (2026). Validation of an AI-assisted Treatment Outcome Measure for Gender-Affirming Voice Care: Comparing AI Accuracy to Listener's Perception of Voice Femininity. Journal of Voice 40(3) 614–623 . doi:10.1016/j.jvoice.2023.12.008 使用箇所： 声のしくみ ：練習メニュー"
   },
   "models": {
    "tag": "h2",
@@ -165,7 +543,7 @@
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "プレプリント Chen, F., Togneri, R., Maybery, M., & Tan, D. (2021). Voice gender scoring and independent acoustic characterization of perceived masculinity and femininity. arXiv:2102.07982. arxiv.org/abs/2102.07982 使用箇所：女性らしさ・男性らしさを別々に評価する聴取レビューの設計の参考"
+   "text": "プレプリント Chen, F., Togneri, R., Maybery, M., & Tan, D. (2021). Voice gender scoring and independent acoustic characterization of perceived masculinity and femininity. arXiv:2102.07982. arxiv.org/abs/2102.07982 使用箇所：女性らしさ・男性らしさを別々に評価する聴取レビューの設計の参考。 声のしくみ ：練習メニュー、よくある質問"
   },
   "ref-fujita": {
    "tag": "li",
@@ -219,7 +597,7 @@
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "プレプリント Takamichi, S., Mitsui, K., Saito, Y., Koriyama, T., Tanji, N., & Saruwatari, H. (2019). JVS corpus: free Japanese multi-speaker voice corpus. arXiv:1908.06248. arxiv.org/abs/1908.06248 。 配布ページと利用規約 使用箇所：日本語の見本（公開版は10音声、読み込みで100人・5,000音声） 個人利用・非商用研究等に限られ、全体の再配布には制限があります。タグ情報はCC BY-SA 4.0。"
+   "text": "プレプリント Takamichi, S., Mitsui, K., Saito, Y., Koriyama, T., Tanji, N., & Saruwatari, H. (2019). JVS corpus: free Japanese multi-speaker voice corpus. arXiv:1908.06248. arxiv.org/abs/1908.06248 。 配布ページと利用規約 使用箇所：日本語の見本（100人・通常発声5,000音声） Koenamiでの非商用利用について、2026年9月20日に高道慎之介先生から許諾をいただいています。音声の二次利用・再配布はJVSの利用規約に従ってください。タグ情報はCC BY-SA 4.0。"
   },
   "ref-commonvoice": {
    "tag": "li",
@@ -261,43 +639,43 @@
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌（レビュー） Davies, S., Papp, V. G., & Antoni, C. (2015). Voice and communication change for gender nonconforming individuals: Giving voice to the person inside. International Journal of Transgenderism , 16(3), 117–159. doi:10.1080/15532739.2015.1075931 使用箇所： 声のしくみ ：声はどこまで、どうやって変えられるか、無理をしないために"
+   "text": "査読誌（レビュー） Davies, S., Papp, V. G., & Antoni, C. (2015). Voice and communication change for gender nonconforming individuals: Giving voice to the person inside. International Journal of Transgenderism , 16(3), 117–159. doi:10.1080/15532739.2015.1075931 使用箇所： 声のしくみ ：声はどこまで変えられるか"
   },
   "ref-carew": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 Carew, L., Dacakis, G., & Oates, J. (2007). The effectiveness of oral resonance therapy on the perception of femininity of voice in male-to-female transsexuals. Journal of Voice , 21(5), 591–603. doi:10.1016/j.jvoice.2006.05.005 使用箇所： 声のしくみ ：声はどこまで、どうやって変えられるか、無理をしないために"
+   "text": "査読誌 Carew, L., Dacakis, G., & Oates, J. (2007). The effectiveness of oral resonance therapy on the perception of femininity of voice in male-to-female transsexuals. Journal of Voice , 21(5), 591–603. doi:10.1016/j.jvoice.2006.05.005 使用箇所： 声のしくみ ：日本語の声と日本の実情、声はどこまで変えられるか、練習メニュー"
   },
   "ref-ziegler": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌（メタ分析） Ziegler, A., Henke, T., Wiedrick, J., & Helou, L. B. (2018). Effectiveness of testosterone therapy for masculinizing voice in transgender patients: A meta-analytic review. International Journal of Transgenderism , 19(1), 25–45. doi:10.1080/15532739.2017.1411857 使用箇所： 声のしくみ ：声はどこまで、どうやって変えられるか"
+   "text": "査読誌（メタ分析） Ziegler, A., Henke, T., Wiedrick, J., & Helou, L. B. (2018). Effectiveness of testosterone therapy for masculinizing voice in transgender patients: A meta-analytic review. International Journal of Transgenderism , 19(1), 25–45. doi:10.1080/15532739.2017.1411857 使用箇所： 声のしくみ ：日本語の声と日本の実情、声はどこまで変えられるか、よくある質問"
   },
   "ref-nygren": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 Nygren, U., Nordenskjöld, A., Arver, S., & Södersten, M. (2016). Effects on voice fundamental frequency and satisfaction with voice in trans men during testosterone treatment—A longitudinal study. Journal of Voice , 30(6), 766.e23–766.e34. doi:10.1016/j.jvoice.2015.10.016 使用箇所： 声のしくみ ：声はどこまで、どうやって変えられるか"
+   "text": "査読誌 Nygren, U., Nordenskjöld, A., Arver, S., & Södersten, M. (2016). Effects on voice fundamental frequency and satisfaction with voice in trans men during testosterone treatment—A longitudinal study. Journal of Voice , 30(6), 766.e23–766.e34. doi:10.1016/j.jvoice.2015.10.016 使用箇所： 声のしくみ ：声はどこまで変えられるか、無理をしないために"
   },
   "ref-soc8": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌（診療ガイドライン） Coleman, E., et al. (2022). Standards of Care for the Health of Transgender and Gender Diverse People, Version 8. International Journal of Transgender Health , 23(sup1), S1–S259. doi:10.1080/26895269.2022.2100644 使用箇所： 声のしくみ ：声はどこまで、どうやって変えられるか、無理をしないために"
+   "text": "査読誌（診療ガイドライン） Coleman, E., et al. (2022). Standards of Care for the Health of Transgender and Gender Diverse People, Version 8. International Journal of Transgender Health , 23(sup1), S1–S259. doi:10.1080/26895269.2022.2100644 使用箇所： 声のしくみ ："
   },
   "ref-huang": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 Huang, T., Wang, X., Xu, T., Zhao, W., Cao, Y., Kim, H., & Yi, B. (2024). Acoustic analysis of Mandarin-speaking transgender women. Journal of Voice , advance online publication. doi:10.1016/j.jvoice.2024.08.037 使用箇所：中国語の見本と練習の参考資料"
+   "text": "査読誌 Huang, T., Wang, X., Xu, T., Zhao, W., Cao, Y., Kim, H., & Yi, B. (2024). Acoustic analysis of Mandarin-speaking transgender women. Journal of Voice , advance online publication. doi:10.1016/j.jvoice.2024.08.037 使用箇所：中国語の見本と練習の参考資料。 声のしくみ ：無理をしないために"
   },
   "ref-twvq": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "査読誌 Wang, L., Zhang, J. H., Wang, C. X., Zhang, X., Ding, H. J., Jin, Y. K., Hu, R. Q., Zhang, Q. F., & Chen, Z. (2022). [Introduction and development of the Trans Woman Voice Questionnaire authorized simplified Chinese translation]（中国語）. 中华耳鼻咽喉头颈外科杂志 , 57(11), 1311–1318. doi:10.3760/cma.j.cn115330-20220217-00072 使用箇所：中国語の声の質問票（TWVQ-SC）の参考資料"
+   "text": "査読誌 Wang, L., Zhang, J. H., Wang, C. X., Zhang, X., Ding, H. J., Jin, Y. K., Hu, R. Q., Zhang, Q. F., & Chen, Z. (2022). [Introduction and development of the Trans Woman Voice Questionnaire authorized simplified Chinese translation]（中国語）. 中华耳鼻咽喉头颈外科杂志 , 57(11), 1311–1318. doi:10.3760/cma.j.cn115330-20220217-00072 使用箇所：中国語の声の質問票（TWVQ-SC）の参考資料。 声のしくみ ：よくある質問"
   },
   "ref-voiceviewer": {
    "tag": "li",
@@ -309,25 +687,709 @@
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "講座（動画） TransVoiceLessons（Zheanna Erose ほか）。英語のYouTubeチャンネルと講座. youtube.com/@TransVoiceLessons 使用箇所： 声のしくみ ：声はどこまで、どうやって変えられるか、これから書く節 練習者向けの教材で、査読を経た研究ではない。"
+   "text": "講座（動画） TransVoiceLessons（Zheanna Erose ほか）。英語のYouTubeチャンネルと講座. youtube.com/@TransVoiceLessons 使用箇所： 声のしくみ ：声の重さと質感 練習者向けの教材で、査読を経た研究ではない。"
   },
   "ref-aogi": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "コミュニティ資料 あおぎ葵（2021年7月12日）「MTF声音女性化练习手册」Bilibili. bilibili.com/opus/546442165017071774 使用箇所：中国語の練習資料。 声のしくみ ：これから書く節 コミュニティの練習資料で、査読を経た研究ではない。"
+   "text": "コミュニティ資料 あおぎ葵（2021年7月12日）「MTF声音女性化练习手册」Bilibili. bilibili.com/opus/546442165017071774 使用箇所：中国語の練習資料。 声のしくみ ：声区 コミュニティの練習資料で、査読を経た研究ではない。"
   },
   "ref-mtfwiki": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "ウィキ MtF.wiki「嗓音女性化训练」（中国語）. mtf.wiki/zh-cn/docs/vocal-therapy 使用箇所：中国語のトレーニング情報。 声のしくみ ：これから書く節 コミュニティ編集のウィキ。"
+   "text": "ウィキ MtF.wiki「嗓音女性化训练」（中国語）. mtf.wiki/zh-cn/docs/vocal-therapy 使用箇所：中国語のトレーニング情報。 声のしくみ ：声はどこまで変えられるか コミュニティ編集のウィキ。"
   },
   "ref-transnavi": {
    "tag": "li",
    "class": "",
    "attrs": {},
-   "text": "Web とらんすナビ. transnavi.jp （ 声のページ ） 使用箇所：配色の参考。日本の医療機関の情報"
+   "text": "Web とらんすナビ. transnavi.jp （ 声のページ ） 使用箇所：日本の医療機関の情報"
+  },
+  "ref-adabi2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー） Adabi Mohazzab, F. Z., Aghadoost, S., Tahamtan, M., Dabirmoghaddam, P., & Aghajanzadeh, M. (2026). Voice Therapy in Mutational Falsetto: A Narrative Review. Journal of Voice (online ahead of print) . doi:10.1016/j.jvoice.2026.04.026 使用箇所： 声のしくみ ：声区、練習メニュー"
+  },
+  "ref-digital-transchinese-mtf-voice": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Catherina Grace, & 跨性别言语训练研究小组 (2024). 跨性别女性（MtF）嗓音训练指南. 跨性别中文数字档案馆（voice.cntt.ukから収録） . digital.transchinese.org/社群及NGO文件/手册指南/嗓音训练指南_page/ 使用箇所： 声のしくみ ：声区、練習メニュー 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-brushvoice-joseigoe": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 ブラッシュボイス（2018）「女声の出し方｜男性が自然な女性の声を出すコツ・メラニー法・練習方法」ブラッシュボイス公式ブログ（2018年1月22日初出、2026年3月27日更新）. brushvoice.net/voice-training/how-to-make-voice-like-a-woman 使用箇所： 声のしくみ ：声区、日本語の声と日本の実情、練習メニュー、無理をしないために、よくある質問 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-anime-academy-ryoseirui2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 東京アニメ・声優＆eスポーツ専門学校（2021）「【男女】両声類のなり方は？おすすめの練習方法や声の出し方の注意点を解説」東京アニメ・声優＆eスポーツ専門学校 業界コラム（2021年9月20日公開、2024年11月8日更新）. anime.ac.jp/contents/column/2021/09/20/both_voices/ 使用箇所： 声のしくみ ：声区、日本語の声と日本の実情 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-ucsf2016": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Web（診療指針） Schneider, S. L., & Courey, M. (2016). Transgender voice and communication – vocal health and considerations (UCSF Transgender Care & Treatment Guidelines). UCSF Gender Affirming Health Program, Transgender Care & Treatment Guidelines（2016年6月17日） . transcare.ucsf.edu/guidelines/vocal-health 使用箇所： 声のしくみ ：思春期の声変わり、声はどこまで変えられるか、練習メニュー、よくある質問"
+  },
+  "ref-nimura2015": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Nimura, Y., Sakuma, K., Nambu, Y., & Iwahashi, M. (2015). 性同一性障害Female to Male症例の男性ホルモン投与による話声位基本周波数の継時的変化. 音声言語医学 (The Japan Journal of Logopedics and Phoniatrics) 56(4) 348 . doi:10.5112/jjlp.56.348 使用箇所： 声のしくみ ：思春期の声変わり、日本語の声と日本の実情、よくある質問"
+  },
+  "ref-nicodic-ryoseirui": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "ウィキ Wikipedia日本語版「両声類（ニコニコ大百科・単語記事）」（2026年9月17日閲覧）. dic.nicovideo.jp/a/%E4%B8%A1%E5%A3%B0%E9%A1%9E 使用箇所： 声のしくみ ：日本語の声と日本の実情 コミュニティ編集の百科事典。用語と一般的な説明の確認に使い、研究の根拠にはしていない。"
+  },
+  "ref-nicovideo-ryoseirui-tag": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 ニコニコ動画（2026）「ニコニコ動画「両声類」タグの動画群」ニコニコ動画 タグ検索（2026年9月17日時点）. nicovideo.jp/tag/%E4%B8%A1%E5%A3%B0%E9%A1%9E 使用箇所： 声のしくみ ：日本語の声と日本の実情 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-phillips2010": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Phillips, M. A. (2010). How to Develop a Female Voice. heartcorps.com（2010年12月16日のWayback保存版） . web.archive.org/web/20101216142926/http://heartcorps.com/jou 使用箇所： 声のしくみ ：日本語の声と日本の実情 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-yoxon2023": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Yoxon, R. (2023). Big Dog Little Dog Resonance Exercise. reneeyoxon.com（2023年2月7日の記事） . reneeyoxon.com/blog/big-dog-little-dog-resonance-exercise 使用箇所： 声のしくみ ：日本語の声と日本の実情、練習メニュー 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-kyoto-ent-clinic": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Web（医療機関） 医療法人顕夢会 京都耳鼻咽喉音聲手術医院（2026）「性別違和・性別不合・GIDの方々へ（京都耳鼻咽喉音聲手術医院）」京都耳鼻咽喉音聲手術医院 公式サイト. kyoto3387.jp/voice/disease05.html 使用箇所： 声のしくみ ：日本語の声と日本の実情 医療機関の案内ページで、査読を経た研究ではない。"
+  },
+  "ref-nakamura2007": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Nakamura, K., Isshiki, N., Sanuki, T., & Mikami, S. (2007). Gender Identity Disorder症例に対するPitch Elevation Surgery. 音声言語医学 (The Japan Journal of Logopedics and Phoniatrics) / 日本気管食道科学会会報 (jbes) 58(3) 310 . doi:10.2468/jbes.58.310 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-sanuki2007": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Sanuki, T., Isshiki, N., Nakamura, K., & Yumoto, E. (2007). 性同一性障害と痙攣性発声障害に対する喉頭枠組み手術. 喉頭 (Koutou / The Japanese Journal of Laryngology, formerly larynx1989) 19(2) 54 . doi:10.5426/larynx1989.19.2_54 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-hiroshiba2024": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hiroshiba, S., & Tanabe, M. (2024). 声帯短縮術 —甲状軟骨形成術Ⅳ型との比較—. 喉頭 (Koutou / The Japanese Journal of Laryngology) 36(2) 145 . doi:10.5426/larynx.36.145 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-maeda2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Maeda, Y., Nakamura, K., Hasegawa, H., Yoshida, M., & Oshima, T. (2025). Efficacy of Intraoperative Voice Monitoring in Cricothyroid Approximation Under Local Anesthesia for Gender Incongruence. Journal of Voice (online ahead of print) . doi:10.1016/j.jvoice.2025.01.013 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-met-ent-tokyo": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Web（医療機関） メトロポリタンENTサージクリニック東京（翔和仁誠会）（2026）「声（喉）の手術（メトロポリタンENTサージクリニック東京）」メトロポリタンENTサージクリニック東京 公式サイト. met-ent-tokyo.com/surgery/voice/ 使用箇所： 声のしくみ ：日本語の声と日本の実情 医療機関の案内ページで、査読を経た研究ではない。"
+  },
+  "ref-kobayashi2022": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Kobayashi, H. (2022). 男性から女性型性同一性障害症例の音声外科手術に伴うリハビリテーション治療. 喉頭 (Koutou / The Japanese Journal of Laryngology) 34(2) 114 . doi:10.5426/larynx.34.114 使用箇所： 声のしくみ ：日本語の声と日本の実情、声はどこまで変えられるか"
+  },
+  "ref-jspn-guideline2024": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "診療ガイドライン 日本精神神経学会 性別不合に関する委員会・日本GI（性別不合）学会（2024）「性別不合に関する診断と治療のガイドライン（第5版）」日本精神神経学会・日本GI（性別不合）学会（2024年8月29日公表）. jspn.or.jp/modules/advocacy/index.php 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-jspn-guideline2018": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "診療ガイドライン 日本精神神経学会 性同一性障害に関する委員会（2018）「性同一性障害に関する診断と治療のガイドライン（第4版改）」日本精神神経学会（2018年1月20日）. gi-soc.jp/img/gid_guideline_no4_20180120.pdf 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-gidjp-opinion2023": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Web（当事者団体） 日本性同一性障害・性別違和と共に生きる人々の会（gid.jp）運営委員一同（2023）「2023年（令和5年）10月25日、性同一性障害特例法の手術要件に関する意見表明」gid.jp 意見・見解（2023年11月18日掲載）. gid.jp/opinion/opinion2023111101/ 使用箇所： 声のしくみ ：日本語の声と日本の実情 当事者団体の声明で、公的な制度文書ではない。"
+  },
+  "ref-note-maru2blog": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 MTF日記@まるまる（2026）「【実態】トランスジェンダー医療の保険適用基準｜SRS・ホルモン・声の手術における混合診療問題」note.com（2026年9月10日）. note.com/maru2blog/n/ne899a6fbedc4 使用箇所： 声のしくみ ：日本語の声と日本の実情 当事者の記事で、制度の読み方としての記録。査読を経た研究ではない。"
+  },
+  "ref-nimura2022": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Nimura, Y. (2022). トランス男性のテストステロン投与による声の変化 —トランス男性の声に対する介入が要らない理由—. 音声 (Koutou / The Larynx Japan) 34(2) 108–112 . doi:10.5426/larynx.34.108 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-leyns2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー） Leyns, C., Papeleu, T., Tomassen, P., T'Sjoen, G., & D'haeseleer, E. (2021). Effects of speech therapy for transgender women: A systematic review. International Journal of Transgender Health 22(4) 360–380 . doi:10.1080/26895269.2021.1915224 使用箇所： 声のしくみ ：声はどこまで変えられるか、よくある質問"
+  },
+  "ref-leyns2023": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Leyns, C., Meerschman, I., T'Sjoen, G., & D'haeseleer, E. (2023). Short-term effects of a speech feminization program for transgender women: listener perceptions, self-perception and satisfaction of the voice. International Journal of Transgender Health . doi:10.1080/26895269.2023.2237009 使用箇所： 声のしくみ ：声はどこまで変えられるか、練習メニュー"
+  },
+  "ref-leyns2024": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Leyns, C., Bostyn, L., & D'haeseleer, E. (2024). Self-Perception and Listener Perceptions at Long-Term Follow-Up of a Gender-Affirming Voice Training Program for Transgender Women. Journal of Voice (online ahead of print) . doi:10.1016/j.jvoice.2024.10.032 使用箇所： 声のしくみ ：声はどこまで変えられるか、練習メニュー、よくある質問"
+  },
+  "ref-sodersten2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Södersten, M., Oates, J., & Sand, A. (2026). Gender-Affirming Voice Training for Trans Women: Acoustic Outcomes and Their Associations With Listener Perceptions Related to Gender. Journal of Voice . doi:10.1016/j.jvoice.2024.02.003 使用箇所： 声のしくみ ：声はどこまで変えられるか、練習メニュー"
+  },
+  "ref-kawitzky2020": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Kawitzky, D., & McAllister, T. (2020). The Effect of Formant Biofeedback on the Feminization of Voice in Transgender Women. Journal of Voice 34(1) 53–67 . doi:10.1016/j.jvoice.2018.07.017 使用箇所： 声のしくみ ：声はどこまで変えられるか、練習メニュー"
+  },
+  "ref-irwig2017a": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Irwig, M. S., Childs, K., & Hancock, A. B. (2017). Effects of testosterone on the transgender male voice. Andrology 5(1) 107–112 . doi:10.1111/andr.12278 使用箇所： 声のしくみ ：声はどこまで変えられるか、よくある質問"
+  },
+  "ref-cosyns2014": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Cosyns, M., Van Borsel, J., Wierckx, K., Dedecker, D., Van de Peer, F., Daelman, T., Laenen, S., & T'Sjoen, G. (2014). Voice in female-to-male transsexual persons after long-term androgen therapy. The Laryngoscope 124(6) 1409–1414 . doi:10.1002/lary.24480 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-eagen2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Eagen, C. M., Brennan, C., & Hilger, A. I. (2025). The Impacts of Testosterone Therapy Beyond Fundamental Frequency in Transmasculine Voice: Vocal Quality and Fricative Articulation. Journal of Voice (online ahead of print) . doi:10.1016/j.jvoice.2025.06.005 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-ciancia2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Ciancia, S., Leyns, C., Klink, D., Vervalcke, J., T'Sjoen, G., Cools, M., & D'haeseleer, E. (2026). Long-Term Effects of Gender-Affirming Hormone Therapy from Adolescence to Adulthood on Voice. Journal of Voice (online ahead of print, 2026-02-14) . doi:10.1016/j.jvoice.2026.01.048 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-boogers2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Boogers, L. S., McDonnell, E. S. F., de Vries, A. L. C., den Heijer, M., van Trotsenburg, A. S. P., Hannema, S. E., & Wiepjes, C. M. (2025). Feminine figures: body image and physical characteristics in trans women after puberty suppression and subsequent estradiol therapy. The Journal of Sexual Medicine 22(10) 1902–1909 . doi:10.1093/jsxmed/qdaf206 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-song2017": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（メタ分析） Song, T. E., & Jiang, N. (2017). Transgender Phonosurgery: A Systematic Review and Meta-analysis. Otolaryngology–Head and Neck Surgery 156(5) 803–808 . doi:10.1177/0194599817697050 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-chowdhury2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー） Chowdhury, R., Silver, J. A., Philippopoulos, E., & Kost, K. M. (2025). Pitch Alteration Techniques for Transgender Women: A Systematic Review of Surgical and Nonsurgical Approaches. Journal of Voice (online ahead of print) . doi:10.1016/j.jvoice.2025.06.032 使用箇所： 声のしくみ ：声はどこまで変えられるか、無理をしないために、よくある質問"
+  },
+  "ref-aires2023": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（メタ分析） Aires, M. M., Marinho, C. B., & Souza, C. S. C. (2023). Effect of Endoscopic Glottoplasty on Acoustic Measures and Quality of Voice: A Systematic Review and Meta-Analysis. Journal of Voice 37(1) 117–127 . doi:10.1016/j.jvoice.2020.11.005 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-mora2018": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Mora, E., Cobeta, I., Becerra, A., & Lucio, M. J. (2018). Comparison of cricothyroid approximation and glottoplasty for surgical voice feminization in male-to-female transsexuals. The Laryngoscope 128(9) 2101–2109 . doi:10.1002/lary.27172 使用箇所： 声のしくみ ：声はどこまで変えられるか、よくある質問"
+  },
+  "ref-titze2020": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（計算モデル） Titze, I. R., Palaparthi, A., & Mau, T. (2020). Vocal Tradeoffs in Anterior Glottoplasty for Voice Feminization. The Laryngoscope 131(5) 1081–1087 . doi:10.1002/lary.28940 使用箇所： 声のしくみ ：声はどこまで変えられるか、よくある質問 計算モデルの研究で、患者のデータではない。"
+  },
+  "ref-vanborsel2008": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Van Borsel, J., Van Eynde, E., De Cuypere, G., & Bonte, K. (2008). Feminine after cricothyroid approximation?. Journal of Voice 22(3) 379–384 . doi:10.1016/j.jvoice.2006.11.001 使用箇所： 声のしくみ ：声はどこまで変えられるか、よくある質問"
+  },
+  "ref-catani2024": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー） do Amaral Catani, M., & Catani, J. H. (2024). Advances in vocal feminization surgery: a comprehensive narrative review of techniques, outcomes, and implications for the quality of life of transgender women. Journal of Laryngology and Voice 14(2) 27–33 . doi:10.4103/jlv.jlv_6_25 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-papeleu2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Papeleu, T., Oates, J., Tomassen, P., T'Sjoen, G., Leyns, C., Daelman, J., & D'haeseleer, E. (2026). Effects of Intensive Intonation Training in Transgender and Gender Diverse People Aiming for a More Masculine-Sounding Voice: A Randomized Clinical Trial. American Journal of Speech-Language Pathology 35(2) 515–545 . doi:10.1044/2025_AJSLP-25-00238 使用箇所： 声のしくみ ：声はどこまで変えられるか、練習メニュー"
+  },
+  "ref-asha-gender-affirming-voice": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Web（実践指針） American Speech-Language-Hearing Association (2026). Gender Affirming Voice and Communication (ASHA Practice Portal). ASHA Practice Portal（2026年1月11日の保存版） . asha.org/practice-portal/professional-issues/gender-affirmin 使用箇所： 声のしくみ ：声はどこまで変えられるか、練習メニュー、よくある質問 職能団体の実践指針で、査読誌の論文ではない。"
+  },
+  "ref-kalra2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー） Kalra, A., Bryson, P. C., & Gascon, L. (2026). Surgical Interventions for Voice Masculinization: A Scoping Review. Journal of Voice (online ahead of print) . doi:10.1016/j.jvoice.2025.12.003 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-vendramini2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（メタ分析） Vendramini, B. D. V., Campos, L. M. S., de Moraes, B. T., de Vasconcelos, S. J., & Aires, M. M. (2025). Type III Thyroplasty for Patients With High-Pitched Voice Disorders: A Systematic Review and Meta-analysis. Otolaryngology–Head and Neck Surgery 172(6) 1847–1855 . doi:10.1002/ohn.1185 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-stemple1994": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Stemple, J. C., Lee, L., D'Amico, B., & Pickup, B. (1994). Efficacy of vocal function exercises as a method of improving voice production. Journal of Voice 8(3) 271–278 . doi:10.1016/S0892-1997(05)80299-1 使用箇所： 声のしくみ ：練習メニュー"
+  },
+  "ref-verdolinimarston1995": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Verdolini-Marston, K., Burke, M. K., Lessac, A., Glaze, L., & Caldwell, E. (1995). Preliminary study of two methods of treatment for laryngeal nodules. Journal of Voice 9(1) 74–85 . doi:10.1016/S0892-1997(05)80225-5 使用箇所： 声のしくみ ：練習メニュー 小規模または予備的な研究で、証拠としては弱い。"
+  },
+  "ref-titze2006": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Titze, I. R. (2006). Voice Training and Therapy With a Semi-Occluded Vocal Tract: Rationale and Scientific Underpinnings. Journal of Speech, Language, and Hearing Research 49(2) 448–459 . doi:10.1044/1092-4388(2006/035) 使用箇所： 声のしくみ ：練習メニュー、よくある質問"
+  },
+  "ref-pozzali2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（メタ分析） Pozzali, I., Pizzorni, N., Ruggeri, A., Schindler, A., & Dal Farra, F. (2021). Effectiveness of Semi-Occluded Vocal Tract Exercises (SOVTEs) in Patients with Dysphonia: A Systematic Review and Meta-Analysis. Journal of Voice 38(1) 245.e17–245.e35 . doi:10.1016/j.jvoice.2021.06.009 使用箇所： 声のしくみ ：練習メニュー、よくある質問"
+  },
+  "ref-sumi-vocal-weight": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Sumi (2026). Vocal Weight (Voice Resource Project wiki). Voice Resource Project wiki（wiki.sumianvoice.com） . wiki.sumianvoice.com/wiki/pages/vocal-weight/ 使用箇所： 声のしくみ ：声の重さと質感 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-erose2020a": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 erose, Z. (TransVoiceLessons) (2020). FEMINIZE YOUR VOICE: 8 Exercises to Reduce Vocal Fold Mass | Exercises, Demonstration, & Document. YouTube（TransVoiceLessons） . youtube.com/watch 使用箇所： 声のしくみ ：声の重さと質感 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-sumi2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Sumi (SumianVoice) (2021). Transvoice: Vocal weight - Pitch slides. YouTube（SumianVoice） . youtube.com/watch 使用箇所： 声のしくみ ：練習メニュー、声の重さと質感 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-young2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Young, V. N., Yousef, A., Zhao, N. W., & Schneider, S. L. (2021). Voice and Stroboscopic Characteristics in Transgender Patients Seeking Gender-Affirming Voice Care. The Laryngoscope 131(5) 1071–1077 . doi:10.1002/lary.28932 使用箇所： 声のしくみ ：無理をしないために"
+  },
+  "ref-vanhoutte2011": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー） Van Houtte, E., Van Lierde, K., & Claeys, S. (2011). Pathophysiology and treatment of muscle tension dysphonia: a review of the current knowledge. Journal of Voice 25(2) 202–207 . doi:10.1016/j.jvoice.2009.10.009 使用箇所： 声のしくみ ：無理をしないために、よくある質問"
+  },
+  "ref-verdolini1994": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Verdolini, K., Titze, I. R., & Fennell, A. (1994). Dependence of phonatory effort on hydration level. Journal of Speech and Hearing Research 37(5) 1001–1007 . doi:10.1044/jshr.3705.1001 使用箇所： 声のしくみ ：無理をしないために"
+  },
+  "ref-moegirl-weisheng": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 萌娘百科（2026）「伪声（萌娘百科）」（中国語）萌娘百科. zh.moegirl.org.cn/%E4%BC%AA%E5%A3%B0 使用箇所： 声のしくみ ：練習メニュー、無理をしないために 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-fujiki2024": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Fujiki, R. B., & Thibeault, S. L. (2024). Voice Disorder Prevalence and Vocal Health Characteristics in Adolescents. JAMA Otolaryngology–Head & Neck Surgery 150(9) 800–810 . doi:10.1001/jamaoto.2024.2081 使用箇所： 声のしくみ ：無理をしないために"
+  },
+  "ref-nakamura2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 中村一博（2021）「変声障害と性同一性障害に対する喉頭枠組み手術」喉頭 33(2) 163–167（日本喉頭科学会）／領域講習2「喉頭枠組み手術」. doi:10.5426/larynx.33.163 使用箇所： 声のしくみ ：声はどこまで変えられるか 小規模または予備的な研究で、証拠としては弱い。"
+  },
+  "ref-noroda2020": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 牛乳大魔王のろだ（2020）「【両声類】私流！男声の出し方講座【彼は女性です】」YouTube（チャンネル @牛乳大魔王のろだ）. youtube.com/watch 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-note-formant-app": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 きゃなる (note: kyanaru_vrc)（2026）「フォルマントを使った声判定アプリについて」note.com, 2026-08-19. note.com/kyanaru_vrc/n/n449a69509a93 使用箇所： 声のしくみ ：Koenamiの指標との対応 当事者の記事で、制度の読み方としての記録。査読を経た研究ではない。"
+  },
+  "ref-kissel2023": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Kissel, I., Papeleu, T., Verbeke, J., Van Lierde, K., Meerschman, I., & D'haeseleer, E. (2023). Immediate effects of a semi-occluded water-resistance ventilation mask on vocal outcomes in women with dysphonia. Journal of Communication Disorders 103 106331 . doi:10.1016/j.jcomdis.2023.106331 使用箇所： 声のしくみ ：よくある質問"
+  },
+  "ref-asadollahpour2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（レビュー） Asadollahpour, F., Baghban, K., Hashemnia, S. S., Seifpanahi, M. S., & Moshtagh, A. (2025). Investigating the Effect of Semi-Occluded Vocal Tract Training With a Free-End Tube on Acoustic Characteristics and Glottal Performance in Dysphonic Adults: A Systematic Review. Journal of Voice (online ahead of print) . doi:10.1016/j.jvoice.2025.01.010 使用箇所： 声のしくみ ：よくある質問"
+  },
+  "ref-aikun2020": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料（動画） あいくん。（2020）「【女声講座】地声低いは関係ない!! 可愛い女声が出せる女声講座！【両声類】」YouTube（チャンネル あいくん。）. youtube.com/watch 使用箇所： 声のしくみ ：日本語の声と日本の実情 動画の題名と公開情報のみを参照し、内容は検証していない。"
+  },
+  "ref-kuzutetsu2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料（動画） くず鉄 (Voice Geek Channel)（2025）「【真似するだけ】理論とか難しい事は置いといてとにかく実践する女声講座」YouTube（チャンネル くず鉄 (Voice Geek Channel)）. youtube.com/watch 使用箇所： 声のしくみ ：日本語の声と日本の実情 動画の題名と公開情報のみを参照し、内容は検証していない。"
+  },
+  "ref-note-meimu-yoxon": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 無名乃メイム (note: lovely_gnu4435)（2026）「海外における女声などの音声の訓練事情とRenée Yoxon氏のライブの要約」note.com, 2026-06-27. note.com/lovely_gnu4435/n/n69f040386db9 使用箇所： 声のしくみ ：日本語の声と日本の実情 当事者の記事で、査読を経た研究ではない。"
+  },
+  "ref-chang2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Chang, J., Lo, C. H., Bernado, J., Nguyen, T., Hirst, A., MacKimm, J., Yung, K. C., & Meyer, T. K. (2026). Impaired Voice-Related Work Productivity, a Functional Effect of Gender Dysphoria. Laryngoscope 136(1) 377–383 . doi:10.1002/lary.70056 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-stryker2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Stryker, S. D., Dubey, I., Madzia, J. L., Pickle, S., Dion, G. R., & McKenna, V. S. (2025). Vocal-Gender Incongruence, wellbeing, and safety: The medical necessity of gender-affirming vocal training. International Journal of Transgender Health 27(2) 888–901 . doi:10.1080/26895269.2025.2475183 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-rae2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Rae, C., Son, I., Lamarche, A., Kaur, M. N., Morrison, S. D., Young-Afat, D., … Klassen, A. F. (2026). Further Validation of the GENDER-Q Voice Sound and Voice Distress Scales in 5424 Transgender and Gender Diverse Adults: An Examination of Construct Validity. Journal of Voice (online ahead of print) S0892-1997(26)00230-4 . doi:10.1016/j.jvoice.2026.05.007 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-leyns2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Leyns, C., Adriaansen, A., Daelman, J., Bostyn, L., Meerschman, I., T'Sjoen, G., & D'haeseleer, E. (2026). Long-term Acoustic Effects of Gender-Affirming Voice Training in Transgender Women. Journal of Voice 40(5) 1525.e1–1525.e15 . doi:10.1016/j.jvoice.2024.04.007 使用箇所： 声のしくみ ：声はどこまで変えられるか、練習メニュー"
+  },
+  "ref-rogalska2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Rogalska, M., Zieliński, M., Kasperczuk, A., Antkowiak, Ł., Gamrot-Wrzoł, M., & Misiołek, M. (2025). Long-term acoustic outcomes, perceptual voice assessment and voice-related quality of life in transgender women undergoing Wendler glottoplasty: a single-center experience. Otolaryngologia Polska 79(4) 1–12 . doi:10.5604/01.3001.0055.1327 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-dasdogen2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Daşdöğen, Ü., Stavin, D., Sundberg, J., & Courey, M. (2026). Long-Term Average Spectrum Analysis of Voice After Endoscopic Vocal Fold Shortening and Therapy. Laryngoscope 136(5) 2284–2290 . doi:10.1002/lary.70326 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-fujiki2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Fujiki, R. B., Croegaert-Koch, C. K., & Thibeault, S. L. (2026). Factors Influencing Auditory Perception of Masculinity and Naturalness in Transmasculine Voices. Journal of Speech, Language, and Hearing Research 69(9) 4084–4099 . doi:10.1044/2026_JSLHR-25-00971 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-ma2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Ma, Y., Arora, N., Kohli, M., Lappin J Jr, Walch, A., Khalsa, I. K., … Schneider, S. L. (2026). Evaluation of the Effects of Testosterone on Voice in Transmasculine Adolescents and Young Adults. Laryngoscope (online ahead of print) . doi:10.1002/lary.70729 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-hirsch2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Hirsch, S., Myers, B. R., & Awan, S. N. (2026). Acoustic Assumptions (AA): A Retrospective Study of an Approach to Optimizing Personal Resonance Goals in Gender-Affirming Voice Training. Journal of Voice (online ahead of print) S0892-1997(26)00113-X . doi:10.1016/j.jvoice.2026.02.048 使用箇所： 声のしくみ ：練習メニュー 小規模または予備的な研究で、証拠としては弱い。"
+  },
+  "ref-harris2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Harris, K. J., Beck, L. A., Worth, B. F., & Grossman, R. B. (2026). First-Person Perspectives of Gender-Affirming Voice Feminization Training: A Mixed Methods Approach. Journal of Voice 40(4) 1243.e1–1243.e17 . doi:10.1016/j.jvoice.2024.03.013 使用箇所： 声のしくみ ：練習メニュー 小規模または予備的な研究で、証拠としては弱い。"
+  },
+  "ref-papeleu2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Papeleu, T., Oates, J., Tomassen, P., Adriaansen, A., Leyns, C., Alighieri, C., Krenn, H., & D'haeseleer, E. (2025). Effects of Intensive Intonation Training in Transgender and Gender Diverse People Aiming for a More Feminine-Sounding Voice: A Randomized Clinical Trial. Journal of Speech, Language, and Hearing Research 68(4) 1711–1742 . doi:10.1044/2024_JSLHR-24-00563 使用箇所： 声のしくみ ：練習メニュー"
+  },
+  "ref-tang2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Tang, K., Meyer, T. K., & Chang, J. (2026). Evaluating Components of Vocal Effort in Transgender Women. Laryngoscope Investigative Otolaryngology 11(3) e70471 . doi:10.1002/lio2.70471 使用箇所： 声のしくみ ：無理をしないために"
+  },
+  "ref-godoy2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Godoy, J., Lima, A. S., Costa, P. H. D., & Siqueira, L. (2026). Factors Associated With Vocal Fatigue In Transfeminine And Transmasculine Individuals Who Have Not Undergone Voice Harmonization. Journal of Voice (online ahead of print) S0892-1997(26)00432-7 . doi:10.1016/j.jvoice.2026.08.017 使用箇所： 声のしくみ ：無理をしないために"
+  },
+  "ref-sumi-how-to-practice": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Sumi (2026). How to Practice (Voice Resource Project wiki). Voice Resource Project wiki（wiki.sumianvoice.com） . wiki.sumianvoice.com/wiki/pages/getting-started/how-to-pract 使用箇所： 声のしくみ ：練習メニュー 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-sumi-covert-practice": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Sumi (2026). Covert Practice (Voice Resource Project wiki). Voice Resource Project wiki（wiki.sumianvoice.com） . wiki.sumianvoice.com/wiki/pages/various/covert-practice.html 使用箇所： 声のしくみ ：練習メニュー 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-sumi-pipm": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Sumi (2026). Pitch Naturalisation / PIPM (Voice Resource Project wiki). Voice Resource Project wiki（wiki.sumianvoice.com） . wiki.sumianvoice.com/wiki/pages/PIPM/ 使用箇所： 声のしくみ ：練習メニュー 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-sumi-pitch": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Sumi (2026). How Important is Pitch? (Voice Resource Project wiki). Voice Resource Project wiki（wiki.sumianvoice.com） . wiki.sumianvoice.com/wiki/pages/getting-started/pitch.html 使用箇所： 声のしくみ ：練習メニュー 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-sumi-low-fem-voices": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Sumi (2026). How to do Low Fem Voices (Voice Resource Project wiki). Voice Resource Project wiki（wiki.sumianvoice.com） . wiki.sumianvoice.com/wiki/pages/various/low-fem-voices.html 使用箇所： 声のしくみ ：練習メニュー 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-sumi-hyperadduction": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Sumi (2026). Hyperadduction (Voice Resource Project wiki). Voice Resource Project wiki（wiki.sumianvoice.com） . wiki.sumianvoice.com/wiki/pages/various/hyperadduction.html 使用箇所： 声のしくみ ：無理をしないために 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-sumi-questionable-exercises": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 Sumi (2026). Questionable Exercises (Voice Resource Project wiki). Voice Resource Project wiki（wiki.sumianvoice.com） . wiki.sumianvoice.com/wiki/pages/other-resources/questionable 使用箇所： 声のしくみ ：無理をしないために 練習者向けの資料で、査読を経た研究ではない。"
+  },
+  "ref-mitama2026b": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料（動画） 佐藤(みたま) (YouTube: @sato.mitama)（2026）「【女声講座】女声を出すためには喉の位置と作り方が超重要!!【新人Vtuber】【両声類】」YouTube（チャンネル @sato.mitama）. youtube.com/watch 使用箇所： 声のしくみ ：無理をしないために 動画の題名と公開情報のみを参照し、内容は検証していない。"
+  },
+  "ref-note-nuu": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 ぬぅ (note: nu_sec)（2026）「【女声】たった今、喉仏を上げる感覚がわかった気がするので一応。」note.com, 2026-09-01. note.com/nu_sec/n/n7fe2f26b2666 使用箇所： 声のしくみ ：無理をしないために 当事者の記事で、査読を経た研究ではない。"
+  },
+  "ref-nishiyama2023": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（症例報告） 西山秀徳・中村一博・馬場剛士・山田裕太郎・増田毅・大島猛史（2023）「甲状軟骨形成術4型の長期経過後に牽引糸を切断した1例」日本気管食道科学会会報 74(1) 21–25. doi:10.2468/jbes.74.21 使用箇所： 声のしくみ ：日本語の声と日本の実情 1例の症例報告で、証拠としては弱い。"
+  },
+  "ref-mizawa2022": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（症例報告） 見澤大輔・中村一博・長谷川央・黄田忠義・馬場剛士・大島猛史（2022）「甲状軟骨形成術4型の13年後に感染性肉芽腫を認めた1症例」日本気管食道科学会会報 73(4) 273–278. doi:10.2468/jbes.73.273 使用箇所： 声のしくみ ：日本語の声と日本の実情 1例の症例報告で、証拠としては弱い。"
+  },
+  "ref-kyoto-ent-wendler": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Web（医療機関） 医療法人顕夢会 京都耳鼻咽喉音聲手術医院（2026）「ウェンドラー声帯短縮術（京都耳鼻咽喉音聲手術医院）」京都耳鼻咽喉音聲手術医院（京都府京田辺市本院・京都駅前院）公式サイト. kyoto3387.jp/voice/operation06.html 使用箇所： 声のしくみ ：日本語の声と日本の実情 医療機関の案内ページで、査読を経た研究ではない。"
+  },
+  "ref-note-eri-kyoto": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "コミュニティ資料 えり (note: eririnering)（2026）「京都耳鼻咽喉音聲手術医院の女性声にする手術１」note.com, 2026-08-05. note.com/eririnering/n/n7715626e1177 使用箇所： 声のしくみ ：日本語の声と日本の実情 当事者の記事で、査読を経た研究ではない。"
+  },
+  "ref-kyoto-ent-rehab": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Web（医療機関） 医療法人顕夢会 京都耳鼻咽喉音聲手術医院（2026）「リハビリテーション（音声治療）（京都耳鼻咽喉音聲手術医院）」京都耳鼻咽喉音聲手術医院（京都府京田辺市本院・京都駅前院）公式サイト. kyoto3387.jp/voice/rehabili.html 使用箇所： 声のしくみ ：日本語の声と日本の実情 医療機関の案内ページで、査読を経た研究ではない。"
+  },
+  "ref-kyoto-ent-training": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "Web（医療機関） 医療法人顕夢会 京都耳鼻咽喉音聲手術医院（2026）「ボイストレーニング（京都耳鼻咽喉音聲手術医院）」京都耳鼻咽喉音聲手術医院（京都府京田辺市本院・京都駅前院）公式サイト. kyoto3387.jp/voice/training.html 使用箇所： 声のしくみ ：日本語の声と日本の実情 医療機関の案内ページで、査読を経た研究ではない。"
+  },
+  "ref-yoo2018": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "修士論文 유영선（2018）「음성장애지수(Voice Handicap Index)의 문항별 분석을 통한 한국 트랜스젠더의 주관적 음성인식 특성」이화여자대학교 대학원 언어병리학과 석사학위논문 (2018. 8). riss.kr/link 使用箇所： 声のしくみ ：日本語の声と日本の実情 修士論文で、査読誌の論文ではない。"
+  },
+  "ref-yun2024": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "修士論文 윤지아（2024）「여성화 트랜스젠더의 음성치료에 대한 견해 연구」나사렛대학교 일반대학원 언어치료학과 석사학위논문 (2025. 2). riss.kr/link 使用箇所： 声のしくみ ：日本語の声と日本の実情 修士論文で、査読誌の論文ではない。"
+  },
+  "ref-tanaka1981": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 田中信三・田辺正博・一色信彦（1981）「声の高さの異常に対する手術」耳鼻咽喉科臨床 74(6) 1423–1430. doi:10.5631/jibirin.74.1423 使用箇所： 声のしくみ ：日本語の声と日本の実情 小規模または予備的な研究で、証拠としては弱い。"
+  },
+  "ref-kurita2011": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（症例報告） 栗田卓・梅野博仁・千年俊一・濱川幸世・中島格（2011）「甲状軟骨形成術IV型術後に声帯開大制限をきたした性同一性障害症例」日本気管食道科学会会報 62(1) 24–29. doi:10.2468/jbes.62.24 使用箇所： 声のしくみ ：日本語の声と日本の実情 1例の症例報告で、証拠としては弱い。"
+  },
+  "ref-mesuda2005": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（症例報告） 目須田康・西澤典子・松村道哉・古田康・福田諭（2005）「性同一性障害に対する手術後音声障害の1例」耳鼻と臨床 51(5) 358–361. doi:10.11334/jibi1954.51.5_358 使用箇所： 声のしくみ ：日本語の声と日本の実情 1例の症例報告で、証拠としては弱い。"
+  },
+  "ref-sato2007": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 佐藤麻美（2007）「話声位の障害に対する音声治療」喉頭 19(2) 51. doi:10.5426/larynx1989.19.2_51 使用箇所： 声のしくみ ：日本語の声と日本の実情 小規模または予備的な研究で、証拠としては弱い。"
+  },
+  "ref-casado2016": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Casado, J. C., O'Connor, C., Angulo, M. S., & Adrián, J. A. (2016). Glotoplastia de Wendler y tratamiento logopédico en la feminización de la voz en transexuales: resultados de la valoración pre- vs. poscirugía. Acta Otorrinolaringológica Española 67(2) 83–92 . doi:10.1016/j.otorri.2015.02.003 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-ballestas2018": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Ballestas Morales, A., Ballestas, S. A., & Cuello Pantoja, R. A. (2018). Cirugía de feminización de voz con técnica glotoplastia de Wendler en Barranquilla, Colombia. Acta de Otorrinolaringología & Cirugía de Cabeza y Cuello 45(4) 247–253 . doi:10.37076/acorl.v45i4.120 使用箇所： 声のしくみ ：声はどこまで変えられるか 小規模または予備的な研究で、証拠としては弱い。"
+  },
+  "ref-aires2023a": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Aires, M. M., de Vasconcelos, D., Lucena, J. A., Gomes, A. O. C., & Moraes, B. T. (2023). Effect of Wendler glottoplasty on voice and quality of life of transgender women. Brazilian Journal of Otorhinolaryngology 89(1) 22–29 . doi:10.1016/j.bjorl.2021.06.010 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-nakamura2008": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 中村一博・一色信彦・讃岐徹治・金沢英哲・長井慎成・児嶋剛（2008）「甲状軟骨形成術3型の検討」日本気管食道科学会会報 59(1) 19–28. doi:10.2468/jbes.59.19 使用箇所： 声のしくみ ：声はどこまで変えられるか 小規模または予備的な研究で、証拠としては弱い。"
+  },
+  "ref-kojima2008": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（症例報告） 児嶋剛・庄司和彦・一色信彦・中村一博（2008）「性同一性障害における音声外科手術―Female-to-Male症例に対する甲状軟骨形成III型について―」耳鼻咽喉科臨床 101(1) 39–43. doi:10.5631/jibirin.101.39 使用箇所： 声のしくみ ：声はどこまで変えられるか 1例の症例報告で、証拠としては弱い。"
+  },
+  "ref-marsano2022": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Marsano-Cornejo, M. J., Roco-Videla, Á., Bascuñan-Reinoso, K., Garrido-Morales, V., Gonzalez-Reyes, M., Gonzalez-Yañez, K., Opazo-Almazabal, B., & Silva-Silva, C. (2022). Frecuencia fundamental en hombres transexuales en diferentes etapas de tratamiento hormonal. Revista de Investigación en Logopedia 12(2) e78276 . doi:10.5209/rlog.78276 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-fuenzalida2021": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Fuenzalida Cabezas, R., Sandoval Zúñiga, M. S., Díaz Sandoval, E., Pérez Zurita, T., Quiroz Bustamante, F., & Rosales Orellana, M. (2021). Efecto inmediato de la terapia de tracto vocal semiocluido en los parámetros acústicos en los procesos de masculinización y feminización de la voz. Revista de Investigación en Logopedia 11(1) e68132 . doi:10.5209/rlog.68132 使用箇所： 声のしくみ ：練習メニュー"
+  },
+  "ref-martinho2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Martinho, D. H. C., Dias, E. R., & Constantini, A. C. (2025). Diferentes medidas de frequência fundamental e satisfação vocal de homens e mulheres transgênero. CoDAS 37(1) e20240087 . doi:10.1590/2317-1782/e20240087pt 使用箇所： 声のしくみ ：練習メニュー 小規模または予備的な研究で、証拠としては弱い。"
+  },
+  "ref-papeleu2025b": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Papeleu, T., Oates, J., Motmans, J., Morsomme, D., T'Sjoen, G., & D'haeseleer, E. (2025). Voice-related challenges experienced by transgender and gender diverse individuals in Belgium. International Journal of Transgender Health . doi:10.1080/26895269.2025.2520958 使用箇所： 声のしくみ ：日本語の声と日本の実情"
+  },
+  "ref-neumann2005": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "博士論文 Neumann, K. (2005). Die operative Stimmerhöhung bei Mann-zu-Frau-Transsexualismus. Dissertation, Martin-Luther-Universität Halle-Wittenberg; Digitalen Hochschulbibliothek Sachsen-Anhalt (opendata.uni-halle.de) . doi:10.25673/2439 使用箇所： 声のしくみ ：声はどこまで変えられるか 博士論文で、査読誌の論文ではない。"
+  },
+  "ref-welzel2002": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Welzel, C., Röpke, E., Hanson, S., Berghaus, A., & Neumann, K. (2002). Einfluss der Cricothyroidopexie auf geschlechtsspezifische Stimmqualitäten bei Transsexualismus. Sprache · Stimme · Gehör 26 125–133 . doi:10.1055/s-2002-34653 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-meister2017a": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Meister, J., Hagen, R., Shehata-Dieler, W., Kühn, H., Kraus, F., & Kleinsasser, N. (2017). Pitch Elevation in Male-to-female Transgender Persons — the Würzburg Approach. Journal of Voice 31(2) 244.e7–244.e15 (online 2016-08-18) . doi:10.1016/j.jvoice.2016.07.018 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-scarpa2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Scarpa, A., De Luca, P., Viola, P., Salzano, G., Chiarella, G., Cassandro, C., Ricciardiello, F., Avallone, E., & Salzano, F. A. (2025). Wendler's Glottoplasty in Italian Transgender Women: A Retrospective Cohort Study on Efficacy and Safety. Journal of Voice (online 2025-03-06) . doi:10.1016/j.jvoice.2025.02.022 使用箇所： 声のしくみ ：声はどこまで変えられるか"
+  },
+  "ref-liuc2025": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Liu, C., Yang, J., Chen, W., Zou, X., Wang, Y., Zheng, Y., & Liang, F. (2025). Analysis of factors related to voice training compliance（中国語）. 临床耳鼻咽喉头颈外科杂志 (Journal of Clinical Otorhinolaryngology Head and Neck Surgery) 39(7) 610–616, 623 . doi:10.13201/j.issn.2096-7993.2025.07.003 使用箇所： 声のしくみ ：練習メニュー"
+  },
+  "ref-chenw2026": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌 Chen, W., Yang, J., Su, Y., Zou, X., Chen, E., Liang, F., & Liu, C. (2026). The impact of remote interactive voice therapy on patient adherence and treatment efficacy（中国語）. 临床耳鼻咽喉头颈外科杂志 (Journal of Clinical Otorhinolaryngology Head and Neck Surgery) 40(5) 477–481 . doi:10.13201/j.issn.2096-7993.2026.05.012 使用箇所： 声のしくみ ：練習メニュー"
+  },
+  "ref-morsomme2022": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "査読誌（症例報告） Morsomme, D., & Remacle, A. (2022). Can ambulatory biofeedback help a transgender woman speak at a higher pitch?. Logopedics Phoniatrics Vocology 47(2) 125–132 (online 2021-03-04) . doi:10.1080/14015439.2021.1881158 使用箇所： 声のしくみ ：練習メニュー 1例の症例報告で、証拠としては弱い。"
+  },
+  "ref-remacle2018": {
+   "tag": "li",
+   "class": "",
+   "attrs": {},
+   "text": "学会発表 Remacle, A., & Morsomme, D. (2018). Apport du biofeedback dans l'augmentation de la fréquence fondamentale en féminisation vocale. Congrès de la Société Française de Phoniatrie (conference paper); Open Repository and Bibliography, Université de Liège (ORBi 2268/229235), 2018-11-09 . orbi.uliege.be/handle/2268/229235 使用箇所： 声のしくみ ：練習メニュー 学会の発表論文で、査読誌の論文ではない。"
   },
   "tools": {
    "tag": "h2",

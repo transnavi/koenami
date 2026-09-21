@@ -1,27 +1,34 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { defineConfig } from '@playwright/test';
 
-// Characterization runs: one worker, no retries, everything pinned. RECORD=1 rewrites
-// the goldens and, together with MOCK_API_RECORD on the mock server, the API fixtures.
+// Routine checks use focused behavior assertions on the production build. Historical
+// migration comparisons and V8 coverage each require an explicit opt-in.
+const characterization = process.env.E2E_CHARACTERIZATION === '1';
+const coverage = process.env.E2E_COVERAGE === '1';
 const root = fileURLToPath(new URL('.', import.meta.url));
 const mic = `${root}tests/fixtures/audio/microphone.wav`;
 // A port beside the default dev server (8766), so a developer's session survives a test run.
 const port = Number(process.env.E2E_PORT || 8776);
-// Which tree the browser gets: the pinned vanilla files for `old` (extracted by the
-// global setup), or the directory named by E2E_STATIC for the rewrite.
-const tree = process.env.KOENAMI_TREE || 'old';
-const site = tree === 'old' ? 'tests/old-tree/web' : process.env.E2E_STATIC;
-if (!site) throw new Error('KOENAMI_TREE=new needs E2E_STATIC=<directory with the built site>');
+const site = process.env.E2E_STATIC || '.svelte-kit/cloudflare';
+const marker = join(site, 'BUILD');
+const build = existsSync(marker) ? readFileSync(marker, 'utf8') : '';
+const expectedBuild = coverage ? 'coverage' : 'minified';
+if (build !== expectedBuild)
+	throw new Error(
+		`${site} is a ${build || 'missing or stale'} build; run \`bun run ${coverage ? 'build:coverage' : 'build'}\` first`
+	);
 
 export default defineConfig({
-	testDir: 'e2e/scenarios',
+	testDir: characterization ? 'e2e/scenarios' : 'e2e/flows',
 	globalSetup: './e2e/global-setup.ts',
-	outputDir: 'test-output/e2e',
+	outputDir: characterization ? 'test-output/characterization' : 'test-output/e2e',
 	fullyParallel: false,
 	workers: 1,
 	retries: 0,
-	timeout: 90_000,
+	timeout: characterization ? 90_000 : 45_000,
 	reporter: process.env.CI ? 'github' : 'list',
 	snapshotPathTemplate: 'tests/golden/canvas/{testFilePath}/{arg}{ext}',
 	expect: { toMatchSnapshot: { maxDiffPixels: 0, threshold: 0 }, timeout: 15_000 },
@@ -49,12 +56,12 @@ export default defineConfig({
 				'--disable-gpu',
 				// Block coverage counters are dropped when V8 optimises a hot function; without
 				// the optimiser every early return stays visible in the report.
-				'--js-flags=--no-opt'
+				...(coverage ? ['--js-flags=--no-opt'] : [])
 			]
 		}
 	},
 	// One process, owned by Playwright, serves the site, the recorded API and the sample
-	// audio. MOCK_API_RECORD (set by tests/scripts/record-e2e.sh) makes it proxy API
+	// audio. MOCK_API_RECORD (set by test:characterization:record) makes it proxy API
 	// calls to a real analyzer and save the answers.
 	webServer: {
 		// E2E_SERVER_COMMAND starts the same server under another argv, for a machine where
