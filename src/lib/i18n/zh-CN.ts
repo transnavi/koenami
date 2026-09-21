@@ -252,7 +252,7 @@ export default {
 	'metric.hnr.label': '质感',
 	'metric.hnr.unit': 'dB',
 	'metric.hnr.description':
-		'声音中周期成分与噪声成分的比值（HNR）。气声和沙哑会使它降低，录音噪声也会。它不衡量声音的厚重感。',
+		'声音中周期成分与噪声成分的比值（HNR）。气声和沙哑会使它降低，录音噪声也会。它不直接衡量声音的厚重感。',
 	'metric.hnr.factors': ['漏气（声带闭合方式）', '沙哑、粗糙', '录音噪声。环境音多时会下降'],
 	'metric.hnr.caveats': [
 		'它不是声音「厚重」或「粗壮」的指标。',
