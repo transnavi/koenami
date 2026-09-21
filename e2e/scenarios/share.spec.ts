@@ -418,4 +418,55 @@ test.describe('verdict and sharing', () => {
 		// The Japanese studio is the root.
 		await expect(page.locator('#result-try')).toHaveAttribute('href', '/');
 	});
+
+	test('age impression is opt-in and travels only when included', async ({ page, studio }) => {
+		await studio.open('/ja/');
+		await studio.until(app.ready);
+		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+		await studio.until(app.analysed);
+		await studio.until(app.shareReady);
+		// The goldens are pinned to a tree; before it includes the age row there is nothing to characterize.
+		test.skip((await page.locator('#share-age-run').count()) === 0, 'the pinned tree predates the age impression');
+		await page.locator('#share-button').click();
+		await studio.until(app.shareImage);
+		await studio.tick(200);
+		await studio.golden('age-before-estimate');
+		const link = () => page.locator('#share-open').getAttribute('href');
+		expect(await link()).not.toContain('age=');
+
+		await page.locator('#share-age-run').click();
+		await studio.until('!document.getElementById("share-age-include-label").hidden');
+		await studio.tick(200);
+		await studio.golden('age-optin-estimated', { extra: { link: await link() } });
+		expect(await link()).not.toContain('age=');
+
+		// Including it rewrites the link, the intents and the card; the image is re-rendered.
+		await page.locator('#share-age-include').check();
+		await studio.until('document.getElementById("share-open").href.includes("age=")');
+		await studio.until(app.shareImage);
+		await studio.tick(600);
+		const image = await studio.download(() => page.locator('#share-save').click());
+		await studio.golden('age-optin-included', { extra: { link: await link(), image } });
+
+		await page.locator('#share-age-include').uncheck();
+		await studio.until('!document.getElementById("share-open").href.includes("age=")');
+		await studio.tick(600);
+		await studio.golden('age-optin-excluded', { extra: { link: await link() } });
+
+		// Reopening resets the choice; the estimate itself is kept for the same take and range.
+		await page.locator('#share-dialog [data-close]').click();
+		await page.locator('#verdict-readout').click();
+		await studio.until(app.shareImage);
+		await studio.tick(200);
+		await studio.golden('age-reopened', { extra: { link: await link() } });
+
+		// The shared link shows the line on the result page.
+		await page.locator('#share-age-include').check();
+		await studio.until('document.getElementById("share-open").href.includes("age=")');
+		const shared = (await link())!;
+		await studio.open(shared.replace(/^https?:\/\/[^/]+/, ''));
+		await studio.until('!document.getElementById("result-image").hidden');
+		await studio.tick(300);
+		await studio.golden('age-result-page');
+	});
 });
