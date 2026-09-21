@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 // from an empty directory and describes this run alone; E2E_KEEP_COVERAGE=1 keeps the
 // other tests' files while a subset is rerun.
 export default function setup() {
-	if (process.env.E2E_KEEP_COVERAGE === '1') return;
+	if (process.env.E2E_COVERAGE !== '1' || process.env.E2E_KEEP_COVERAGE === '1') return;
 	rmSync(fileURLToPath(new URL('../coverage/e2e/raw', import.meta.url)), {
 		recursive: true,
 		force: true

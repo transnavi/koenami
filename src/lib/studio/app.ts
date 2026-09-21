@@ -2429,8 +2429,7 @@ export function mountStudio() {
 		if (state.recording || state.busy) return;
 		const detail = (e as CustomEvent<{ value: string; key: string; name: string }>).detail;
 		const take =
-			takeChoices.find((c) => takeKeyOf(c) === detail.key) ||
-			takeChoices[Number(detail.value)];
+			takeChoices.find((c) => takeKeyOf(c) === detail.key) || takeChoices[Number(detail.value)];
 		if (!take) return;
 		const id = (take as Snapshot).takeId || take.storedId;
 		if (!id) {

@@ -1,11 +1,5 @@
-// Converts the raw V8 coverage of both layers into istanbul reports that
-// tests/coverage/check.mjs merges:
-//   coverage/unit/raw  (written by vitest-monocart-coverage) → coverage/unit/coverage-final.json
-//   coverage/e2e/raw   (written per test by the Playwright fixture) → coverage/e2e/coverage-final.json
-// The browser is served the pinned files unchanged (import.meta.env.PROD is substituted at
-// the same width, see tests/mock-api/server.mjs) and the unit layer resolves
-// its transforms through source maps, so both describe identical source text and the
-// istanbul statement maps line up.
+// Converts optional V8 coverage into per-layer Istanbul reports for inspection.
+// Coverage is diagnostic; routine checks do not enforce a global percentage.
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -63,6 +57,6 @@ if (existsSync(e2eRaw)) {
 	generated++;
 }
 if (!generated) {
-	console.error('no raw coverage; run test:unit:coverage and/or test:e2e first');
+	console.error('no raw coverage; run test:coverage first');
 	process.exit(1);
 }

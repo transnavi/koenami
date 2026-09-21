@@ -194,7 +194,6 @@ const ja = {
 	'info.method': '測定方法と出典 ↗',
 	'info.references': '参考文献 ↗',
 	'info.source': 'ソースコード（GitHub） ↗',
-	'info.colors': '配色の参考：',
 
 	'rename.failed': '名前を変更できませんでした。もう一度お試しください。',
 	'report.heading': '比較',
