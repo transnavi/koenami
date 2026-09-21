@@ -38,7 +38,7 @@
   ],
   "listIsCopy": true,
   "number": "음성 1,234개 추가됨",
-  "placeholder": "참고 음성 분석: x <y>",
+  "placeholder": "참고 음성 분석 오류: x <y>",
   "plain": "사용법",
   "pluralOne": "음성 1개 추가됨",
   "pluralUnset": "음성 {n}개 추가됨",
