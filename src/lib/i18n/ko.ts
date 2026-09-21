@@ -35,6 +35,7 @@ export default {
 	'verdict.end_female': '여성적 +100',
 
 	'graph.aria': '목소리 비교',
+	'graph.analyzing': '목소리를 분석하고 있습니다…',
 	'graph.canvas_aria': '목소리 분포. 스크롤로 확대·축소, 드래그로 회전, Shift+드래그로 이동.',
 	'graph.projection_variance': '주성분',
 	'graph.projection_variance_title':

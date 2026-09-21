@@ -403,6 +403,43 @@ koe-select {
 	position: relative;
 	min-height: 0;
 }
+.graph-analyzing {
+	/* A translucent veil over the map while the current take is being analysed. */
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	background: color-mix(in srgb, var(--surface) 55%, transparent);
+	backdrop-filter: blur(2px);
+	color: var(--heading);
+	font-size: 14px;
+	font-weight: 550;
+	pointer-events: none;
+}
+.graph-analyzing[hidden] {
+	display: none;
+}
+.graph-analyzing i {
+	width: 18px;
+	height: 18px;
+	border: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
+	border-top-color: var(--accent);
+	border-radius: 50%;
+	animation: graph-analyzing-spin 0.9s linear infinite;
+}
+@keyframes graph-analyzing-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.graph-analyzing i {
+		animation-duration: 2.4s;
+	}
+}
 #voice-map {
 	display: block;
 	width: 100%;
