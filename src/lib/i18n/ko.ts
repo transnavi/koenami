@@ -9,6 +9,7 @@ export default {
 	'page.publisher': 'とらんすナビ',
 
 	'toolbar.language': '언어 (화면과 참고 음성)',
+	'toolbar.tutorial': '목소리의 원리와 발성 연습 가이드 (일본어)',
 	'toolbar.guide': '화면 안내',
 	'toolbar.share': '판정 공유',
 	'toolbar.settings': '설정',
@@ -190,7 +191,7 @@ export default {
 	'info.about2':
 		'참고 음성은 일본어 외에 중국어·영어·한국어를 담고 있습니다. 무료 오픈 소스이며 녹음은 브라우저 안에 저장됩니다.',
 	'info.guide': '사용법 (일본어) ↗',
-	'info.tutorial': '목소리의 원리와 연습 안내 (일본어) ↗',
+	'info.tutorial': '목소리의 원리와 발성 연습 가이드 (일본어) ↗',
 	'info.method': '측정 방법과 출처 (일본어) ↗',
 	'info.references': '참고 문헌 (일본어) ↗',
 	'info.source': '소스 코드 (GitHub) ↗',
@@ -461,7 +462,7 @@ export default {
 		'{text}. 여성적인 목소리와 남성적인 목소리의 참고 가운데 이 목소리가 어디에 있는지.',
 	'result.window_title': 'Koenami · {verdict} ({leaning} {score})',
 	'nav.guide': '사용법',
-	'nav.tutorial': '목소리의 원리',
+	'nav.tutorial': '발성 원리',
 	'nav.method': '측정 방법과 출처',
 	'result.eyebrow': '이 목소리의 판정',
 	'result.loading': '불러오는 중…',

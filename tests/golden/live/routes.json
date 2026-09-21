@@ -155,7 +155,7 @@
   "x-content-type-options": "nosniff",
   "permissions-policy": "microphone=(self), camera=(), geolocation=()",
   "referrer-policy": "strict-origin-when-cross-origin",
-  "title": "Koenami · 声のしくみと練習の手引き",
+  "title": "Koenami · 声の仕組みと練習の手引き",
   "lang": "ja",
   "app": "kit"
  },

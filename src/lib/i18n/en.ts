@@ -9,6 +9,7 @@ export default {
 	'page.publisher': 'とらんすナビ',
 
 	'toolbar.language': 'Language (interface and references)',
+	'toolbar.tutorial': 'How the voice works: a practice guide',
 	'toolbar.guide': 'Screen guide',
 	'toolbar.share': 'Share the verdict',
 	'toolbar.settings': 'Settings',

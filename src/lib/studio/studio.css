@@ -126,6 +126,8 @@ svg {
 .app {
 	height: 100dvh;
 	display: grid;
+	/* One column pinned to the viewport, so a crowded toolbar squeezes its language label instead of widening the page. */
+	grid-template-columns: minmax(0, 1fr);
 	grid-template-rows: 54px minmax(0, 1fr) 94px;
 }
 .toolbar {
@@ -157,6 +159,9 @@ svg {
 .language-control {
 	display: flex;
 	align-items: center;
+	/* The one toolbar item that may give way: its label ellipsises when the buttons need the room. */
+	min-width: 0;
+	flex-shrink: 1;
 }
 koe-select {
 	font-size: 12px;
@@ -3148,11 +3153,22 @@ input[type='checkbox']:checked:after {
 		max-width: 150px;
 		min-height: 36px;
 	}
+	/* Narrow phones: the globe alone stands for the language menu; its label would only be truncated. */
+	@media (max-width: 400px) {
+		.language-control koe-select {
+			width: 50px;
+		}
+	}
+	@media (max-width: 340px) {
+		.brand h1 {
+			display: none;
+		}
+	}
 	.toolbar-end {
 		gap: 0;
 	}
 	.toolbar-end .icon-button {
-		width: 36px;
+		width: 32px;
 		height: 40px;
 	}
 	.toolbar-end svg {
