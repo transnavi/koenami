@@ -282,9 +282,6 @@ export function defineKoeSelect() {
 				if (done) return;
 				done = true;
 				this._editing = false;
-				// Focus returns to the row so a keyboard user is not dropped on the body; the
-				// render restores it from the item that had it.
-				item.focus();
 				const name = input.value.trim();
 				if (commit && name && name !== o.textContent) {
 					o.textContent = name;
@@ -296,6 +293,11 @@ export function defineKoeSelect() {
 					);
 				}
 				this.render();
+				// The input replaced (and detached) the name button, so focus it afresh from the
+				// rebuilt row; without this a keyboard user is dropped on the body.
+				this.list
+					.querySelector<HTMLButtonElement>(`.item[data-value="${CSS.escape(o.value)}"]`)
+					?.focus();
 			};
 			input.onkeydown = (e) => {
 				e.stopPropagation();
@@ -307,10 +309,9 @@ export function defineKoeSelect() {
 					finish(false);
 				}
 			};
-			input.addEventListener('focusout', (e: FocusEvent) => {
-				const to = e.relatedTarget as Node | null;
-				finish(!(to && row.contains(to)));
-			});
+			// Any focus-out commits the name (moving to another control is not a reason to
+			// discard the edit); only Escape cancels.
+			input.addEventListener('focusout', () => finish(true));
 			row.replaceChild(input, item);
 			input.focus();
 			input.select();

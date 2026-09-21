@@ -4,7 +4,7 @@
  "lang": "ja",
  "theme": "light",
  "dialogs": [],
- "focus": "body",
+ "focus": "take-select",
  "vars": {
   "--reference": "#d56498",
   "--self": "#6b4aaf",
