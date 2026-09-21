@@ -214,6 +214,7 @@ koe-select {
 	grid-template-rows: minmax(0, 1fr) 91px;
 	padding: 0 18px 16px;
 }
+/* Loose chips over the map: each control is its own pill, with nothing framing the row. */
 .graph-toolbar {
 	position: absolute;
 	top: 10px;
@@ -221,17 +222,43 @@ koe-select {
 	z-index: 3;
 	display: flex;
 	align-items: center;
-	gap: 9px;
+	gap: 10px;
 	min-width: 0;
 	max-width: calc(100% - 20px);
-	padding: 4px 6px;
+}
+/* The two halves of a choice sit closer together than the choices do. */
+.graph-toolbar [data-dimension='2'] {
+	margin-right: -6px;
+}
+#projection-controls {
+	display: flex;
+	gap: 4px;
+	flex-shrink: 0;
+}
+/* `display: flex` would otherwise beat the browser's own `[hidden]` rule. */
+#projection-controls[hidden] {
+	display: none;
+}
+.graph-toolbar button {
 	border: 1px solid var(--line);
-	border-radius: 8px;
+	border-radius: 7px;
+	padding: 6px 10px;
+	font-size: 11px;
 	background: color-mix(in srgb, var(--surface) 82%, transparent);
 	backdrop-filter: blur(6px);
+	color: var(--muted);
+	white-space: nowrap;
+	flex-shrink: 0;
 }
-.graph-toolbar .segment {
-	border: 0;
+.graph-toolbar button:hover {
+	background: var(--raised);
+	color: var(--ink);
+}
+.graph-toolbar button[aria-pressed='true'] {
+	background: var(--selected);
+	color: var(--accent);
+	font-weight: 550;
+	border-color: color-mix(in srgb, var(--accent) 45%, transparent);
 }
 .segment {
 	display: flex;
@@ -1620,7 +1647,6 @@ html:has(.method) body {
 	min-height: 0;
 }
 .graph-toolbar {
-	gap: 10px;
 	flex-wrap: nowrap;
 }
 #space-label {
@@ -2056,19 +2082,11 @@ html:has(.method) body {
 }
 
 .rotate-button {
-	border: 0;
-	background: transparent;
 	font-size: 13px;
 	padding: 4px 7px;
-	color: var(--muted);
-	white-space: nowrap;
 }
 .rotate-button span {
 	font-size: 10px;
-}
-.rotate-button[aria-pressed='true'] {
-	color: var(--accent);
-	background: var(--selected);
 }
 @media (max-width: 1150px) {
 	#space-label {
@@ -2131,9 +2149,6 @@ html:has(.method) body {
 .graph-area {
 	padding: 0;
 	grid-template-rows: minmax(0, 1fr) 182px;
-}
-.graph-toolbar {
-	padding: 3px 5px;
 }
 .signal-panel {
 	border: 0;
@@ -2244,9 +2259,6 @@ html:has(.method) body {
 	}
 	.graph-area {
 		grid-template-rows: minmax(0, 1fr) 160px;
-	}
-	.graph-toolbar {
-		padding: 3px 5px;
 	}
 	.primary-controls {
 		gap: 9px;
@@ -3331,16 +3343,17 @@ input[type='checkbox']:checked:after {
 		grid-template-rows: minmax(0, 1fr) 148px;
 	}
 	.graph-toolbar {
-		padding: 0 6px;
-		gap: 6px;
+		gap: 8px;
 	}
-	.graph-toolbar .segment button {
+	.graph-toolbar [data-dimension='2'] {
+		margin-right: -4px;
+	}
+	.graph-toolbar button {
 		font-size: 11px;
 		padding: 0 8px;
 		min-height: 28px;
 	}
 	.rotate-button {
-		min-height: 28px;
 		min-width: 28px;
 		padding: 3px 5px;
 		font-size: 13px;
