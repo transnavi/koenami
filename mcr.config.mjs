@@ -7,12 +7,8 @@ export default {
 	name: 'koenami unit coverage',
 	outputDir: `${root}coverage/unit`,
 	reports: [['raw'], ['console-summary']],
-	entryFilter: (entry) =>
-		/\/(tests\/old-tree\/web|src\/lib)\/|\/src\/service-worker\.ts/.test(entry.url || ''),
+	entryFilter: (entry) => /\/src\/(lib\/|service-worker\.ts)/.test(entry.url || ''),
 	sourceFilter: (path) => !path.includes('node_modules'),
-	sourcePath: (filePath) =>
-		filePath
-			.replace(/^.*?tests\/old-tree\//, '')
-			.replace(/^.*?(src\/(lib\/|service-worker\.ts))/, '$1'),
+	sourcePath: (filePath) => filePath.replace(/^.*?(src\/(lib\/|service-worker\.ts))/, '$1'),
 	cleanCache: true
 };

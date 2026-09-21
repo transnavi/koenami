@@ -13,7 +13,6 @@
 		"web/**",
 		"tests/golden/**",
 		"tests/fixtures/**",
-		"tests/coverage/exclusions.json",
 		"docs/**",
 		"kb/**",
 		"curation/**",

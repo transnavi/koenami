@@ -3,7 +3,7 @@ import { loadImported, importedAudio, importJVS, type ImportClip } from '$lib/co
 /* The studio: one controller over the page's elements, ported from web/app.js with types.
    Its DOM writes, request order and timing are what the browser goldens pin. */
 import { t, lang as uiLang } from '$lib/i18n';
-import { defineKoeSelect } from '$lib/koe-select';
+import { defineKoeSelect, type KoeSelectElement } from '$lib/koe-select';
 import { VoiceMap, type MapSample } from '$lib/map';
 import { finite, quantile, clamp, AXES } from '$lib/math';
 import {
@@ -622,7 +622,6 @@ export function mountStudio() {
 				index[c.group] = (index[c.group] || 0) + 1;
 				c.index = index[c.group];
 			});
-			updateJvsBanner();
 			state.scorer = new Scorer(lib.clips);
 			state.representatives = representatives(state.clips);
 			map.space = new AcousticSpace(
@@ -834,8 +833,10 @@ export function mountStudio() {
 		}
 		$('compare-ab').setAttribute('aria-pressed', 'false');
 	}
-	async function playSide(side: Side, fromStart = false) {
-		if (state.recording || state.busy || state.loadingLanguage) return;
+	// Resolves to whether the play() started rather than being cut short by a pause(), so a
+	// caller (A/B) can tell a real start from an interrupted one.
+	async function playSide(side: Side, fromStart = false): Promise<boolean> {
+		if (state.recording || state.busy || state.loadingLanguage) return false;
 		await audioReady();
 		const el = side === 'own' ? player : reference,
 			other = side === 'own' ? reference : player,
@@ -843,7 +844,14 @@ export function mountStudio() {
 		other.pause();
 		if (fromStart || (r && (el.currentTime < r[0] || el.currentTime >= r[1] - 0.02)) || el.ended)
 			el.currentTime = r?.[0] || 0;
-		await el.play();
+		// A play() interrupted by a pause() before it starts (switching sides, a quick stop)
+		// rejects with AbortError; that is the pause taking effect, not a failure to report.
+		let started = true;
+		await el.play().catch((e) => {
+			if ((e as DOMException).name !== 'AbortError') throw e;
+			started = false;
+		});
+		return started;
 	}
 	async function toggle(side: Side) {
 		cancelAB();
@@ -917,14 +925,25 @@ export function mountStudio() {
 			);
 			if (!finite(seconds) || seconds <= 0) throw new Error(t('error.ab_wait'));
 			$('compare-ab').setAttribute('aria-pressed', 'true');
-			await playSide('ref', true);
+			// If a pause() cut the reference short (the user stopped it during start-up), do not
+			// start the timer — otherwise the comparison would carry on into the own phase.
+			if (!(await playSide('ref', true))) {
+				cancelAB();
+				return;
+			}
 			let phase = 'ref';
 			abTimer = setInterval(() => {
+				// The reference hands over when it reaches its window; `reference.paused` also
+				// hands over if it stopped on its own (a user pause goes through toggle(), which
+				// cancels A/B first, so it never reaches here).
 				if (phase === 'ref' && (reference.paused || reference.currentTime - refStart >= seconds)) {
 					reference.pause();
 					phase = 'starting';
 					playSide('own', true)
-						.then(() => (phase = 'own'))
+						.then((started) => {
+							if (started) phase = 'own';
+							else cancelAB();
+						})
 						.catch((e) => {
 							cancelAB();
 							notify(e.message, true);
@@ -2192,10 +2211,11 @@ export function mountStudio() {
 			const option = new Option(t.name, String(i));
 			option.dataset.detail = clock((t as Snapshot).detail?.duration || (t as Take).duration);
 			option.dataset.actions = 'play,rename,download,delete';
+			option.dataset.key = takeKeyOf(t);
 			const peaks = t.pcm ? wavePeaks(t.pcm) : (t as Take).peaks;
 			if (peaks) option.dataset.peaks = JSON.stringify(peaks);
 			if (state.recording || !((t as Snapshot).takeId || t.storedId))
-				option.dataset.disabledActions = 'delete' + (state.recording ? ',play' : '');
+				option.dataset.disabledActions = 'delete' + (state.recording ? ',play,rename' : '');
 			select.add(option);
 		});
 		if (current?.detail?.analysisPending && !state.analyzing.has(current.takeId!))
@@ -2203,11 +2223,6 @@ export function mountStudio() {
 		select.disabled = state.busy || !takeChoices.length;
 		select.value = current?.pcm ? '0' : '';
 		select.setAttribute('data-display-label', current?.name || t('takes.menu'));
-		if (replayKey) {
-			const i = takeChoices.findIndex((t) => replayKeyOf(t) === replayKey);
-			replayValue = i >= 0 ? i : null;
-			if (i >= 0) setReplayIcon(i, true);
-		}
 		void backfillPeaks();
 	}
 	async function restoreTake(chosen: Snapshot | Take | { storedId: string }) {
@@ -2298,19 +2313,11 @@ export function mountStudio() {
 					? chosen
 					: await TakeStore.read<Snapshot>('recording:' + chosen.storedId);
 				if (!source?.pcm) throw new Error(t('error.take_load'));
-				replayTake(source as Snapshot, replayKeyOf(chosen), Number(detail.value));
+				replayTake(source as Snapshot, replayKeyOf(chosen));
 			} catch (error) {
 				notify((error as Error).message, true);
 				return;
 			}
-		if (detail.action === 'rename') {
-			renameTarget = chosen;
-			$<HTMLInputElement>('rename-input').value = chosen.name || '';
-			$('rename-status').textContent = '';
-			$<HTMLDialogElement>('rename-dialog').showModal();
-			$<HTMLInputElement>('rename-input').select();
-			return;
-		}
 		if (detail.action === 'download')
 			try {
 				if (chosen.storedId)
@@ -2324,76 +2331,72 @@ export function mountStudio() {
 
 	/* Row-level replay and renaming in the recording history. */
 	let replayAudio: HTMLAudioElement | null = null,
-		replayKey: string | null = null,
-		replayValue: number | null = null,
-		renameTarget: Snapshot | Take | null = null;
-	const replayKeyOf = (take: Snapshot | Take | null | undefined) =>
-		take?.storedId || (take as Snapshot)?.takeId || 'mem:' + (take?.pcm?.length || 0);
-	function setReplayIcon(value: number, playing: boolean) {
-		const button = $('take-select').shadowRoot!.querySelector<HTMLButtonElement>(
-			`.row-action[data-action=play][data-value="${value}"]`
-		);
-		if (!button) return;
-		const path = button.querySelector('path');
-		if (path) path.setAttribute('d', playing ? 'M5 4h3v12H5zM12 4h3v12h-3z' : 'M6 4l10 6-10 6z');
-		const action = t(playing ? 'action.stop' : 'action.play');
-		button.title = action;
-		button.setAttribute(
-			'aria-label',
-			t('action.label', {
-				name: button.closest('.choice-row')?.getAttribute('aria-label') || '',
-				action
-			})
-		);
-	}
+		replayKey: string | null = null;
+	// One identity per take: a recording's takeId, a stored take's storedId, else a memory
+	// take keyed by its name and length. Used for the menu's data-key, the replay state, and
+	// the wave button's row key, so all three agree.
+	const takeKeyOf = (take: Snapshot | Take | null | undefined) =>
+		(take as Snapshot)?.takeId ||
+		take?.storedId ||
+		'mem:' + (take?.name || '') + ':' + (take?.pcm?.length || 0);
+	const replayKeyOf = takeKeyOf;
+	const setReplaying = (key: string, playing: boolean, progress = 0) =>
+		$<KoeSelectElement>('take-select').setRowPlaying(key, playing, progress);
 	function stopReplay() {
-		const was = replayValue;
+		const was = replayKey;
 		if (replayAudio) {
 			URL.revokeObjectURL(replayAudio.src);
 			replayAudio.pause();
 		}
 		replayAudio = null;
 		replayKey = null;
-		replayValue = null;
-		if (was != null) setReplayIcon(was, false);
+		if (was) setReplaying(was, false);
 	}
-	function replayTake(take: Snapshot, key: string, icon: number) {
+	function replayTake(take: Snapshot, key: string) {
 		const stop = replayKey === key;
 		stopReplay();
 		if (stop) return;
 		const url = URL.createObjectURL(wav(take.pcm!));
-		replayAudio = new Audio(url);
+		// Keep this run's element to compare identity: a take's key can come round again
+		// (play, stop, play), so only the element itself tells this replay from its successor.
+		const audio = (replayAudio = new Audio(url));
 		replayKey = key;
-		replayValue = icon;
-		setReplayIcon(icon, true);
-		replayAudio.onended = () => {
-			if (replayKey === key) {
-				replayKey = null;
-				replayValue = null;
-				setReplayIcon(icon, false);
-			}
+		setReplaying(key, true);
+		audio.ontimeupdate = () => {
+			if (replayAudio === audio && finite(audio.duration))
+				setReplaying(key, true, audio.currentTime / audio.duration);
+		};
+		audio.onended = () => {
 			URL.revokeObjectURL(url);
+			if (replayAudio !== audio) return;
+			replayKey = null;
+			setReplaying(key, false);
 			replayAudio = null;
 		};
-		replayAudio.play().catch(() => {
+		audio.play().catch((e) => {
+			// A stop or a switch to another take pauses this audio, so its play() rejects with
+			// AbortError; that is the stop taking effect. A replay this element no longer drives
+			// (a newer one took over) is not ours to report either.
+			if ((e as DOMException).name === 'AbortError' || replayAudio !== audio) return;
 			stopReplay();
 			URL.revokeObjectURL(url);
 			notify(t('error.replay'), true);
 		});
 	}
-	$('rename-save').onclick = async () => {
-		const name = $<HTMLInputElement>('rename-input').value.trim();
-		if (!name) {
-			$('rename-status').textContent = t('rename.empty');
-			return;
-		}
-		const take = renameTarget;
-		renameTarget = null;
-		$<HTMLDialogElement>('rename-dialog').close();
+	// The recording menu renames a take in place: koe-select emits `optionrename` with the
+	// take and its new name; the same storage path persists it, and the shown name rolls
+	// back (a re-render) if the write fails.
+	$('take-select').addEventListener('optionrename', async (e) => {
+		// A rename mid-recording or mid-analysis is ignored (a re-render then drops the input);
+		// the take is found by its stable key, not its row position, which a re-render shifts.
+		if (state.recording || state.busy) return;
+		const detail = (e as CustomEvent<{ value: string; key: string; name: string }>).detail;
+		const take =
+			takeChoices.find((c) => takeKeyOf(c) === detail.key) || takeChoices[Number(detail.value)];
 		if (!take) return;
 		const id = (take as Snapshot).takeId || take.storedId;
 		if (!id) {
-			state.ownName = name;
+			state.ownName = detail.name;
 			renderTakeMenu();
 			await persistTakes();
 			return;
@@ -2401,26 +2404,20 @@ export function mountStudio() {
 		try {
 			const saved = await TakeStore.updateRecording<Take>(id, (snapshot, metadata) => ({
 				snapshot,
-				metadata: { ...metadata!, name }
+				metadata: { ...metadata!, name: detail.name }
 			}));
 			if (!saved) throw 0;
 			state.takes = saved.index;
 			if (state.ownTakeId === id) {
-				state.ownName = name;
+				state.ownName = detail.name;
 				await persistTakes();
 			}
 			renderTakeMenu();
 		} catch {
 			notify(t('rename.failed'), true);
+			renderTakeMenu();
 		}
-	};
-	$('rename-input').onkeydown = (e) => {
-		if (e.key === 'Enter') {
-			e.preventDefault();
-			$('rename-save').click();
-		}
-	};
-	$('rename-dialog').addEventListener('close', () => (renameTarget = null));
+	});
 
 	/* Bulk actions on the recording history: one zip of every saved take, or delete them all. */
 	async function storedTakes() {
@@ -2480,20 +2477,12 @@ export function mountStudio() {
 		notify(t('notice.deleted_all', { n: stored.length }));
 	};
 
-	function updateJvsBanner() {
-		const count = new Set(state.clips.filter((c) => c.dataset === 'JVS').map((c) => c.id)).size;
-		$('jvs-banner').hidden = state.lang !== 'ja' || count >= 5000;
-	}
 	let importController: AbortController | null = null;
 	$('add-reference').onclick = () => {
 		$('jvs-status').textContent = state.imported.length
 			? t('jvs.added', { n: state.imported.length })
 			: '';
 		$<HTMLDialogElement>('import-dialog').showModal();
-	};
-	$('jvs-banner-import').onclick = () => {
-		$('add-reference').click();
-		$('choose-jvs-zip').focus();
 	};
 	$('import-audio').onclick = () => {
 		$<HTMLDialogElement>('import-dialog').close();

@@ -1,4 +1,4 @@
-// Explores the studio's UI state graph on one tree and writes it as a transition table:
+// Explores the studio's UI state graph for one build and writes it as a transition table:
 // from the cold start, every operation the page offers is applied, the abstract state it
 // leads to and the hash of the full DOM projection there are recorded, and every new
 // abstract state is explored in turn, up to a depth. Each edge is reached by replaying
@@ -7,7 +7,7 @@
 //
 //   node --experimental-strip-types e2e/model/explore.ts <port> <out.json> [depth] [max states]
 //
-// The mock server on <port> serves the tree (tests/mock-api/server.mjs with
+// The mock server on <port> serves the build (tests/mock-api/server.mjs with
 // MOCK_API_STATIC); the page setup is the characterization harness's (deterministic ids
 // and random numbers, the clock installed and paused, the guide marked done, recordings
 // capped at two seconds). MODEL_JOBS pages run at once (default 2); MODEL_ROOT_OPS, a

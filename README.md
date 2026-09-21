@@ -20,7 +20,7 @@ The recording track in these screenshots uses a public Common Voice clip.
 - Recordings are saved and playable as soon as capture stops. Measurements finish in the background, so another take can start immediately. Saved recordings remain available after refresh. Their averages appear on the map; the recording title opens the history menu. Each row has download and delete buttons.
 - Compare pitch, resonance, harmonicity, spectral balance, and pitch variation. Orbit, pan, and scroll to zoom the 3D map. The dock combines a waveform playback timeline with pitch, spectrum, and spectrogram comparisons. Click the waveform to seek or drag to select a section.
 - Browse references by speaker, search speaker IDs with or without spaces, favorite individual clips, and adjust playback speed without changing pitch.
-- Import an official **JVS ZIP or extracted folder** through the **JVS banner** in the sample library. Imports are verified against original-file checksums, saved in IndexedDB, and restored on refresh. A single speaker folder also works.
+- Listen to 5,000 JVS references from 100 speakers directly in the Japanese library. Koenami has permission to provide these recordings for noncommercial voice practice.
 
 ![Waveform playback timeline above an overlaid spectrogram comparison.](docs/images/spectrogram.png)
 
@@ -80,9 +80,9 @@ Configure your own Cloudflare account and hostname in `wrangler.jsonc` before de
 
 **The MIT license applies to the application code. Audio, transcripts, metadata, model weights, and dependencies retain their original licenses.**
 
-The public demo includes 10 JVS clips under the author’s small-website-excerpt allowance, Japanese Common Voice clips with speaker and clip exclusions recorded in `curation/common-voice-ja.json`, 54 credited VOICEVOX clips, and Common Voice collections in Mandarin, English, and Korean. The Japanese JVS corpus documents native professional speakers. Japanese Common Voice includes adult-labelled recordings with at least two positive votes and no negative votes. Known pronunciation mismatches and explicitly declared non-native accents are excluded. Most speakers have not undergone listening review; Japanese dialect metadata alone does not establish native pronunciation. Native-speaker screening is also incomplete for the other languages.
+Koenami publishes 5,000 JVS clips from 100 speakers with permission from Shinnosuke Takamichi, granted on September 20, 2026 for noncommercial use. The public demo also includes Japanese Common Voice clips with exclusions recorded in `curation/common-voice-ja.json`, 54 credited VOICEVOX clips, and Common Voice collections in Mandarin, English, and Korean. The Japanese JVS corpus documents native professional speakers. Japanese Common Voice includes adult-labelled recordings with at least two positive votes and no negative votes. Known pronunciation mismatches and explicitly declared non-native accents are excluded. Most speakers have not undergone listening review; Japanese dialect metadata alone does not establish native pronunciation. Native-speaker screening is also incomplete for the other languages.
 
-- [JVS terms](https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_corpus): personal and noncommercial research use; full audio redistribution is restricted. JVS tags are CC BY-SA 4.0. The import index includes adapted metadata and computed acoustic measurements; it contains no audio.
+- [JVS terms](https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_corpus): Koenami has permission to host the requested 5,000 normal-speech recordings as noncommercial listening and comparison references. The selection and permission scope are recorded in [curation/jvs-publication.json](curation/jvs-publication.json). Further reuse and redistribution follow the original JVS terms; this permission does not relicense the corpus or extend to forks. JVS tags are CC BY-SA 4.0. The import index includes adapted metadata and computed acoustic measurements; it contains no audio.
 - [Common Voice](https://commonvoice.mozilla.org/): CC0 audio collections. Clip-level manifests preserve the source and checksums.
 - [VOICEVOX terms](https://voicevox.hiroshiba.jp/term/) and [voice library terms](https://github.com/VOICEVOX/voicevox_vvm/blob/main/README.md): credit and character-specific conditions apply. Audio reuse must follow those terms.
 
@@ -93,29 +93,72 @@ Microphone audio and selected imported samples are sent to the analysis service 
 ## Verification
 
 ```sh
-bun run build:public
-bun run check:worker
-bun run check:tests
 bun run check:all
-bun run check:kit
-.venv/bin/python tests.py
 ```
 
-`check:all` runs the characterization suite that pins the behaviour of the browser app, and `check:kit` runs the same suite against the SvelteKit tree (`KOENAMI_TREE=new`: `src/` built without minification and with source maps into `.svelte-kit/cloudflare`, the production build's directory, so build again before deploying): unit tests with coverage (`tests/unit`), the browser scenarios (`e2e/scenarios`), the merged coverage report and the 100 % gate, and then the full-page screens, the page and the cold-start scenarios once more against the minified production build (`test:e2e:minified`), since the minifier can change what the pixels show. Every test compares what it observes with a golden recorded against the commit named in `tests/golden/META.json`; the goldens describe that commit, and a rewrite has to reproduce them.
+The default check type-checks the app and tests, lints the repository, builds the
+production app once, then runs the unit tests and focused browser flows in
+`e2e/flows`. The browser checks use recorded API responses and public audio fixtures;
+they need no analyzer, Python environment or model downloads. On machines with
+`devrun`, use `devrun bun run check:all` to contain the test server and browser.
 
-- **Unit layer** (vitest): `math`, `space`, `cloud`, `storage`, `corpus-import`, the `capture` worklet and the service worker (the pinned `web/public/sw.js` and the Kit tree's `src/service-worker.ts`, with stand-ins for their global scope) are driven with fixed inputs and their outputs compared byte for byte with `tests/golden/unit`. The pinned `web/*.js` is extracted to `tests/old-tree` by the test setup (`git archive` needs that commit locally, so a shallow clone must fetch it). `KOENAMI_TREE=new` runs the same tests against `src/lib`; recording is refused there. Floating-point results, error message text and the order of stored records are all part of the contract.
-- **Browser layer** (Playwright, Chromium): `tests/mock-api/server.mjs` serves the pinned `web/` tree (`tests/old-tree`, or the Kit build named by `E2E_STATIC` with `KOENAMI_TREE=new`), the recorded analyzer responses under `tests/fixtures/api` and the CC0 audio under `tests/fixtures/data`, so every machine sees the same API. What the goldens require of a rewrite, and the small `window.voiceApp` hook the tests read (`e2e/hooks.ts`), is written down in `e2e/CONTRACT.md`. The page clock is paused and advanced only by the tests; the microphone is Chromium's fake device playing `tests/fixtures/audio/microphone.wav`. After each step a test records the state of every element with an id, `localStorage`, IndexedDB (large payloads as hashes), the API requests made so far and, where the drawing does not depend on real audio time, the pixel-exact PNG each canvas encodes of itself (`tests/golden/e2e`, `tests/golden/canvas`). Values that follow real media time or microphone content (clocks, seek positions, sample hashes, live readouts) are masked and marked as such in the goldens.
-- **Coverage gate**: both layers collect native V8 coverage (the browser with `--js-flags=--no-opt`, since the optimiser drops block counters), `coverage:report` converts it to istanbul reports over the same source files, and `coverage:check` requires every statement, branch, function and line of the pinned `web/*.js` and `web/public/sw.js` (of `src/` in the Kit tree, server modules aside), and fails when a source file appears in no coverage data. The locations the suite cannot reach are listed in `tests/coverage/exclusions.json` with the line, the source text and the reason (dead code, guards behind disabled controls, token races, fallbacks for fields the data never omits, the private baseline take, browser constants); an entry that no longer matches an uncovered location fails the gate, so the list cannot go stale.
+For a targeted change, run the relevant tests directly:
 
-- **Deployed routes** (`e2e/live/routes.ts`): the Worker's answer to every address the site owns or must refuse (status, content type, cache and security headers, the page's title and language, the redirect target), compared with `tests/golden/live/routes.json`; `bun run check:live` checks production after a deploy, `node --experimental-strip-types e2e/live/routes.ts <url>` a preview, and two URLs diff two Workers. The mock server never runs `worker.ts`, so this is the only check of its routing.
-- **UI state model** (`e2e/model`, not part of the gate): `explore.ts` walks the studio's reachable states from the cold start on one tree (an abstract state of what is loaded, running, open and pressed; every operation the page offers in it; a fresh page per transition, replaying the path), writing the transition table with the hash of the DOM projection at each edge, and `compare.ts` diffs two tables. Run with the mock server per tree: `node --experimental-strip-types e2e/model/explore.ts <port> <out.json> [depth] [max states]`, then `compare.ts old.json new.json`; `MODEL_ROOT_OPS` narrows the cold start's operations to one corner, `MODEL_JOBS` the pages run at once. A depth-2 run takes half an hour or more per tree.
+```sh
+bun run test:unit tests/unit/storage.test.ts
+bun run build
+bun run test:e2e studio.spec.ts --grep 'uploaded audio'
+```
 
-`bun run test:e2e:record` re-records the browser goldens and API fixtures against the real analyzer (it needs the Python environment and the models; `KOENAMI_PYTHON` points at another interpreter). `tests/fixtures/data` is built from a prepared public data set by `tests/scripts/build-fixture-data.mjs`; `tests/fixtures/audio/SOURCES.md` lists where the audio comes from.
+Browser assertions cover playable references in every language, language navigation,
+saved preferences, recording and cancellation, take persistence, rename, export and
+deletion, recovery from failed analysis, sharing, mobile controls, page rendering and
+the first-visit guide. Add a focused assertion for each changed behavior or bug fix.
+Use unit tests for calculations, storage rules and other logic that can be checked
+without a browser. The numerical and storage fixtures in `tests/golden/unit` remain
+regression tests; update them only when their expected outputs intentionally change.
 
-`tests.py` contains additional acoustic regression checks against local controlled audio fixtures; those fixtures are not published.
+Whole-page DOM, request-order and pixel comparisons from the HTML-to-SvelteKit
+migration live in `e2e/scenarios` and `tests/golden/{e2e,canvas}`. They are historical
+reference material, excluded from `check:all` and `test:e2e`. Ordinary UI and copy PRs
+do not need to refresh them. To investigate a particular migration-era behavior or
+compare a layout with a recorded image:
+
+```sh
+bun run build
+bun run test:e2e:characterization takes.spec.ts
+bun run test:e2e:visual --grep 'dark phone'
+```
+
+These comparisons can fail after intentional product changes. Inspect the relevant
+diff; a failing historical comparison alone does not block a PR. New regression
+coverage belongs in `e2e/flows` with explicit expected outcomes. See
+[e2e/CONTRACT.md](e2e/CONTRACT.md) for the comparison format and update commands.
+
+`bun run test:coverage` builds with source maps, runs unit tests and browser flows
+with V8 coverage, then writes per-layer reports under `coverage/`. Use those reports
+to find untested behavior. Coverage has no global percentage gate or line-number
+exclusion list. This command leaves a coverage build in `.svelte-kit/cloudflare`;
+run `bun run build` before ordinary browser checks. `build:public` always rebuilds
+before deployment.
+
+Additional checks depend on the change:
+
+- `bun run build:public` and `bun run check:worker` check the deployment set and
+  Worker types. `.venv/bin/python tests.py` runs acoustic regressions against local
+  controlled audio fixtures, which are not published.
+- `bun run check:live` checks deployed routes against `tests/golden/live/routes.json`.
+  Use `node --experimental-strip-types e2e/live/routes.ts <url>` for a preview.
+  The mock server does not run `worker.ts`, so deployment routing needs this check.
+- `e2e/model/explore.ts` and `compare.ts` inspect reachable UI states on demand.
+  Model exploration is outside the PR checks and can take half an hour or more.
+
+`tests/fixtures/data` is built from a prepared public data set with
+`tests/scripts/build-fixture-data.mjs`; `tests/fixtures/audio/SOURCES.md` documents
+the audio sources. Refresh API fixtures only when the API contract changes.
 
 ## Acknowledgments
 
-The comparison workflow draws on [Acoustic Gender Space](https://acousticgender.space/), [Phonia](https://phonia.app/), and [InFormant](https://in-formant.app/). Colors draw on [とらんすナビ](https://transnavi.jp/). The app is independently developed.
+The comparison workflow draws on [Acoustic Gender Space](https://acousticgender.space/), [Phonia](https://phonia.app/), and [InFormant](https://in-formant.app/). The app is independently developed.
 
 For Chinese-language practice material, see [あおぎ葵’s MTF声音女性化练习手册](https://www.bilibili.com/opus/546442165017071774), a community guide covering source–filter concepts and Praat examples. Measurement definitions are documented on the app’s method page.

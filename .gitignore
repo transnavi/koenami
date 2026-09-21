@@ -18,7 +18,6 @@ data/
 .wrangler/
 .dev.vars*
 ui-v3/
-tests/old-tree/
 /coverage/
 .svelte-kit/
 # wasm-pack writes the browser build of the measurement engine (bun run build:wasm).
