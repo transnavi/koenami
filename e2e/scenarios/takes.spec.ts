@@ -108,6 +108,20 @@ test.describe('recording history rows', () => {
 		await page.locator('#take-select button.trigger').click();
 		await studio.tick(100);
 		await studio.golden('sort-kept-on-reload');
+		// Under the name order a rename moves the row; focus stays with the renamed take.
+		await sortBy('name');
+		await page.locator('#take-select .item[aria-checked="true"]').click();
+		await page.locator('#take-select input.rename').fill('zzz');
+		await page.keyboard.press('Enter');
+		await studio.until(app.ownName('zzz') + ' && ' + app.idle);
+		await studio.tick(100);
+		await studio.golden('sort-name-renamed', {
+			extra: {
+				focused: await page.evaluate(
+					"document.getElementById('take-select').shadowRoot.activeElement?.textContent"
+				)
+			}
+		});
 	});
 
 	test('a take stored before the previews existed gets its waveform on the next visit', async ({

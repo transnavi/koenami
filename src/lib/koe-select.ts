@@ -118,25 +118,24 @@ export function defineKoeSelect() {
 			this.list.onkeydown = (e: KeyboardEvent) => {
 				if ((e.target as HTMLElement).tagName === 'INPUT') return;
 				e.stopPropagation();
+				// Arrows walk the header and the rows; Home, End and type-ahead stay on the rows.
 				const buttons = [...this.list.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')],
+					rows = [...this.items.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')],
 					i = buttons.indexOf(this.shadowRoot!.activeElement as HTMLButtonElement);
 				let next: number | undefined;
 				if (e.key === 'ArrowDown') next = (i + 1) % buttons.length;
 				else if (e.key === 'ArrowUp') next = (i - 1 + buttons.length) % buttons.length;
-				else if (e.key === 'Home') next = 0;
-				else if (e.key === 'End') next = buttons.length - 1;
+				else if (e.key === 'Home') next = buttons.indexOf(rows[0]);
+				else if (e.key === 'End') next = buttons.indexOf(rows[rows.length - 1]);
 				else if (e.key === 'Escape') {
 					e.preventDefault();
 					this.close();
 					return;
 				} else if (e.key.length === 1) {
-					next = buttons.findIndex(
-						(b, j) => j > i && b.textContent.toLowerCase().startsWith(e.key.toLowerCase())
-					);
-					if (next < 0)
-						next = buttons.findIndex((b) =>
-							b.textContent.toLowerCase().startsWith(e.key.toLowerCase())
-						);
+					const starts = (b: HTMLButtonElement) =>
+						b.textContent.toLowerCase().startsWith(e.key.toLowerCase());
+					const row = rows.find((b) => buttons.indexOf(b) > i && starts(b)) || rows.find(starts);
+					next = row ? buttons.indexOf(row) : -1;
 				}
 				if (next !== undefined && next >= 0) {
 					e.preventDefault();
@@ -203,9 +202,11 @@ export function defineKoeSelect() {
 			const actionMenu = options.some((o) => o.dataset.actions);
 			this.list.role = actionMenu ? 'menu' : 'listbox';
 			this.trigger.setAttribute('aria-haspopup', actionMenu ? 'menu' : 'listbox');
-			// The rebuilt list drops focus; the item that had it (by value) is refocused.
+			// The rebuilt list drops focus; the item that had it is refocused, by the row's
+			// stable key where the options carry one (a re-sort moves values), else by value.
 			const focused = this.shadowRoot!.activeElement as HTMLElement | null;
 			const focusedValue = focused?.dataset.value;
+			const focusedKey = focused?.dataset.key;
 			const focusedWave = focused?.classList.contains('wave');
 			this.items.replaceChildren(
 				...options.map((o) => {
@@ -222,6 +223,7 @@ export function defineKoeSelect() {
 						b.append(small);
 					}
 					b.dataset.value = o.value;
+					if (o.dataset.key) b.dataset.key = o.dataset.key;
 					b.setAttribute(actionMenu ? 'aria-checked' : 'aria-selected', String(o === selected));
 					b.onclick = () => {
 						this.value = o.value;
@@ -333,7 +335,9 @@ export function defineKoeSelect() {
 					.querySelector<HTMLButtonElement>(
 						focusedWave
 							? `.wave[data-value="${CSS.escape(focusedValue)}"]`
-							: `.item[data-value="${CSS.escape(focusedValue)}"]`
+							: focusedKey
+								? `.item[data-key="${CSS.escape(focusedKey)}"]`
+								: `.item[data-value="${CSS.escape(focusedValue)}"]`
 					)
 					?.focus();
 		}
@@ -383,9 +387,14 @@ export function defineKoeSelect() {
 				}
 				this.render();
 				// The input replaced (and detached) the name button, so focus it afresh from the
-				// rebuilt row; without this a keyboard user is dropped on the body.
+				// rebuilt row (by key: a rename can re-sort the rows); without this a keyboard
+				// user is dropped on the body.
 				this.list
-					.querySelector<HTMLButtonElement>(`.item[data-value="${CSS.escape(o.value)}"]`)
+					.querySelector<HTMLButtonElement>(
+						o.dataset.key
+							? `.item[data-key="${CSS.escape(o.dataset.key)}"]`
+							: `.item[data-value="${CSS.escape(o.value)}"]`
+					)
 					?.focus();
 			};
 			input.onkeydown = (e) => {
@@ -417,9 +426,9 @@ export function defineKoeSelect() {
 				(rect.bottom + box.height + 6 < innerHeight
 					? rect.bottom + 5
 					: Math.max(6, rect.top - box.height - 5)) + 'px';
-			const buttons = [...this.list.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')];
-			const selected = buttons.findIndex((b) => b.dataset.value === this.value);
-			buttons[direction < 0 ? buttons.length - 1 : Math.max(0, selected)]?.focus();
+			const rows = [...this.items.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')];
+			const selected = rows.findIndex((b) => b.dataset.value === this.value);
+			rows[direction < 0 ? rows.length - 1 : Math.max(0, selected)]?.focus();
 		}
 		close() {
 			this.list.hidePopover();

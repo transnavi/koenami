@@ -2154,7 +2154,7 @@ export function mountStudio() {
 	/* The recording menu's order. A choice is sorted by its stored index entry (the current
 	   and previous takes are snapshots that carry no date); a take without one is the
 	   session's own audio, which counts as the newest. */
-	const TAKE_SORTS: TakeSort[] = ['newest', 'oldest', 'name', 'longest'];
+	const TAKE_SORTS = new Set<string>(['newest', 'oldest', 'name', 'longest']);
 	let takeSort: TakeSort = 'newest';
 	function sortTakeChoices(choices: (Snapshot | Take)[]) {
 		const entry = (take: Snapshot | Take) =>
@@ -2172,10 +2172,10 @@ export function mountStudio() {
 	}
 	const takeSortControl = $<KoeSelectElement>('take-select').header!;
 	function setTakeSort(sort: TakeSort | undefined) {
-		takeSort = TAKE_SORTS.includes(sort!) ? sort! : 'newest';
+		takeSort = sort && TAKE_SORTS.has(sort) ? sort : 'newest';
 		for (const button of takeSortControl.querySelectorAll('button')) {
 			const on = button.dataset.sort === takeSort;
-			button.setAttribute('aria-pressed', String(on));
+			button.setAttribute('aria-checked', String(on));
 			button.part.toggle('pressed', on);
 		}
 	}
