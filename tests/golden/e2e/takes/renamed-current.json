@@ -9008,7 +9008,7 @@
       "voiced_fraction": 0.486
      }
     },
-    "name": "own-b.wav",
+    "name": "朝の声",
     "pcm": {
      "$typed": "Float32Array",
      "length": 76417,

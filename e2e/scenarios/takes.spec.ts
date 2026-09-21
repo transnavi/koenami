@@ -215,5 +215,25 @@ test.describe('recording history rows', () => {
 		);
 		await studio.tick(300);
 		await studio.golden('rename-vanished');
+		// A take that is neither current nor previous is restored from its stored snapshot,
+		// which must carry the new name too: a third upload pushes 昼の声 out of both slots.
+		await page.keyboard.press('Escape');
+		await page.locator(`${menu} button.trigger[aria-expanded="false"]`).waitFor();
+		await page.locator('#upload').setInputFiles(studio.audio('microphone.wav'));
+		await studio.until(app.ownName('microphone.wav') + ' && ' + app.analysed);
+		await studio.tick(300);
+		await openMenu();
+		const older = `${menu} .choice-row[aria-label="昼の声"]`;
+		await page.locator(`${older} .item`).hover();
+		await page.locator(`${older} .row-action[data-action="rename"]`).click();
+		await page.locator(renameInput).fill('夕方の声');
+		await page.keyboard.press('Enter');
+		await studio.until(
+			`!!document.getElementById('take-select').shadowRoot.querySelector('.choice-row[aria-label="夕方の声"]')`
+		);
+		await page.locator(`${menu} .choice-row[aria-label="夕方の声"] .item`).click();
+		await studio.until(app.ownName('夕方の声') + ' && ' + app.idle);
+		await studio.tick(300);
+		await studio.golden('renamed-stored-restored');
 	});
 });

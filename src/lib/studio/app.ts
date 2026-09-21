@@ -2402,14 +2402,19 @@ export function mountStudio() {
 		if (!take) return;
 		const id = (take as Snapshot).takeId || take.storedId;
 		if (!id) {
-			state.ownName = detail.name;
+			// Only the current take can lack an id (audio not saved yet); an id-less row
+			// elsewhere has nothing to rename and rolls back.
+			if (takeChoices.indexOf(take) === takeCurrentIndex) {
+				state.ownName = detail.name;
+				await persistTakes();
+			} else notify(t('rename.failed'), true);
 			renderTakeMenu();
-			await persistTakes();
 			return;
 		}
 		try {
+			// The stored snapshot carries the name too: a later restore reads it, not the index.
 			const saved = await TakeStore.updateRecording<Take>(id, (snapshot, metadata) => ({
-				snapshot,
+				snapshot: { ...snapshot, name: detail.name },
 				metadata: { ...metadata!, name: detail.name }
 			}));
 			if (!saved) throw 0;

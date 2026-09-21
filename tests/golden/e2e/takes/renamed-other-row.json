@@ -6014,7 +6014,7 @@
       "voiced_fraction": 0.765
      }
     },
-    "name": "own-a.wav",
+    "name": "昨日の声",
     "pcm": {
      "$typed": "Float32Array",
      "length": 107136,
@@ -9008,7 +9008,7 @@
       "voiced_fraction": 0.486
      }
     },
-    "name": "own-b.wav",
+    "name": "昼の声",
     "pcm": {
      "$typed": "Float32Array",
      "length": 76417,
