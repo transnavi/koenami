@@ -1018,21 +1018,10 @@
     "title": "録音履歴",
     "data-display-label": "録音 1"
    },
-   "value": "0",
+   "value": "1",
    "options": [
     {
      "value": "0",
-     "text": "録音 1",
-     "disabled": false,
-     "data": {
-      "data-detail": "0:01",
-      "data-actions": "play,rename,download,delete",
-      "data-key": "00000000-0000-4000-8000-000000000001",
-      "data-peaks": "<audio>"
-     }
-    },
-    {
-     "value": "1",
      "text": "録音 2",
      "disabled": false,
      "data": {
@@ -1041,11 +1030,22 @@
       "data-key": "00000000-0000-4000-8000-000000000002",
       "data-peaks": "<audio>"
      }
+    },
+    {
+     "value": "1",
+     "text": "録音 1",
+     "disabled": false,
+     "data": {
+      "data-detail": "0:01",
+      "data-actions": "play,rename,download,delete",
+      "data-key": "00000000-0000-4000-8000-000000000001",
+      "data-peaks": "<audio>"
+     }
     }
    ],
    "trigger": "録音 1",
    "expanded": "false",
-   "text": "録音 1 録音 2"
+   "text": "録音 2 録音 1"
   },
   "timer": {
    "followsPlayback": true

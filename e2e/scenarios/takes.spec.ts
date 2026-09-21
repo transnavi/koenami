@@ -62,6 +62,54 @@ test.describe('recording history rows', () => {
 		await studio.until(app.stopped + ' && ' + app.idle);
 	});
 
+	// The menu's sort control: each order, the checked row following the current take, and
+	// the choice surviving a reload through the saved view.
+	test('sorting the recording history: oldest, name, longest, and the order kept on reload', async ({
+		page,
+		studio
+	}) => {
+		const names = () =>
+			studio.until(
+				"window.voiceApp.state.takes.length === 3 && document.getElementById('take-select').options.length === 3"
+			);
+		const sortBy = async (order: string) => {
+			await page.locator(`#take-select [part~="header-button"][data-sort="${order}"]`).click();
+			await studio.tick(100);
+		};
+		await studio.open('/ja/');
+		await studio.until(app.ready);
+		// The paused clock would date every take alike; a second passes between them.
+		for (const file of ['own-a.wav', 'own-b.wav', 'microphone.wav']) {
+			await studio.tick(1000);
+			await page.locator('#upload').setInputFiles(studio.audio(file));
+			await studio.until(app.ownName(file) + ' && ' + app.analysed);
+		}
+		await names();
+		await studio.tick(300);
+		await page.locator('#take-select button.trigger').click();
+		await studio.tick(100);
+		await studio.golden('sort-newest');
+		await sortBy('oldest');
+		await studio.golden('sort-oldest');
+		await sortBy('name');
+		await studio.golden('sort-name');
+		await sortBy('longest');
+		await studio.golden('sort-longest');
+		// The checked row follows the current take wherever the order puts it.
+		await page.locator('#take-select .item[data-value="0"]').click();
+		await studio.until(app.ownName('own-a.wav') + ' && ' + app.idle);
+		await page.locator('#take-select button.trigger').click();
+		await studio.tick(1100);
+		await studio.golden('sort-longest-other-current');
+		await page.keyboard.press('Escape');
+		await studio.open('/ja/');
+		await studio.until(app.ready);
+		await names();
+		await page.locator('#take-select button.trigger').click();
+		await studio.tick(100);
+		await studio.golden('sort-kept-on-reload');
+	});
+
 	test('a take stored before the previews existed gets its waveform on the next visit', async ({
 		page,
 		studio

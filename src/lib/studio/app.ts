@@ -23,7 +23,7 @@ import { SignalView, type Side, type SignalMode } from '$lib/signals';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
-import type { Clip, Detail, PCM, Snapshot, Take, View, Words } from './types';
+import type { Clip, Detail, PCM, Snapshot, Take, TakeSort, View, Words } from './types';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T,
 	esc = (s: string | number | null | undefined) =>
@@ -1934,6 +1934,7 @@ export function mountStudio() {
 		$('language').replaceChildren(...catalog.languages.map((l) => new Option(l.label, l.id)));
 		const view = readView();
 		setLiveShapeWindow(view?.liveShapeSeconds);
+		setTakeSort(view?.takeSort);
 		const requested = location.pathname.split('/')[1] || 'ja',
 			lang = catalog.languages.some((l) => l.id === requested) ? requested : 'ja';
 		const [saved, storedRefs, index] = await Promise.all([
@@ -2150,6 +2151,41 @@ export function mountStudio() {
 	}
 
 	let takeChoices: (Snapshot | Take)[] = [];
+	/* The recording menu's order. A choice is sorted by its stored index entry (the current
+	   and previous takes are snapshots that carry no date); a take without one is the
+	   session's own audio, which counts as the newest. */
+	const TAKE_SORTS: TakeSort[] = ['newest', 'oldest', 'name', 'longest'];
+	let takeSort: TakeSort = 'newest';
+	function sortTakeChoices(choices: (Snapshot | Take)[]) {
+		const entry = (take: Snapshot | Take) =>
+			state.takes.find((t) => t.id === ((take as Snapshot).takeId || take.storedId));
+		const date = (take: Snapshot | Take) => entry(take)?.date ?? '\uffff';
+		const length = (take: Snapshot | Take) =>
+			(take as Snapshot).detail?.duration ?? (take as Take).duration ?? 0;
+		const by: Record<TakeSort, (a: Snapshot | Take, b: Snapshot | Take) => number> = {
+			newest: (a, b) => date(b).localeCompare(date(a)),
+			oldest: (a, b) => date(a).localeCompare(date(b)),
+			name: (a, b) => a.name.localeCompare(b.name, uiLang, { numeric: true }),
+			longest: (a, b) => length(b) - length(a)
+		};
+		return choices.slice().sort((a, b) => by[takeSort](a, b) || by.newest(a, b));
+	}
+	const takeSortControl = $<KoeSelectElement>('take-select').header!;
+	function setTakeSort(sort: TakeSort | undefined) {
+		takeSort = TAKE_SORTS.includes(sort!) ? sort! : 'newest';
+		for (const button of takeSortControl.querySelectorAll('button')) {
+			const on = button.dataset.sort === takeSort;
+			button.setAttribute('aria-pressed', String(on));
+			button.part.toggle('pressed', on);
+		}
+	}
+	takeSortControl.addEventListener('click', (e) => {
+		const sort = (e.target as HTMLElement).closest('button')?.dataset.sort as TakeSort | undefined;
+		if (!sort || sort === takeSort) return;
+		setTakeSort(sort);
+		renderTakeMenu();
+		saveView();
+	});
 	/* 64 bucket maxima of the samples, scaled to the loudest bucket, for the take rows' preview. */
 	const wavePeaks = (pcm: PCM | null | undefined, buckets = 64): number[] | null => {
 		if (!pcm?.length) return null;
@@ -2206,7 +2242,8 @@ export function mountStudio() {
 			seen.add(key);
 			takeChoices.push(take);
 		}
-		select.replaceChildren();
+		takeChoices = sortTakeChoices(takeChoices);
+		for (const option of select.options) option.remove();
 		takeChoices.forEach((t, i) => {
 			const option = new Option(t.name, String(i));
 			option.dataset.detail = clock((t as Snapshot).detail?.duration || (t as Take).duration);
@@ -2221,7 +2258,7 @@ export function mountStudio() {
 		if (current?.detail?.analysisPending && !state.analyzing.has(current.takeId!))
 			select.add(new Option(t('takes.retry'), 'retry'));
 		select.disabled = state.busy || !takeChoices.length;
-		select.value = current?.pcm ? '0' : '';
+		select.value = current?.pcm ? String(takeChoices.indexOf(current)) : '';
 		select.setAttribute('data-display-label', current?.name || t('takes.menu'));
 		void backfillPeaks();
 	}
@@ -2571,7 +2608,8 @@ export function mountStudio() {
 					signal: signal.mode,
 					signalSource: signal.source,
 					overlay: signal.overlay,
-					liveShapeSeconds: map.liveShapeSeconds
+					liveShapeSeconds: map.liveShapeSeconds,
+					...(takeSort !== 'newest' && { takeSort })
 				})
 			);
 		} catch {}
