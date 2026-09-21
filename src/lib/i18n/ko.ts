@@ -189,7 +189,6 @@ export default {
 	'info.method': '측정 방법과 출처 (일본어) ↗',
 	'info.references': '참고 문헌 (일본어) ↗',
 	'info.source': '소스 코드 (GitHub) ↗',
-	'info.colors': '색상 참고:',
 
 	'rename.failed': '이름을 바꾸지 못했습니다. 다시 시도해 주세요.',
 	'report.heading': '비교',

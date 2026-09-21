@@ -185,7 +185,6 @@ export default {
 	'info.method': '测量方法与来源（日文） ↗',
 	'info.references': '参考文献（日文） ↗',
 	'info.source': '源代码（GitHub） ↗',
-	'info.colors': '配色参考：',
 
 	'rename.failed': '无法重命名，请重试。',
 	'report.heading': '对比',
