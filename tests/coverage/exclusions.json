@@ -116,7 +116,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 10,
+			"line": 11,
 			"column": 8,
 			"code": "canvas.ownerDocument?.defaultView?.devicePixelRatio || 1",
 			"reason": "constant in the test browser: Chromium reports devicePixelRatio 1"
@@ -124,7 +124,31 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
+			"line": 35,
+			"column": 1,
+			"code": "if (path) path.setAttribute('d', playing ? 'M5 5h10v10H5z' :",
+			"reason": "the wave button always contains a glyph path; the guard is for a caller without one"
+		},
+		{
+			"file": "src/lib/koe-select.ts",
+			"kind": "branch",
 			"line": 39,
+			"column": 2,
+			"code": "playing ? wave.dataset.stopLabel || '' : wave.dataset.playLa",
+			"reason": "the wave button always carries both labels (set in render); the empty fallbacks are unused"
+		},
+		{
+			"file": "src/lib/koe-select.ts",
+			"kind": "branch",
+			"line": 43,
+			"column": 1,
+			"code": "if (canvas && peaks) queueMicrotask(() => drawWave(canvas, p",
+			"reason": "the wave button always holds a canvas and its peaks; the guard is for a button built without them"
+		},
+		{
+			"file": "src/lib/koe-select.ts",
+			"kind": "branch",
+			"line": 60,
 			"column": 1,
 			"code": "if (customElements.get('koe-select')) return;",
 			"reason": "a second registration happens only when a page mounts twice in one document (HMR in vite dev); every route is its own document, and the suite loads each page afresh"
@@ -132,7 +156,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 39,
+			"line": 60,
 			"column": 39,
 			"code": "return;",
 			"reason": "a second registration happens only when a page mounts twice in one document (HMR in vite dev); every route is its own document, and the suite loads each page afresh"
@@ -140,7 +164,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 73,
+			"line": 95,
 			"column": 4,
 			"code": "this.list.matches(':popover-open') ? this.close() : this.ope",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -148,7 +172,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 85,
+			"line": 107,
 			"column": 4,
 			"code": "if ((e.target as HTMLElement).tagName === 'INPUT') return;",
 			"reason": "the rename input stops keydown propagation, so the list handler never sees an INPUT target"
@@ -156,7 +180,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 85,
+			"line": 107,
 			"column": 55,
 			"code": "return;",
 			"reason": "the rename input stops keydown propagation, so the list handler never sees an INPUT target"
@@ -164,7 +188,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "function",
-			"line": 122,
+			"line": 144,
 			"column": 22,
 			"code": "() {",
 			"reason": "koe-select is never removed from the document, its selectedOptions getter has no caller, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -172,7 +196,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 123,
+			"line": 145,
 			"column": 3,
 			"code": "this.observer?.disconnect();",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -180,7 +204,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 130,
+			"line": 152,
 			"column": 4,
 			"code": "this._value ??",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -188,7 +212,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 151,
+			"line": 173,
 			"column": 3,
 			"code": "if (!this.trigger) return;",
 			"reason": "render() runs after the shadow root is built"
@@ -196,7 +220,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 151,
+			"line": 173,
 			"column": 22,
 			"code": "return;",
 			"reason": "render() runs after the shadow root is built"
@@ -204,7 +228,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 154,
+			"line": 176,
 			"column": 3,
 			"code": "if (this._editing) return;",
 			"reason": "a render is never requested while a rename is open; finish() clears _editing before it re-renders"
@@ -212,7 +236,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 154,
+			"line": 176,
 			"column": 22,
 			"code": "return;",
 			"reason": "a render is never requested while a rename is open; finish() clears _editing before it re-renders"
@@ -220,7 +244,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 166,
+			"line": 188,
 			"column": 4,
 			"code": "this.getAttribute('aria-label') || this.getAttribute('title'",
 			"reason": "koe-select is never removed from the document, every instance carries an aria-label, every action name is one of the two known ones, and value falls back to the first option only for a select with options"
@@ -228,7 +252,31 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 270,
+			"line": 243,
+			"column": 28,
+			"code": "o.dataset.key || o.value",
+			"reason": "take options always carry a data-key (renderTakeMenu sets it); the value fallback is for options without one"
+		},
+		{
+			"file": "src/lib/koe-select.ts",
+			"kind": "branch",
+			"line": 322,
+			"column": 6,
+			"code": "focusedWave",
+			"reason": "restoring focus to a wave needs a render() while a wave button holds focus; replay repaints through applyRowPlaying without a full render, so the suite only re-renders with the name button focused (the rename case)"
+		},
+		{
+			"file": "src/lib/koe-select.ts",
+			"kind": "branch",
+			"line": 340,
+			"column": 3,
+			"code": "if (wave) applyRowPlaying(wave, playing, progress);",
+			"reason": "setRowPlaying is called while the menu is open, so the wave button is present; the state is also remembered for the next render"
+		},
+		{
+			"file": "src/lib/koe-select.ts",
+			"kind": "branch",
+			"line": 347,
 			"column": 3,
 			"code": "if (this._editing) return;",
 			"reason": "editName is entered only from a name click on the idle menu; a second entry while editing cannot occur"
@@ -236,15 +284,15 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 270,
+			"line": 347,
 			"column": 22,
 			"code": "return;",
-			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
+			"reason": "editName is entered only from a name click on the idle menu; a second entry while editing cannot occur"
 		},
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 272,
+			"line": 349,
 			"column": 3,
 			"code": "if (!row) return;",
 			"reason": "the name button is always within its .choice-row"
@@ -252,7 +300,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 272,
+			"line": 349,
 			"column": 13,
 			"code": "return;",
 			"reason": "the name button is always within its .choice-row"
@@ -260,7 +308,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 291,
+			"line": 368,
 			"column": 38,
 			"code": "o.dataset.key || ''",
 			"reason": "take options always carry a data-key (renderTakeMenu sets it); the empty fallback is for options without one"
@@ -268,7 +316,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 307,
+			"line": 384,
 			"column": 11,
 			"code": "if (e.key === 'Escape') {",
 			"reason": "the rename input commits on Enter and cancels on Escape; other keys are the browser's, and text is typed through fill without keydown"
@@ -276,7 +324,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "branch",
-			"line": 321,
+			"line": 398,
 			"column": 3,
 			"code": "if (this.disabled) return;",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -284,7 +332,7 @@
 		{
 			"file": "src/lib/koe-select.ts",
 			"kind": "statement",
-			"line": 321,
+			"line": 398,
 			"column": 22,
 			"code": "return;",
 			"reason": "requires an event the browser did not deliver in the recorded runs: clicks on disabled buttons are dropped, the popover closes on the mousedown that precedes a second trigger click, keyboard focus cannot land on a disabled button, and page.goto from the harness did not dispatch beforeunload while a recording was running (record.spec left-while-recording)"
@@ -1724,22 +1772,6 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 1379,
-			"column": 2,
-			"code": "if (liveBusy || !state.recording || !recordContext || sample",
-			"reason": "the first live measurement tick sees half a second of audio in every run, since audio starts before the fake clock advances"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "statement",
-			"line": 1380,
-			"column": 3,
-			"code": "return;",
-			"reason": "internal consistency check between a stored snapshot and its own take id; storage writes both together, so they never disagree"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "branch",
 			"line": 1395,
 			"column": 3,
 			"code": "if (generation !== liveGeneration || !state.recording) retur",
@@ -2172,23 +2204,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2228,
-			"column": 17,
-			"code": "i >= 0 ? i : null",
-			"reason": "the replaying take is always among the menu's choices: deleting or restoring it stops the replay first"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "branch",
 			"line": 2229,
-			"column": 3,
-			"code": "if (i >= 0) setReplayIcon(i, true);",
-			"reason": "the replay icon is restored on the row of the take that is playing; a re-render while nothing replays has no row to mark"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "branch",
-			"line": 2234,
 			"column": 2,
 			"code": "if (state.busy) return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -2196,7 +2212,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2234,
+			"line": 2229,
 			"column": 18,
 			"code": "return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -2204,7 +2220,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2245,
+			"line": 2240,
 			"column": 23,
 			"code": "current || null",
 			"reason": "restoring a take always has a current snapshot to keep as previous"
@@ -2212,7 +2228,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2252,
+			"line": 2247,
 			"column": 2,
 			"code": "if (state.busy || state.recording || !id) return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -2220,7 +2236,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2252,
+			"line": 2247,
 			"column": 44,
 			"code": "return;",
 			"reason": "guard for a state the interface never produces: the control that would call this is disabled while the app is busy, recording or loading a library"
@@ -2228,7 +2244,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2260,
+			"line": 2255,
 			"column": 3,
 			"code": "if (recordSnapshot?.takeId === id) recordSnapshot = null;",
 			"reason": "a take cannot be deleted while it is the snapshot of a recording in progress: deletion is refused while recording"
@@ -2236,7 +2252,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2260,
+			"line": 2255,
 			"column": 38,
 			"code": "recordSnapshot = null;",
 			"reason": "a take cannot be deleted while it is the snapshot of a recording in progress: deletion is refused while recording"
@@ -2244,7 +2260,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2294,
+			"line": 2289,
 			"column": 2,
 			"code": "if (value === '') return;",
 			"reason": "the take menu lists takes only, never an empty option"
@@ -2252,7 +2268,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2294,
+			"line": 2289,
 			"column": 20,
 			"code": "return;",
 			"reason": "the take menu lists takes only, never an empty option"
@@ -2260,7 +2276,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2300,
+			"line": 2295,
 			"column": 2,
 			"code": "if (!chosen) return;",
 			"reason": "menu values are indices into the list rendered at the same time"
@@ -2268,7 +2284,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2300,
+			"line": 2295,
 			"column": 15,
 			"code": "return;",
 			"reason": "menu values are indices into the list rendered at the same time"
@@ -2276,7 +2292,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2310,
+			"line": 2305,
 			"column": 2,
 			"code": "if (!chosen) return;",
 			"reason": "menu values are indices into the list rendered at the same time"
@@ -2284,7 +2300,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2310,
+			"line": 2305,
 			"column": 15,
 			"code": "return;",
 			"reason": "menu values are indices into the list rendered at the same time"
@@ -2292,7 +2308,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2317,
+			"line": 2312,
 			"column": 19,
 			"code": "chosen.pcm",
 			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
@@ -2300,7 +2316,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2320,
+			"line": 2315,
 			"column": 4,
 			"code": "if (!source?.pcm) throw new Error(t('error.take_load'));",
 			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
@@ -2308,7 +2324,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2320,
+			"line": 2315,
 			"column": 22,
 			"code": "throw new Error(t('error.take_load'));",
 			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
@@ -2316,7 +2332,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2323,
+			"line": 2318,
 			"column": 4,
 			"code": "notify((error as Error).message, true);",
 			"reason": "a row's take is read from the database that listed it; the read fails only when the database is gone, and then the menu is empty"
@@ -2324,7 +2340,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2324,
+			"line": 2319,
 			"column": 4,
 			"code": "return;",
 			"reason": "restoreCamera runs only after a recording, which always records the camera first"
@@ -2332,55 +2348,23 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2342,
-			"column": 2,
-			"code": "take?.storedId || (take as Snapshot)?.takeId || 'mem:' + (ta",
-			"reason": "the replay key falls back to the samples' length only for a take that is neither stored nor a saved take, which the menu never lists"
+			"line": 2341,
+			"column": 12,
+			"code": "take?.name || ''",
+			"reason": "the replay key falls back to the take's name only for a take that is neither stored nor a saved take, which the menu never lists"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2342,
-			"column": 60,
+			"line": 2341,
+			"column": 39,
 			"code": "take?.pcm?.length || 0",
 			"reason": "the replay key falls back to the samples' length only for a take that is neither stored nor a saved take, which the menu never lists"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2347,
-			"column": 2,
-			"code": "if (!button) return;",
-			"reason": "the replay icon is set on a row of the open menu, which lists the take that plays"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "statement",
-			"line": 2347,
-			"column": 15,
-			"code": "return;",
-			"reason": "the replay icon is set on a row of the open menu, which lists the take that plays"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "branch",
-			"line": 2349,
-			"column": 2,
-			"code": "if (path) path.setAttribute('d', playing ? 'M5 4h3v12H5zM12 ",
-			"reason": "every row's play button carries its icon path"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "branch",
-			"line": 2355,
-			"column": 10,
-			"code": "button.closest('.choice-row')?.getAttribute('aria-label') ||",
-			"reason": "every row's group carries the take's name as its label"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "branch",
-			"line": 2384,
+			"line": 2371,
 			"column": 3,
 			"code": "if (replayAudio !== audio) return;",
 			"reason": "no replay in the suite is superseded by a newer one before it ends, so onended always still owns its element"
@@ -2388,15 +2372,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2384,
+			"line": 2371,
 			"column": 30,
 			"code": "return;",
-			"reason": "play() of a WAV the app just encoded from its own samples does not reject in the suite, so the catch never runs"
+			"reason": "no replay in the suite is superseded by a newer one before it ends, so onended always still owns its element"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 2390,
+			"line": 2376,
 			"column": 21,
 			"code": "(e) => {",
 			"reason": "play() of a WAV the app just encoded from its own samples does not reject in the suite, so the catch never runs"
@@ -2404,7 +2388,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2394,
+			"line": 2380,
 			"column": 3,
 			"code": "if ((e as DOMException).name === 'AbortError' || replayAudio",
 			"reason": "play() of a WAV the app just encoded from its own samples does not reject in the suite, so the catch never runs"
@@ -2412,7 +2396,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2394,
+			"line": 2380,
 			"column": 3,
 			"code": "if ((e as DOMException).name === 'AbortError' || replayAudio",
 			"reason": "play() of a WAV the app just encoded from its own samples does not reject in the suite, so the catch never runs"
@@ -2420,7 +2404,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2394,
+			"line": 2380,
 			"column": 8,
 			"code": "e as DOMException).name === 'AbortError' || replayAudio !== ",
 			"reason": "play() of a WAV the app just encoded from its own samples does not reject in the suite, so the catch never runs"
@@ -2428,7 +2412,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2394,
+			"line": 2380,
 			"column": 75,
 			"code": "return;",
 			"reason": "play() of a WAV the app just encoded from its own samples does not reject in the suite, so the catch never runs"
@@ -2436,7 +2420,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2395,
+			"line": 2381,
 			"column": 3,
 			"code": "stopReplay();",
 			"reason": "play() of a WAV the app just encoded from its own samples does not reject; the handler guards the autoplay policy, which the suite disables"
@@ -2444,7 +2428,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2396,
+			"line": 2382,
 			"column": 3,
 			"code": "URL.revokeObjectURL(url);",
 			"reason": "play() of a WAV the app just encoded from its own samples does not reject; the handler guards the autoplay policy, which the suite disables"
@@ -2452,7 +2436,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2397,
+			"line": 2383,
 			"column": 3,
 			"code": "notify(t('error.replay'), true);",
 			"reason": "play() of a WAV the app just encoded from its own samples does not reject; the handler guards the autoplay policy, which the suite disables"
@@ -2460,7 +2444,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2406,
+			"line": 2392,
 			"column": 2,
 			"code": "if (state.recording || state.busy) return;",
 			"reason": "the menu disables rename while recording and is itself disabled while busy, so a rename never reaches the handler in either state; the guard is defence in depth"
@@ -2468,7 +2452,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2406,
+			"line": 2392,
 			"column": 37,
 			"code": "return;",
 			"reason": "the menu disables rename while recording and is itself disabled while busy, so a rename never reaches the handler in either state; the guard is defence in depth"
@@ -2476,23 +2460,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2409,
+			"line": 2395,
 			"column": 3,
-			"code": "takeChoices.find((c) => ((c as Snapshot).takeId || (c as Tak",
+			"code": "takeChoices.find((c) => takeKeyOf(c) === detail.key) ||",
 			"reason": "the key from data-key always matches a take in the current list; the positional fallback is for a key that no longer resolves"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2409,
-			"column": 29,
-			"code": "c as Snapshot).takeId || (c as Take).storedId",
-			"reason": "a take carries one identity form (a recording's takeId, a stored take's storedId), so only one side of the lookup key is taken"
-		},
-		{
-			"file": "src/lib/studio/app.ts",
-			"kind": "branch",
-			"line": 2411,
+			"line": 2397,
 			"column": 2,
 			"code": "if (!take) return;",
 			"reason": "the dialog is opened from a row, which always names a take"
@@ -2500,7 +2476,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2411,
+			"line": 2397,
 			"column": 13,
 			"code": "return;",
 			"reason": "the dialog is opened from a row, which always names a take"
@@ -2508,7 +2484,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2412,
+			"line": 2398,
 			"column": 14,
 			"code": "take as Snapshot).takeId || take.storedId",
 			"reason": "a take without an id is the current unsaved take, which the menu does not offer for renaming: it lists stored takes and the retry"
@@ -2516,7 +2492,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2413,
+			"line": 2399,
 			"column": 2,
 			"code": "if (!id) {",
 			"reason": "a take without an id is the current unsaved take, which the menu does not offer for renaming: it lists stored takes and the retry"
@@ -2524,7 +2500,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2414,
+			"line": 2400,
 			"column": 3,
 			"code": "state.ownName = detail.name;",
 			"reason": "every take in the menu carries a stored id (a recorded or imported take); the memory-only rename path is unreachable"
@@ -2532,7 +2508,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2415,
+			"line": 2401,
 			"column": 3,
 			"code": "renderTakeMenu();",
 			"reason": "a take without an id is the current unsaved take, which the menu does not offer for renaming: it lists stored takes and the retry"
@@ -2540,7 +2516,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2416,
+			"line": 2402,
 			"column": 3,
 			"code": "await persistTakes();",
 			"reason": "a take without an id is the current unsaved take, which the menu does not offer for renaming: it lists stored takes and the retry"
@@ -2548,15 +2524,15 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2417,
+			"line": 2403,
 			"column": 3,
 			"code": "return;",
-			"reason": "the dialog is opened from a row, which always names a take"
+			"reason": "the menu disables rename while recording and is itself disabled while busy, so a rename never reaches the handler in either state; the guard is defence in depth"
 		},
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2426,
+			"line": 2412,
 			"column": 3,
 			"code": "if (state.ownTakeId === id) {",
 			"reason": "inline rename edits the selected row, which is the current take, so the renamed id is always the current take's"
@@ -2564,7 +2540,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2441,
+			"line": 2427,
 			"column": 3,
 			"code": "if (!t.stored) continue;",
 			"reason": "every entry of the take index is saved with stored:true; a take whose storage failed never enters the index"
@@ -2572,7 +2548,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2441,
+			"line": 2427,
 			"column": 18,
 			"code": "continue;",
 			"reason": "every entry of the take index is saved with stored:true; a take whose storage failed never enters the index"
@@ -2580,7 +2556,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 2442,
+			"line": 2428,
 			"column": 85,
 			"code": "() => null);",
 			"reason": "a stored take's record is read from the database that listed it; the read rejects only when the database is gone, and then the index is empty too"
@@ -2588,7 +2564,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2443,
+			"line": 2429,
 			"column": 3,
 			"code": "if (rec?.pcm) out.push({ ...t, pcm: rec.pcm });",
 			"reason": "a previous take without samples or a URL cannot exist: takes are stored with their samples"
@@ -2596,7 +2572,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2460,
+			"line": 2446,
 			"column": 16,
 			"code": "t.name || 'take'",
 			"reason": "takes are saved with the file name or the recording's generated name, never without one"
@@ -2604,7 +2580,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 2541,
+			"line": 2527,
 			"column": 66,
 			"code": "() => state.imported);",
 			"reason": "loadImported fails only when the index fetch fails, which then also stops the import before this point"
@@ -2612,7 +2588,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2564,
+			"line": 2550,
 			"column": 2,
 			"code": "if (!sessionReady) return;",
 			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
@@ -2620,7 +2596,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2564,
+			"line": 2550,
 			"column": 21,
 			"code": "return;",
 			"reason": "initialisation completes before the first one-second save tick in every run, so the interval never fires while the session is not ready"
@@ -2628,7 +2604,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2603,
+			"line": 2589,
 			"column": 2,
 			"code": "if (!recordCamera) return;",
 			"reason": "restoreCamera runs only after a recording, which always records the camera first"
@@ -2636,7 +2612,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2603,
+			"line": 2589,
 			"column": 21,
 			"code": "return;",
 			"reason": "restoreCamera runs only after a recording, which always records the camera first"
@@ -2644,7 +2620,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2620,
+			"line": 2606,
 			"column": 24,
 			"code": "m.features || {}",
 			"reason": "defensive fallback for a record without this field; neither the analyzer's responses nor the stored records omit it"
@@ -2652,7 +2628,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2646,
+			"line": 2632,
 			"column": 35,
 			"code": "gate.value ? t('verdict.gate', gate) : gate.label",
 			"reason": "gateFailure is called with a measurement only, so the failure always names a check with its value"
@@ -2660,7 +2636,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2661,
+			"line": 2647,
 			"column": 10,
 			"code": "state.lang === 'lab' ? 'en' : state.lang",
 			"reason": "the research library has no human speakers, so the scorer is unavailable there and the share button stays disabled"
@@ -2668,7 +2644,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2662,
+			"line": 2648,
 			"column": 2,
 			"code": "if (!scorer?.available) return [];",
 			"reason": "renderHistory runs from the share handler, which needs a verdict, so the scorer is available"
@@ -2676,7 +2652,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2662,
+			"line": 2648,
 			"column": 26,
 			"code": "return [];",
 			"reason": "renderHistory runs from the share handler, which needs a verdict, so the scorer is available"
@@ -2684,7 +2660,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2690,
+			"line": 2676,
 			"column": 41,
 			"code": "rows.length > 1 ? i / (rows.length - 1) : 0.5",
 			"reason": "the history section returns before drawing with fewer than two rows"
@@ -2692,7 +2668,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "function",
-			"line": 2713,
+			"line": 2699,
 			"column": 49,
 			"code": "(e) => notify(e.message, true));",
 			"reason": "a listed history take was read from the database moments earlier; restoring it fails only when the database is gone"
@@ -2700,7 +2676,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2729,
+			"line": 2715,
 			"column": 3,
 			"code": "s?.available",
 			"reason": "the help button sits in the share dialog, which opens only with a verdict, so the scorer is available"
@@ -2708,7 +2684,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2752,
+			"line": 2738,
 			"column": 2,
 			"code": "if (!scored) return;",
 			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
@@ -2716,7 +2692,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2752,
+			"line": 2738,
 			"column": 15,
 			"code": "return;",
 			"reason": "the share button is disabled without a verdict and the readout's click is forwarded to it, so the handler never runs without a result (clicks on disabled buttons are dropped)"
@@ -2724,7 +2700,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2754,
+			"line": 2740,
 			"column": 10,
 			"code": "state.lang === 'lab' ? 'en' : state.lang",
 			"reason": "the research library has no human speakers, so the scorer is unavailable there and the share button stays disabled"
@@ -2732,7 +2708,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2755,
+			"line": 2741,
 			"column": 17,
 			"code": "state.ownTakeId || state.ownId || state.ownName",
 			"reason": "the age estimate is keyed by the take's stored id, which every analysed take has"
@@ -2740,7 +2716,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2760,
+			"line": 2746,
 			"column": 5,
 			"code": "cachedAge && $<HTMLInputElement>('share-age-include').checke",
 			"reason": "the include box is unchecked whenever a fresh estimate arrives, so an estimate cached with the box still checked does not occur"
@@ -2748,7 +2724,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2829,
+			"line": 2815,
 			"column": 4,
 			"code": "if (!$<HTMLDialogElement>('share-dialog').open) return;",
 			"reason": "the share image renders while the dialog is open; closing it before the image arrives is covered (closed-before-image) through the earlier return"
@@ -2756,7 +2732,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2829,
+			"line": 2815,
 			"column": 52,
 			"code": "return;",
 			"reason": "the share image renders while the dialog is open; closing it before the image arrives is covered (closed-before-image) through the earlier return"
@@ -2764,7 +2740,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2831,
+			"line": 2817,
 			"column": 4,
 			"code": "if (img.src) URL.revokeObjectURL(img.src);",
 			"reason": "the first render of a dialog has no image to revoke; every later render follows a first"
@@ -2772,7 +2748,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2834,
+			"line": 2820,
 			"column": 4,
 			"code": "$('share-status').textContent = (e as Error).message;",
 			"reason": "the card renders from the app's own SVG; a failure of that render is injected in share.spec.ts (image-failed) through the status text of the earlier handler"
@@ -2780,7 +2756,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2839,
+			"line": 2825,
 			"column": 3,
 			"code": "if (!state.ownPCM) return;",
 			"reason": "the age is estimated from the dialog, which opens only with own audio loaded"
@@ -2788,7 +2764,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "statement",
-			"line": 2839,
+			"line": 2825,
 			"column": 22,
 			"code": "return;",
 			"reason": "the age is estimated from the dialog, which opens only with own audio loaded"
@@ -2796,7 +2772,7 @@
 		{
 			"file": "src/lib/studio/app.ts",
 			"kind": "branch",
-			"line": 2841,
+			"line": 2827,
 			"column": 10,
 			"code": "r",
 			"reason": "the age is estimated from the dialog, which opens only with own audio loaded"

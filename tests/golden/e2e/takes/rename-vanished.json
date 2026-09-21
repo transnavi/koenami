@@ -1046,10 +1046,8 @@
    "trigger": "昨日の声",
    "expanded": "true",
    "rowActions": [
-    "0:play:再生",
     "0:download:ダウンロード",
     "0:delete:削除",
-    "1:play:再生",
     "1:download:ダウンロード",
     "1:delete:削除"
    ],
