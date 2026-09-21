@@ -49,9 +49,9 @@ test.describe('before the scripts run', () => {
 		await studio.open('/ja/', undefined, { ready: false });
 		await page.locator('#search').waitFor();
 		await studio.tick(500);
-		// The page errors are left out of this golden: the pinned tree's failed module
-		// script is silent, while Kit's bootstrap imports its entry and reports the failed
-		// import as an unhandled rejection. Neither reaches the visitor; the page is the same.
+		// The one page error names the failed import by its URL, which carries the build's
+		// content hash and changes every build; the golden leaves it out. The screen and the
+		// rest of the projection show the static page is intact.
 		await studio.golden('scripts-failed', { extra: { errors: undefined } });
 		await studio.screen('scripts-failed');
 	});

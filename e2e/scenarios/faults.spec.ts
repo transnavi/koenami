@@ -167,6 +167,36 @@ test.describe('server and storage faults', () => {
 		await studio.golden('delete-failed');
 	});
 
+	test('an interrupted A/B start-up cancels instead of skipping ahead', async ({
+		page,
+		studio
+	}) => {
+		await studio.open('/ja/', async (p) =>
+			p.addInitScript(() => {
+				const play = HTMLMediaElement.prototype.play;
+				HTMLMediaElement.prototype.play = function () {
+					return (window as unknown as { __abortPlay?: boolean }).__abortPlay
+						? Promise.reject(new DOMException('interrupted', 'AbortError'))
+						: play.call(this);
+				};
+			})
+		);
+		await studio.until(app.ready);
+		await page.locator('.sample-row[data-id="common_voice_ja_36363165"]').click();
+		await studio.until(app.selected('common_voice_ja_36363165'));
+		await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+		await studio.until(app.idle);
+		// The reference's play() is cut short the moment A/B starts, so the comparison cancels
+		// rather than carrying on into the own phase, and nothing is reported.
+		await page.evaluate('window.__abortPlay = true');
+		await page.locator('#compare-ab').click();
+		await studio.until(
+			'document.getElementById("compare-ab").getAttribute("aria-pressed") === "false"'
+		);
+		await studio.tick(300);
+		await studio.golden('ab-start-interrupted');
+	});
+
 	test('storage that cannot open', async ({ page, studio }) => {
 		await studio.open('/ja/', async (p) =>
 			p.addInitScript(() => {

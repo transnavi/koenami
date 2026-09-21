@@ -136,60 +136,7 @@ const cache = () => {
 };
 const cached = () => [...(cache().store.keys() ?? [])].map((u) => u.replace(ORIGIN, '')).sort();
 
-const tree = process.env.KOENAMI_TREE || 'old';
-describe.skipIf(tree === 'new')('service worker', () => {
-	// @ts-expect-error the worker registers its listeners and exports nothing
-	beforeAll(() => import('@app/public/sw'));
-	it('caches the shell, hashed assets and pages, serves them offline, and prunes what no page references', async () => {
-		const log: unknown[] = [['handlers', Object.keys(handlers).sort()]];
-		await lifecycle('install');
-		log.push(['installed', cached(), skipWaiting.mock.calls.length]);
-		await lifecycle('activate');
-		log.push(['activated', [...caches.keys()], claim.mock.calls.length]);
-		const requests: [string, Init?][] = [
-			['/api/analyze', { method: 'POST' }],
-			['https://elsewhere.test/x'],
-			['/api/catalog'],
-			['/samples/a.wav'],
-			['/assets/app-abc.js'],
-			['/assets/app-abc.js'],
-			['/assets/old-zzz.js'],
-			['/assets/missing.js'],
-			['/ja/?utm=1', { mode: 'navigate' }],
-			['/guide.html', { mode: 'navigate' }],
-			['/site.webmanifest'],
-			['/robots.txt']
-		];
-		for (const [url, init] of requests) {
-			if (url === '/guide.html') cache().phantom.push(abs('/ghost.html'));
-			log.push([
-				init?.method || 'GET',
-				url,
-				init?.mode || 'cors',
-				await request(url, init),
-				cached(),
-				fetchStub.mock.calls.length
-			]);
-		}
-		online = false;
-		for (const [url, init] of [
-			['/en/', { mode: 'navigate' }],
-			['/nope.html', { mode: 'navigate' }],
-			['/site.webmanifest?v=2'],
-			['/assets/app-abc.js'],
-			['/assets/never.js']
-		] as [string, Init?][]) {
-			log.push(['offline', url, init?.mode || 'cors', await request(url, init), cached()]);
-		}
-		golden('sw.lifecycle', log);
-	});
-});
-
-// The Kit tree's worker knows its build ($service-worker, stood in by
-// tests/unit/service-worker-stub.ts): the hashed files are cached at install and the
-// cache is named by the build, so a new build's activation drops the last one's copies
-// instead of pruning by the pages' references.
-describe.skipIf(tree === 'old')('service worker of the Kit build', () => {
+describe('service worker', () => {
 	beforeAll(() => {
 		vi.stubGlobal('self', globalThis);
 		responses['/_app/immutable/entry/app.abc.js'] = () =>
@@ -245,6 +192,6 @@ describe.skipIf(tree === 'old')('service worker of the Kit build', () => {
 		] as [string, Init?][]) {
 			log.push(['offline', url, init?.mode || 'cors', await request(url, init), cached()]);
 		}
-		golden('sw.kit-lifecycle', log, { tree: 'new' });
+		golden('sw.lifecycle', log);
 	});
 });

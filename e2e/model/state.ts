@@ -159,13 +159,7 @@ export function enabledOperations(): Operation[] {
 	};
 	const topDialog = [...document.querySelectorAll('dialog[open]')].at(-1);
 	const scope: ParentNode = topDialog ?? document;
-	const skip = new Set([
-		'tour-restart',
-		'jvs-download',
-		'import-audio',
-		'share-system',
-		'share-open'
-	]);
+	const skip = new Set(['tour-restart', 'import-audio', 'share-system', 'share-open']);
 	const openMenu = [...document.querySelectorAll('koe-select')].find(
 		(k) => k.shadowRoot?.querySelector('button.trigger[aria-expanded="true"]') !== null
 	);

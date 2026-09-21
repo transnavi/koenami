@@ -38,7 +38,7 @@ test.describe('reference language', () => {
 		// Back through the language pages, each a document of its own that is waited for
 		// before the next step. The last step lands on the root entry, whose page finds the
 		// saved session's language (zh-CN, from the first switch of this visit) and sends the
-		// visitor to that language's page again (web/public/language.js).
+		// visitor to that language's page again (static/language.js).
 		for (const lang of ['ko', 'en', 'zh-CN']) {
 			await studio.back();
 			await studio.until(app.languageLoaded(lang) + ' && ' + app.notBusy);
@@ -87,7 +87,7 @@ test.describe('reference language', () => {
 		const missing = await page.goto('/xx/');
 		expect(missing?.status()).toBe(404);
 		// The root sends a visitor whose saved session names another language to that
-		// language's page before anything renders (web/public/language.js).
+		// language's page before anything renders (static/language.js).
 		await studio.open('/', async (p) =>
 			p.addInitScript(() =>
 				localStorage.setItem(

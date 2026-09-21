@@ -81,8 +81,10 @@ describe('DensityCloud', () => {
 	) {
 		const target: unknown[] = [];
 		cloud.draw(
-			{ drawImage: (_c: unknown, ...args: number[]) => target.push(args) },
-			pts,
+			{
+				drawImage: (_c: unknown, ...args: number[]) => target.push(args)
+			} as unknown as CanvasRenderingContext2D,
+			pts as Parameters<typeof cloud.draw>[1],
 			opts as never
 		);
 		const calls = await Promise.all(
