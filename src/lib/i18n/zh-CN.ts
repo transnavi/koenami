@@ -217,7 +217,8 @@ export default {
 	'share.history': '判定的变化',
 	'share.history_sub': '本设备上的录音',
 	'share.history_aria': '每次录音的判定变化',
-	'share.history_note': '较早的录音没有记录判定条件（比如有声段长度），这里直接显示，没有检查这些条件。',
+	'share.history_note':
+		'较早的录音没有记录判定条件（比如有声段长度），这里直接显示，没有检查这些条件。',
 	'share.note':
 		'链接只包含五项测量值，不会发送录音。判定的解读见<a href="/method.html" target="_blank" hreflang="ja">测量方法与出处</a>（日文）。',
 	'share.unavailable': '该语言的参考声音还不能计算判定',
@@ -348,8 +349,7 @@ export default {
 	'report.lower': '低',
 	'report.note_resonance':
 		'共鸣估计值：我 {own}，参考声音 {ref} Hz ΔF。选同样的元音或短词，保持音高，听一听共鸣的差别。',
-	'report.note_intonation':
-		'抑扬也会随语言和句子内容变化。读同一段文字，比较重音、句尾和停顿。',
+	'report.note_intonation': '抑扬也会随语言和句子内容变化。读同一段文字，比较重音、句尾和停顿。',
 	'report.distance_caption': '与参考声音的声学差异 · 0表示完全一致',
 	'report.distance_note':
 		'把音高、共鸣、质感、明亮度、抑扬五项指标标准化后算出的距离，不评价女性化程度或自然度。',
