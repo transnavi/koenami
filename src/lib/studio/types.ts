@@ -102,4 +102,7 @@ export type View = {
 	signalSource?: string;
 	overlay?: boolean;
 	liveShapeSeconds?: number;
+	takeSort?: TakeSort;
 };
+/* The recording menu's order: by date either way, by name, or by length. */
+export type TakeSort = 'newest' | 'oldest' | 'name' | 'longest';
