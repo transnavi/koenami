@@ -2,9 +2,9 @@ import type { Catalogue } from './ja';
 
 /* 简体中文。键与 ja.js 相同；{n} 为数量，{one, other} 按数量选择，数组为条目。 */
 export default {
-	'page.title': 'Koenami · 女声／男声声音训练工具',
+	'page.title': 'Koenami · 女声／男声训练工具',
 	'page.description':
-		'面向两声类（双声）爱好者、跨性别者，以及想尝试发出女声或男声的人的免费声音训练工具。选一个参考声音，模仿着录下自己的声音，你的声音会显示在与参考声音相同的声音地图上，与目标声音的距离一目了然。支持实时测量。',
+		'面向想练成两声类（女声和男声都能发出）的人、跨性别者，以及想试着发出女声或男声的人的免费声音训练工具。选一个参考声音，模仿着录下自己的声音，你的声音会和参考声音显示在同一张地图上，与目标声音的距离一目了然。支持实时测量。',
 	'page.browser_requirements': '能使用麦克风的浏览器',
 	'page.publisher': 'とらんすナビ',
 
@@ -57,14 +57,14 @@ export default {
 	'group.custom': '导入的声音',
 
 	'signal.aria': '波形与频谱对比',
-	'signal.view_aria': '音频波形视图',
+	'signal.view_aria': '音频显示方式',
 	'signal.pitch': '音高',
 	'signal.spectrogram': '语谱图',
 	'signal.spectrum': '频谱',
 	'signal.waveform': '波形',
 	'signal.both': '叠加',
 	'signal.both_title': '将两段音频时长对齐后叠加显示',
-	'signal.both_title_on': '将各选区时长均归一化为0~100%，词语位置不会对齐。',
+	'signal.both_title_on': '将各选区时长均归一化为0~100%，单词位置不会对齐。',
 	'signal.words': '单词',
 	'signal.words_title': '转写并分词',
 	'signal.range_reset': '取消选区',
@@ -80,7 +80,7 @@ export default {
 	'samples.group_aria': '参考声音的类型',
 	'samples.sort_aria': '排序',
 	'sort.name': '按说话人名称',
-	'sort.near': '按与我的声音的接近程度',
+	'sort.near': '离我的声音由近到远',
 	'sort.low': '音高从低到高',
 	'sort.high': '音高从高到低',
 	'samples.search': '搜索',
@@ -108,7 +108,7 @@ export default {
 	'jvs.index_failed': '无法获取JVS的文件列表。',
 	'jvs.audio_missing': '找不到JVS音频，请重新添加。',
 	'jvs.no_match': '没有找到对应的JVS音频。请选择官方ZIP或解压后的文件夹。',
-	'jvs.quota': '存储空间不足。改成逐个选择说话人的文件夹，就可以只导入其中一部分。',
+	'jvs.quota': '存储空间不足。逐个选择说话人的文件夹，可以只导入一部分。',
 	'jvs.size_mismatch': '音频文件大小与官方数据不符。',
 	'jvs.hash_mismatch': '有文件与官方音频不一致。请重新选择官方ZIP。',
 
@@ -182,7 +182,7 @@ export default {
 	'settings.delete_all': '全部删除',
 
 	'info.about1':
-		'这是一个面向两声类（双声）爱好者、跨性别者，以及想尝试发出女声或男声的人的声音训练工具。选一个参考声音，模仿着录下自己的声音，你的声音会显示在与参考声音相同的声音地图上，可以看到离目标声音有多近。实时测量能让你一边调整发声，一边看着自己在地图上的位置实时移动，从而把握靠拢的方向。',
+		'这是一个面向想练成两声类（女声和男声都能发出）的人、跨性别者，以及想试着发出女声或男声的人的声音训练工具。选一个参考声音，模仿着录下自己的声音，你的声音会和参考声音显示在同一张地图上，可以看到离目标声音有多近。实时测量能让你一边改变声音，一边看着自己在地图上的位置移动，把握靠拢的方向。',
 	'info.about2': '参考声音除日语外，还收录了中文、英语和韩语。免费开源，录音保存在浏览器里。',
 	'info.guide': '使用方法（日文） ↗',
 	'info.tutorial': '声音的原理与练习指南（日文） ↗',
@@ -234,7 +234,7 @@ export default {
 	'metric.f0.label': '音高',
 	'metric.f0.unit': 'Hz',
 	'metric.f0.description':
-		'声带振动的快慢，取有声段基频（F0）的中位数。数值越大声音越高。色带表示该组参照声音中间80%的范围。',
+		'声带振动的快慢，取有声段基频（F0）的中位数。数值越大声音越高。色带表示该组参考声音中间80%的范围。',
 	'metric.f0.factors': [
 		'声带的张力（喉部肌肉的用法）与声带的质量',
 		'喉位（喉头高度）、气流量、用力程度',
@@ -304,11 +304,11 @@ export default {
 		'录音短或噪声多时不稳定。请把同一句话录几次再比较。',
 		'两个方向都是目标，靠近0也是目标。'
 	],
-	'indicator.title': '{label}：我 {own} {unit}／参考声音 {ref} {unit}',
+	'indicator.title': '{label}：我 {own} {unit} · 参考声音 {ref} {unit}',
 	'help.own': '我',
 	'help.reference': '选中的参考声音',
 	'help.band': '{group}的参考声音 · 中间80%',
-	'help.speakers': '参照说话人数',
+	'help.speakers': '参考说话人数',
 	'help.male_band': '男性化参考声音 · 中间80%',
 	'help.female_band': '女性化参考声音 · 中间80%',
 	'help.band_range': '{low}~{high}',
@@ -363,10 +363,10 @@ export default {
 	'report.col_metric': '指标',
 	'report.col_own': '我',
 	'report.col_ref': '参考声音',
-	'report.col_band': '参照声音的中间80%',
+	'report.col_band': '参考声音的中间80%',
 	'report.footer': '{name} · {duration} · 参考声音 {reference}',
 	'report.languages': '录音语言 {own} · 参考声音语言 {ref}',
-	'report.density': '在{group}的参照分布中的密度排名：{percentile}百分位（不是听者的评价）。',
+	'report.density': '在{group}的参考分布中的密度排名：{percentile}百分位（不是听者的评价）。',
 	'report.projection':
 		'分布图将五维空间投影到{dimension}维，图中显示的方差占{variance}%。省略方向上的差别可在左侧指标中查看。',
 	'report.file_title': '声音对比',
@@ -420,7 +420,7 @@ export default {
 		{ title: '录音', text: '用{mic}或{R}开始录音，再按一次停止。' },
 		{
 			title: '声音特征',
-			text: '把音高、共鸣、质感、明亮度、抑扬这五项，在自己和参考声音之间对照。'
+			text: '对比自己和参考声音的音高、共鸣、质感、明亮度和抑扬。'
 		},
 		{ title: '声音分布', text: '参考声音的分布图，可以看到自己的声音离参考声音有多近。' },
 		{ title: '波形', text: '比较音高的变化和语谱图。拖动可以选择范围。' },
@@ -450,7 +450,7 @@ export default {
 	'result.try': '也测测我的声音',
 	'result.metrics_heading': '五项指标',
 	'result.metrics_intro':
-		'这里把这个声音的数值，和参照说话人的中间80%（女性化声音、男性化声音）并列显示。',
+		'这里把这个声音的数值，和参考说话人的中间80%（女性化声音、男性化声音）并列显示。',
 	'result.col_metric': '指标',
 	'result.col_this': '这个声音',
 	'result.col_female': '女性化参考声音',
@@ -473,7 +473,7 @@ export default {
 	'result.no_verdict': '该语言的参考声音暂不支持计算判定。',
 	'result.version_note': '这个链接是用判定方式v{from}生成的，已按当前方式（v{to}）重新计算。',
 
-	'manifest.name': 'Koenami · 女声／男声声音训练工具',
+	'manifest.name': 'Koenami · 女声／男声训练工具',
 	'manifest.description': '模仿参考声音录音，在地图上查看与目标声音距离的声音训练工具。',
 	'manifest.screenshot_wide': 'Koenami的工作台：声音分布、五项指标、参考声音列表、波形',
 	'manifest.screenshot_narrow': '手机上的工作台',
