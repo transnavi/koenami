@@ -1,8 +1,5 @@
-// The one surface of application state the browser suite reads directly. Everything
-// else is observed through the DOM, storage and the network. A rewrite must expose the
-// same `window.voiceApp` object on the studio page and `window.reviewApp` on the review
-// page with these fields (see e2e/CONTRACT.md); the expressions are evaluated in the
-// page and must stay valid JavaScript there.
+// Synchronization hooks shared by focused flows and historical migration scenarios.
+// Prefer DOM assertions for the observable outcome once asynchronous work has settled.
 export const app = {
 	/** A reference library is loaded and the selected reference's analysis has arrived. */
 	ready: '!!window.voiceApp?.state.refFull && !window.voiceApp.state.loadingLanguage',

@@ -93,25 +93,69 @@ Microphone audio and selected imported samples are sent to the analysis service 
 ## Verification
 
 ```sh
-bun run build:public
-bun run check:worker
-bun run check:tests
 bun run check:all
-.venv/bin/python tests.py
 ```
 
-`check:all` runs the characterization suite over the SvelteKit tree: it builds `src/` unminified with source maps into `.svelte-kit/cloudflare` (the production build's directory, so build again before deploying), then the unit tests with coverage (`tests/unit`), the browser scenarios (`e2e/scenarios`), the merged coverage report and the 100 % gate, and finally the full-page screens, the page and the cold-start scenarios once more against the minified production build (`test:e2e:minified`), since the minifier can change what the pixels show. The suite grew from a characterization of the earlier vanilla app, whose behaviour the goldens still describe; the app now serves that behaviour from `src/`, and `RECORD=1` records from the running build, so a change under `tests/golden/**` is a change in behaviour to review, not noise. `check:all` leaves the minified build in `.svelte-kit/cloudflare`; it rebuilds the coverage tree at its next start, and `build:public` rebuilds before a deploy.
+The default check type-checks the app and tests, lints the repository, builds the
+production app once, then runs the unit tests and focused browser flows in
+`e2e/flows`. The browser checks use recorded API responses and public audio fixtures;
+they need no analyzer, Python environment or model downloads. On machines with
+`devrun`, use `devrun bun run check:all` to contain the test server and browser.
 
-- **Unit layer** (vitest): `math`, `space`, `cloud`, `storage`, `corpus-import`, the `capture` worklet and the service worker (`src/service-worker.ts`, with stand-ins for its global scope) are driven with fixed inputs and their outputs compared byte for byte with `tests/golden/unit`. Floating-point results, error message text and the order of stored records are all part of the contract.
-- **Browser layer** (Playwright, Chromium): `tests/mock-api/server.mjs` serves the built site (`.svelte-kit/cloudflare`, or the directory named by `E2E_STATIC`), the recorded analyzer responses under `tests/fixtures/api` and the CC0 audio under `tests/fixtures/data`, so every machine sees the same API. What the goldens require of a rewrite, and the small `window.voiceApp` hook the tests read (`e2e/hooks.ts`), is written down in `e2e/CONTRACT.md`. The page clock is paused and advanced only by the tests; the microphone is Chromium's fake device playing `tests/fixtures/audio/microphone.wav`. After each step a test records the state of every element with an id, `localStorage`, IndexedDB (large payloads as hashes), the API requests made so far and, where the drawing does not depend on real audio time, the pixel-exact PNG each canvas encodes of itself (`tests/golden/e2e`, `tests/golden/canvas`). Values that follow real media time or microphone content (clocks, seek positions, sample hashes, live readouts) are masked and marked as such in the goldens.
-- **Coverage gate**: both layers collect native V8 coverage (the browser with `--js-flags=--no-opt`, since the optimiser drops block counters), `coverage:report` converts it to istanbul reports over the same source files, and `coverage:check` requires every statement, branch, function and line of `src/` (server modules aside) and fails when a source file appears in no coverage data. The locations the suite cannot reach are listed in `tests/coverage/exclusions.json` with the line, the source text and the reason (dead code, guards behind disabled controls, token races, fallbacks for fields the data never omits, the private baseline take, browser constants); an entry that no longer matches an uncovered location fails the gate, so the list cannot go stale.
+For a targeted change, run the relevant tests directly:
 
-- **Deployed routes** (`e2e/live/routes.ts`): the Worker's answer to every address the site owns or must refuse (status, content type, cache and security headers, the page's title and language, the redirect target), compared with `tests/golden/live/routes.json`; `bun run check:live` checks production after a deploy, `node --experimental-strip-types e2e/live/routes.ts <url>` a preview, and two URLs diff two Workers. The mock server never runs `worker.ts`, so this is the only check of its routing.
-- **UI state model** (`e2e/model`, not part of the gate): `explore.ts` walks the studio's reachable states from the cold start (an abstract state of what is loaded, running, open and pressed; every operation the page offers in it; a fresh page per transition, replaying the path), writing the transition table with the hash of the DOM projection at each edge, and `compare.ts` diffs two tables — two builds, or two commits, of the studio. Run with the mock server on each build's port: `node --experimental-strip-types e2e/model/explore.ts <port> <out.json> [depth] [max states]`, then `compare.ts a.json b.json`; `MODEL_ROOT_OPS` narrows the cold start's operations to one corner, `MODEL_JOBS` the pages run at once. A depth-2 run takes half an hour or more.
+```sh
+bun run test:unit tests/unit/storage.test.ts
+bun run build
+bun run test:e2e studio.spec.ts --grep 'uploaded audio'
+```
 
-`bun run test:e2e:record` re-records the browser goldens and API fixtures against the real analyzer (it needs the Python environment and the models; `KOENAMI_PYTHON` points at another interpreter). `tests/fixtures/data` is built from a prepared public data set by `tests/scripts/build-fixture-data.mjs`; `tests/fixtures/audio/SOURCES.md` lists where the audio comes from.
+Browser assertions cover playable references in every language, language navigation,
+saved preferences, recording and cancellation, take persistence, rename, export and
+deletion, recovery from failed analysis, sharing, mobile controls, page rendering and
+the first-visit guide. Add a focused assertion for each changed behavior or bug fix.
+Use unit tests for calculations, storage rules and other logic that can be checked
+without a browser. The numerical and storage fixtures in `tests/golden/unit` remain
+regression tests; update them only when their expected outputs intentionally change.
 
-`tests.py` contains additional acoustic regression checks against local controlled audio fixtures; those fixtures are not published.
+Whole-page DOM, request-order and pixel comparisons from the HTML-to-SvelteKit
+migration live in `e2e/scenarios` and `tests/golden/{e2e,canvas}`. They are historical
+reference material, excluded from `check:all` and `test:e2e`. Ordinary UI and copy PRs
+do not need to refresh them. To investigate a particular migration-era behavior or
+compare a layout with a recorded image:
+
+```sh
+bun run build
+bun run test:e2e:characterization takes.spec.ts
+bun run test:e2e:visual --grep 'dark phone'
+```
+
+These comparisons can fail after intentional product changes. Inspect the relevant
+diff; a failing historical comparison alone does not block a PR. New regression
+coverage belongs in `e2e/flows` with explicit expected outcomes. See
+[e2e/CONTRACT.md](e2e/CONTRACT.md) for the comparison format and update commands.
+
+`bun run test:coverage` builds with source maps, runs unit tests and browser flows
+with V8 coverage, then writes per-layer reports under `coverage/`. Use those reports
+to find untested behavior. Coverage has no global percentage gate or line-number
+exclusion list. This command leaves a coverage build in `.svelte-kit/cloudflare`;
+run `bun run build` before ordinary browser checks. `build:public` always rebuilds
+before deployment.
+
+Additional checks depend on the change:
+
+- `bun run build:public` and `bun run check:worker` check the deployment set and
+  Worker types. `.venv/bin/python tests.py` runs acoustic regressions against local
+  controlled audio fixtures, which are not published.
+- `bun run check:live` checks deployed routes against `tests/golden/live/routes.json`.
+  Use `node --experimental-strip-types e2e/live/routes.ts <url>` for a preview.
+  The mock server does not run `worker.ts`, so deployment routing needs this check.
+- `e2e/model/explore.ts` and `compare.ts` inspect reachable UI states on demand.
+  Model exploration is outside the PR checks and can take half an hour or more.
+
+`tests/fixtures/data` is built from a prepared public data set with
+`tests/scripts/build-fixture-data.mjs`; `tests/fixtures/audio/SOURCES.md` documents
+the audio sources. Refresh API fixtures only when the API contract changes.
 
 ## Acknowledgments
 

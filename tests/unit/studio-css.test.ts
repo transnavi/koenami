@@ -7,9 +7,8 @@ import { describe, it, expect } from 'vitest';
 // prefixed and an unprefixed declaration of one property into the last of the two. A rule
 // that lists `backdrop-filter` before `-webkit-backdrop-filter` therefore loses the
 // standard declaration, and the phone layout's map tool box once shipped without its blur.
-// The characterization suite runs the unminified coverage build and its screens mask the
-// canvas under that box, so the minified output is checked here: every rule that blurs its
-// backdrop in the source still does after minification.
+// Browser screenshots mask the canvas under that box. Check the minified output here:
+// every rule that blurs its backdrop in the source still does after minification.
 describe('studio stylesheet through the minifier', () => {
 	it('keeps the standard backdrop-filter of every blurred rule', () => {
 		const source = readFileSync('src/lib/studio/studio.css', 'utf8');

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Re-records the browser goldens and API fixtures against the real analyzer.
 # Needs the Python environment (.venv or KOENAMI_PYTHON) and the models under .models.
-#   bun run test:e2e:record [playwright args]
+#   bun run test:characterization:record [playwright args]
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 python=${KOENAMI_PYTHON:-.venv/bin/python}
@@ -37,5 +37,5 @@ meta.recorded = new Date().toISOString().slice(0, 10);
 meta.commit = require("child_process").execSync("git rev-parse HEAD").toString().trim();
 fs.writeFileSync("tests/golden/META.json", JSON.stringify(meta, null, "\t") + "\n");
 '
-bun run build:coverage
-MOCK_API_RECORD=http://127.0.0.1:$analyzer_port RECORD=1 bun x playwright test --config playwright.config.ts --update-snapshots=all "$@"
+bun run build
+E2E_CHARACTERIZATION=1 MOCK_API_RECORD=http://127.0.0.1:$analyzer_port RECORD=1 bun x playwright test --config playwright.config.ts --update-snapshots=all "$@"
