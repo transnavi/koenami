@@ -85,6 +85,12 @@ export default {
 	'sort.near': '离我的声音由近到远',
 	'sort.low': '音高从低到高',
 	'sort.high': '音高从高到低',
+	'sort.near_timbre':
+		'按一个贴近听者判断的相似度模型排序，每位说话人一个名次；每位说话人最接近的录音排在最前。',
+	'sort.near_acoustic': '按地图五项测量值的距离排序。',
+	'sort.near_pending': '正在测量各声音的接近程度…',
+	'sort.near_failed': '无法测量相似度：{message}',
+	'sort.nearest_clip': '最接近',
 	'samples.search': '搜索',
 	'samples.search_aria': '搜索参考声音',
 	'samples.more': '显示更多',

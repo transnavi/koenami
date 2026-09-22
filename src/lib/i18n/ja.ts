@@ -87,6 +87,12 @@ const ja = {
 	'sort.near': '自分の声に近い順',
 	'sort.low': '高さが低い順',
 	'sort.high': '高さが高い順',
+	'sort.near_timbre':
+		'声の似かたを聴き手の判断に近いモデルで測り、話者ごとに並べています。各話者の中では最も近い録音が先頭です。',
+	'sort.near_acoustic': '地図の5つの測定値の距離で並べています。',
+	'sort.near_pending': '声の似かたを測っています…',
+	'sort.near_failed': '声の似かたを測れませんでした：{message}',
+	'sort.nearest_clip': '最も近い',
 	'samples.search': '検索',
 	'samples.search_aria': '見本を検索',
 	'samples.more': 'もっと見る',

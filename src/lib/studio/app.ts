@@ -63,6 +63,16 @@ const VERDICT_HELP = {
 	caveats: t.list('verdict.help.caveats') as string[]
 };
 
+type SimilarSpeaker = {
+	speaker: string;
+	group: string;
+	synthetic: boolean;
+	distance: number;
+	clip: string;
+	clip_distance: number;
+	rank: number;
+};
+
 type State = {
 	lang: string;
 	ownLanguage: string;
@@ -94,7 +104,11 @@ type State = {
 	liveTrack: { t: number; [key: string]: unknown }[];
 	liveClock: { end: number; at: number; start: number } | null;
 	analyzing: Set<string>;
-	capabilities?: { maxSeconds?: number; words?: boolean };
+	capabilities?: { maxSeconds?: number; words?: boolean; similar?: string[] };
+	/* Reference speakers ranked by the analyzer's timbre descriptor for one own take (`key`
+	   names the take and its selection); `similarKey` is the request in flight. */
+	similar: { key: string; speakers: Map<string, SimilarSpeaker> } | null;
+	similarKey: string | null;
 	scorer?: Scorer;
 	captureMode?: 'record' | 'live' | null;
 	previousTake?: Snapshot | null;
@@ -141,7 +155,9 @@ export function mountStudio() {
 		wordToken: { own: 0, ref: 0 },
 		liveTrack: [],
 		liveClock: null,
-		analyzing: new Set()
+		analyzing: new Set(),
+		similar: null,
+		similarKey: null
 	};
 	const player = $<HTMLAudioElement>('player'),
 		reference = $<HTMLAudioElement>('reference-player');
@@ -447,21 +463,90 @@ export function mountStudio() {
 			clips = clips.filter((c) => matched.has(speakerKey(c)) || compact(c.text).includes(query));
 		}
 		const sort = $<HTMLSelectElement>('sort').value,
-			f = activeFeatures('own');
+			f = activeFeatures('own'),
+			ranking = sort === 'near' ? similarRanking() : null;
+		// Closest first: by the listener-validated timbre ranking when the analyzer returned one
+		// for this take (speakers it does not index, such as imported ones, go last, and each
+		// speaker's nearest clip leads its folder), by the map's five measures otherwise.
 		const key = (c: Clip) =>
-			sort === 'near'
-				? map.space!.distance(c.features, f)
-				: sort === 'low'
-					? (c.features.f0 ?? Infinity)
-					: sort === 'high'
-						? -(c.features.f0 ?? -Infinity)
-						: 0;
+			ranking
+				? (ranking.get(c.speaker)?.distance ?? Infinity)
+				: sort === 'near'
+					? map.space!.distance(c.features, f)
+					: sort === 'low'
+						? (c.features.f0 ?? Infinity)
+						: sort === 'high'
+							? -(c.features.f0 ?? -Infinity)
+							: 0;
+		const lead = (c: Clip) => (ranking?.get(c.speaker)?.clip === c.id ? 0 : 1);
 		return clips.sort((a, b) =>
 			sort === 'name'
 				? speakerName(a).localeCompare(speakerName(b), state.lang === 'lab' ? 'en' : state.lang, {
 						numeric: true
 					}) || a.id.localeCompare(b.id)
-				: key(a) - key(b) || a.id.localeCompare(b.id)
+				: (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0) ||
+					lead(a) - lead(b) ||
+					a.id.localeCompare(b.id)
+		);
+	}
+	function similarCapable() {
+		return !!state.capabilities?.similar?.includes(state.lang);
+	}
+	/* The own audio the ranking describes: the selected section when there is one. */
+	function ownSlice(): PCM | null {
+		const r = state.ranges.own;
+		return !state.ownPCM
+			? null
+			: r
+				? state.ownPCM.slice(Math.round(r[0] * 16000), Math.round(r[1] * 16000))
+				: state.ownPCM;
+	}
+	function similarKeyOf() {
+		if (!state.ownPCM) return null;
+		const r = state.ranges.own;
+		return `${state.lang}:${state.ownTakeId ?? state.ownId ?? ''}:${state.ownPCM.length}:${r ? r.join('-') : ''}`;
+	}
+	function similarRanking() {
+		const key = similarKeyOf();
+		return key && state.similar?.key === key ? state.similar.speakers : null;
+	}
+	/* One ranking request per take and selection; the library re-renders when it lands. */
+	async function ensureSimilar() {
+		const key = similarKeyOf();
+		if (!key || !similarCapable() || state.recording) return;
+		if (state.similar?.key === key || state.similarKey === key) return;
+		state.similarKey = key;
+		try {
+			const r = await api<{ speakers: Omit<SimilarSpeaker, 'rank'>[] }>(
+				`/api/similar?lang=${encodeURIComponent(state.lang)}&limit=1000`,
+				{ method: 'POST', body: ownSlice()! }
+			);
+			if (state.similarKey !== key) return;
+			state.similar = {
+				key,
+				speakers: new Map(r.speakers.map((s, rank) => [s.speaker, { ...s, rank }]))
+			};
+		} catch (e) {
+			if (state.similarKey === key)
+				notify(t('sort.near_failed', { message: (e as Error).message }), true);
+		} finally {
+			if (state.similarKey === key) {
+				state.similarKey = null;
+				if ($<HTMLSelectElement>('sort').value === 'near') renderLibrary();
+			}
+		}
+	}
+	function renderSortBasis() {
+		const near = $<HTMLSelectElement>('sort').value === 'near' && state.lang !== 'lab';
+		$('sort-basis').hidden = !near;
+		if (!near) return;
+		const key = similarKeyOf();
+		$('sort-basis').textContent = t(
+			similarRanking()
+				? 'sort.near_timbre'
+				: key && state.similarKey === key
+					? 'sort.near_pending'
+					: 'sort.near_acoustic'
 		);
 	}
 
@@ -479,7 +564,10 @@ export function mountStudio() {
 		b.dataset.id = clip.id;
 		b.dataset.group = clip.group;
 		b.setAttribute('aria-pressed', String(clip.id === state.selected?.id));
-		b.innerHTML = `<span class="sample-symbol"><svg aria-hidden="true"><use href="#i-play"></use></svg></span><div><span class="sample-title"><b>${esc(clip.text || nameOf(clip))}</b></span><span class="sample-phrase">${fmt(clip.features.f0)} Hz · ${clock(clip.duration)}${clip.synthetic ? ' · AI' : ''}</span></div>`;
+		const nearest =
+			$<HTMLSelectElement>('sort').value === 'near' &&
+			similarRanking()?.get(clip.speaker)?.clip === clip.id;
+		b.innerHTML = `<span class="sample-symbol"><svg aria-hidden="true"><use href="#i-play"></use></svg></span><div><span class="sample-title"><b>${esc(clip.text || nameOf(clip))}</b></span><span class="sample-phrase">${fmt(clip.features.f0)} Hz · ${clock(clip.duration)}${clip.synthetic ? ' · AI' : ''}${nearest ? ` · <small class="nearest-badge">${t('sort.nearest_clip')}</small>` : ''}</span></div>`;
 		b.title = clip.text!;
 		b.onclick = () => selectSample(clip, true);
 		b.disabled = state.recording || state.loadingLanguage;
@@ -506,6 +594,8 @@ export function mountStudio() {
 			state.limit = 30;
 			$('sample-scroll').scrollTop = 0;
 		}
+		if ($<HTMLSelectElement>('sort').value === 'near') void ensureSimilar();
+		renderSortBasis();
 		const clips = filtered(),
 			groups = new Map<string, Clip[]>();
 		for (const clip of clips) {
@@ -747,7 +837,9 @@ export function mountStudio() {
 	}
 	function controls() {
 		const near = $('sort').querySelector<HTMLOptionElement>('option[value=near]')!;
-		near.disabled = !AcousticSpace.raw(activeFeatures('own')).every(finite);
+		near.disabled =
+			!AcousticSpace.raw(activeFeatures('own')).every(finite) &&
+			!(similarCapable() && state.ownPCM);
 		if (near.disabled && $<HTMLSelectElement>('sort').value === 'near')
 			$<HTMLSelectElement>('sort').value = 'name';
 		const busy = state.busy || state.recording || state.loadingLanguage;

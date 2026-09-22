@@ -163,3 +163,35 @@ test('phone reference browser opens, selects and closes without horizontal overf
 	}));
 	expect(size.content).toBeLessThanOrEqual(size.viewport);
 });
+
+test('the closest-to-you order ranks speakers by the analyzer’s similarity model', async ({
+	page,
+	studio
+}) => {
+	await studio.open('/ja/');
+	await studio.until(app.ready);
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await studio.choose('library-group', 'all');
+	await studio.choose('sort', 'near');
+	await expect(page.locator('#sort-basis')).toHaveText(/聴き手の判断に近いモデル/);
+	const top = await page.evaluate(() => {
+		const s = (
+			window as unknown as {
+				voiceApp: { state: { similar: { speakers: Map<string, { clip: string }> } } };
+			}
+		).voiceApp.state;
+		const [speaker, entry] = [...s.similar.speakers.entries()][0];
+		return { speaker, clip: entry.clip };
+	});
+	const folder = page.locator('#sample-list details').first();
+	await expect(folder).toHaveAttribute('data-speaker', new RegExp(`:${top.speaker}$`));
+	await folder.locator('summary').click();
+	const lead = folder.locator('.sample-row').first();
+	await expect(lead).toHaveAttribute('data-id', top.clip);
+	await expect(lead.locator('.nearest-badge')).toHaveText('最も近い');
+	// The sort survives a second take: the ranking is requested again for the new audio.
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await expect(page.locator('#sort-basis')).toHaveText(/聴き手の判断に近いモデル/);
+});

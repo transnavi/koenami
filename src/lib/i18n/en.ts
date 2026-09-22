@@ -87,6 +87,12 @@ export default {
 	'sort.near': 'Closest to you',
 	'sort.low': 'Lowest pitch first',
 	'sort.high': 'Highest pitch first',
+	'sort.near_timbre':
+		'Ordered by a similarity model that tracks how listeners judge voices, one rank per speaker; each speaker’s closest recording comes first.',
+	'sort.near_acoustic': 'Ordered by distance in the map’s five measurements.',
+	'sort.near_pending': 'Measuring how close each voice is…',
+	'sort.near_failed': 'The similarity ranking failed: {message}',
+	'sort.nearest_clip': 'closest',
 	'samples.search': 'Search',
 	'samples.search_aria': 'Search references',
 	'samples.more': 'Show more',

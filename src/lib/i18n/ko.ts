@@ -89,6 +89,12 @@ export default {
 	'sort.near': '내 목소리에 가까운 순',
 	'sort.low': '낮은 목소리 순',
 	'sort.high': '높은 목소리 순',
+	'sort.near_timbre':
+		'듣는 사람의 판단에 가까운 유사도 모델로 화자마다 순위를 매겨 정렬합니다. 각 화자 안에서는 가장 가까운 녹음이 맨 앞에 옵니다.',
+	'sort.near_acoustic': '지도의 다섯 가지 측정값 거리순으로 정렬합니다.',
+	'sort.near_pending': '목소리가 얼마나 가까운지 재는 중…',
+	'sort.near_failed': '유사도 순위를 구하지 못했습니다: {message}',
+	'sort.nearest_clip': '가장 가까움',
 	'samples.search': '검색',
 	'samples.search_aria': '참고 음성 검색',
 	'samples.more': '더 보기',
