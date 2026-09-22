@@ -6,7 +6,12 @@ import subprocess
 from pathlib import Path
 from collections import Counter
 
+import numpy as np
+import onnxruntime as ort
+
 from curation import Verdicts
+from perception import TIMBRE_VERSION
+from server import indexable
 
 ROOT = Path(__file__).parent
 OUT = ROOT / '.deploy'
@@ -106,19 +111,33 @@ def main():
                 folder.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source, folder / name)
             manifest.append({'file': name, 'sha256': digest, 'dataset': clip.get('dataset', 'VOICEVOX' if clip.get('synthetic') else 'Common Voice')})
-    catalog = {'capabilities': {'words': False, 'maxSeconds': 60, 'review': False}, 'languages': [
+    # The reference ranking needs the timbre index of the server's descriptor version, and the
+    # catalog is a static asset, so it names the languages the index covers among the served clips.
+    served = {c['id'] for lib in libraries.values() for c in lib['clips'] if indexable(c)}
+    index = np.load(ROOT / 'data' / f'timbre-index-{TIMBRE_VERSION}.npz', allow_pickle=False)
+    assert str(index['version']) == TIMBRE_VERSION, f'the timbre index is for {index["version"]}; run build_timbre_index.py'
+    indexed = np.isin(index['ids'], list(served))
+    similar = sorted(set(index['language'][indexed].tolist()) & set(LANGUAGES))
+    assert similar == sorted(LANGUAGES), f'the timbre index covers {similar}; run build_timbre_index.py'
+    catalog = {'capabilities': {'words': False, 'maxSeconds': 60, 'review': False, 'similar': similar}, 'languages': [
         {'id': lang, 'label': label,
          'clips': sum(not c.get('synthetic') for c in libraries[lang]['clips']),
          'speakers': len({c['speaker'] for c in libraries[lang]['clips'] if not c.get('synthetic')}),
          'synthetic': sum(bool(c.get('synthetic')) for c in libraries[lang]['clips'])}
         for lang, label in LANGUAGES.items()]}
     write(OUT / 'assets' / 'public-api' / 'catalog.json', catalog)
-    # The age model rides in the container with its licence notice; WavLM stays local-only.
+    # Both prepared graphs ride in the container with their licence notices (WavLM is MIT, the
+    # age model CC BY-NC-SA 4.0); weights are never served as static assets.
     models = ROOT / '.models' / 'perception'
-    for name in ('age.int8.onnx', 'age-LICENSE', 'age-README.md', 'age-preprocessor_config.json', 'manifest.json'):
+    for name in ('age.int8.onnx', 'age-LICENSE', 'age-README.md', 'age-preprocessor_config.json',
+                 'wavlm.int8.onnx', 'wavlm-LICENSE', 'wavlm-README.md', 'wavlm-preprocessor_config.json', 'manifest.json'):
         assert (models / name).is_file(), f'{name} missing: run prepare_voice_models.py'
         (OUT / 'models').mkdir(exist_ok=True)
         shutil.copy2(models / name, OUT / 'models' / name)
+    assert 'timbre_frames' in [o.name for o in ort.InferenceSession(str(models / 'wavlm.int8.onnx'), providers=['CPUExecutionProvider']).get_outputs()], \
+        'the prepared WavLM graph predates the timbre output; run prepare_voice_models.py'
+    # The index rides along in full; the server drops rows whose clip it does not serve.
+    shutil.copy2(ROOT / 'data' / f'timbre-index-{TIMBRE_VERSION}.npz', OUT / 'data' / f'timbre-index-{TIMBRE_VERSION}.npz')
     write(OUT / 'manifest.json', manifest)
     # Sitemap with last-modified dates taken from git, so a page's date only
     # moves when its source does.
@@ -136,7 +155,7 @@ def main():
     # The response headers come with the build: the root _headers file plus the adapter's
     # immutable-cache rules (the content security policy is in every page's meta tag).
     assert 'frame-ancestors' in (OUT / 'assets' / '_headers').read_text()
-    print(json.dumps({'public_samples': len(manifest), 'jvs_clips': len(jvs), 'languages': catalog['languages'],
+    print(json.dumps({'public_samples': len(manifest), 'jvs_clips': len(jvs), 'languages': catalog['languages'], 'indexed_clips': int(indexed.sum()),
                       'audio_mb': round(sum((OUT / 'data' / 'samples' / c['file']).stat().st_size for c in manifest) / 1e6, 1)}, ensure_ascii=False))
 
 
