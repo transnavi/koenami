@@ -9,6 +9,7 @@ export default {
 	'page.publisher': 'とらんすナビ',
 
 	'toolbar.language': 'Language (interface and references)',
+	'toolbar.tutorial': 'How your voice works: a practice guide',
 	'toolbar.guide': 'Guided tour',
 	'toolbar.share': 'Share the verdict',
 	'toolbar.settings': 'Settings',
@@ -190,7 +191,7 @@ export default {
 	'info.about2':
 		'The references cover Japanese, Mandarin, English and Korean. Koenami is free and open source, and recordings never leave your browser.',
 	'info.guide': 'User guide (Japanese) ↗',
-	'info.tutorial': 'How your voice works, and how to practice (Japanese) ↗',
+	'info.tutorial': 'How your voice works: a practice guide ↗',
 	'info.method': 'Method and sources (Japanese) ↗',
 	'info.references': 'References (Japanese) ↗',
 	'info.source': 'Source code (GitHub) ↗',

@@ -133,6 +133,8 @@ export function renderPage(template: string, lang: unknown, path: string): strin
 		lang: language,
 		og_locale: OG_LOCALES[language],
 		home: home(language),
+		tutorial: language === 'en' ? '/en/tutorial.html' : '/tutorial.html',
+		tutorial_lang: language === 'en' ? 'en' : 'ja',
 		url: SITE + path,
 		links:
 			path === '/r'

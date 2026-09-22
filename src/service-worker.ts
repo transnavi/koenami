@@ -17,7 +17,7 @@ const CACHE = `koenami-${version}`;
 // The other languages' pages sit under /<lang>/; the Japanese page is the root.
 const others = LANGUAGES.filter((lang) => lang !== 'ja').join('|');
 const shellPage = new RegExp(
-	`^/((${others})/)?$|^/(guide|tutorial|method|references)\\.html$|site\\.webmanifest$`
+	`^/((${others})/)?$|^/(guide|tutorial|method|references|en/tutorial)\\.html$|site\\.webmanifest$`
 );
 // The public pages and the other languages' manifests among the prerendered paths (the
 // result page, the research library and the curation pages are not shell), the Japanese
