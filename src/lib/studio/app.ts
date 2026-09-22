@@ -109,6 +109,8 @@ type State = {
 	   names the take and its selection); `similarKey` is the request in flight. */
 	similar: { key: string; speakers: Map<string, SimilarSpeaker> } | null;
 	similarKey: string | null;
+	/* The key whose request failed; it is not retried until the sort is chosen again. */
+	similarFailed: string | null;
 	scorer?: Scorer;
 	captureMode?: 'record' | 'live' | null;
 	previousTake?: Snapshot | null;
@@ -157,7 +159,8 @@ export function mountStudio() {
 		liveClock: null,
 		analyzing: new Set(),
 		similar: null,
-		similarKey: null
+		similarKey: null,
+		similarFailed: null
 	};
 	const player = $<HTMLAudioElement>('player'),
 		reference = $<HTMLAudioElement>('reference-player');
@@ -504,7 +507,7 @@ export function mountStudio() {
 	function similarKeyOf() {
 		if (!state.ownPCM) return null;
 		const r = state.ranges.own;
-		return `${state.lang}:${state.ownTakeId ?? state.ownId ?? ''}:${state.ownPCM.length}:${r ? r.join('-') : ''}`;
+		return `${state.lang}:${state.ownToken}:${state.ownPCM.length}:${r ? r.join('-') : ''}`;
 	}
 	function similarRanking() {
 		const key = similarKeyOf();
@@ -514,12 +517,16 @@ export function mountStudio() {
 	async function ensureSimilar() {
 		const key = similarKeyOf();
 		if (!key || !similarCapable() || state.recording) return;
-		if (state.similar?.key === key || state.similarKey === key) return;
+		if (state.similar?.key === key || state.similarKey === key || state.similarFailed === key)
+			return;
+		// The descriptor needs two seconds of audio; a shorter selection keeps the five-measure order.
+		const pcm = ownSlice()!;
+		if (pcm.length < 2 * 16000) return;
 		state.similarKey = key;
 		try {
 			const r = await api<{ speakers: Omit<SimilarSpeaker, 'rank'>[] }>(
-				`/api/similar?lang=${encodeURIComponent(state.lang)}&limit=1000`,
-				{ method: 'POST', body: ownSlice()! }
+				`/api/similar?lang=${encodeURIComponent(state.lang)}&limit=5000`,
+				{ method: 'POST', body: pcm }
 			);
 			if (state.similarKey !== key) return;
 			state.similar = {
@@ -527,14 +534,21 @@ export function mountStudio() {
 				speakers: new Map(r.speakers.map((s, rank) => [s.speaker, { ...s, rank }]))
 			};
 		} catch (e) {
-			if (state.similarKey === key)
+			if (state.similarKey === key) {
+				state.similarFailed = key;
 				notify(t('sort.near_failed', { message: (e as Error).message }), true);
+			}
 		} finally {
 			if (state.similarKey === key) {
 				state.similarKey = null;
 				if ($<HTMLSelectElement>('sort').value === 'near') renderLibrary();
 			}
 		}
+	}
+	/* Re-sorts the library when the own audio or its selection changed under the near order. */
+	let renderedNear = false;
+	function refreshNearOrder() {
+		if (renderedNear || $<HTMLSelectElement>('sort').value === 'near') renderLibrary();
 	}
 	function renderSortBasis() {
 		const near = $<HTMLSelectElement>('sort').value === 'near' && state.lang !== 'lab';
@@ -594,7 +608,8 @@ export function mountStudio() {
 			state.limit = 30;
 			$('sample-scroll').scrollTop = 0;
 		}
-		if ($<HTMLSelectElement>('sort').value === 'near') void ensureSimilar();
+		renderedNear = $<HTMLSelectElement>('sort').value === 'near';
+		if (renderedNear) void ensureSimilar();
 		renderSortBasis();
 		const clips = filtered(),
 			groups = new Map<string, Clip[]>();
@@ -655,8 +670,12 @@ export function mountStudio() {
 		state.limit += 60;
 		renderLibrary();
 	};
-	for (const id of ['sort', 'teacher', 'teacher-pitch', 'teacher-resonance', 'teacher-weight'])
+	for (const id of ['teacher', 'teacher-pitch', 'teacher-resonance', 'teacher-weight'])
 		$(id).onchange = () => renderLibrary(true);
+	$('sort').onchange = () => {
+		state.similarFailed = null;
+		renderLibrary(true);
+	};
 	$('library-group').onchange = () => {
 		$<HTMLSelectElement>('sort').value =
 			$<HTMLSelectElement>('library-group').value === 'female'
@@ -1187,6 +1206,7 @@ export function mountStudio() {
 		signal.setRange(side, range);
 		updateRangeLabel();
 		renderWords();
+		if (side === 'own') refreshNearOrder();
 		if (!range) {
 			if (side === 'own') state.own = full;
 			else state.ref = full;
@@ -1396,6 +1416,7 @@ export function mountStudio() {
 		$('quality-state').textContent = bad;
 		$('quality-state').hidden = !bad;
 		controls();
+		refreshNearOrder();
 		if (remember && !recordSnapshot) void persistTakes();
 	}
 	async function importAudio(file: File | undefined, side: Side) {
@@ -1672,6 +1693,7 @@ export function mountStudio() {
 		renderWords();
 		updateRangeLabel();
 		controls();
+		refreshNearOrder();
 	}
 	function persistTakes() {
 		const current = state.recording ? recordSnapshot : snapshotOwn();
@@ -2244,6 +2266,7 @@ export function mountStudio() {
 		updateIndicators();
 		renderWords();
 		controls();
+		refreshNearOrder();
 	}
 
 	let takeChoices: (Snapshot | Take)[] = [],

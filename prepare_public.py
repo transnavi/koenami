@@ -119,6 +119,9 @@ def main():
     indexed = np.isin(index['ids'], list(served))
     similar = sorted(set(index['language'][indexed].tolist()) & set(LANGUAGES))
     assert similar == sorted(LANGUAGES), f'the timbre index covers {similar}; run build_timbre_index.py'
+    # Speakers the index lacks sort last in the studio; the count says when to rebuild it.
+    unindexed = {lang: len({c['speaker'] for c in lib['clips'] if indexable(c)} - set(index['speaker'][index['language'] == lang].tolist()))
+                 for lang, lib in libraries.items()}
     catalog = {'capabilities': {'words': False, 'maxSeconds': 60, 'review': False, 'similar': similar}, 'languages': [
         {'id': lang, 'label': label,
          'clips': sum(not c.get('synthetic') for c in libraries[lang]['clips']),
@@ -155,7 +158,7 @@ def main():
     # The response headers come with the build: the root _headers file plus the adapter's
     # immutable-cache rules (the content security policy is in every page's meta tag).
     assert 'frame-ancestors' in (OUT / 'assets' / '_headers').read_text()
-    print(json.dumps({'public_samples': len(manifest), 'jvs_clips': len(jvs), 'languages': catalog['languages'], 'indexed_clips': int(indexed.sum()),
+    print(json.dumps({'public_samples': len(manifest), 'jvs_clips': len(jvs), 'languages': catalog['languages'], 'indexed_clips': int(indexed.sum()), 'unindexed_speakers': unindexed,
                       'audio_mb': round(sum((OUT / 'data' / 'samples' / c['file']).stat().st_size for c in manifest) / 1e6, 1)}, ensure_ascii=False))
 
 

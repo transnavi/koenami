@@ -190,8 +190,41 @@ test('the closest-to-you order ranks speakers by the analyzer’s similarity mod
 	const lead = folder.locator('.sample-row').first();
 	await expect(lead).toHaveAttribute('data-id', top.clip);
 	await expect(lead.locator('.nearest-badge')).toHaveText('最も近い');
-	// The sort survives a second take: the ranking is requested again for the new audio.
+	// A second take under the same order is ranked anew, without touching the sort.
+	const firstKey = await page.evaluate(
+		() =>
+			(window as unknown as { voiceApp: { state: { similar: { key: string } } } }).voiceApp.state
+				.similar.key
+	);
 	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 	await studio.until(app.analysed);
+	await studio.until(`window.voiceApp.state.similar?.key !== ${JSON.stringify(firstKey)}`);
 	await expect(page.locator('#sort-basis')).toHaveText(/聴き手の判断に近いモデル/);
+	await expect(folder.locator('.sample-row').first().locator('.nearest-badge')).toHaveText(
+		'最も近い'
+	);
+});
+
+test('a failed similarity ranking is not retried until the order is chosen again', async ({
+	page,
+	studio
+}) => {
+	let requests = 0;
+	await page.route('**/api/similar**', (route) => {
+		requests++;
+		void route.fulfill({ status: 503, contentType: 'text/plain', body: 'busy' });
+	});
+	await studio.open('/ja/');
+	await studio.until(app.ready);
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await studio.choose('sort', 'near');
+	await expect(page.locator('#notice')).toContainText('busy');
+	await expect(page.locator('#sort-basis')).toHaveText(/5つの測定値/);
+	await page.locator('#search').fill('F');
+	await page.locator('#search').fill('');
+	expect(requests).toBe(1);
+	await studio.choose('sort', 'name');
+	await studio.choose('sort', 'near');
+	await expect.poll(() => requests).toBe(2);
 });
