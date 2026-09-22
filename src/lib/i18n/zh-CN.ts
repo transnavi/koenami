@@ -34,6 +34,7 @@ export default {
 	'verdict.end_female': '女性化 +100',
 
 	'graph.aria': '声音对比',
+	'graph.analyzing': '正在分析你的声音…',
 	'graph.canvas_aria': '声音分布图。滚轮缩放，拖动旋转，Shift+拖动平移。',
 	'graph.projection_variance': '主成分',
 	'graph.projection_variance_title':

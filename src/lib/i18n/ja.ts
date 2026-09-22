@@ -34,6 +34,7 @@ const ja = {
 	'verdict.end_female': '女性的 +100',
 
 	'graph.aria': '声の比較',
+	'graph.analyzing': '声を解析しています…',
 	'graph.canvas_aria': '声の分布。スクロールで拡大縮小、ドラッグで回転、Shift＋ドラッグで移動。',
 	'graph.projection_variance': '主成分',
 	'graph.projection_variance_title':

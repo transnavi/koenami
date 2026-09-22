@@ -35,6 +35,7 @@ export default {
 	'verdict.end_female': 'Feminine +100',
 
 	'graph.aria': 'Voice comparison',
+	'graph.analyzing': 'Analyzing your voice…',
 	'graph.canvas_aria': 'Voice map. Scroll to zoom, drag to rotate, Shift+drag to pan.',
 	'graph.projection_variance': 'Principal',
 	'graph.projection_variance_title':
