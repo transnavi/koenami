@@ -23,7 +23,7 @@ import { SignalView, type Side, type SignalMode } from '$lib/signals';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
-import { state, createState, snapshot as snap, type State } from './studio.svelte';
+import { state, snapshot as snap, type State } from './studio.svelte';
 import type { Clip, Detail, PCM, Snapshot, Take, TakeSort, View, Words } from './types';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T,
@@ -77,7 +77,7 @@ export function mountStudio() {
 	// The reactive studio state (src/lib/studio/studio.svelte.ts). Reset for this mount so a
 	// remount under HMR, or a second page in one document, starts clean. The controller reads
 	// and writes it as it did the old local object; components read it reactively.
-	Object.assign(state, createState());
+	state.reset();
 	const player = $<HTMLAudioElement>('player'),
 		reference = $<HTMLAudioElement>('reference-player');
 	const map = new VoiceMap(
@@ -1272,7 +1272,8 @@ export function mountStudio() {
 					detail,
 					pcm
 				};
-				state.custom.push(c);
+				// `custom` is $state.raw, so reassign rather than mutate in place.
+				state.custom = [...state.custom, c];
 				$<HTMLSelectElement>('library-group').value = 'custom';
 				await selectSample(c, false);
 			}
@@ -2153,8 +2154,8 @@ export function mountStudio() {
 			);
 			const peaks = snapshot?.pcm ? wavePeaks(snapshot.pcm) : null;
 			if (!peaks) continue;
-			const saved = await TakeStore.updateRecording<Take>(t.id, (snap, metadata) => ({
-				snapshot: snap,
+			const saved = await TakeStore.updateRecording<Take>(t.id, (stored, metadata) => ({
+				snapshot: stored,
 				metadata: { ...metadata!, peaks }
 			})).catch(() => null);
 			if (saved?.index) {
