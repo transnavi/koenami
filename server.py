@@ -227,7 +227,8 @@ def create_app():
         """Reference speakers whose voices sit closest to the recording, by the layer-3 timbre descriptor."""
         lang = request.query.get('lang', 'ja')
         if not timbre_index or lang not in timbre_index: raise web.HTTPNotFound(text=message(request, 'no_timbre_index'))
-        try: limit = max(1, min(int(request.query.get('limit', '12')), 50))
+        # The studio orders its whole library by this ranking, so the cap covers the largest language (English, 940 speakers).
+        try: limit = max(1, min(int(request.query.get('limit', '12')), 1000))
         except (ValueError, TypeError): raise web.HTTPBadRequest(text='limit must be a number.')
         if PUBLIC and neural_gate.locked(): raise web.HTTPServiceUnavailable(text=message(request, 'busy'), headers={'Retry-After': '2'})
         x = await read_audio(request)
