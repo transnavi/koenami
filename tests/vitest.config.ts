@@ -15,7 +15,7 @@ export default defineConfig({
 	},
 	test: {
 		root,
-		include: ['tests/unit/**/*.test.ts'],
+		include: ['tests/unit/**/*.test.{ts,js}'],
 		setupFiles: ['tests/unit/setup.ts'],
 		environment: 'node',
 		coverage: {
