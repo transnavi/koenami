@@ -9,7 +9,9 @@ import type { Side } from '$lib/signals';
    - `$state.raw` for the heavy payloads it reassigns wholesale (clips, detail, PCM, takes,
      the live track). Not proxied — no per-property signal allocation on hot paths, no split
      between a raw closure reference and the stored value, and plain objects that IndexedDB can
-     structured-clone directly.
+     structured-clone directly. A raw field's *contents* are not tracked: `clips[i].index` is
+     patched in place at load (app.ts), so a future `{#each state.clips}` must key off a
+     reassignment, not an in-place field write.
    - `$state` for the small records it mutates in place (`ranges.own = …`, the tokens).
    - `SvelteSet` for `analyzing`, since a plain Set behind `$state` is not reactive.
 
@@ -53,48 +55,18 @@ export class StudioState {
 	capabilities = $state<{ maxSeconds?: number; words?: boolean } | undefined>(undefined);
 	scorer = $state.raw<Scorer | undefined>(undefined);
 	captureMode = $state<'record' | 'live' | null>(null);
-	previousTake = $state.raw<Snapshot | null | undefined>(null);
+	previousTake = $state.raw<Snapshot | null>(null);
 	ownTakeId = $state<string | null>(null);
 
 	/* Restore every field to its initial value. Called on each mount so a remount under HMR, or
-	   a second page in one document, starts clean — including the optional fields a partial
-	   reset used to leave stale (`scorer`, `captureMode`, `previousTake`, …). */
+	   a second page in one document, starts clean. Copying a fresh instance's fields keeps this
+	   total by construction — a new field inherits its declared initial value with no reset line
+	   to forget — except `analyzing`, whose SvelteSet identity (held by the seam and future
+	   components) must survive; it is cleared instead of replaced. */
 	reset() {
-		this.lang = 'ja';
-		this.ownLanguage = 'ja';
-		this.languageToken = 0;
-		this.loadingLanguage = false;
-		this.clips = [];
-		this.representatives = [];
-		this.selected = null;
-		this.own = null;
-		this.ownFull = null;
-		this.ownPCM = null;
-		this.ownName = '';
-		this.ownId = null;
-		this.ref = null;
-		this.refFull = null;
-		this.refPCM = null;
-		this.ranges = { own: null, ref: null };
-		this.words = { own: null, ref: null };
-		this.custom = [];
-		this.imported = [];
-		this.takes = [];
-		this.recording = false;
-		this.busy = false;
-		this.limit = 60;
-		this.detailToken = 0;
-		this.ownToken = 0;
-		this.rangeToken = { own: 0, ref: 0 };
-		this.wordToken = { own: 0, ref: 0 };
-		this.liveTrack = [];
-		this.liveClock = null;
+		const { analyzing: _keep, ...fresh } = new StudioState();
+		Object.assign(this, fresh);
 		this.analyzing.clear();
-		this.capabilities = undefined;
-		this.scorer = undefined;
-		this.captureMode = null;
-		this.previousTake = null;
-		this.ownTakeId = null;
 	}
 }
 

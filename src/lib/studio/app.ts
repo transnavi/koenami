@@ -1667,7 +1667,7 @@ export function mountStudio() {
 							'resonance_sensitivity_pct'
 						].map((k) => [k, state.ownFull![k] as number])
 					),
-			t: Take = {
+			take: Take = {
 				id,
 				name: state.ownName,
 				date: old?.date || new Date().toISOString(),
@@ -1678,7 +1678,7 @@ export function mountStudio() {
 				...(quality && { quality }),
 				...(snapshot?.pcm && { peaks: wavePeaks(snapshot.pcm)! })
 			};
-		const saved = await TakeStore.saveRecording(snap(snapshot), snap(t));
+		const saved = await TakeStore.saveRecording(snap(snapshot), snap(take));
 		state.takes = saved!.index;
 		await persistTakes();
 		renderTakeMenu();
@@ -1698,7 +1698,7 @@ export function mountStudio() {
 				snapshot?.takeId === id
 					? { ...snapshot, detail, measurement: snapshot.range ? snapshot.measurement : detail }
 					: snapshot;
-			state.previousTake = complete(state.previousTake);
+			state.previousTake = complete(state.previousTake) ?? null;
 			recordSnapshot = complete(recordSnapshot) ?? null;
 			if (!state.recording && state.ownTakeId === id) {
 				state.ownFull = detail;
@@ -2045,7 +2045,8 @@ export function mountStudio() {
 			notify(t('error.favorite_save'), true);
 		}
 		TakeStore.write(
-			snap(state.custom.filter((c) => favorites.has(c.id)).map(({ audio: _audio, ...c }) => c)),
+			// `custom` is $state.raw, so these clips are plain and need no snapshot.
+			state.custom.filter((c) => favorites.has(c.id)).map(({ audio: _audio, ...c }) => c),
 			'references'
 		).catch(() => notify(t('error.reference_save'), true));
 		updateFavorite();
