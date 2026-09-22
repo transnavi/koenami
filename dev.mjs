@@ -42,7 +42,8 @@ backend.on('error', (error) => {
 try {
 	let ready = false;
 	// oxlint-disable-next-line no-unmodified-loop-condition -- closing flips in the exit handlers above
-	for (let i = 0; i < 100 && !closing; i++) {
+	// The API loads the reference libraries and the prepared WavLM graph before it listens; allow a minute.
+	for (let i = 0; i < 600 && !closing; i++) {
 		try {
 			const response = await fetch('http://127.0.0.1:35511/api/catalog');
 			if (response.ok) {
