@@ -11,6 +11,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "bun run build:wasm && node dev.mjs",
+		"serve": "bun run build && .venv/bin/python server.py --port 8766 --static .svelte-kit/cloudflare",
 		"build": "bun run build:wasm && vite build && node -e \"require('fs').writeFileSync('.svelte-kit/cloudflare/BUILD','minified')\"",
 		"build:coverage": "bun run build:wasm && KOENAMI_COVERAGE=1 vite build && node -e \"require('fs').writeFileSync('.svelte-kit/cloudflare/BUILD','coverage')\"",
 		"build:wasm": "wasm-pack build measure --target web --release --out-dir ../src/lib/measure/pkg --out-name koenami_measure --no-default-features --features wasm",
