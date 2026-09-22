@@ -3,12 +3,12 @@
   "list": [
    "Larynx height (raising it shortens the vocal tract and raises the value)",
    "Mouth opening, tongue position and lip shape",
-   "The vowel: \"ee\" and \"ah\" differ a lot in the same person"
+   "The vowel: the same person's \"ee\" and \"ah\" differ a lot"
   ],
   "listIsCopy": true,
   "number": "1,234 clips imported",
-  "placeholder": "Reference analysis: x <y>",
-  "plain": "How to use",
+  "placeholder": "Couldn't analyze the reference: x <y>",
+  "plain": "User guide",
   "pluralOne": "1 clip imported",
   "pluralUnset": "{n} clips imported",
   "pluralZero": "0 clips imported",
@@ -47,17 +47,17 @@
  },
  "zh-CN": {
   "list": [
-   "喉头高度（抬高会缩短声道，数值上升）",
+   "喉位（喉头高度）：抬高会缩短声道，数值上升",
    "口的开合、舌位、唇形",
-   "元音。「i」和「a」在同一个人身上也差别很大"
+   "元音：同一个人发“i”和“a”，数值也差很多"
   ],
   "listIsCopy": true,
-  "number": "已导入1,234段",
-  "placeholder": "参考分析：x <y>",
+  "number": "已导入1,234段音频",
+  "placeholder": "分析参考声音时出错：x <y>",
   "plain": "使用方法",
-  "pluralOne": "已导入1段",
-  "pluralUnset": "已导入{n}段",
-  "pluralZero": "已导入0段",
-  "unknownPlaceholder": "0:01–{end}s · 估计位置"
+  "pluralOne": "已导入1段音频",
+  "pluralUnset": "已导入{n}段音频",
+  "pluralZero": "已导入0段音频",
+  "unknownPlaceholder": "0:01–{end}s · 推测位置"
  }
 }

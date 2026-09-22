@@ -799,6 +799,10 @@ export function mountStudio() {
 					? t('state.analyzing')
 					: '';
 		$('state').hidden = !$('state').textContent;
+		// The map only moves once the take is analysed; say so over it while the server works.
+		document.querySelector<HTMLElement>('.graph-analyzing')!.hidden = !state.analyzing.has(
+			state.ownTakeId!
+		);
 	}
 	async function audioReady() {
 		if (!audioContext) {
