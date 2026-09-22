@@ -3,12 +3,12 @@
   "list": [
    "Larynx height (raising it shortens the vocal tract and raises the value)",
    "Mouth opening, tongue position and lip shape",
-   "The vowel: \"ee\" and \"ah\" differ a lot in the same person"
+   "The vowel: the same person's \"ee\" and \"ah\" differ a lot"
   ],
   "listIsCopy": true,
   "number": "1,234 clips imported",
-  "placeholder": "Reference analysis: x <y>",
-  "plain": "How to use",
+  "placeholder": "Couldn't analyze the reference: x <y>",
+  "plain": "User guide",
   "pluralOne": "1 clip imported",
   "pluralUnset": "{n} clips imported",
   "pluralZero": "0 clips imported",
