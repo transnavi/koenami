@@ -23,7 +23,7 @@ import { SignalView, type Side, type SignalMode } from '$lib/signals';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
-import { state, snapshot as snap, type State } from './studio.svelte';
+import { snapshot as snap, type State } from './studio.svelte';
 import type { Clip, Detail, PCM, Snapshot, Take, TakeSort, View, Words } from './types';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T,
@@ -64,7 +64,11 @@ const VERDICT_HELP = {
 	caveats: t.list('verdict.help.caveats') as string[]
 };
 
-export function mountStudio() {
+// The reactive studio state (src/lib/studio/studio.svelte.ts) is created per mount by the
+// <Studio> shell and passed in, so a remount (HMR, or client-side navigation back to the page)
+// gets a fresh, isolated instance and this mount's in-flight callbacks never write a later one.
+// The controller reads and writes it as it did the old local object; components read it reactively.
+export function mountStudio(state: State) {
 	// The service worker of the production build (src/service-worker.ts); the registration
 	// is the studio's, as Kit's own would report a missing file as a page error.
 	if (import.meta.env.PROD && 'serviceWorker' in navigator)
@@ -74,10 +78,6 @@ export function mountStudio() {
 	try {
 		favorites = new Set(JSON.parse(localStorage.getItem('voice-favorites') || '[]'));
 	} catch {}
-	// The reactive studio state (src/lib/studio/studio.svelte.ts). Reset for this mount so a
-	// remount under HMR, or a second page in one document, starts clean. The controller reads
-	// and writes it as it did the old local object; components read it reactively.
-	state.reset();
 	const player = $<HTMLAudioElement>('player'),
 		reference = $<HTMLAudioElement>('reference-player');
 	const map = new VoiceMap(

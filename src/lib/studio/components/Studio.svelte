@@ -7,13 +7,17 @@
 
 	import '$lib/studio/studio.css';
 	import { initLayout } from '$lib/studio/layout';
+	import { provideStudio } from '$lib/studio/studio.svelte';
 	import { initTour } from '$lib/studio/tour';
 	import { onMount } from 'svelte';
 
 	let { body }: { body: string } = $props();
 
+	// This mount's isolated state, shared with child components through context.
+	const studio = provideStudio();
+
 	onMount(() => {
-		mountStudio();
+		mountStudio(studio);
 		initTour(document.getElementById('tour-restart'));
 		initLayout({
 			browser: document.getElementById('sample-browser') as HTMLDialogElement,

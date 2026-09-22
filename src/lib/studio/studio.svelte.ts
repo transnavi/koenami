@@ -5,6 +5,14 @@ import type { Side } from '$lib/signals';
    components can read it reactively while the controller keeps writing it. The controller still
    assembles the `window.voiceApp` test seam from this `state` plus its own closure.
 
+   One instance is created per mount and shared through Svelte context (`provideStudio` in the
+   `<Studio>` shell, `useStudio` in child components); the controller receives the same instance
+   as an argument. A remount — HMR, or client-side navigation back to the page — therefore builds
+   a fresh, already-clean instance, and an async callback still in flight from the previous mount
+   writes into that previous (now-detached) instance rather than the live one, the isolation the
+   old per-mount local object gave. (Removing the mount's `window`/audio listeners on unmount is a
+   separate, pre-existing teardown gap, tracked outside this store.)
+
    Field runes are chosen by how the controller writes each field:
    - `$state.raw` for the heavy payloads it reassigns wholesale (clips, detail, PCM, takes,
      the live track). Not proxied — no per-property signal allocation on hot paths, no split
@@ -13,10 +21,8 @@ import type { Side } from '$lib/signals';
      patched in place at load (app.ts), so a future `{#each state.clips}` must key off a
      reassignment, not an in-place field write.
    - `$state` for the small records it mutates in place (`ranges.own = …`, the tokens).
-   - `SvelteSet` for `analyzing`, since a plain Set behind `$state` is not reactive.
-
-   One studio mounts per page; concurrent `mountStudio()` calls in one document are not
-   supported (the second `reset()` clears the first). */
+   - `SvelteSet` for `analyzing`, since a plain Set behind `$state` is not reactive. */
+import { getContext, setContext } from 'svelte';
 import { SvelteSet } from 'svelte/reactivity';
 
 import type { Clip, Detail, PCM, Snapshot, Take, Words } from './types';
@@ -57,25 +63,23 @@ export class StudioState {
 	captureMode = $state<'record' | 'live' | null>(null);
 	previousTake = $state.raw<Snapshot | null>(null);
 	ownTakeId = $state<string | null>(null);
-
-	/* Restore every field to its initial value. Called on each mount so a remount under HMR, or
-	   a second page in one document, starts clean. Copying a fresh instance's fields keeps this
-	   total by construction — a new field inherits its declared initial value with no reset line
-	   to forget — except `analyzing`, whose SvelteSet identity (held by the seam and future
-	   components) must survive; it is cleared instead of replaced. */
-	reset() {
-		const { analyzing: _keep, ...fresh } = new StudioState();
-		Object.assign(this, fresh);
-		this.analyzing.clear();
-	}
 }
-
-/* The one reactive state instance the studio runs on. The controller reads and writes it as it
-   did the old local object; components will `$derive` from it as regions move over. */
-export const state = new StudioState();
 
 /* The state shape, for annotations elsewhere (`State['capabilities']`). */
 export type State = StudioState;
+
+const STUDIO = Symbol('studio');
+
+/* Create this mount's state and publish it on the component context. Called once in the
+   `<Studio>` shell during its initialisation, before `mountStudio` runs. */
+export function provideStudio(): StudioState {
+	return setContext(STUDIO, new StudioState());
+}
+
+/* This mount's state, for child components. */
+export function useStudio(): StudioState {
+	return getContext<StudioState>(STUDIO);
+}
 
 /* A plain deep copy of reactive state, for values that leave Svelte's world for IndexedDB —
    `structuredClone` cannot clone a `$state` proxy. With `$state.raw` payloads only the small
