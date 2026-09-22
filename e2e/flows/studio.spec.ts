@@ -174,7 +174,7 @@ test('the closest-to-you order ranks speakers by the analyzer’s similarity mod
 	await studio.until(app.analysed);
 	await studio.choose('library-group', 'all');
 	await studio.choose('sort', 'near');
-	await expect(page.locator('#sort-basis')).toHaveText(/聴き手の判断に近いモデル/);
+	await expect(page.locator('#sort-basis')).toHaveText(/声質をとらえたベクトル/);
 	const top = await page.evaluate(() => {
 		const s = (
 			window as unknown as {
@@ -199,7 +199,7 @@ test('the closest-to-you order ranks speakers by the analyzer’s similarity mod
 	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 	await studio.until(app.analysed);
 	await studio.until(`window.voiceApp.state.similar?.key !== ${JSON.stringify(firstKey)}`);
-	await expect(page.locator('#sort-basis')).toHaveText(/聴き手の判断に近いモデル/);
+	await expect(page.locator('#sort-basis')).toHaveText(/声質をとらえたベクトル/);
 	await expect(folder.locator('.sample-row').first().locator('.nearest-badge')).toHaveText(
 		'最も近い'
 	);
