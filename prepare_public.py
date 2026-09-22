@@ -125,6 +125,7 @@ def main():
     studio = ['src/lib/studio/head.html', 'src/lib/studio/body.html', 'src/lib/studio/app.ts', 'src/lib/i18n/index.ts']
     pages = {'/': [*studio, 'src/lib/i18n/ja.ts'], **{f'/{lang}/': [*studio, f'src/lib/i18n/{lang}.ts'] for lang in LANGUAGES if lang != 'ja'},
              **{f'/{name}.html': [f'src/lib/studio/{name}-head.html', f'src/lib/studio/{name}-body.html'] for name in ('guide', 'tutorial', 'method', 'references')}}
+    pages['/en/tutorial.html'] = ['src/lib/studio/tutorial-en-head.html', 'src/lib/studio/tutorial-en-body.html']
     entries = []
     for path, sources in pages.items():
         modified = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', *sources], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
