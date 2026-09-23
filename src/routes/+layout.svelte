@@ -1,3 +1,12 @@
+<script module lang="ts">
+	import { browser } from '$app/environment';
+	import { defineKoeSelect } from '$lib/koe-select';
+
+	// The menus are custom elements shared by every page that uses one: define the element
+	// before the tree renders it, so its value and disabled accessors bind as properties.
+	if (browser) defineKoeSelect();
+</script>
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 

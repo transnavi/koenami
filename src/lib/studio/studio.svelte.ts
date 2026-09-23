@@ -33,10 +33,14 @@ import { SvelteSet } from 'svelte/reactivity';
 import type { Clip, Detail, PCM, Snapshot, Take, Words } from './types';
 
 export type Theme = 'light' | 'dark' | 'system';
+/* An entry in the toolbar's language menu, as /api/catalog returns it. */
+export type LanguageOption = { id: string; label: string };
 
+const THEMES: readonly Theme[] = ['light', 'dark', 'system'];
 const savedTheme = (): Theme => {
 	try {
-		return (localStorage.getItem('voice-theme') as Theme) || 'system';
+		const value = localStorage.getItem('voice-theme') as Theme | null;
+		return value && THEMES.includes(value) ? value : 'system';
 	} catch {
 		return 'system';
 	}
@@ -81,7 +85,7 @@ export class StudioState {
 	previousTake = $state.raw<Snapshot | null>(null);
 	ownTakeId = $state<string | null>(null);
 	/* The language menu's entries, from /api/catalog. */
-	languages = $state.raw<{ id: string; label: string }[]>([]);
+	languages = $state.raw<LanguageOption[]>([]);
 	theme = $state<Theme>(savedTheme());
 	dark = $state(themeIsDark());
 
@@ -105,19 +109,20 @@ export class StudioState {
 		if (select) (select as HTMLSelectElement).value = value;
 	}
 
-	/* The theme button flips the resolved appearance, not the preference list. */
+	/* The theme button flips what the document shows now, not the preference list. */
 	toggleTheme() {
-		this.setTheme(this.dark ? 'light' : 'dark');
+		this.setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
 	}
 
 	/* The share card's score for what the indicators show — the whole recording, or the
-	   selected range — or null while there is nothing scoreable. */
-	shareResult(): ScoreResult | null {
+	   selected range — or null while there is nothing scoreable. One derived value that the
+	   toolbar and the controller's verdict both read, so the score is computed once. */
+	readonly shareResult = $derived.by((): ScoreResult | null => {
 		const m = this.own || this.ownFull;
 		return this.scorer?.available && m && !m.analysisPending && !gateFailure(m, uiLang)
 			? this.scorer.score(m.features || {})
 			: null;
-	}
+	});
 
 	/* Show one of the studio's dialogs. They are still in the template body, so this finds
 	   them by id; each dialog opening as a component replaces its call with its own ref. */

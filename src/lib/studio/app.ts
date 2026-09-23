@@ -23,7 +23,7 @@ import { SignalView, type Side, type SignalMode } from '$lib/signals';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
-import { snapshot as snap, type State, type Theme } from './studio.svelte';
+import { snapshot as snap, type LanguageOption, type State, type Theme } from './studio.svelte';
 import type { Clip, Detail, PCM, Snapshot, Take, TakeSort, View, Words } from './types';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T,
@@ -1836,7 +1836,7 @@ export function mountStudio(state: State) {
 		controls();
 		const catalog = await api<{
 			capabilities?: State['capabilities'];
-			languages: { id: string; label: string }[];
+			languages: LanguageOption[];
 		}>('/api/catalog');
 		state.capabilities = catalog.capabilities || {};
 		$('words-button').hidden = state.capabilities.words === false;
@@ -2562,7 +2562,7 @@ export function mountStudio(state: State) {
 	}
 	const scalePos = (s: number) => `${clamp((s + 120) / 240, 0, 1) * 100}%`;
 	function updateVerdict() {
-		const result = state.shareResult(),
+		const result = state.shareResult,
 			scorer = state.scorer;
 		const readout = $<HTMLButtonElement>('verdict-readout');
 		readout.disabled = !result;
@@ -2688,7 +2688,7 @@ export function mountStudio(state: State) {
 		);
 	};
 	$('share-button').onclick = async () => {
-		const scored = state.shareResult();
+		const scored = state.shareResult;
 		if (!scored) return;
 		const scorer = state.scorer!,
 			lang = state.lang === 'lab' ? 'en' : state.lang;

@@ -1,19 +1,13 @@
 <!-- The studio shell. It owns the app grid — toolbar row, studio, transport — and mounts the
 	 controller over the body that still serves the not-yet-migrated regions. Each region that
-	 moves out of the `{@html}` body becomes a sibling component here. -->
-<script module lang="ts">
-	import { browser } from '$app/environment';
-	import { defineKoeSelect } from '$lib/koe-select';
-
-	// The menus are custom elements: define the element before the tree renders one, so its
-	// value and disabled accessors bind as properties.
-	if (browser) defineKoeSelect();
-</script>
-
+	 moves out of the `{@html}` body becomes a sibling component here. The body's remaining
+	 chrome (icon sprite, audio, dialogs) rides inside the grid but out of flow — hidden audio
+	 and closed dialogs are not grid items, and the sprite is absolutely positioned. -->
 <script lang="ts">
-	import { mountStudio } from '$lib/studio/app';
+	import type { Language } from '$lib/i18n';
 
 	import '$lib/studio/studio.css';
+	import { mountStudio } from '$lib/studio/app';
 	import { initLayout } from '$lib/studio/layout';
 	import { provideStudio } from '$lib/studio/studio.svelte';
 	import { initTour } from '$lib/studio/tour';
@@ -21,7 +15,7 @@
 
 	import Toolbar from './Toolbar.svelte';
 
-	let { body }: { body: string } = $props();
+	let { body, lang }: { body: string; lang: Language } = $props();
 
 	// This mount's isolated state, shared with child components through context.
 	const studio = provideStudio();
@@ -38,7 +32,7 @@
 </script>
 
 <div class="app">
-	<Toolbar />
+	<Toolbar {lang} />
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- the studio body is our own prerendered markup -->
 	{@html body}
 </div>

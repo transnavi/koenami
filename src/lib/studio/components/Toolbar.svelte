@@ -2,20 +2,26 @@
      The first region out of the template body; its ids and `icon-button` classes are contract,
      and the shared button and koe-select primitives stay in the global stylesheet. -->
 <script lang="ts">
-	import { home, lang, t, tutorialHref, tutorialLang } from '$lib/i18n';
+	import { home, translator, tutorialHref, tutorialLang, type Language } from '$lib/i18n';
 
 	import { useStudio } from '../studio.svelte';
 	import { restartTour } from '../tour';
 
+	let { lang }: { lang: Language } = $props();
+
 	const state = useStudio();
+	// The page's own translator: $lib/i18n's module-level `t` only resolves in the browser,
+	// and prerender needs every language's strings and links at build time. One page is one
+	// language, so this follows `lang` rather than re-reading a document that may not exist.
+	let tr = $derived(translator(lang));
 
 	let busy = $derived(state.busy || state.recording || state.loadingLanguage);
-	let share = $derived(state.shareResult());
+	let share = $derived(state.shareResult);
 	let corpus = $derived(
 		state.scorer
-			? t('corpus.count', {
-					clips: t('corpus.clips', { n: state.clips.filter((c) => !c.synthetic).length }),
-					speakers: t('corpus.speakers', {
+			? tr('corpus.count', {
+					clips: tr('corpus.clips', { n: state.clips.filter((c) => !c.synthetic).length }),
+					speakers: tr('corpus.speakers', {
 						n: new Set(state.clips.filter((c) => !c.synthetic).map((c) => c.speaker)).size
 					})
 				})
@@ -30,8 +36,8 @@
 	</a>
 	<!-- Each language is its own page; the controller's change handler saves the session and
 	     navigates, and still owns the select's value while the session view is its concern. -->
-	<span class="language-control" title={t('toolbar.language')}>
-		<koe-select id="language" icon="i-globe" aria-label={t('toolbar.language')} disabled={busy}>
+	<span class="language-control" title={tr('toolbar.language')}>
+		<koe-select id="language" icon="i-globe" aria-label={tr('toolbar.language')} disabled={busy}>
 			{#each state.languages as l (l.id)}
 				<option value={l.id}>{l.label}</option>
 			{/each}
@@ -44,27 +50,29 @@
 			href={tutorialHref(lang)}
 			hreflang={tutorialLang(lang)}
 			target="_blank"
-			title={t('toolbar.tutorial')}
-			aria-label={t('toolbar.tutorial')}
+			title={tr('toolbar.tutorial')}
+			aria-label={tr('toolbar.tutorial')}
 		>
 			<svg aria-hidden="true"><use href="#i-book"></use></svg>
 		</a>
 		<button
 			id="tour-restart"
 			class="icon-button"
-			title={t('toolbar.guide')}
-			aria-label={t('toolbar.guide')}
+			title={tr('toolbar.guide')}
+			aria-label={tr('toolbar.guide')}
 			onclick={restartTour}
 		>
 			<svg aria-hidden="true"><use href="#i-help"></use></svg>
 		</button>
 		<!-- The click that fills and opens the share card stays with the controller while the
-		     share dialog still lives in the template body (dialogs phase). -->
+		     share dialog still lives in the template body (dialogs phase). Until the scorer
+		     loads there is no language verdict either way, and the old template's static title
+		     said "share" — keep that until the answer is known. -->
 		<button
 			id="share-button"
 			class="icon-button"
-			title={t(state.scorer?.available ? 'toolbar.share' : 'share.unavailable')}
-			aria-label={t('toolbar.share')}
+			title={tr(state.scorer && !state.scorer.available ? 'share.unavailable' : 'toolbar.share')}
+			aria-label={tr('toolbar.share')}
 			disabled={busy || !share}
 		>
 			<svg aria-hidden="true"><use href="#i-share"></use></svg>
@@ -72,8 +80,8 @@
 		<button
 			id="settings-button"
 			class="icon-button"
-			title={t('toolbar.settings')}
-			aria-label={t('toolbar.settings')}
+			title={tr('toolbar.settings')}
+			aria-label={tr('toolbar.settings')}
 			onclick={() => state.openDialog('settings-dialog')}
 		>
 			<svg aria-hidden="true"><use href="#i-gear"></use></svg>
@@ -81,8 +89,8 @@
 		<button
 			id="info-button"
 			class="icon-button"
-			title={t('toolbar.info')}
-			aria-label={t('toolbar.info')}
+			title={tr('toolbar.info')}
+			aria-label={tr('toolbar.info')}
 			onclick={() => state.openDialog('info-dialog')}
 		>
 			<svg aria-hidden="true"><use href="#i-info"></use></svg>
@@ -90,8 +98,8 @@
 		<button
 			id="theme-button"
 			class="icon-button"
-			title={t('toolbar.theme')}
-			aria-label={t('toolbar.theme')}
+			title={tr('toolbar.theme')}
+			aria-label={tr('toolbar.theme')}
 			onclick={() => state.toggleTheme()}
 		>
 			<svg aria-hidden="true"><use href={state.dark ? '#i-sun' : '#i-moon'}></use></svg>
