@@ -123,66 +123,12 @@ svg {
 [hidden] {
 	display: none !important;
 }
-.app {
-	height: 100dvh;
-	display: grid;
-	/* One column pinned to the viewport, so a crowded toolbar squeezes its language label instead of widening the page. */
-	grid-template-columns: minmax(0, 1fr);
-	grid-template-rows: 54px minmax(0, 1fr) 94px;
-}
-.toolbar {
-	display: flex;
-	align-items: center;
-	gap: 24px;
-	padding: 0 22px;
-	border-bottom: 1px solid var(--line);
-	background: var(--surface);
-}
-.brand {
-	display: flex;
-	gap: 9px;
-	align-items: center;
-	color: var(--heading);
-	text-decoration: none !important;
-}
-.brand svg {
-	color: var(--pink);
-	width: 23px;
-	height: 23px;
-}
-.brand h1 {
-	font-size: 17px;
-	letter-spacing: -0.5px;
-	font-weight: 650;
-	margin: 0;
-}
-.language-control {
-	display: flex;
-	align-items: center;
-	/* The one toolbar item that may give way: its label ellipsises when the buttons need the room. */
-	min-width: 0;
-	flex-shrink: 1;
-}
 koe-select {
 	font-size: 12px;
 	padding: 6px 24px 6px 8px;
 	min-height: 30px;
 	cursor: pointer;
 	max-width: 100%;
-}
-.language-control koe-select {
-	border: 0;
-	background: transparent;
-	font-size: 13px;
-}
-.toolbar-count {
-	font-size: 11px;
-	color: var(--muted);
-}
-.toolbar-end {
-	display: flex;
-	gap: 4px;
-	margin-left: auto;
 }
 .icon-button {
 	display: inline-flex;
@@ -1623,9 +1569,6 @@ html:has(.method) body {
 }
 
 /* The graph occupies the center; measurements and reference audio have fixed side rails. */
-.app {
-	grid-template-rows: 54px minmax(0, 1fr) 98px;
-}
 .studio {
 	grid-template-columns: 190px minmax(0, 1fr) 290px;
 	grid-template-rows: minmax(0, 1fr);
@@ -1940,9 +1883,6 @@ html:has(.method) body {
 	min-width: 65px;
 	padding-left: 8px;
 }
-.toolbar-count {
-	font-size: 11px;
-}
 .sample-item {
 	position: relative;
 	display: flex;
@@ -2043,13 +1983,6 @@ html:has(.method) body {
 	.graph-area {
 		padding: 0 8px 10px;
 		grid-template-rows: minmax(0, 1fr) 165px;
-	}
-	.toolbar {
-		padding: 0 15px;
-		gap: 15px;
-	}
-	.toolbar-count {
-		display: none;
 	}
 	.transport {
 		gap: 10px;
@@ -2437,9 +2370,6 @@ koe-select {
 	min-height: 28px;
 	border: 0;
 	background: transparent;
-}
-.language-control koe-select {
-	min-width: 110px;
 }
 .sample-filters koe-select {
 	flex: 1;
@@ -2849,9 +2779,6 @@ input[type='checkbox']:checked:after {
 	width: 15px;
 	height: 15px;
 }
-.app {
-	grid-template-rows: 54px minmax(0, 1fr) 64px;
-}
 .transport {
 	padding: 4px 18px;
 	gap: 14px;
@@ -3165,56 +3092,6 @@ input[type='checkbox']:checked:after {
 	opacity: 0.7;
 }
 @media (max-width: 800px), (max-height: 520px) {
-	.app {
-		grid-template-rows: 48px minmax(0, 1fr) auto;
-	}
-	.toolbar {
-		gap: 8px;
-		padding: 0 6px 0 12px;
-	}
-	.toolbar-count {
-		display: none;
-	}
-	.brand {
-		gap: 6px;
-	}
-	.brand svg {
-		width: 20px;
-		height: 20px;
-	}
-	.brand h1 {
-		font-size: 16px;
-	}
-	.language-control koe-select {
-		min-width: 0;
-		max-width: 150px;
-		min-height: 36px;
-	}
-	/* Narrow phones: the globe alone stands for the language menu; its label would only be truncated. */
-	@media (max-width: 400px) {
-		.language-control koe-select {
-			width: 50px;
-		}
-	}
-	@media (max-width: 340px) {
-		.brand h1 {
-			display: none;
-		}
-	}
-	.toolbar-end {
-		gap: 0;
-	}
-	.toolbar-end .icon-button {
-		width: 32px;
-		height: 40px;
-	}
-	.toolbar-end svg {
-		width: 20px;
-		height: 20px;
-	}
-	#share-button {
-		display: none;
-	}
 	.studio {
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: auto auto minmax(0, 1fr);
@@ -3763,10 +3640,6 @@ input[type='checkbox']:checked:after {
 	body {
 		height: auto;
 		overflow: visible;
-	}
-	.app {
-		height: auto;
-		min-height: 100dvh;
 	}
 	.studio {
 		grid-template-rows: auto auto auto;

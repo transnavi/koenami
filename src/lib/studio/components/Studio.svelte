@@ -1,7 +1,15 @@
-<!-- The studio shell. It hosts the page and mounts the controller, the guide and the phone
-	 layout in the order the scripts ran on the static page. Regions of the studio move out of
-	 the `{@html}` body into sibling components over the course of the refactor; until a region
-	 has moved it is still served by `data.body` and wired by `mountStudio()`. -->
+<!-- The studio shell. It owns the app grid — toolbar row, studio, transport — and mounts the
+	 controller over the body that still serves the not-yet-migrated regions. Each region that
+	 moves out of the `{@html}` body becomes a sibling component here. -->
+<script module lang="ts">
+	import { browser } from '$app/environment';
+	import { defineKoeSelect } from '$lib/koe-select';
+
+	// The menus are custom elements: define the element before the tree renders one, so its
+	// value and disabled accessors bind as properties.
+	if (browser) defineKoeSelect();
+</script>
+
 <script lang="ts">
 	import { mountStudio } from '$lib/studio/app';
 
@@ -11,6 +19,8 @@
 	import { initTour } from '$lib/studio/tour';
 	import { onMount } from 'svelte';
 
+	import Toolbar from './Toolbar.svelte';
+
 	let { body }: { body: string } = $props();
 
 	// This mount's isolated state, shared with child components through context.
@@ -18,7 +28,7 @@
 
 	onMount(() => {
 		mountStudio(studio);
-		initTour(document.getElementById('tour-restart'));
+		initTour();
 		initLayout({
 			browser: document.getElementById('sample-browser') as HTMLDialogElement,
 			toggle: document.getElementById('samples-toggle') as HTMLButtonElement,
@@ -27,5 +37,31 @@
 	});
 </script>
 
-<!-- eslint-disable-next-line svelte/no-at-html-tags -- the studio body is our own prerendered markup -->
-{@html body}
+<div class="app">
+	<Toolbar />
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -- the studio body is our own prerendered markup -->
+	{@html body}
+</div>
+
+<style>
+	.app {
+		height: 100dvh;
+		display: grid;
+		/* One column pinned to the viewport, so a crowded toolbar squeezes its language label instead of widening the page. */
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: 54px minmax(0, 1fr) 64px;
+	}
+
+	@media (max-width: 800px), (max-height: 520px) {
+		.app {
+			grid-template-rows: 48px minmax(0, 1fr) auto;
+		}
+	}
+
+	@media (max-height: 520px) {
+		.app {
+			height: auto;
+			min-height: 100dvh;
+		}
+	}
+</style>

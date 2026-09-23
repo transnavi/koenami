@@ -33,6 +33,10 @@ export const known = (lang: unknown): Language =>
 	(LANGUAGES as readonly unknown[]).includes(lang) ? (lang as Language) : 'ja';
 /* The studio's address in a language; Japanese lives at the root. */
 export const home = (lang: string) => (lang === 'ja' ? '/' : `/${lang}/`);
+/* The practice guide: its Japanese page, or the English mirror on the English site. */
+export const tutorialHref = (lang: string) =>
+	lang === 'en' ? '/en/tutorial.html' : '/tutorial.html';
+export const tutorialLang = (lang: string) => (lang === 'en' ? 'en' : 'ja');
 /* An Accept-Language value, or any language tag, reduced to a served language: the ranges in
    quality order, each matched by exact tag and then by primary subtag (server.py's language()
    follows the same rule). */
@@ -133,8 +137,8 @@ export function renderPage(template: string, lang: unknown, path: string): strin
 		lang: language,
 		og_locale: OG_LOCALES[language],
 		home: home(language),
-		tutorial: language === 'en' ? '/en/tutorial.html' : '/tutorial.html',
-		tutorial_lang: language === 'en' ? 'en' : 'ja',
+		tutorial: tutorialHref(language),
+		tutorial_lang: tutorialLang(language),
 		url: SITE + path,
 		links:
 			path === '/r'
