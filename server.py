@@ -552,6 +552,24 @@ def create_app():
     app.router.add_post('/api/words', words)
     app.router.add_get('/samples/{file}', sample)
     app.router.add_get('/data/{file}', data_file)
+
+    # Local option: serve the built site from the API process, so the review pages and the studio run without
+    # the Kit dev server (whose workerd has leaked past the dev-server memory cap on this machine).
+    static = os.environ.get('KOENAMI_STATIC')
+    if static and not PUBLIC:
+        root = Path(static).resolve()
+
+        async def page(request):
+            rel = request.match_info.get('path', '') or 'index.html'
+            candidates = [root / rel, root / rel / 'index.html', root / (rel.rstrip('/') + '.html')]
+            for path in candidates:
+                try: resolved = path.resolve()
+                except OSError: continue
+                if resolved.is_file() and root in resolved.parents: return web.FileResponse(resolved)
+            raise web.HTTPNotFound()
+
+        app.router.add_get('/', page)
+        app.router.add_get('/{path:.*}', page)
     return app
 
 
@@ -572,7 +590,9 @@ if __name__ == '__main__':
         os.execve(sys.executable, [sys.executable, *sys.argv], env)
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=35511)
+    parser.add_argument('--static', help='serve a built site (e.g. .svelte-kit/cloudflare) from this process; local use only')
     options = parser.parse_args()
+    if options.static: os.environ['KOENAMI_STATIC'] = options.static
     logging.basicConfig(level=logging.CRITICAL)
     try: asyncio.run(run(options.port))
     except KeyboardInterrupt: pass

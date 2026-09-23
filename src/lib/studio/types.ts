@@ -63,6 +63,17 @@ export type Take = {
 	pcm?: PCM;
 	[key: string]: unknown;
 };
+/* One entry of the analyzer's similarity ranking: the speaker's nearest clip and the cosine
+   distance to each, with the rank the response gave it. */
+export type SimilarSpeaker = {
+	speaker: string;
+	group: string;
+	synthetic: boolean;
+	distance: number;
+	clip: string;
+	clip_distance: number;
+	rank: number;
+};
 export type Words = {
 	words: { text: string; start: number; end: number }[];
 	pace?: number;
