@@ -228,3 +228,113 @@ test('a failed similarity ranking is not retried until the order is chosen again
 	await studio.choose('sort', 'near');
 	await expect.poll(() => requests).toBe(2);
 });
+
+/* Selecting a section of the take is the signal view's gesture target, and the seam that
+   drives it (`selectRange`) is the same code path. */
+function selectSection(page: import('@playwright/test').Page, start = 0.5, end = 2.5) {
+	return page.evaluate(
+		([a, b]) =>
+			(
+				window as unknown as {
+					voiceApp: { selectRange: (side: string, range: [number, number]) => void };
+				}
+			).voiceApp.selectRange('own', [a, b]),
+		[start, end] as [number, number]
+	);
+}
+
+/* The speaker a measurement sorts first. Folders hold their clips only while open, so the
+   folder itself is the stable read of the order. */
+function listedLead(page: import('@playwright/test').Page) {
+	return page.evaluate(
+		() => document.querySelector('#sample-list details')?.getAttribute('data-speaker') ?? null
+	);
+}
+
+test('the list follows the measurement a take or a section installs', async ({ page, studio }) => {
+	// The acoustic order is the one that goes stale here, so the ranking is kept unavailable.
+	await page.route('**/api/similar**', (route) =>
+		route.fulfill({ status: 503, contentType: 'text/plain', body: 'busy' })
+	);
+	await studio.open('/ja/');
+	await studio.until(app.ready);
+	await studio.choose('library-group', 'all');
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await studio.choose('sort', 'near');
+	// Two references whose measured features stand in for the next two analyses.
+	const picks = await page.evaluate(() => {
+		const clips = (
+			window as unknown as {
+				voiceApp: {
+					state: { clips: { id: string; speaker: string; features: unknown; plotted: boolean }[] };
+				};
+			}
+		).voiceApp.state.clips.filter((c) => c.plotted);
+		return [clips[3], clips[clips.length - 1]].map((c) => ({
+			id: c.id,
+			speaker: c.speaker,
+			features: c.features
+		}));
+	});
+	expect(picks[0].id).not.toBe(picks[1].id);
+	const leadIs = (page: import('@playwright/test').Page, speaker: string) =>
+		expect
+			.poll(() => listedLead(page))
+			.toMatch(new RegExp(`:${speaker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
+	const reply: { features: unknown }[] = [];
+	// The request body is PCM; the reply stands in for the measurement of what was sent.
+	await page.route('**/api/analyze**', (route) => {
+		const done = reply.shift();
+		if (!done) return route.fallback();
+		void route.fulfill({
+			contentType: 'application/json',
+			body: JSON.stringify({ duration: 2, voiced_seconds: 2, ...done })
+		});
+	});
+
+	// A take analysed in the background replaces the pending measurement the list sorted by.
+	reply.push({ features: picks[0].features });
+	await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+	await page.keyboard.press('r');
+	await studio.until(app.recording);
+	await studio.until(app.buffered(1.4));
+	await page.keyboard.press('r');
+	await studio.until(app.stopped + ' && ' + app.idle);
+	await studio.until(app.analysed);
+	await leadIs(page, picks[0].speaker);
+
+	// A section installs its own measurement the same way.
+	reply.push({ features: picks[1].features });
+	await selectSection(page);
+	await studio.until(app.range('own'));
+	await studio.until(app.idle);
+	await leadIs(page, picks[1].speaker);
+});
+
+test('restoring a take with a section asks for one ranking', async ({ page, studio }) => {
+	const asked: string[] = [];
+	await page.route('**/api/similar**', (route) => {
+		asked.push(route.request().url());
+		return route.fallback();
+	});
+	await studio.open('/ja/');
+	await studio.until(app.ready);
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await studio.choose('library-group', 'all');
+	await studio.choose('sort', 'near');
+	await studio.until('!!window.voiceApp.state.similar');
+	await selectSection(page);
+	await studio.until(app.range('own'));
+	await studio.settled();
+	// Starting and cancelling a recording restores the take exactly as it was, section included.
+	const before = asked.length;
+	await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+	await page.keyboard.press('r');
+	await studio.until(app.recording);
+	await page.keyboard.press('Escape');
+	await studio.until(app.stopped + ' && ' + app.idle);
+	await studio.until('!!window.voiceApp.state.similar || !!window.voiceApp.state.similarKey');
+	expect(asked.length - before).toBe(1);
+});

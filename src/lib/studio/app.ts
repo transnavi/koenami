@@ -1138,6 +1138,7 @@ export function mountStudio(state: State) {
 			else state.ref = full;
 			updateMap();
 			updateIndicators();
+			if (side === 'own') refreshNearOrder();
 			if (sessionReady) {
 				void persistTakes();
 				saveView();
@@ -1168,6 +1169,7 @@ export function mountStudio(state: State) {
 			signal.setRange(side, range, detail);
 			updateMap();
 			updateIndicators();
+			if (side === 'own') refreshNearOrder();
 		} catch (e) {
 			if (token === state.rangeToken[side]) notify((e as Error).message, true);
 		}
@@ -1342,7 +1344,9 @@ export function mountStudio(state: State) {
 		$('quality-state').textContent = bad;
 		$('quality-state').hidden = !bad;
 		controls();
-		refreshNearOrder();
+		// A restore passes remember = false and refreshes itself once its selection is back in
+		// place; refreshing here as well would rank the unselected take first.
+		if (remember) refreshNearOrder();
 		if (remember && !recordSnapshot) void persistTakes();
 	}
 	async function importAudio(file: File | undefined, side: Side) {
@@ -1812,6 +1816,7 @@ export function mountStudio(state: State) {
 				signal.setRange('own', state.ranges.own, state.ranges.own ? state.own : null);
 				updateIndicators();
 				updateRangeLabel();
+				refreshNearOrder();
 				const warning = qualityMessage(detail.reason) || '';
 				$('quality-state').textContent = warning;
 				$('quality-state').hidden = !warning;
