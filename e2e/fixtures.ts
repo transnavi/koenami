@@ -81,7 +81,23 @@ type Studio = {
 	forward: () => Promise<void>;
 	/** Absolute path of an audio fixture. */
 	audio: (name: string) => string;
+	/** A hold on the studio's measurements, driving the engine's own gate in the page
+	 *  (`window.voiceApp.measure`) now that the studio measures in the browser rather
+	 *  than posting audio to the analyzer. Hold the next take or live window until
+	 *  released, or fail the next ones with a message. */
+	measure: {
+		/** Holds the next measurement of `kind` until the returned release runs. */
+		hold: (kind?: MeasureKind) => Promise<() => Promise<void>>;
+		/** Fails the next `times` measurements; `Infinity` fails every one until `restore`. */
+		fail: (message: string, kind?: MeasureKind, times?: number) => Promise<void>;
+		/** Drops the failures of a kind; no `kind` drops every failure. */
+		restore: (kind?: MeasureKind) => Promise<void>;
+	};
 };
+
+/** `analyze` is a recorded or imported take (or a range of one), `live` a live window.
+ *  The names match the engine's own gate kinds. */
+export type MeasureKind = 'analyze' | 'live';
 
 // The pixel ratio the page sees is the context's, pinned so that a system setting cannot
 // change what the canvases draw; the screens specs choose 1 or 2.
@@ -522,8 +538,55 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 			await page.goto(path);
 			await ready();
 		};
+		// The engine's gate, reached through the hook the studio exposes. A release is a
+		// page function, so it is parked on the window between the two round trips, under
+		// its own id so that two holds of one kind each keep their release.
+		let holdId = 0;
+		const measure: Studio['measure'] = {
+			hold: async (kind) => {
+				const id = ++holdId;
+				await page.evaluate(
+					([i, k]) => {
+						const w = window as unknown as {
+							voiceApp: { measure: { hold: (kind?: string) => () => void } };
+							__measureRelease?: Record<number, () => void>;
+						};
+						(w.__measureRelease ??= {})[i] = w.voiceApp.measure.hold(k === '*' ? undefined : k);
+					},
+					[id, kind ?? '*'] as const
+				);
+				return async () => {
+					await page.evaluate((i) => {
+						const w = window as unknown as { __measureRelease?: Record<number, () => void> };
+						w.__measureRelease?.[i]?.();
+						delete w.__measureRelease?.[i];
+					}, id);
+				};
+			},
+			fail: async (message, kind, times = 1) => {
+				await page.evaluate(
+					([m, k, t]) =>
+						(
+							window as unknown as {
+								voiceApp: { measure: { fail: (message: string, kind?: string, times?: number) => void } };
+							}
+						).voiceApp.measure.fail(m, k === '*' ? undefined : k, t),
+					[message, kind ?? '*', times] as const
+				);
+			},
+			restore: async (kind) => {
+				await page.evaluate(
+					(k) =>
+						(
+							window as unknown as { voiceApp: { measure: { restore: (kind?: string) => void } } }
+						).voiceApp.measure.restore(k === '*' ? undefined : k),
+					kind ?? '*'
+				);
+			}
+		};
 		await use({
 			log,
+			measure,
 			golden,
 			screen,
 			tick,
