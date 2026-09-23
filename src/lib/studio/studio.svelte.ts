@@ -1,4 +1,5 @@
-import type { Scorer } from '$lib/score';
+import { lang as uiLang } from '$lib/i18n';
+import { gateFailure, type ScoreResult, type Scorer } from '$lib/score';
 import type { Side } from '$lib/signals';
 /* The studio's reactive state. During the component refactor this replaces the plain `state`
    object the controller (app.ts) held with a Svelte 5 runes store of the same shape, so
@@ -21,11 +22,31 @@ import type { Side } from '$lib/signals';
      patched in place at load (app.ts), so a future `{#each state.clips}` must key off a
      reassignment, not an in-place field write.
    - `$state` for the small records it mutates in place (`ranges.own = …`, the tokens).
-   - `SvelteSet` for `analyzing`, since a plain Set behind `$state` is not reactive. */
+   - `SvelteSet` for `analyzing`, since a plain Set behind `$state` is not reactive.
+
+   Theme reads its initial values where they already are by the time the page scripts run:
+   `theme.js` has resolved the saved preference onto `documentElement[data-theme]` before first
+   paint. Both reads are guarded so the module still loads under prerender. */
 import { getContext, setContext } from 'svelte';
 import { SvelteSet } from 'svelte/reactivity';
 
 import type { Clip, Detail, PCM, Snapshot, Take, Words } from './types';
+
+export type Theme = 'light' | 'dark' | 'system';
+/* An entry in the toolbar's language menu, as /api/catalog returns it. */
+export type LanguageOption = { id: string; label: string };
+
+const THEMES: readonly Theme[] = ['light', 'dark', 'system'];
+const savedTheme = (): Theme => {
+	try {
+		const value = localStorage.getItem('voice-theme') as Theme | null;
+		return value && THEMES.includes(value) ? value : 'system';
+	} catch {
+		return 'system';
+	}
+};
+const themeIsDark = (): boolean =>
+	typeof document !== 'undefined' && document.documentElement.dataset.theme === 'dark';
 
 export class StudioState {
 	lang = $state('ja');
@@ -63,6 +84,51 @@ export class StudioState {
 	captureMode = $state<'record' | 'live' | null>(null);
 	previousTake = $state.raw<Snapshot | null>(null);
 	ownTakeId = $state<string | null>(null);
+	/* The language menu's entries, from /api/catalog. */
+	languages = $state.raw<LanguageOption[]>([]);
+	theme = $state<Theme>(savedTheme());
+	dark = $state(themeIsDark());
+
+	/* Apply a light/dark/system preference: remember it, resolve it onto the document (the
+	   views repaint via their own `data-theme` observers), and keep the settings dialog's
+	   select in step — that one line goes when the settings dialog becomes a component. */
+	setTheme(value: Theme) {
+		this.theme = value;
+		const resolved =
+			value === 'system'
+				? matchMedia('(prefers-color-scheme: dark)').matches
+					? 'dark'
+					: 'light'
+				: value;
+		this.dark = resolved === 'dark';
+		try {
+			localStorage.setItem('voice-theme', value);
+		} catch {}
+		document.documentElement.dataset.theme = resolved;
+		const select = document.getElementById('theme-select');
+		if (select) (select as HTMLSelectElement).value = value;
+	}
+
+	/* The theme button flips what the document shows now, not the preference list. */
+	toggleTheme() {
+		this.setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+	}
+
+	/* The share card's score for what the indicators show — the whole recording, or the
+	   selected range — or null while there is nothing scoreable. One derived value that the
+	   toolbar and the controller's verdict both read, so the score is computed once. */
+	readonly shareResult = $derived.by((): ScoreResult | null => {
+		const m = this.own || this.ownFull;
+		return this.scorer?.available && m && !m.analysisPending && !gateFailure(m, uiLang)
+			? this.scorer.score(m.features || {})
+			: null;
+	});
+
+	/* Show one of the studio's dialogs. They are still in the template body, so this finds
+	   them by id; each dialog opening as a component replaces its call with its own ref. */
+	openDialog(id: string) {
+		(document.getElementById(id) as HTMLDialogElement | null)?.showModal();
+	}
 }
 
 /* The state shape, for annotations elsewhere (`State['capabilities']`). */

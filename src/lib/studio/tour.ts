@@ -249,13 +249,14 @@ export function startTour(from = 0) {
 	tick();
 	show(from);
 }
-/* The restart button is the toolbar's; the guide starts on its own after the studio settles. */
-export function initTour(restart: HTMLElement | null) {
+/* The toolbar's guide button: close whatever dialog is open and begin again. */
+export function restartTour() {
+	document.querySelector<HTMLDialogElement>('dialog[open]:not(.tour-card)')?.close();
+	startTour(0);
+}
+/* The guide starts on its own after the studio settles. */
+export function initTour() {
 	const state = load();
-	restart?.addEventListener('click', () => {
-		document.querySelector<HTMLDialogElement>('dialog[open]:not(.tour-card)')?.close();
-		startTour(0);
-	});
 	if (state.done) return;
 	// Wait for the studio to settle before the first spotlight.
 	setTimeout(() => startTour(Number.isInteger(state.step) ? (state.step as number) : 0), 600);
