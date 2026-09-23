@@ -21,6 +21,9 @@ export const entries: EntryGenerator = () => [
 export const load: PageLoad = ({ params }) => {
 	const lang = known(params.lang);
 	return {
+		// The page's language, as the catalogue renders it: components need it as an explicit
+		// input, since the module-level `lang` in $lib/i18n only exists in the browser.
+		lang,
 		head: renderPage(head, lang, home(lang)),
 		body: renderPage(body, lang, home(lang))
 	};

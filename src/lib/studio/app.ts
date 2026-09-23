@@ -3,9 +3,10 @@ import { loadImported, importedAudio, importJVS, type ImportClip } from '$lib/co
 /* The studio: one controller over the page's elements, ported from web/app.js with types.
    Its DOM writes, request order and timing are what the browser goldens pin. */
 import { t, lang as uiLang } from '$lib/i18n';
-import { defineKoeSelect, type KoeSelectElement } from '$lib/koe-select';
+import { type KoeSelectElement } from '$lib/koe-select';
 import { VoiceMap, type MapSample } from '$lib/map';
 import { finite, quantile, clamp, AXES } from '$lib/math';
+import * as engine from '$lib/measure/engine';
 import {
 	Scorer,
 	verdictLabel,
@@ -23,7 +24,7 @@ import { SignalView, type Side, type SignalMode } from '$lib/signals';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
-import { snapshot as snap, type State } from './studio.svelte';
+import { snapshot as snap, type LanguageOption, type State, type Theme } from './studio.svelte';
 import type {
 	Clip,
 	Detail,
@@ -83,7 +84,6 @@ export function mountStudio(state: State) {
 	// is the studio's, as Kit's own would report a missing file as a page error.
 	if (import.meta.env.PROD && 'serviceWorker' in navigator)
 		navigator.serviceWorker.register('/service-worker.js').catch(() => {});
-	defineKoeSelect();
 	let favorites = new Set<string>();
 	try {
 		favorites = new Set(JSON.parse(localStorage.getItem('voice-favorites') || '[]'));
@@ -149,32 +149,11 @@ export function mountStudio(state: State) {
 		if (!r.ok) throw new Error((await r.text()).slice(0, 200) || `Request failed (${r.status})`);
 		return r.json();
 	}
-	function setTheme(value: string) {
-		try {
-			localStorage.setItem('voice-theme', value);
-		} catch {}
-		document.documentElement.dataset.theme =
-			value === 'system'
-				? matchMedia('(prefers-color-scheme: dark)').matches
-					? 'dark'
-					: 'light'
-				: value;
-		$<HTMLSelectElement>('theme-select').value = value;
-		icon($('theme-button'), document.documentElement.dataset.theme === 'dark' ? 'sun' : 'moon');
-		map.invalidate();
-		signal.dirty = true;
-	}
-	$('theme-button').onclick = () =>
-		setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-	$('theme-select').onchange = (e) => setTheme((e.target as HTMLSelectElement).value);
-	try {
-		$<HTMLSelectElement>('theme-select').value = localStorage.getItem('voice-theme') || 'system';
-	} catch {}
-	icon($('theme-button'), document.documentElement.dataset.theme === 'dark' ? 'sun' : 'moon');
-	for (const name of ['settings', 'info'])
-		$(name + '-button').onclick = () => {
-			$<HTMLDialogElement>(name + '-dialog').showModal();
-		};
+	// The settings dialog's theme select still lives in the template body; it writes the same
+	// store action the toolbar's theme button uses. (Its own migration moves both lines.)
+	$('theme-select').onchange = (e) =>
+		state.setTheme((e.target as HTMLSelectElement).value as Theme);
+	$<HTMLSelectElement>('theme-select').value = state.theme;
 	for (const b of document.querySelectorAll<HTMLElement>('[data-close]'))
 		b.onclick = () => b.closest('dialog')!.close();
 	for (const d of document.querySelectorAll('dialog'))
@@ -666,12 +645,6 @@ export function mountStudio(state: State) {
 			map.reset();
 			buildFit();
 			syncProjection();
-			$('corpus-count').textContent = t('corpus.count', {
-				clips: t('corpus.clips', { n: state.clips.filter((c) => !c.synthetic).length }),
-				speakers: t('corpus.speakers', {
-					n: new Set(state.clips.filter((c) => !c.synthetic).map((c) => c.speaker)).size
-				})
-			});
 			$<HTMLSelectElement>('library-group').value = lang === 'lab' ? 'all' : 'female';
 			$<HTMLSelectElement>('sort').value = lang === 'lab' ? 'name' : 'high';
 			state.loadingLanguage = false;
@@ -766,7 +739,7 @@ export function mountStudio(state: State) {
 			const detail: Detail =
 				clip.detail ||
 				(localPCM
-					? await api('/api/analyze', { method: 'POST', body: localPCM })
+					? await engine.analyze(localPCM)
 					: await api('/api/detail/' + encodeURIComponent(clip.id)));
 			if (token !== state.detailToken) return;
 			state.ref = state.refFull = detail;
@@ -792,7 +765,6 @@ export function mountStudio(state: State) {
 			'upload',
 			'reference-upload',
 			'add-reference',
-			'language',
 			'play-mine',
 			'compare-ab',
 			'reference-seek',
@@ -802,8 +774,6 @@ export function mountStudio(state: State) {
 			$<HTMLButtonElement>(id).disabled = busy;
 		$<HTMLButtonElement>('play-mine').disabled = busy || !state.ownFull;
 		$<HTMLButtonElement>('play-reference').disabled = busy || !state.selected;
-		$<HTMLButtonElement>('share-button').disabled = busy || !shareResult();
-		$('share-button').title = t(state.scorer?.available ? 'toolbar.share' : 'share.unavailable');
 		$<HTMLButtonElement>('record').disabled =
 			state.busy || state.loadingLanguage || (state.recording && state.captureMode === 'live');
 		$('record').setAttribute(
@@ -1157,10 +1127,9 @@ export function mountStudio(state: State) {
 			else {
 				const pcm = side === 'own' ? state.ownPCM : state.refPCM;
 				if (!pcm) return;
-				detail = await api('/api/analyze', {
-					method: 'POST',
-					body: pcm.slice(Math.round(range[0] * 16000), Math.round(range[1] * 16000))
-				});
+				detail = await engine.analyze(
+					pcm.slice(Math.round(range[0] * 16000), Math.round(range[1] * 16000))
+				);
 				detail.offset = range[0];
 			}
 			if (token !== state.rangeToken[side]) return;
@@ -1361,7 +1330,7 @@ export function mountStudio(state: State) {
 			const pcm = await decode(file);
 			if (pcm.length / 16000 > (state.capabilities?.maxSeconds || 900))
 				throw new Error(t('error.too_long', { n: (state.capabilities?.maxSeconds || 900) / 60 }));
-			const detail = await api('/api/analyze', { method: 'POST', body: pcm });
+			const detail = await engine.analyze(pcm);
 			if (side === 'own') {
 				setOwn(detail, file.name, null, pcm);
 				await saveTake();
@@ -1435,11 +1404,7 @@ export function mountStudio(state: State) {
 			offset = end - raw.length / rate;
 		try {
 			const pcm = await resample(raw, rate),
-				m = await api('/api/analyze?live=1', {
-					method: 'POST',
-					body: pcm,
-					signal: (liveController = new AbortController()).signal
-				});
+				m = await engine.live(pcm, (liveController = new AbortController()).signal);
 			if (generation !== liveGeneration || !state.recording) return;
 			const rows = m.track!.map((p) => ({ ...p, t: p.t + offset }));
 			const replaceAt = Math.max(offset + 0.12, end - window + 0.12);
@@ -1799,7 +1764,7 @@ export function mountStudio(state: State) {
 		state.analyzing.add(id);
 		controls();
 		try {
-			const detail = await api('/api/analyze', { method: 'POST', body: take.pcm! });
+			const detail = await engine.analyze(take.pcm!);
 			const updated = await TakeStore.finishRecording<Take>(id, detail);
 			if (!updated) return;
 			state.takes = updated.index;
@@ -1977,11 +1942,11 @@ export function mountStudio(state: State) {
 		controls();
 		const catalog = await api<{
 			capabilities?: State['capabilities'];
-			languages: { id: string; label: string }[];
+			languages: LanguageOption[];
 		}>('/api/catalog');
 		state.capabilities = catalog.capabilities || {};
 		$('words-button').hidden = state.capabilities.words === false;
-		$('language').replaceChildren(...catalog.languages.map((l) => new Option(l.label, l.id)));
+		state.languages = catalog.languages;
 		const view = readView();
 		setLiveShapeWindow(view?.liveShapeSeconds);
 		setTakeSort(view?.takeSort);
@@ -2038,6 +2003,9 @@ export function mountStudio(state: State) {
 		sessionReady = true;
 		(window as unknown as { voiceApp: unknown }).voiceApp = {
 			state,
+			// The browser suite's hold on measurements, where it intercepted the analyzer's
+			// routes when the studio posted audio to it.
+			measure: engine.gate,
 			map,
 			signal,
 			fitValue,
@@ -2702,15 +2670,9 @@ export function mountStudio(state: State) {
 	function activeMeasurement() {
 		return state.own || state.ownFull;
 	}
-	function shareResult(): ScoreResult | null {
-		const m = activeMeasurement();
-		return state.scorer?.available && m && !m.analysisPending && !gateFailure(m, uiLang)
-			? state.scorer.score(m.features || {})
-			: null;
-	}
 	const scalePos = (s: number) => `${clamp((s + 120) / 240, 0, 1) * 100}%`;
 	function updateVerdict() {
-		const result = shareResult(),
+		const result = state.shareResult,
 			scorer = state.scorer;
 		const readout = $<HTMLButtonElement>('verdict-readout');
 		readout.disabled = !result;
@@ -2836,7 +2798,7 @@ export function mountStudio(state: State) {
 		);
 	};
 	$('share-button').onclick = async () => {
-		const scored = shareResult();
+		const scored = state.shareResult;
 		if (!scored) return;
 		const scorer = state.scorer!,
 			lang = state.lang === 'lab' ? 'en' : state.lang;

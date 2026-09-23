@@ -251,6 +251,30 @@ function listedLead(page: import('@playwright/test').Page) {
 	);
 }
 
+/* The speaker the acoustic order should lead with for the measurement installed right now:
+   the one holding the clip nearest to it (ties by clip id, as the library sorts). */
+function expectedLead(page: import('@playwright/test').Page) {
+	return page.evaluate(() => {
+		type C = { id: string; speaker: string; dataset?: string; group: string; features: unknown };
+		const w = window as unknown as {
+			voiceApp: {
+				state: { lang: string; clips: C[]; own: { features: unknown } | null };
+				map: { space: { distance: (a: unknown, b: unknown) => number } };
+			};
+		};
+		const { state, map } = w.voiceApp;
+		let best: C | null = null,
+			bestD = Infinity;
+		for (const c of state.clips) {
+			const d = map.space.distance(c.features, state.own?.features);
+			if (d < bestD || (d === bestD && best && c.id < best.id)) [best, bestD] = [c, d];
+		}
+		return best && Number.isFinite(bestD)
+			? `${state.lang}:${best.dataset || best.group}:${best.speaker}`
+			: null;
+	});
+}
+
 test('the list follows the measurement a take or a section installs', async ({ page, studio }) => {
 	// The acoustic order is the one that goes stale here, so the ranking is kept unavailable.
 	await page.route('**/api/similar**', (route) =>
@@ -262,54 +286,29 @@ test('the list follows the measurement a take or a section installs', async ({ p
 	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 	await studio.until(app.analysed);
 	await studio.choose('sort', 'near');
-	// Two references whose measured features stand in for the next two analyses.
-	const picks = await page.evaluate(() => {
-		const clips = (
-			window as unknown as {
-				voiceApp: {
-					state: { clips: { id: string; speaker: string; features: unknown; plotted: boolean }[] };
-				};
-			}
-		).voiceApp.state.clips.filter((c) => c.plotted);
-		return [clips[3], clips[clips.length - 1]].map((c) => ({
-			id: c.id,
-			speaker: c.speaker,
-			features: c.features
-		}));
-	});
-	expect(picks[0].id).not.toBe(picks[1].id);
-	const leadIs = (page: import('@playwright/test').Page, speaker: string) =>
-		expect
-			.poll(() => listedLead(page))
-			.toMatch(new RegExp(`:${speaker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
-	const reply: { features: unknown }[] = [];
-	// The request body is PCM; the reply stands in for the measurement of what was sent.
-	await page.route('**/api/analyze**', (route) => {
-		const done = reply.shift();
-		if (!done) return route.fallback();
-		void route.fulfill({
-			contentType: 'application/json',
-			body: JSON.stringify({ duration: 2, voiced_seconds: 2, ...done })
-		});
-	});
+	const inStep = async () => {
+		const want = await expectedLead(page);
+		expect(want, 'the installed measurement ranks some speaker first').not.toBeNull();
+		await expect.poll(() => listedLead(page)).toBe(want);
+	};
 
-	// A take analysed in the background replaces the pending measurement the list sorted by.
-	reply.push({ features: picks[0].features });
+	// A recorded take is listed while its analysis is pending and re-sorted once it lands.
 	await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
 	await page.keyboard.press('r');
 	await studio.until(app.recording);
-	await studio.until(app.buffered(1.4));
+	await studio.until(app.buffered(2.5));
 	await page.keyboard.press('r');
 	await studio.until(app.stopped + ' && ' + app.idle);
-	await studio.until(app.analysed);
-	await leadIs(page, picks[0].speaker);
+	await studio.until(app.analysed + ' && !(' + app.analysisPending + ')');
+	await inStep();
 
-	// A section installs its own measurement the same way.
-	reply.push({ features: picks[1].features });
-	await selectSection(page);
-	await studio.until(app.range('own'));
-	await studio.until(app.idle);
-	await leadIs(page, picks[1].speaker);
+	// A section installs its own measurement, and clearing it restores the take's.
+	await selectSection(page, 0.8, 2.0);
+	await studio.until(app.rangeApplied('own'));
+	await inStep();
+	await page.locator('#range-reset').click();
+	await studio.until(app.noRange('own'));
+	await inStep();
 });
 
 test('restoring a take with a section asks for one ranking', async ({ page, studio }) => {
