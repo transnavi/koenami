@@ -79,7 +79,10 @@ const VERDICT_HELP = {
 // <Studio> shell and passed in, so a remount (HMR, or client-side navigation back to the page)
 // gets a fresh, isolated instance and this mount's in-flight callbacks never write a later one.
 // The controller reads and writes it as it did the old local object; components read it reactively.
-export function mountStudio(state: State) {
+export function mountStudio(state: State): () => void {
+	// Cleared when the shell unmounts. A request that settles afterwards belongs to a page that is
+	// gone, and the element ids it would write now name the next mount's elements.
+	let alive = true;
 	// The service worker of the production build (src/service-worker.ts); the registration
 	// is the studio's, as Kit's own would report a missing file as a page error.
 	if (import.meta.env.PROD && 'serviceWorker' in navigator)
@@ -433,18 +436,18 @@ export function mountStudio(state: State) {
 				`/api/similar?lang=${encodeURIComponent(state.lang)}&limit=5000`,
 				{ method: 'POST', body: pcm }
 			);
-			if (state.similarKey !== key) return;
+			if (!alive || state.similarKey !== key) return;
 			state.similar = {
 				key,
 				speakers: new Map(r.speakers.map((s, rank) => [s.speaker, { ...s, rank }]))
 			};
 		} catch (e) {
-			if (state.similarKey === key) {
+			if (alive && state.similarKey === key) {
 				state.similarFailed = key;
 				notify(t('sort.near_failed', { message: (e as Error).message }), true);
 			}
 		} finally {
-			if (state.similarKey === key) {
+			if (alive && state.similarKey === key) {
 				state.similarKey = null;
 				if ($<HTMLSelectElement>('sort').value === 'near') renderLibrary();
 			}
@@ -2930,4 +2933,7 @@ export function mountStudio(state: State) {
 		}
 	};
 	init().catch((e) => notify(t('error.load', { message: e.message }), true));
+	return () => {
+		alive = false;
+	};
 }

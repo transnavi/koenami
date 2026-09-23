@@ -21,13 +21,14 @@
 	const studio = provideStudio();
 
 	onMount(() => {
-		mountStudio(studio);
+		const unmount = mountStudio(studio);
 		initTour();
 		initLayout({
 			browser: document.getElementById('sample-browser') as HTMLDialogElement,
 			toggle: document.getElementById('samples-toggle') as HTMLButtonElement,
 			scroll: document.getElementById('sample-scroll') as HTMLElement
 		});
+		return unmount;
 	});
 </script>
 
