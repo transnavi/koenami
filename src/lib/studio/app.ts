@@ -23,6 +23,7 @@ import { SignalView, type Side, type SignalMode } from '$lib/signals';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
+import { snapshot as snap, type State } from './studio.svelte';
 import type { Clip, Detail, PCM, Snapshot, Take, TakeSort, View, Words } from './types';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T,
@@ -63,45 +64,11 @@ const VERDICT_HELP = {
 	caveats: t.list('verdict.help.caveats') as string[]
 };
 
-type State = {
-	lang: string;
-	ownLanguage: string;
-	languageToken: number;
-	loadingLanguage: boolean;
-	clips: Clip[];
-	representatives: Clip[];
-	selected: Clip | null;
-	own: Detail | null;
-	ownFull: Detail | null;
-	ownPCM: PCM | null;
-	ownName: string;
-	ownId: string | null;
-	ref: Detail | Clip | null;
-	refFull: Detail | null;
-	refPCM: PCM | null;
-	ranges: Record<Side, [number, number] | null>;
-	words: Record<Side, Words | null>;
-	custom: Clip[];
-	imported: Clip[];
-	takes: Take[];
-	recording: boolean;
-	busy: boolean;
-	limit: number;
-	detailToken: number;
-	ownToken: number;
-	rangeToken: Record<Side, number>;
-	wordToken: Record<Side, number>;
-	liveTrack: { t: number; [key: string]: unknown }[];
-	liveClock: { end: number; at: number; start: number } | null;
-	analyzing: Set<string>;
-	capabilities?: { maxSeconds?: number; words?: boolean };
-	scorer?: Scorer;
-	captureMode?: 'record' | 'live' | null;
-	previousTake?: Snapshot | null;
-	ownTakeId?: string | null;
-};
-
-export function mountStudio() {
+// The reactive studio state (src/lib/studio/studio.svelte.ts) is created per mount by the
+// <Studio> shell and passed in, so a remount (HMR, or client-side navigation back to the page)
+// gets a fresh, isolated instance and this mount's in-flight callbacks never write a later one.
+// The controller reads and writes it as it did the old local object; components read it reactively.
+export function mountStudio(state: State) {
 	// The service worker of the production build (src/service-worker.ts); the registration
 	// is the studio's, as Kit's own would report a missing file as a page error.
 	if (import.meta.env.PROD && 'serviceWorker' in navigator)
@@ -111,38 +78,6 @@ export function mountStudio() {
 	try {
 		favorites = new Set(JSON.parse(localStorage.getItem('voice-favorites') || '[]'));
 	} catch {}
-	const state: State = {
-		lang: 'ja',
-		ownLanguage: 'ja',
-		languageToken: 0,
-		loadingLanguage: false,
-		clips: [],
-		representatives: [],
-		selected: null,
-		own: null,
-		ownFull: null,
-		ownPCM: null,
-		ownName: '',
-		ownId: null,
-		ref: null,
-		refFull: null,
-		refPCM: null,
-		ranges: { own: null, ref: null },
-		words: { own: null, ref: null },
-		custom: [],
-		imported: [],
-		takes: [],
-		recording: false,
-		busy: false,
-		limit: 60,
-		detailToken: 0,
-		ownToken: 0,
-		rangeToken: { own: 0, ref: 0 },
-		wordToken: { own: 0, ref: 0 },
-		liveTrack: [],
-		liveClock: null,
-		analyzing: new Set()
-	};
 	const player = $<HTMLAudioElement>('player'),
 		reference = $<HTMLAudioElement>('reference-player');
 	const map = new VoiceMap(
@@ -1337,7 +1272,8 @@ export function mountStudio() {
 					detail,
 					pcm
 				};
-				state.custom.push(c);
+				// `custom` is $state.raw, so reassign rather than mutate in place.
+				state.custom = [...state.custom, c];
 				$<HTMLSelectElement>('library-group').value = 'custom';
 				await selectSample(c, false);
 			}
@@ -1584,7 +1520,7 @@ export function mountStudio() {
 	function persistTakes() {
 		const current = state.recording ? recordSnapshot : snapshotOwn();
 		if (!current) return Promise.resolve();
-		return TakeStore.write({ current, previous: state.previousTake || null }).catch(() =>
+		return TakeStore.write(snap({ current, previous: state.previousTake || null })).catch(() =>
 			notify(t('error.take_save'), true)
 		);
 	}
@@ -1731,7 +1667,7 @@ export function mountStudio() {
 							'resonance_sensitivity_pct'
 						].map((k) => [k, state.ownFull![k] as number])
 					),
-			t: Take = {
+			take: Take = {
 				id,
 				name: state.ownName,
 				date: old?.date || new Date().toISOString(),
@@ -1742,7 +1678,7 @@ export function mountStudio() {
 				...(quality && { quality }),
 				...(snapshot?.pcm && { peaks: wavePeaks(snapshot.pcm)! })
 			};
-		const saved = await TakeStore.saveRecording(snapshot, t);
+		const saved = await TakeStore.saveRecording(snap(snapshot), snap(take));
 		state.takes = saved!.index;
 		await persistTakes();
 		renderTakeMenu();
@@ -1762,7 +1698,7 @@ export function mountStudio() {
 				snapshot?.takeId === id
 					? { ...snapshot, detail, measurement: snapshot.range ? snapshot.measurement : detail }
 					: snapshot;
-			state.previousTake = complete(state.previousTake);
+			state.previousTake = complete(state.previousTake) ?? null;
 			recordSnapshot = complete(recordSnapshot) ?? null;
 			if (!state.recording && state.ownTakeId === id) {
 				state.ownFull = detail;
@@ -2109,6 +2045,7 @@ export function mountStudio() {
 			notify(t('error.favorite_save'), true);
 		}
 		TakeStore.write(
+			// `custom` is $state.raw, so these clips are plain and need no snapshot.
 			state.custom.filter((c) => favorites.has(c.id)).map(({ audio: _audio, ...c }) => c),
 			'references'
 		).catch(() => notify(t('error.reference_save'), true));
@@ -2218,8 +2155,8 @@ export function mountStudio() {
 			);
 			const peaks = snapshot?.pcm ? wavePeaks(snapshot.pcm) : null;
 			if (!peaks) continue;
-			const saved = await TakeStore.updateRecording<Take>(t.id, (snap, metadata) => ({
-				snapshot: snap,
+			const saved = await TakeStore.updateRecording<Take>(t.id, (stored, metadata) => ({
+				snapshot: stored,
 				metadata: { ...metadata!, peaks }
 			})).catch(() => null);
 			if (saved?.index) {
@@ -2309,7 +2246,7 @@ export function mountStudio() {
 				if (next?.pcm) applySnapshot(next);
 				state.previousTake = null;
 			}
-			await TakeStore.write({ current: snapshotOwn(), previous: state.previousTake || null });
+			await TakeStore.write(snap({ current: snapshotOwn(), previous: state.previousTake || null }));
 			updateMap();
 			saveView();
 			notify(t('notice.take_deleted'));
