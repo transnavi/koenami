@@ -8,8 +8,8 @@ import type { AcousticSpace, Features } from './space';
 export const TIMBRE_WEIGHT = 0.75;
 
 /* Distance from `own` to each speaker's centre in the standardised five-measure space: the mean
-   of the speaker's plotted clips, the ones that passed the library's screening and that the timbre
-   index also holds. Speakers with no such clip are left out. */
+   of the speaker's plotted clips, the ones that passed the library's screening. Speakers with no
+   such clip are left out. */
 export function fiveMeasureDistances(
 	space: AcousticSpace,
 	clips: Iterable<{ speaker: string; features: Features; plotted?: boolean }>,
