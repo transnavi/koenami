@@ -8,16 +8,16 @@
 	import { useStudio } from '../studio.svelte';
 	import { restartTour } from '../tour';
 
-	const state = useStudio();
+	const studio = useStudio();
 
-	let busy = $derived(state.busy || state.recording || state.loadingLanguage);
-	let share = $derived(state.shareResult);
+	let busy = $derived(studio.busy || studio.recording || studio.loadingLanguage);
+	let share = $derived(studio.shareResult);
 	let corpus = $derived(
-		state.scorer
+		studio.scorer
 			? m.corpus_count({
-					clips: m.corpus_clips({ n: state.clips.filter((c) => !c.synthetic).length }),
+					clips: m.corpus_clips({ n: studio.clips.filter((c) => !c.synthetic).length }),
 					speakers: m.corpus_speakers({
-						n: new Set(state.clips.filter((c) => !c.synthetic).map((c) => c.speaker)).size
+						n: new Set(studio.clips.filter((c) => !c.synthetic).map((c) => c.speaker)).size
 					})
 				})
 			: ''
@@ -33,7 +33,7 @@
 	     navigates, and still owns the select's value while the session view is its concern. -->
 	<span class="language-control" title={m.toolbar_language()}>
 		<koe-select id="language" icon="i-globe" aria-label={m.toolbar_language()} disabled={busy}>
-			{#each state.languages as l (l.id)}
+			{#each studio.languages as l (l.id)}
 				<option value={l.id}>{l.label}</option>
 			{/each}
 		</koe-select>
@@ -66,7 +66,7 @@
 		<button
 			id="share-button"
 			class="icon-button"
-			title={state.scorer && !state.scorer.available ? m.share_unavailable() : m.toolbar_share()}
+			title={studio.scorer && !studio.scorer.available ? m.share_unavailable() : m.toolbar_share()}
 			aria-label={m.toolbar_share()}
 			disabled={busy || !share}
 		>
@@ -77,7 +77,7 @@
 			class="icon-button"
 			title={m.toolbar_settings()}
 			aria-label={m.toolbar_settings()}
-			onclick={() => state.openDialog('settings-dialog')}
+			onclick={() => studio.openDialog('settings-dialog')}
 		>
 			<svg aria-hidden="true"><use href="#i-gear"></use></svg>
 		</button>
@@ -86,7 +86,7 @@
 			class="icon-button"
 			title={m.toolbar_info()}
 			aria-label={m.toolbar_info()}
-			onclick={() => state.openDialog('info-dialog')}
+			onclick={() => studio.openDialog('info-dialog')}
 		>
 			<svg aria-hidden="true"><use href="#i-info"></use></svg>
 		</button>
@@ -95,9 +95,9 @@
 			class="icon-button"
 			title={m.toolbar_theme()}
 			aria-label={m.toolbar_theme()}
-			onclick={() => state.toggleTheme()}
+			onclick={() => studio.toggleTheme()}
 		>
-			<svg aria-hidden="true"><use href={state.dark ? '#i-sun' : '#i-moon'}></use></svg>
+			<svg aria-hidden="true"><use href={studio.dark ? '#i-sun' : '#i-moon'}></use></svg>
 		</button>
 	</div>
 </header>

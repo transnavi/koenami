@@ -1,5 +1,6 @@
 import { gateFailure, type ScoreResult, type Scorer } from '$lib/score';
 import type { Side } from '$lib/signals';
+import type { Features } from '$lib/space';
 /* The studio's reactive state. During the component refactor this replaces the plain `state`
    object the controller (app.ts) held with a Svelte 5 runes store of the same shape, so
    components can read it reactively while the controller keeps writing it. The controller still
@@ -117,11 +118,27 @@ export class StudioState {
 	   selected range — or null while there is nothing scoreable. One derived value that the
 	   toolbar and the controller's verdict both read, so the score is computed once. */
 	readonly shareResult = $derived.by((): ScoreResult | null => {
-		const m = this.own || this.ownFull;
+		const m = this.measurement;
 		return this.scorer?.available && m && !m.analysisPending && !gateFailure(m)
 			? this.scorer.score(m.features || {})
 			: null;
 	});
+
+	/* What the profile panel shows: the listener's measurement (the selected range, else the
+	   whole take), both voices' features, and the reference speakers of the selected reference's
+	   group, against which the indicators and the chart are scaled. */
+	readonly measurement = $derived(this.own || this.ownFull);
+	readonly ownFeatures = $derived<Features>(this.own?.features || {});
+	readonly refFeatures = $derived<Features>(this.ref?.features || {});
+	readonly referenceGroup = $derived<'male' | 'female'>(
+		this.selected?.group === 'male' ? 'male' : 'female'
+	);
+	readonly referenceStats = $derived(
+		this.representatives.filter((c) => c.group === this.referenceGroup)
+	);
+	/* The two voices' distance in the voice map's space; the controller computes it while the
+	   map is still its own. */
+	distance = $state<number | null>(null);
 
 	/* Show one of the studio's dialogs. They are still in the template body, so this finds
 	   them by id; each dialog opening as a component replaces its call with its own ref. */
