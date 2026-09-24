@@ -4,9 +4,9 @@
    Paraglide into $lib/paraglide; the locale is the page's (see hooks.server.ts). Relative
    imports keep the module usable from worker.ts, which is bundled outside Vite. */
 import { m } from '../paraglide/messages';
-import { getLocale, locales, type Locale } from '../paraglide/runtime';
+import { baseLocale, getLocale, locales, type Locale } from '../paraglide/runtime';
 
-export { locales, type Locale };
+export { baseLocale, locales, type Locale };
 
 export const OG_LOCALES: Record<Locale, string> = {
 	ja: 'ja_JP',
@@ -26,7 +26,7 @@ export const SITE = 'https://koe.transnavi.jp';
 export const fontCut = (locale: Locale) => (locale === 'ko' || locale === 'zh-CN' ? locale : 'ja');
 
 /* The studio's address in a language; Japanese lives at the root. */
-export const home = (locale: Locale = getLocale()) => (locale === 'ja' ? '/' : `/${locale}/`);
+export const home = (locale: Locale = getLocale()) => (locale === baseLocale ? '/' : `/${locale}/`);
 /* The practice guide: its Japanese page, or the English one on the English site. */
 export const tutorialHref = (locale: Locale = getLocale()) =>
 	locale === 'en' ? '/en/tutorial.html' : '/tutorial.html';
@@ -55,25 +55,27 @@ export function matchLanguage(header: string | null | undefined): Locale {
 			locales.find((l) => l.split('-')[0] === tag.split('-')[0]);
 		if (match) return match;
 	}
-	return 'ja';
+	return baseLocale;
 }
 
-type Message = (inputs?: Record<string, unknown>, options?: { locale?: Locale }) => string;
-/* A message by its id, for text chosen at run time: a template token, or a key built from data
-   (`gate_${key}`). Code that names a message calls it on `m` directly. */
-export function message(id: string): Message {
-	const found = (m as unknown as Record<string, Message | undefined>)[id];
+export type MessageId = keyof typeof m;
+/* The ids that start a numbered list (`metric_f0_factors` for `metric_f0_factors_0`, `_1`, …). */
+export type ListId = { [K in MessageId]: K extends `${infer P}_0` ? P : never }[MessageId];
+type Message = (inputs?: Record<string, never>, options?: { locale?: Locale }) => string;
+const table = m as unknown as Record<string, Message | undefined>;
+/* A message by an id built at run time, from data (`gate_${key}`) or a template token; the type
+   still admits only ids that exist. Code that names a message calls it on `m` directly. */
+export function message<K extends MessageId>(id: K): (typeof m)[K] {
+	const found = table[id];
 	if (!found) throw new Error(`i18n: no message ${id}`);
-	return found;
+	return found as unknown as (typeof m)[K];
 }
-/* A numbered list of messages (`metric_f0_factors_0`, `_1`, …), rendered in order. */
-export function messages(prefix: string, locale: Locale = getLocale()): string[] {
+/* A numbered list of messages, rendered in order. */
+export function messages(list: ListId, locale: Locale = getLocale()): string[] {
 	const out: string[] = [];
-	for (let i = 0; ; i++) {
-		const found = (m as unknown as Record<string, Message | undefined>)[`${prefix}_${i}`];
-		if (!found) return out;
-		out.push(found({}, { locale }));
-	}
+	for (let found; (found = table[`${list}_${out.length}`]);) out.push(found({}, { locale }));
+	if (!out.length) throw new Error(`i18n: no message list ${list}`);
+	return out;
 }
 
 const escapeHTML = (s: unknown) =>
@@ -81,7 +83,7 @@ const escapeHTML = (s: unknown) =>
 		/[&<>"]/g,
 		(c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!
 	);
-// Inside a <script> block a literal `<` must not start a tag, so it goes out as <.
+// Inside a <script> block a literal `<` must not start a tag, so it goes out as \u003c.
 const escapeJSON = (s: unknown) => JSON.stringify(String(s)).slice(1, -1).replace(/</g, '\\u003c');
 /* Fills a page template in the page's language. Tokens: {{t:id}} (HTML-escaped text), {{h:id}}
    (markup from the messages), {{j:id}} (inside a JSON string), and the page fields {{lang}},
@@ -105,20 +107,23 @@ export function renderPage(template: string, path: string, locale: Locale = getL
 							(l) => `<link rel="alternate" hreflang="${l}" href="${SITE}${home(l)}">`
 						),
 						`<link rel="alternate" hreflang="x-default" href="${SITE}/">`,
-						`<link rel="manifest" href="${locale === 'ja' ? '/site.webmanifest' : `/${locale}/site.webmanifest`}">`
+						`<link rel="manifest" href="${home(locale)}site.webmanifest">`
 					].join('')
 	};
-	return template.replace(
+	const html = template.replace(
 		/\{\{(?:(t|h|j):(\w+)|(\w+))\}\}/g,
 		(_, kind: string | undefined, id: string | undefined, field: string | undefined) => {
 			if (field) {
 				if (!(field in fields)) throw new Error(`i18n: unknown page field ${field}`);
 				return fields[field];
 			}
-			const value = message(id!)({}, { locale });
+			const value = (message(id as MessageId) as Message)({}, { locale });
 			return kind === 'h' ? value : kind === 'j' ? escapeJSON(value) : escapeHTML(value);
 		}
 	);
+	const stray = html.match(/\{\{[^}]*\}\}/);
+	if (stray) throw new Error(`i18n: malformed page token ${stray[0]}`);
+	return html;
 }
 /* The web app manifest in the page's language: the base with its texts and start page set. */
 export function renderManifest(base: string, locale: Locale = getLocale()): string {

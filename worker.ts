@@ -5,7 +5,7 @@ import resvgWasm from '@resvg/resvg-wasm/index_bg.wasm';
 import { cardSVG } from './src/lib/card';
 import { FONTS, fontCut, matchLanguage, type Locale } from './src/lib/i18n';
 import { m } from './src/lib/paraglide/messages';
-import { baseLocale, isLocale } from './src/lib/paraglide/runtime';
+import { baseLocale, isLocale, locales } from './src/lib/paraglide/runtime';
 import {
 	Scorer,
 	type Clip,
@@ -32,9 +32,14 @@ const cardFonts: Record<ReturnType<typeof fontCut>, [ArrayBuffer, ArrayBuffer]> 
 	ko: [fontKoRegular, fontKoBold]
 };
 // Error text in the language the client asked for; the studio sends its own language.
-const asked = (request: Request) => ({
+const inLanguageOf = (request: Request) => ({
 	locale: matchLanguage(request.headers.get('Accept-Language'))
 });
+// The languages served under a /<lang>/ prefix, and the base language's own prefix.
+const prefixed = locales.filter((l) => l !== baseLocale).join('|');
+const localePage = new RegExp(`^/(${prefixed})/?$`),
+	localeManifest = new RegExp(`^/(${prefixed})/site\\.webmanifest$`),
+	basePage = new RegExp(`^/${baseLocale}/?$`);
 // Crawler and browser-chrome files at the site root (see static/ and prepare_public.py).
 const siteFiles =
 	/^\/(robots\.txt|sitemap\.xml|site\.webmanifest|service-worker\.js|language\.js|theme\.js|og-(image|guide|tutorial|method|references)\.png|screenshot-(wide|narrow)\.png|favicon\.(svg|ico)|favicon-96x96\.png|apple-touch-icon\.png|icon-(192|512|maskable-512)\.png)$/;
@@ -141,7 +146,7 @@ async function resultImage(
 	const { success } = await env.ANALYSIS_LIMIT.limit({
 		key: request.headers.get('CF-Connecting-IP') || 'unknown'
 	});
-	if (!success) return text(m.api_busy({}, asked(request)), 429, { 'Retry-After': '10' });
+	if (!success) return text(m.api_busy({}, inLanguageOf(request)), 429, { 'Retry-After': '10' });
 	resvgReady ??= initWasm(resvgWasm).catch((e) => {
 		resvgReady = undefined;
 		throw e;
@@ -188,13 +193,13 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
 	if (get && url.pathname === '/api/catalog') asset = '/public-api/catalog.json';
 	else if (get && url.pathname === '/api/import-index/jvs') asset = '/public-api/jvs-index.json';
 	else if (get && url.pathname === '/api/library') {
-		const lang = url.searchParams.get('lang') || 'ja';
+		const lang = url.searchParams.get('lang') || baseLocale;
 		if (!isLocale(lang)) return text('Not found', 404);
 		asset = `/public-api/${lang}.json`;
-	} else if (get && (url.pathname === '/' || /^\/ja\/?$/.test(url.pathname))) asset = '/index.html';
-	else if (get && /^\/(zh-CN|en|ko)\/?$/.test(url.pathname))
+	} else if (get && (url.pathname === '/' || basePage.test(url.pathname))) asset = '/index.html';
+	else if (get && localePage.test(url.pathname))
 		asset = `/${url.pathname.split('/')[1]}/index.html`;
-	else if (get && /^\/(zh-CN|en|ko)\/site\.webmanifest$/.test(url.pathname)) asset = url.pathname;
+	else if (get && localeManifest.test(url.pathname)) asset = url.pathname;
 	else if (request.method === 'GET' && url.pathname === '/r') return resultPage(request, env, url);
 	else if (request.method === 'GET' && url.pathname === '/og.png')
 		return resultImage(request, env, ctx, url);
@@ -219,15 +224,15 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
 	const { success } = await env.ANALYSIS_LIMIT.limit({
 		key: request.headers.get('CF-Connecting-IP') || 'unknown'
 	});
-	if (!success) return text(m.api_busy({}, asked(request)), 429, { 'Retry-After': '10' });
+	if (!success) return text(m.api_busy({}, inLanguageOf(request)), 429, { 'Retry-After': '10' });
 
 	let body: ArrayBuffer | undefined;
 	if (analysis) {
 		const length = Number(request.headers.get('Content-Length'));
-		if (length > maxBytes) return text(m.api_too_long({}, asked(request)), 413);
+		if (length > maxBytes) return text(m.api_too_long({}, inLanguageOf(request)), 413);
 		// Bound reads even when the sender omits or lies about Content-Length.
 		const reader = request.body?.getReader();
-		if (!reader) return text(m.api_no_audio({}, asked(request)), 400);
+		if (!reader) return text(m.api_no_audio({}, inLanguageOf(request)), 400);
 		const chunks: Uint8Array[] = [];
 		let size = 0;
 		while (true) {
@@ -236,11 +241,11 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
 			size += value.byteLength;
 			if (size > maxBytes) {
 				await reader.cancel();
-				return text(m.api_too_long({}, asked(request)), 413);
+				return text(m.api_too_long({}, inLanguageOf(request)), 413);
 			}
 			chunks.push(value);
 		}
-		if (size < 16000 || size % 4) return text(m.api_too_short({}, asked(request)), 400);
+		if (size < 16000 || size % 4) return text(m.api_too_short({}, inLanguageOf(request)), 400);
 		const pcm = new Uint8Array(size);
 		let offset = 0;
 		for (const chunk of chunks) {
@@ -272,7 +277,7 @@ export default {
 			secured.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 			return secured;
 		} catch {
-			return text(m.api_starting({}, asked(request)), 503, { 'Retry-After': '5' });
+			return text(m.api_starting({}, inLanguageOf(request)), 503, { 'Retry-After': '5' });
 		}
 	}
 } satisfies ExportedHandler<Env>;

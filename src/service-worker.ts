@@ -4,7 +4,7 @@
 /// <reference lib="webworker" />
 import { build, prerendered, version } from '$service-worker';
 
-import { baseLocale, locales } from './lib/paraglide/runtime';
+import { baseLocale, locales } from '../project.inlang/settings.json';
 
 // Service worker: makes Koenami installable and keeps the shell fast. The build's hashed
 // files are cached at install (their names change on every deploy, and the cache is named

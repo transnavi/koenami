@@ -3,6 +3,8 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 
+import paraglide from './paraglide.config.js';
+
 // The SvelteKit app; dev.mjs starts it next to the analyzer and proxies the API to it.
 // KOENAMI_COVERAGE=1 builds unminified with inline source maps so the browser
 // coverage of the suite (tests/coverage/report.mjs) maps back to src/.
@@ -12,13 +14,8 @@ export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
-		// Messages live in messages/<locale>.json. The locale is the page's path: / is Japanese,
-		// /<locale>/ the others; /lab/ has no prefix of its own and reads as Japanese.
-		paraglideVitePlugin({
-			project: './project.inlang',
-			outdir: './src/lib/paraglide',
-			strategy: ['custom-document', 'url', 'baseLocale']
-		})
+		// Messages live in messages/<locale>.json; paraglide.config.js says how they compile.
+		paraglideVitePlugin(paraglide)
 	],
 	build: coverage ? { sourcemap: 'inline', minify: false } : {},
 	server: {

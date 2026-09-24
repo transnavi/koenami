@@ -50,6 +50,11 @@
   "/tutorial.html"
  ],
  [
+  "/ko/tutorial.html",
+  "ko",
+  "/ko/tutorial.html"
+ ],
+ [
   "/ko/site.webmanifest",
   "ko",
   "/site.webmanifest"
@@ -58,5 +63,10 @@
   "/guide.html",
   "ja",
   "/guide.html"
+ ],
+ [
+  "/en/guide.html",
+  "en",
+  "/en/guide.html"
  ]
 ]

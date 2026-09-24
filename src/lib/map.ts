@@ -579,7 +579,7 @@ export class VoiceMap {
 	}
 	fitShapes() {
 		if (!this.autoFit || !this.fitDirty || this.drag) return;
-		let points = Object.values(this.shapeCache || {}).flatMap((m) => m?.points || []);
+		let points = Object.values(this.shapeCache || {}).flatMap((shape) => shape?.points || []);
 		for (const f of [this.ownFeatures, this.selected?.features]) {
 			const p = this.vector(f);
 			if (p) points.push(p);

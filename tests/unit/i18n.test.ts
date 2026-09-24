@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 
 import {
 	FONTS,
+	baseLocale,
 	OG_LOCALES,
 	fontCut,
 	home,
@@ -15,7 +16,11 @@ import {
 	tutorialLang
 } from '@app/i18n/index';
 import { m } from '@app/paraglide/messages';
-import { extractLocaleFromUrl } from '@app/paraglide/runtime';
+import {
+	extractLocaleFromRequestAsync,
+	extractLocaleFromUrl,
+	shouldRedirect
+} from '@app/paraglide/runtime';
 import { describe, it, expect } from 'vitest';
 
 import { reroute } from '../../src/hooks';
@@ -69,13 +74,29 @@ describe('i18n', () => {
 				'/r',
 				'/en/r',
 				'/en/tutorial.html',
+				'/ko/tutorial.html',
 				'/ko/site.webmanifest',
-				'/guide.html'
+				'/guide.html',
+				'/en/guide.html'
 			].map((path) => {
 				const url = new URL(path, 'https://koe.transnavi.jp');
-				return [path, extractLocaleFromUrl(url), reroute({ url, fetch } as never)];
+				return [path, extractLocaleFromUrl(url), reroute({ url, fetch })];
 			})
 		);
+	});
+	// The Worker serves /r?l=en from the English result page; a Kit server (vite dev) decides the
+	// same from the request through the result page's own strategy, without a redirect.
+	it('the result page takes its language from ?l=, then from its path', async () => {
+		await import('../../src/hooks.server');
+		const out = [];
+		for (const path of ['/r?l=en', '/r?l=xx', '/r', '/en/r', '/ko/r?l=en', '/en/']) {
+			const request = new Request(new URL(path, 'https://koe.transnavi.jp'), {
+				headers: { 'Sec-Fetch-Dest': 'document' }
+			});
+			const decision = await shouldRedirect({ request });
+			out.push([path, await extractLocaleFromRequestAsync(request), decision.shouldRedirect]);
+		}
+		golden('i18n.result-locale', out);
 	});
 	it('messages: plain, placeholders, numbers, plurals, lists, a locale option and a missing id', () => {
 		const out: Record<string, unknown> = {};
@@ -89,10 +110,12 @@ describe('i18n', () => {
 				byId: message('nav_guide')({}, { locale }),
 				list: messages('metric_delta_f_factors', locale)
 			};
-		// Outside a request the locale is the base one.
+		// Without a locale the message uses the page's; tests/unit/setup.ts puts the tests at the
+		// site root, the Japanese studio.
 		out.default = m.nav_guide();
 		golden('i18n.messages', out);
-		expect(() => message('no_such_message')).toThrow('i18n: no message no_such_message');
+		expect(() => message('no_such_message' as never)).toThrow('i18n: no message no_such_message');
+		expect(() => messages('no_such_list' as never)).toThrow('i18n: no message list no_such_list');
 	});
 	it('renderPage: every token kind, the head links per language, the result page, unknown fields', () => {
 		const template = [
@@ -177,6 +200,14 @@ describe('i18n', () => {
 			return [...names].sort().join(',');
 		};
 		const base = load('ja');
+		// A numbered list has no gaps: every _<n> past _0 follows _<n - 1>.
+		for (const id of Object.keys(base)) {
+			const item = id.match(/^(.*)_(\d+)$/);
+			if (item && Number(item[2]) > 0)
+				expect(base, `${id} follows its predecessor`).toHaveProperty(
+					`${item[1]}_${Number(item[2]) - 1}`
+				);
+		}
 		for (const locale of locales) {
 			const other = load(locale);
 			expect(Object.keys(other).sort(), `${locale}: ids`).toEqual(Object.keys(base).sort());
@@ -185,5 +216,11 @@ describe('i18n', () => {
 				expect(inputs(other[id]), `${locale}: ${id} inputs`).toBe(inputs(value));
 			}
 		}
+	});
+	// The pre-paint redirect is a classic script with its own copy of the prefixed languages.
+	it('the pre-paint language redirect names every prefixed language', () => {
+		const [, list] = readFileSync('static/language.js', 'utf8').match(/\[([^\]]*)\]\.indexOf/)!;
+		const listed = list.split(',').map((item) => item.trim().replaceAll("'", ''));
+		expect(listed).toEqual(locales.filter((l) => l !== baseLocale));
 	});
 });

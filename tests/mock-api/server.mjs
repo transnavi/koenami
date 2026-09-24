@@ -1,5 +1,10 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+
+// The served languages, as the site's messages list them.
+const { baseLocale, locales } = JSON.parse(
+	readFileSync(new URL('../../project.inlang/settings.json', import.meta.url), 'utf8')
+);
 // Test server for the browser suite. It serves the built SvelteKit site (the coverage
 // build, so coverage ranges line up with the unit layer), recorded API responses from
 // tests/fixtures/api, and the audio under tests/fixtures/data/samples.
@@ -80,7 +85,8 @@ function staticFile(pathname, search = '') {
 	// r.html the build writes at the root.
 	if (name === 'r') {
 		const lang = new URLSearchParams(search).get('l');
-		if (/^(zh-CN|en|ko)$/.test(lang || '')) candidates.unshift(join(site, lang, 'r.html'));
+		if (lang !== baseLocale && locales.includes(lang))
+			candidates.unshift(join(site, lang, 'r.html'));
 	}
 	for (const candidate of candidates)
 		if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
