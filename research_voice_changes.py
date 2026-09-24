@@ -98,19 +98,24 @@ def jvs(z5):
                         wins += ds < do; n += 1; ratio.append(do / max(ds, 1e-9))
             out['voice_over_sentence'][f'{a}/{b} {name}'] = {'share': wins / n if n else None, 'n': n, 'median_ratio': float(np.median(ratio)) if n else None}
     zs = lambda d: (d - d.mean()) / (d.std() + 1e-12)
+    # Among a speaker's other clips, is the nearest in the query's own voice? Only queries that have
+    # another clip in their own voice can hit. The blend needs both representations, so its pool is
+    # the clips that have both; timbre alone is also scored over every clip it covers.
     out['nearest_same_voice'] = {}
-    for label, w in [('timbre', 1.0), ('blend 0.75', 0.75), ('blend 0.50', 0.5), ('five', 0.0)]:
+    for label, w, need in [('timbre, all timbre clips', 1.0, ('timbre',)), ('timbre', 1.0, ('timbre', 'five')),
+                           ('blend 0.75', 0.75, ('timbre', 'five')), ('blend 0.50', 0.5, ('timbre', 'five')), ('five', 0.0, ('timbre', 'five'))]:
         hits = {}
         for s in speakers:
             ids = [(c, clip.get((s, c, t))) for c in CONFIG.values() for t in SENTENCES]
-            ids = [(c, i) for c, i in ids if i in V['timbre'] and i in V['five']]
+            ids = [(c, i) for c, i in ids if all(i in V[r] for r in need)]
             for c, q in ids:
                 rest = [(c2, i) for c2, i in ids if i != q]
+                if not any(c2 == c for c2, _ in rest): continue
                 dt = zs(np.array([D['timbre'](V['timbre'][q], V['timbre'][i]) for _, i in rest]))
-                d5 = zs(np.array([D['five'](V['five'][q], V['five'][i]) for _, i in rest]))
+                d5 = zs(np.array([D['five'](V['five'][q], V['five'][i]) for _, i in rest])) if 'five' in need else 0
                 hits.setdefault(c, []).append(rest[int(np.argmin(w * dt + (1 - w) * d5))][0] == c)
         allh = [h for v in hits.values() for h in v]
-        out['nearest_same_voice'][label] = {'share': float(np.mean(allh)), 'n': len(allh), **{c: float(np.mean(v)) for c, v in hits.items()}}
+        out['nearest_same_voice'][label] = {'share': float(np.mean(allh)), 'n': len(allh), **{c: [float(np.mean(v)), len(v)] for c, v in hits.items()}}
     return out
 
 

@@ -43,15 +43,16 @@ def raw5(f):
 
 
 def acoustic_space(clips):
-    """src/lib/space.ts: one representative clip per speaker (nearest its median f0 and ΔF), the
-    median as centre, IQR / 1.349 as scale with the same floors."""
+    """src/lib/space.ts over src/lib/score.ts representatives(): per speaker the clip nearest its
+    median f0 and ΔF by score.ts distance2 (semitones / 4 and Hz / 90), the median as centre,
+    IQR / 1.349 as scale with the same floors."""
     by = {}
     for c in clips:
         if c.get('plotted') and not c.get('synthetic') and c.get('group') in ('female', 'male'): by.setdefault(c['speaker'], []).append(c)
     reps = []
     for g in by.values():
         f0 = np.median([c['features']['f0'] for c in g]); df = np.median([c['features']['delta_f'] for c in g])
-        reps.append(min(g, key=lambda c: (c['features']['f0'] - f0) ** 2 + (c['features']['delta_f'] - df) ** 2))
+        reps.append(min(g, key=lambda c: (12 * np.log2(c['features']['f0'] / f0) / 4) ** 2 + ((c['features']['delta_f'] - df) / 90) ** 2))
     R = np.array([raw5(c['features']) for c in reps]); R = R[np.isfinite(R).all(1)]
     centre = np.median(R, 0)
     scale = np.maximum([1, 30, 2, 2, 1], (np.percentile(R, 75, 0) - np.percentile(R, 25, 0)) / 1.349)
@@ -76,19 +77,22 @@ def load():
 
 
 def app_population(z5):
-    """What the studio blends over: per indexed speaker, the unit timbre centroid and the centre of
-    the measurable five-measure vectors of the same clips (None without any)."""
+    """What the studio blends over: per indexed speaker, the unit timbre centroid of its indexed
+    clips (as the server builds it) and the centre of the five-measure vectors of all its plotted
+    clips (src/lib/similar.ts fiveMeasureDistances; None without any)."""
     clips = {c['id']: c for c in json.load(open(DATA / 'native-ja.json'))['clips']}
     for name in ('voicevox.json', 'synthetic.json'):
         if (DATA / name).exists(): clips.update({c['id']: c for c in json.load(open(DATA / name))['clips'] if c.get('language') == 'ja'})
     index = np.load(DATA / f'timbre-index-{TIMBRE_VERSION}.npz'); keep = index['language'] == 'ja'
-    by = {}
+    vecs, fives = {}, {}
     for i, s, v in zip(index['ids'][keep].tolist(), index['speaker'][keep].tolist(), index['vectors'][keep].astype('float32')):
-        if i in clips: by.setdefault(s, []).append((v, z5(clips[i]['features'])))
+        if i in clips: vecs.setdefault(s, []).append(v)
+    for c in clips.values():
+        f = z5(c['features'])
+        if c.get('plotted') and np.isfinite(f).all(): fives.setdefault(c['speaker'], []).append(f)
     out = {}
-    for s, rows in by.items():
-        c = np.mean([v for v, _ in rows], 0); f = [f for _, f in rows if np.isfinite(f).all()]
-        out[s] = (c / np.linalg.norm(c), np.mean(f, 0) if f else None)
+    for s, v in vecs.items():
+        c = np.mean(v, 0); out[s] = (c / np.linalg.norm(c), np.mean(fives[s], 0) if s in fives else None)
     return out
 
 

@@ -10,8 +10,9 @@ whether that ranking follows a deliberate change of voice. It builds on
 ## Data
 
 - The shipped timbre index and the Japanese library: the five measures of every plotted clip,
-  standardised the way the studio's `AcousticSpace` does it (one representative clip per speaker,
-  median centre, IQR / 1.349 scale with the same floors).
+  standardised the way the studio's `AcousticSpace` does it (one representative clip per speaker
+  chosen as `representatives()` in `src/lib/score.ts` does, median centre, IQR / 1.349 scale with
+  the same floors).
 - JVS within-group speaker-similarity ratings (`speaker_similarity_{female,male}.csv`): 95 of the
   100 JVS speakers have non-parallel clips in the library and serve as queries.
 - JVS modal, falsetto and whisper readings of `VOICEACTRESS100_001–005` (1,495 clips).
@@ -32,30 +33,31 @@ with a fixed seed, so a nearest-clip profile gets no extra chances.
 | timbre, speaker centroid | 0.268 [0.243, 0.292] | 88.7 % | 0.925 |
 | timbre, nearest clip | 0.257 [0.235, 0.281] | 85.1 % | 0.903 |
 | timbre, mean of three nearest | 0.264 [0.239, 0.287] | 90.1 % | 0.931 |
-| five measures, speaker centroid | 0.203 [0.168, 0.237] | 26.5 % | 0.421 |
-| five measures, nearest clip | 0.198 [0.165, 0.232] | 20.6 % | 0.366 |
-| five measures, mean of three nearest | 0.208 [0.172, 0.243] | 24.0 % | 0.401 |
+| five measures, speaker centroid | 0.203 [0.168, 0.237] | 26.4 % | 0.420 |
+| five measures, nearest clip | 0.198 [0.165, 0.232] | 20.5 % | 0.366 |
+| five measures, mean of three nearest | 0.208 [0.171, 0.243] | 24.0 % | 0.401 |
 
 Paired differences under the same bootstrap: timbre over five measures +0.065 [+0.029, +0.098]
-with centroids on both sides, +0.059 [+0.025, +0.089] with nearest clips on both. Nearest clip
-against centroid: −0.011 [−0.019, −0.002] for timbre, +0.005 [−0.008, +0.017] for the five
-measures. The representation carries the difference; the way a speaker's clips are pooled
-barely matters, and the centroid the studio uses is at least as good as the alternatives.
+with centroids on both sides, +0.059 [+0.025, +0.090] with nearest clips on both. Nearest clip
+against centroid: −0.011 [−0.019, −0.002] for timbre, −0.005 [−0.017, +0.007] for the five
+measures. The representation carries the difference, and pooling moves little: on listener
+agreement the centroid the studio uses is the best timbre option, and on retrieval the mean of
+the three nearest clips is slightly ahead of it (90.1 % against 88.7 %).
 
 ## Blending the two distances
 
 Each distance is z-scored across the candidate speakers of one query and the two are mixed with
 weight *w* on timbre. The studio's own computation (`src/lib/similar.ts`) z-scores across every
-speaker the index ranks for the language, synthetic voices included, using centroids of all their
-indexed clips; the rows marked "as computed by the studio" repeat that exactly and only then keep
-the rated speakers.
+speaker the index ranks for the language, synthetic voices included, with the timbre centroid of
+each speaker's indexed clips and the five-measure centre of its plotted clips; the columns marked
+"as computed by the studio" repeat that and only then keep the rated speakers.
 
 | *w* on timbre | agreement, candidates only | agreement, as computed by the studio | retrieval top-1, as computed by the studio |
 |---|---|---|---|
-| 0 (five measures) | 0.203 | 0.206 | 27.2 % |
-| 0.25 | 0.254 | 0.238 | 51.9 % |
-| 0.50 | 0.287 | 0.276 | 75.9 % |
-| **0.75** | **0.289** | **0.300 [0.272, 0.330]** | **87.6 %** |
+| 0 (five measures) | 0.203 | 0.205 | 27.1 % |
+| 0.25 | 0.254 | 0.237 | 52.1 % |
+| 0.50 | 0.287 | 0.275 | 75.8 % |
+| **0.75** | **0.289** | **0.300 [0.272, 0.330]** | **87.7 %** |
 | 1 (timbre) | 0.268 | 0.284 [0.259, 0.309] | 88.3 % |
 
 As computed by the studio, *w* = 0.75 against timbre alone: +0.017 [+0.001, +0.031]. To check the
@@ -74,14 +76,15 @@ another voice. Coverage: timbre 1,478 of 1,495 clips, x-vector 1,477, five measu
 
 | pair of voices | timbre | x-vector | five measures |
 |---|---|---|---|
-| modal / falsetto | 99.2 % of 3,960 (ratio 3.62) | 86.9 % (2.93) | 97.3 % (2.87) |
-| modal / whisper | 100 % of 3,830 (6.85) | 97.3 % (4.01) | 94.6 % of 168 (3.76) |
-| falsetto / whisper | 100 % of 3,790 (7.85) | 88.1 % (2.11) | 95.8 % of 168 (3.25) |
+| modal / falsetto | 99.2 % of 3,960 (ratio 3.62) | 86.9 % of 3,960 (2.93) | 97.3 % of 3,960 (2.87) |
+| modal / whisper | 100 % of 3,830 (6.85) | 97.3 % of 3,824 (4.01) | 94.6 % of 168 (3.76) |
+| falsetto / whisper | 100 % of 3,790 (7.85) | 88.1 % of 3,784 (2.11) | 95.8 % of 168 (3.25) |
 
-The ratio is the median of d(other voice) / d(other sentence). As retrieval, the nearest of a
-speaker's other clips is in the query's own voice for 99.1 % of 1,025 queries under timbre alone
-and under the 0.75 blend, 98.9 % at 0.5 and 97.3 % under the five measures; whisper queries are
-the hard case (70 % under timbre and the blend, 63 % under the five measures).
+The ratio is the median of d(other voice) / d(other sentence). As retrieval: among a speaker's
+other clips, is the nearest one in the query's own voice? Counting only queries that have another
+clip in their own voice, timbre alone gets all 1,478 right. On the 1,016 such queries where the
+five measures are also available, timbre and the 0.75 blend get all of them, the 0.5 blend
+99.8 % and the five measures 98.1 %.
 
 **Versatile Voice Dataset.** Each setting becomes one clip, "hit" then "key" with a 0.3 s gap
 after each, so the words never change within a speaker. Spearman between the distance of two of
@@ -95,9 +98,10 @@ one speaker's settings (ranked within the speaker) and how many steps apart they
 
 Per speaker (pitch / resonance / weight), timbre: 001 +0.16 / +0.67 / +0.04, 002 +0.38 / +0.27 /
 +0.59, 003 +0.63 / +0.25 / +0.21; five measures: 001 +0.14 / +0.49 / +0.13, 002 +0.39 / +0.21 /
-+0.41, 003 +0.27 / +0.38 / +0.16. The speakers changed different things, and both
-representations show the same per-speaker pattern; on each speaker's largest change the timbre
-correlation is the higher one. The x-vector follows resonance and hardly pitch, as an identity
++0.41, 003 +0.27 / +0.38 / +0.16. The three speakers differ a lot, and nothing independent of
+these distances says which dimension each of them changed most. For speakers 001 and 002 the two
+representations peak on the same dimension (resonance, weight); for 003 timbre peaks on pitch and
+the five measures on resonance. The x-vector follows resonance and hardly pitch, as an identity
 embedding should.
 
 ## Limits
