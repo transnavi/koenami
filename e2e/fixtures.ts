@@ -568,7 +568,9 @@ export const test = base.extend<{ studio: Studio; coverage: void }>({
 					([m, k, t]) =>
 						(
 							window as unknown as {
-								voiceApp: { measure: { fail: (message: string, kind?: string, times?: number) => void } };
+								voiceApp: {
+									measure: { fail: (message: string, kind?: string, times?: number) => void };
+								};
 							}
 						).voiceApp.measure.fail(m, k === '*' ? undefined : k, t),
 					[message, kind ?? '*', times] as const
