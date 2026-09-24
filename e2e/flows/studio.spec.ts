@@ -80,11 +80,9 @@ test('uploaded audio can be played, renamed, restored, exported and deleted', as
 });
 
 test('a failed recording analysis preserves the take for retry', async ({ page, studio }) => {
-	await page.route('**/api/analyze', (route) =>
-		route.fulfill({ status: 503, contentType: 'text/plain', body: 'Unavailable' })
-	);
 	await studio.open('/ja/');
 	await studio.until(app.ready);
+	await studio.measure.fail('Unavailable', 'analyze', Infinity);
 	await page.keyboard.press('r');
 	await studio.until(app.recording);
 	await studio.until(app.buffered(1.4));
@@ -92,10 +90,10 @@ test('a failed recording analysis preserves the take for retry', async ({ page, 
 	await studio.until(app.stopped + ' && ' + app.analysisPending + ' && ' + app.idle);
 	await expect(page.locator('#play-mine')).toBeEnabled();
 	await expect(page.locator('#notice')).toBeVisible();
+	// The gate's failures live in the page, so the reload ends them.
 	await studio.open('/ja/');
 	await studio.until(app.ready + ' && ' + app.analysisPending);
 	await expect(page.locator('#play-mine')).toBeEnabled();
-	await page.unroute('**/api/analyze');
 	await studio.choose('take-select', 'retry');
 	await studio.until(app.analysed + ' && !(' + app.analysisPending + ')');
 	await expect(page.locator('#report-button')).toBeEnabled();
