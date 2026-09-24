@@ -1,4 +1,3 @@
-import { lang as uiLang } from '$lib/i18n';
 import { gateFailure, type ScoreResult, type Scorer } from '$lib/score';
 import type { Side } from '$lib/signals';
 /* The studio's reactive state. During the component refactor this replaces the plain `state`
@@ -119,7 +118,7 @@ export class StudioState {
 	   toolbar and the controller's verdict both read, so the score is computed once. */
 	readonly shareResult = $derived.by((): ScoreResult | null => {
 		const m = this.own || this.ownFull;
-		return this.scorer?.available && m && !m.analysisPending && !gateFailure(m, uiLang)
+		return this.scorer?.available && m && !m.analysisPending && !gateFailure(m)
 			? this.scorer.score(m.features || {})
 			: null;
 	});

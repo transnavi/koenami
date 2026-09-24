@@ -1,4 +1,4 @@
-import { t } from '$lib/i18n';
+import { m } from '$lib/paraglide/messages';
 // First-visit guide: a spotlight and a card walk through the studio one area at a
 // time. The lit area stays clickable; four blockers around it hold the rest. Progress lives in localStorage so "later" resumes where it stopped on
 // the next visit; "skip" and finishing both mark it done. The card is a
@@ -27,22 +27,35 @@ const CHIPS = {
 	star: '<span class="tour-key tour-key-plain">☆</span>',
 	R: '<kbd class="tour-key tour-key-kbd">R</kbd>'
 };
-// The steps' art and spotlight targets; their titles and texts come from the catalogue in the same order.
-const LAYOUT: { art: keyof typeof ART; target?: string[] }[] = [
-	{ art: 'wave' },
-	{ art: 'pick', target: ['.target'] },
-	{ art: 'list', target: ['.samples-panel .sample-filters', '#samples-toggle'] },
-	{ art: 'mic', target: ['#record'] },
-	{ art: 'radar', target: ['#indicators'] },
-	{ art: 'map', target: ['.graph-area'] },
-	{ art: 'signal', target: ['.signal-panel'] },
-	{ art: 'live', target: ['#live-mode'] },
-	{ art: 'info', target: ['#info-button'] }
+// Each step's art, spotlight target and messages. A text may name a control, which the card
+// shows as its chip; text lines are paragraphs.
+type Step = {
+	art: keyof typeof ART;
+	target?: string[];
+	title: () => string;
+	text: (chips: typeof CHIPS) => string;
+};
+const STEPS: Step[] = [
+	{ art: 'wave', title: m.tour_steps_0_title, text: m.tour_steps_0_text },
+	{ art: 'pick', target: ['.target'], title: m.tour_steps_1_title, text: m.tour_steps_1_text },
+	{
+		art: 'list',
+		target: ['.samples-panel .sample-filters', '#samples-toggle'],
+		title: m.tour_steps_2_title,
+		text: m.tour_steps_2_text
+	},
+	{ art: 'mic', target: ['#record'], title: m.tour_steps_3_title, text: m.tour_steps_3_text },
+	{ art: 'radar', target: ['#indicators'], title: m.tour_steps_4_title, text: m.tour_steps_4_text },
+	{ art: 'map', target: ['.graph-area'], title: m.tour_steps_5_title, text: m.tour_steps_5_text },
+	{
+		art: 'signal',
+		target: ['.signal-panel'],
+		title: m.tour_steps_6_title,
+		text: m.tour_steps_6_text
+	},
+	{ art: 'live', target: ['#live-mode'], title: m.tour_steps_7_title, text: m.tour_steps_7_text },
+	{ art: 'info', target: ['#info-button'], title: m.tour_steps_8_title, text: m.tour_steps_8_text }
 ];
-const STEPS = LAYOUT.map((step, i) => ({
-	...step,
-	...(t.list('tour.steps')[i] as { title: string; text: string })
-}));
 let phoneQuery: MediaQueryList | undefined;
 const phone = {
 	get matches() {
@@ -90,17 +103,17 @@ function build() {
 	card.setAttribute('aria-labelledby', 'tour-title');
 	card.innerHTML =
 		'<div class="tour-head"><svg class="tour-art" viewBox="0 0 24 24" aria-hidden="true"></svg><div><p class="tour-count" id="tour-count"></p><h2 id="tour-title"></h2></div></div><div id="tour-text"></div><div class="tour-actions"><button type="button" class="text-button" data-act="later" title="' +
-		esc(t('tour.later_title')) +
+		esc(m.tour_later_title()) +
 		'">' +
-		esc(t('tour.later')) +
+		esc(m.tour_later()) +
 		'</button><button type="button" class="text-button" data-act="skip" title="' +
-		esc(t('tour.skip_title')) +
+		esc(m.tour_skip_title()) +
 		'">' +
-		esc(t('tour.skip')) +
+		esc(m.tour_skip()) +
 		'</button><span class="tour-spacer"></span><button type="button" class="text-button" data-act="back">' +
-		esc(t('tour.back')) +
+		esc(m.tour_back()) +
 		'</button><button type="button" class="tour-next" data-act="next">' +
-		esc(t('tour.next')) +
+		esc(m.tour_next()) +
 		'</button></div>';
 	card.addEventListener('click', (e) => {
 		const act = (e.target as Element).closest<HTMLElement>('[data-act]')?.dataset.act;
@@ -203,18 +216,17 @@ function show(n: number) {
 	save({ ...load(), step });
 	const s = STEPS[step];
 	card.querySelector('#tour-count')!.textContent = `${step + 1} / ${STEPS.length}`;
-	card.querySelector('#tour-title')!.textContent = s.title;
-	card.querySelector('#tour-text')!.innerHTML = s.text
+	card.querySelector('#tour-title')!.textContent = s.title();
+	card.querySelector('#tour-text')!.innerHTML = s
+		.text(CHIPS)
 		.split('\n')
-		.map(
-			(t) => `<p>${t.replace(/\{(\w+)\}/g, (_, id: string) => CHIPS[id as keyof typeof CHIPS])}</p>`
-		)
+		.map((line) => `<p>${line}</p>`)
 		.join('');
 	card.querySelector('.tour-art')!.innerHTML = ART[s.art];
 	card.querySelector<HTMLElement>('[data-act=back]')!.hidden = step === 0;
-	card.querySelector('[data-act=next]')!.textContent = t(
-		step === STEPS.length - 1 ? 'tour.start' : 'tour.next'
-	);
+	card.querySelector('[data-act=next]')!.textContent = (
+		step === STEPS.length - 1 ? m.tour_start : m.tour_next
+	)();
 	shade.hidden = false;
 	if (!card.open) card.show();
 	target()?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });

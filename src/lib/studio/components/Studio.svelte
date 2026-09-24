@@ -4,8 +4,6 @@
 	 chrome (icon sprite, audio, dialogs) rides inside the grid but out of flow — hidden audio
 	 and closed dialogs are not grid items, and the sprite is absolutely positioned. -->
 <script lang="ts">
-	import type { Language } from '$lib/i18n';
-
 	import '$lib/studio/studio.css';
 	import { mountStudio } from '$lib/studio/app';
 	import { initLayout } from '$lib/studio/layout';
@@ -15,7 +13,7 @@
 
 	import Toolbar from './Toolbar.svelte';
 
-	let { body, lang }: { body: string; lang: Language } = $props();
+	let { body }: { body: string } = $props();
 
 	// This mount's isolated state, shared with child components through context.
 	const studio = provideStudio();
@@ -32,7 +30,7 @@
 </script>
 
 <div class="app">
-	<Toolbar {lang} />
+	<Toolbar />
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- the studio body is our own prerendered markup -->
 	{@html body}
 </div>

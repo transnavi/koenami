@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 import { cardSVG } from '@app/card';
-import { LANGUAGES, fontCut } from '@app/i18n/index';
+import { fontCut, locales } from '@app/i18n/index';
 import { describe, it, expect } from 'vitest';
 
 // The share card must draw with the subset fonts alone (the Worker loads no system fonts),
@@ -61,7 +61,7 @@ const scorer = {
 };
 
 describe('share font cuts', () => {
-	for (const lang of LANGUAGES)
+	for (const lang of locales)
 		it(`${lang}: every character of the card is in the ${fontCut(lang)} cut`, () => {
 			const glyphs = codepoints(readFileSync(`${fonts}/koenami-share-${fontCut(lang)}-400.ttf`));
 			for (const verdict of ['female', 'androgynous', 'male']) {
@@ -75,7 +75,7 @@ describe('share font cuts', () => {
 					age: 27
 				};
 				// oxlint-disable-next-line typescript/no-explicit-any -- cardSVG's scorer stub is partial
-				const text = (cardSVG as any)(result, scorer, { lang })
+				const text = (cardSVG as any)(result, scorer, { locale: lang })
 					.replace(/<style>.*?<\/style>/s, '')
 					.replace(/<[^>]+>/g, '')
 					.replace(/&amp;/g, '&') as string;

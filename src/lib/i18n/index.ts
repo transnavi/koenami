@@ -1,25 +1,21 @@
-import { LANGUAGES, type Language } from '../languages';
-import en from './en';
-/* The interface languages: one catalogue per language, a translator over it, and the
-   page rendering that writes /, /zh-CN/, /en/ and /ko/ as separate documents. This module
-   runs in the browser, in the Worker and at build time, so it touches `document` only
-   behind a guard. The arithmetic, the escaping and the field names are those of the
-   studio's web/i18n/index.js, which the unit goldens pin. */
-import ja, { type Catalogue, type Item, type Key } from './ja';
-import ko from './ko';
-import zh from './zh-CN';
+/* What the site knows about its languages beyond the messages: addresses, Open Graph locales,
+   share-card fonts, the Worker's Accept-Language match, and the rendering of the page templates
+   that are still HTML strings. The messages themselves are messages/<locale>.json, compiled by
+   Paraglide into $lib/paraglide; the locale is the page's (see hooks.server.ts). Relative
+   imports keep the module usable from worker.ts, which is bundled outside Vite. */
+import { m } from '../paraglide/messages';
+import { baseLocale, getLocale, locales, type Locale } from '../paraglide/runtime';
 
-export { LANGUAGES };
-export type { Key, Language };
-export const CATALOGUES: Record<Language, Catalogue> = { ja, 'zh-CN': zh, en, ko };
-export const OG_LOCALES: Record<Language, string> = {
+export { baseLocale, locales, type Locale };
+
+export const OG_LOCALES: Record<Locale, string> = {
 	ja: 'ja_JP',
 	'zh-CN': 'zh_CN',
 	en: 'en_US',
 	ko: 'ko_KR'
 };
 /* The card font per language: the share font is a Noto Sans subset in three regional cuts. */
-export const FONTS: Record<Language, string> = {
+export const FONTS: Record<Locale, string> = {
 	ja: 'Noto Sans JP',
 	'zh-CN': 'Noto Sans SC',
 	en: 'Noto Sans JP',
@@ -27,20 +23,20 @@ export const FONTS: Record<Language, string> = {
 };
 export const SITE = 'https://koe.transnavi.jp';
 /* The share font ships in three cuts of Noto Sans; English uses the Japanese cut's Latin glyphs. */
-export const fontCut = (lang: string) => (lang === 'ko' || lang === 'zh-CN' ? lang : 'ja');
+export const fontCut = (locale: Locale) => (locale === 'ko' || locale === 'zh-CN' ? locale : 'ja');
 
-export const known = (lang: unknown): Language =>
-	(LANGUAGES as readonly unknown[]).includes(lang) ? (lang as Language) : 'ja';
 /* The studio's address in a language; Japanese lives at the root. */
-export const home = (lang: string) => (lang === 'ja' ? '/' : `/${lang}/`);
-/* The practice guide: its Japanese page, or the English mirror on the English site. */
-export const tutorialHref = (lang: string) =>
-	lang === 'en' ? '/en/tutorial.html' : '/tutorial.html';
-export const tutorialLang = (lang: string) => (lang === 'en' ? 'en' : 'ja');
-/* An Accept-Language value, or any language tag, reduced to a served language: the ranges in
-   quality order, each matched by exact tag and then by primary subtag (server.py's language()
-   follows the same rule). */
-export function matchLanguage(header: string | null | undefined): Language {
+export const home = (locale: Locale = getLocale()) => (locale === baseLocale ? '/' : `/${locale}/`);
+/* The practice guide: its Japanese page, or the English one on the English site. */
+export const tutorialHref = (locale: Locale = getLocale()) =>
+	locale === 'en' ? '/en/tutorial.html' : '/tutorial.html';
+export const tutorialLang = (locale: Locale = getLocale()): Locale =>
+	locale === 'en' ? 'en' : 'ja';
+
+/* An Accept-Language value reduced to a served language: the ranges in quality order, a range
+   of quality 0 excluded, each matched by exact tag and then by primary subtag (server.py's
+   language() follows the same rule). The Worker answers API errors in it. */
+export function matchLanguage(header: string | null | undefined): Locale {
 	const ranges = (header || '')
 		.split(',')
 		.map((part, i) => {
@@ -55,68 +51,32 @@ export function matchLanguage(header: string | null | undefined): Language {
 		.sort((a, b) => b.q - a.q || a.i - b.i);
 	for (const { tag } of ranges) {
 		const match =
-			LANGUAGES.find((l) => l.toLowerCase() === tag) ||
-			LANGUAGES.find((l) => l.split('-')[0] === tag.split('-')[0]);
+			locales.find((l) => l.toLowerCase() === tag) ||
+			locales.find((l) => l.split('-')[0] === tag.split('-')[0]);
 		if (match) return match;
 	}
-	return 'ja';
-}
-/* The language a request addresses: /<lang>/ pages, and ?l=<lang> on the result page. */
-export function languageOf(url: string): Language {
-	const { pathname, searchParams } = new URL(url, 'http://localhost');
-	const segment = pathname.split('/')[1];
-	if ((LANGUAGES as readonly string[]).includes(segment)) return segment as Language;
-	return known(searchParams.get('l'));
+	return baseLocale;
 }
 
-export type Params = Record<string, string | number | undefined>;
-export type Translator = {
-	(key: Key, params?: Params): string;
-	list(key: Key): Item[];
-};
-const rules = new Map<Language, Intl.PluralRules>();
-export function translator(lang: unknown): Translator {
-	const language = known(lang);
-	const messages = CATALOGUES[language] as Record<string, unknown>;
-	if (!rules.has(language)) rules.set(language, new Intl.PluralRules(language));
-	const plural = rules.get(language)!;
-	/* t(key, params): a string with {name} filled in (numbers in the language's digit
-	   grouping). A {one, other} entry picks its form by params.n. A missing key is a
-	   programming error. `list(key)` gives the array a list key holds. */
-	const lookup = (key: Key): unknown => {
-		let value = messages[key];
-		if (value === undefined) value = (ja as Record<string, unknown>)[key];
-		if (value === undefined) throw new Error(`i18n: no message for ${key}`);
-		return value;
-	};
-	const t = ((key: Key, params?: Params): string => {
-		let value = lookup(key);
-		if (value && typeof value === 'object' && !Array.isArray(value)) {
-			const forms = value as Record<string, string>;
-			value = forms[plural.select(Number(params?.n) || 0)] ?? forms.other;
-		}
-		if (Array.isArray(value)) return value.slice() as unknown as string;
-		if (!params) return value as string;
-		return (value as string).replace(/\{(\w+)\}/g, (m, name: string) =>
-			!(name in params)
-				? m
-				: typeof params[name] === 'number'
-					? params[name].toLocaleString(language)
-					: String(params[name])
-		);
-	}) as Translator;
-	t.list = (key: Key) => {
-		const value = lookup(key);
-		if (!Array.isArray(value)) throw new Error(`i18n: ${key} is not a list`);
-		return value.slice() as Item[];
-	};
-	return t;
+export type MessageId = keyof typeof m;
+/* The ids that start a numbered list (`metric_f0_factors` for `metric_f0_factors_0`, `_1`, …). */
+export type ListId = { [K in MessageId]: K extends `${infer P}_0` ? P : never }[MessageId];
+type Message = (inputs?: Record<string, never>, options?: { locale?: Locale }) => string;
+const table = m as unknown as Record<string, Message | undefined>;
+/* A message by an id built at run time, from data (`gate_${key}`) or a template token; the type
+   still admits only ids that exist. Code that names a message calls it on `m` directly. */
+export function message<K extends MessageId>(id: K): (typeof m)[K] {
+	const found = table[id];
+	if (!found) throw new Error(`i18n: no message ${id}`);
+	return found as unknown as (typeof m)[K];
 }
-
-/* The browser's language is the document's; the Worker and the build pass one explicitly. */
-const page = (globalThis as { document?: { documentElement: { lang: string } } }).document;
-export const lang: Language = page ? known(page.documentElement.lang) : 'ja';
-export const t = translator(lang);
+/* A numbered list of messages, rendered in order. */
+export function messages(list: ListId, locale: Locale = getLocale()): string[] {
+	const out: string[] = [];
+	for (let found; (found = table[`${list}_${out.length}`]);) out.push(found({}, { locale }));
+	if (!out.length) throw new Error(`i18n: no message list ${list}`);
+	return out;
+}
 
 const escapeHTML = (s: unknown) =>
 	String(s).replace(
@@ -125,58 +85,60 @@ const escapeHTML = (s: unknown) =>
 	);
 // Inside a <script> block a literal `<` must not start a tag, so it goes out as \u003c.
 const escapeJSON = (s: unknown) => JSON.stringify(String(s)).slice(1, -1).replace(/</g, '\\u003c');
-/* Fills a page template for one language. Tokens: {{t:key}} (HTML-escaped text), {{h:key}}
-   (markup from the catalogue), {{j:key}} (inside a JSON string), and the page fields
-   {{lang}}, {{og_locale}}, {{home}}, {{url}}, {{links}} (canonical, hreflang alternates and
-   the manifest). `path` is the page's address on the site, so every language names its own
-   canonical while /ja/ points at the root it duplicates. */
-export function renderPage(template: string, lang: unknown, path: string): string {
-	const language = known(lang);
-	const t = translator(language);
+/* Fills a page template in the page's language. Tokens: {{t:id}} (HTML-escaped text), {{h:id}}
+   (markup from the messages), {{j:id}} (inside a JSON string), and the page fields {{lang}},
+   {{og_locale}}, {{home}}, {{tutorial}}, {{tutorial_lang}}, {{url}}, {{links}} (canonical,
+   hreflang alternates and the manifest). `path` is the page's address on the site, so every
+   language names its own canonical while /ja/ points at the root it duplicates. */
+export function renderPage(template: string, path: string, locale: Locale = getLocale()): string {
 	const fields: Record<string, string> = {
-		lang: language,
-		og_locale: OG_LOCALES[language],
-		home: home(language),
-		tutorial: tutorialHref(language),
-		tutorial_lang: tutorialLang(language),
+		lang: locale,
+		og_locale: OG_LOCALES[locale],
+		home: home(locale),
+		tutorial: tutorialHref(locale),
+		tutorial_lang: tutorialLang(locale),
 		url: SITE + path,
 		links:
 			path === '/r'
 				? ''
 				: [
 						`<link rel="canonical" href="${SITE}${path}">`,
-						...LANGUAGES.map(
+						...locales.map(
 							(l) => `<link rel="alternate" hreflang="${l}" href="${SITE}${home(l)}">`
 						),
 						`<link rel="alternate" hreflang="x-default" href="${SITE}/">`,
-						`<link rel="manifest" href="${language === 'ja' ? '/site.webmanifest' : `/${language}/site.webmanifest`}">`
+						`<link rel="manifest" href="${home(locale)}site.webmanifest">`
 					].join('')
 	};
-	return template.replace(
-		/\{\{(?:(t|h|j):([\w.-]+)|(\w+))\}\}/g,
-		(m, kind: string | undefined, key: string | undefined, field: string | undefined) => {
+	const html = template.replace(
+		/\{\{(?:(t|h|j):(\w+)|(\w+))\}\}/g,
+		(_, kind: string | undefined, id: string | undefined, field: string | undefined) => {
 			if (field) {
 				if (!(field in fields)) throw new Error(`i18n: unknown page field ${field}`);
 				return fields[field];
 			}
-			const value = t(key as Key);
+			const value = (message(id as MessageId) as Message)({}, { locale });
 			return kind === 'h' ? value : kind === 'j' ? escapeJSON(value) : escapeHTML(value);
 		}
 	);
+	const stray = html.match(/\{\{[^}]*\}\}/);
+	if (stray) throw new Error(`i18n: malformed page token ${stray[0]}`);
+	return html;
 }
-/* The web app manifest of one language: the Japanese file with its texts and start page replaced. */
-export function renderManifest(base: string, lang: unknown): string {
-	const language = known(lang);
-	const t = translator(language);
+/* The web app manifest in the page's language: the base with its texts and start page set. */
+export function renderManifest(base: string, locale: Locale = getLocale()): string {
 	const manifest = JSON.parse(base) as { screenshots?: { label?: string }[] } & Record<
 		string,
 		unknown
 	>;
-	manifest.name = t('manifest.name');
-	manifest.description = t('manifest.description');
-	manifest.lang = language;
-	manifest.start_url = home(language);
-	const labels = [t('manifest.screenshot_wide'), t('manifest.screenshot_narrow')];
+	manifest.name = m.manifest_name({}, { locale });
+	manifest.description = m.manifest_description({}, { locale });
+	manifest.lang = locale;
+	manifest.start_url = home(locale);
+	const labels = [
+		m.manifest_screenshot_wide({}, { locale }),
+		m.manifest_screenshot_narrow({}, { locale })
+	];
 	manifest.screenshots?.forEach((s, i) => {
 		s.label = labels[i] ?? s.label;
 	});

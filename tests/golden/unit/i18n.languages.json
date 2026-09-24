@@ -3,7 +3,6 @@
   "en": "ja",
   "ja": "ja",
   "ko": "ko",
-  "xx": "ja",
   "zh-CN": "zh-CN"
  },
  "fonts": {
@@ -12,22 +11,30 @@
   "ko": "Noto Sans KR",
   "zh-CN": "Noto Sans SC"
  },
+ "guides": {
+  "en": [
+   "/en/tutorial.html",
+   "en"
+  ],
+  "ja": [
+   "/tutorial.html",
+   "ja"
+  ],
+  "ko": [
+   "/tutorial.html",
+   "ja"
+  ],
+  "zh-CN": [
+   "/tutorial.html",
+   "ja"
+  ]
+ },
  "homes": {
   "en": "/en/",
   "ja": "/",
   "ko": "/ko/",
   "zh-CN": "/zh-CN/"
  },
- "known": [
-  "ja",
-  "en",
-  "zh-CN",
-  "ko",
-  "ja",
-  "ja",
-  "ja",
-  "ja"
- ],
  "languages": [
   "ja",
   "zh-CN",

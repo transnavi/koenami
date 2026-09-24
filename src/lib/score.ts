@@ -1,5 +1,7 @@
-import { translator } from './i18n';
+import { message, type Locale } from './i18n';
 import { finite, quantile, clamp } from './math';
+import { m } from './paraglide/messages';
+import { getLocale } from './paraglide/runtime';
 import { AcousticSpace, type Features } from './space';
 
 /* Shareable result: where a voice sits on the female–male contrast axis of the
@@ -13,11 +15,12 @@ import { AcousticSpace, type Features } from './space';
 export const SCORE_VERSION = 2;
 export type MetricKey = 'f0' | 'delta_f' | 'hnr' | 'balance' | 'pitch_span';
 export const METRIC_KEYS: MetricKey[] = ['f0', 'delta_f', 'hnr', 'balance', 'pitch_span'];
-/* Labels come from the interface language's catalogue; the Worker renders result pages in the language of the link. */
-export const metricLabel = (key: MetricKey, lang: string = 'ja') =>
-	translator(lang)(`metric.${key}.label`);
-export const metricUnit = (key: MetricKey, lang: string = 'ja') =>
-	translator(lang)(`metric.${key}.unit`);
+/* Texts are in the page's locale unless one is given; the Worker renders result pages and cards
+   in the language of the link. */
+export const metricLabel = (key: MetricKey, locale: Locale = getLocale()) =>
+	message(`metric_${key}_label`)({}, { locale });
+export const metricUnit = (key: MetricKey, locale: Locale = getLocale()) =>
+	message(`metric_${key}_unit`)({}, { locale });
 export const METRIC_DIGITS: Record<MetricKey, number> = {
 	f0: 0,
 	delta_f: 0,
@@ -26,10 +29,10 @@ export const METRIC_DIGITS: Record<MetricKey, number> = {
 	pitch_span: 1
 };
 export type Verdict = 'female' | 'androgynous' | 'male';
-export const verdictLabel = (verdict: Verdict, lang: string = 'ja') =>
-	translator(lang)(`verdict.${verdict}`);
-export const leaningLabel = (verdict: Verdict, lang: string = 'ja') =>
-	translator(lang)(`leaning.${verdict}`);
+export const verdictLabel = (verdict: Verdict, locale: Locale = getLocale()) =>
+	message(`verdict_${verdict}`)({}, { locale });
+export const leaningLabel = (verdict: Verdict, locale: Locale = getLocale()) =>
+	message(`leaning_${verdict}`)({}, { locale });
 export const SCALE_LIMIT = 100;
 /* Signed number with an explicit sign; U+2212 for minus. */
 export const formatScore = (v: number) => (v > 0 ? `+${v}` : v < 0 ? `−${-v}` : '0');
@@ -88,31 +91,32 @@ export const GATE: Gate[] = [
 	{ key: 'clipping_fraction', unit: '%', max: 0.005, scale: 100, digits: 2 },
 	{ key: 'resonance_sensitivity_pct', unit: '%', max: 12, digits: 0 }
 ];
-export type GateFailure = { label: string; value?: string; need?: string };
+export type GateFailure =
+	| { label: string; value?: undefined; need?: undefined }
+	| { label: string; value: string; need: string };
 /* Returns null when the measurement passes, otherwise the first failing check with its value. */
 export function gateFailure(
 	detail: Record<string, unknown> | null | undefined,
-	lang: string = 'ja'
+	locale: Locale = getLocale()
 ): GateFailure | null {
-	const t = translator(lang);
-	if (!detail) return { label: t('gate.none') };
+	if (!detail) return { label: m.gate_none({}, { locale }) };
 	for (const g of GATE) {
 		const raw = detail[g.key];
 		const v = finite(raw) ? raw : g.min !== undefined ? 0 : 0;
 		const shown = (v * (g.scale || 1)).toFixed(g.digits),
-			unit = g.unit === 'seconds' ? t('gate.seconds') : g.unit,
-			label = t(`gate.${g.key}`);
+			unit = g.unit === 'seconds' ? m.gate_seconds({}, { locale }) : g.unit,
+			label = message(`gate_${g.key}`)({}, { locale });
 		if (g.min !== undefined && v < g.min)
 			return {
 				label,
 				value: `${shown} ${unit}`,
-				need: t('gate.min', { value: String(g.min), unit })
+				need: m.gate_min({ value: String(g.min), unit }, { locale })
 			};
 		if (g.max !== undefined && v > g.max)
 			return {
 				label,
 				value: `${shown} ${unit}`,
-				need: t('gate.max', { value: String(g.max * (g.scale || 1)), unit })
+				need: m.gate_max({ value: String(g.max * (g.scale || 1)), unit }, { locale })
 			};
 	}
 	return null;
@@ -244,12 +248,15 @@ export function parseResultParams(
 		age: params.has('age') && finite(age) && age >= 5 && age <= 100 ? Math.round(age) : undefined
 	};
 }
-export function shareText(result: ScoreResult, lang: string = 'ja'): string {
-	return translator(lang)('share.text', {
-		verdict: verdictLabel(result.verdict, lang),
-		leaning: leaningLabel(result.verdict, lang),
-		score: formatScore(result.display)
-	});
+export function shareText(result: ScoreResult, locale: Locale = getLocale()): string {
+	return m.share_text(
+		{
+			verdict: verdictLabel(result.verdict, locale),
+			leaning: leaningLabel(result.verdict, locale),
+			score: formatScore(result.display)
+		},
+		{ locale }
+	);
 }
-export const ageText = (years: number, lang: string = 'ja') =>
-	translator(lang)('share.age_years', { n: Math.round(years) });
+export const ageText = (years: number, locale: Locale = getLocale()) =>
+	m.share_age_years({ n: Math.round(years) }, { locale });

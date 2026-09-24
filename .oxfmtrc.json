@@ -23,6 +23,7 @@
 		"worker-configuration.d.ts",
 		"scripts/kb-*.mjs",
 		"src/lib/measure/pkg/**",
+		"src/lib/paraglide/**",
 		"src/lib/studio/*.html"
 	]
 }

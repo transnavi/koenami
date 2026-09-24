@@ -11,7 +11,6 @@ browser both embed a few tens of kilobytes per language instead of 10 MB.
 """
 import argparse
 import json
-import subprocess
 import sys
 from pathlib import Path
 
@@ -26,18 +25,27 @@ FONT_DIRS = [Path('/mnt/c/Windows/Fonts'), Path.home() / '.fonts']
 CUTS = {'ja': ('NotoSansJP-VF.ttf', ['ja', 'en']), 'zh-CN': ('NotoSansSC-VF.ttf', ['zh-CN']), 'ko': ('NotoSansKR-VF.ttf', ['ko'])}
 ASCII = ''.join(chr(c) for c in range(0x20, 0x7F))
 EXTRA = '−Δ／・「」（）〜…'
-# The catalogue keys whose text reaches the card (src/lib/card.ts and src/lib/score.ts).
-CARD_KEYS = ['card.eyebrow', 'card.male', 'card.center', 'card.female', 'card.male_refs', 'card.female_refs',
-             'verdict.female', 'verdict.androgynous', 'verdict.male', 'leaning.female', 'leaning.androgynous', 'leaning.male',
-             'share.age_label', 'share.age_years',
-             *[f'metric.{k}.{f}' for k in ('f0', 'delta_f', 'hnr', 'balance', 'pitch_span') for f in ('label', 'unit')]]
+# The messages whose text reaches the card (src/lib/card.ts and src/lib/score.ts).
+CARD_MESSAGES = ['card_eyebrow', 'card_male', 'card_center', 'card_female', 'card_male_refs', 'card_female_refs',
+                 'verdict_female', 'verdict_androgynous', 'verdict_male', 'leaning_female', 'leaning_androgynous', 'leaning_male',
+                 'share_age_label', 'share_age_years',
+                 *[f'metric_{k}_{f}' for k in ('f0', 'delta_f', 'hnr', 'balance', 'pitch_span') for f in ('label', 'unit')]]
 
 
 def card_text():
-    """Every card string per language, read from the catalogues through Node."""
-    script = f"import {{ CATALOGUES }} from './src/lib/i18n/index.ts'; const keys = {json.dumps(CARD_KEYS)}; " \
-             "console.log(JSON.stringify(Object.fromEntries(Object.entries(CATALOGUES).map(([l, c]) => [l, keys.map((k) => { const v = c[k]; if (v === undefined) throw new Error(`no catalogue entry ${k} in ${l}`); return typeof v === 'string' ? v : Object.values(v).join(''); }).join('')]))));"
-    return json.loads(subprocess.run(['bun', '-e', script], cwd=ROOT, capture_output=True, text=True, check=True).stdout)
+    """Every card string per language, read from messages/<locale>.json: a text as written, a message
+    with variants as all of them."""
+    texts = {}
+    for path in sorted((ROOT / 'messages').glob('*.json')):
+        messages = json.loads(path.read_text())
+        parts = []
+        for id in CARD_MESSAGES:
+            if id not in messages:
+                sys.exit(f'no message {id} in {path.name}')
+            value = messages[id]
+            parts.append(value if isinstance(value, str) else ''.join(t for v in value for t in v['match'].values()))
+        texts[path.stem] = ''.join(parts)
+    return texts
 
 
 def main():
