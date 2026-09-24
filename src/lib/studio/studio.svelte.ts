@@ -1,3 +1,4 @@
+import { m } from '$lib/paraglide/messages';
 import { gateFailure, type ScoreResult, type Scorer } from '$lib/score';
 import type { Side } from '$lib/signals';
 import type { Features } from '$lib/space';
@@ -114,30 +115,38 @@ export class StudioState {
 		this.setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
 	}
 
-	/* The share card's score for what the indicators show — the whole recording, or the
-	   selected range — or null while there is nothing scoreable. One derived value that the
-	   toolbar and the controller's verdict both read, so the score is computed once. */
-	readonly shareResult = $derived.by((): ScoreResult | null => {
-		const m = this.measurement;
-		return this.scorer?.available && m && !m.analysisPending && !gateFailure(m)
-			? this.scorer.score(m.features || {})
-			: null;
-	});
-
 	/* What the profile panel shows: the listener's measurement (the selected range, else the
 	   whole take), both voices' features, and the reference speakers of the selected reference's
-	   group, against which the indicators and the chart are scaled. */
+	   group, against which the indicators are scaled. */
 	readonly measurement = $derived(this.own || this.ownFull);
 	readonly ownFeatures = $derived<Features>(this.own?.features || {});
 	readonly refFeatures = $derived<Features>(this.ref?.features || {});
 	readonly referenceGroup = $derived<'male' | 'female'>(
 		this.selected?.group === 'male' ? 'male' : 'female'
 	);
-	readonly referenceStats = $derived(
+	readonly referenceGroupLabel = $derived(
+		this.referenceGroup === 'male' ? m.group_male() : m.group_female()
+	);
+	readonly referenceSpeakers = $derived(
 		this.representatives.filter((c) => c.group === this.referenceGroup)
 	);
-	/* The two voices' distance in the voice map's space; the controller computes it while the
-	   map is still its own. */
+	/* The first quality check the measurement fails, once it is analysed and the language has a
+	   scorer; null when it passes or cannot be checked yet. */
+	readonly gate = $derived.by(() => {
+		const m = this.measurement;
+		return m && !m.analysisPending && this.scorer?.available ? gateFailure(m) : null;
+	});
+	/* The score for what the indicators show, or null while there is nothing scoreable. The
+	   toolbar's share button and the verdict both read it, so the score is computed once. */
+	readonly shareResult = $derived.by((): ScoreResult | null => {
+		const m = this.measurement;
+		return m && this.scorer?.available && !m.analysisPending && !this.gate
+			? this.scorer.score(m.features || {})
+			: null;
+	});
+	/* The two voices' distance in the voice map's space, null while there is no comparison (the
+	   distance button's title says which). The controller writes it while the map is its own;
+	   it becomes derived when the map's space and projection move here. */
 	distance = $state<number | null>(null);
 
 	/* Show one of the studio's dialogs. They are still in the template body, so this finds

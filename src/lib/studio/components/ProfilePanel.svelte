@@ -5,7 +5,7 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
 
-	import { fmt } from '../profile';
+	import { fmt } from '../metrics';
 	import { useStudio } from '../studio.svelte';
 	import Indicators from './Indicators.svelte';
 	import ProfileChart from './ProfileChart.svelte';
