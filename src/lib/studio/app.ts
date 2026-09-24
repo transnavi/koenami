@@ -481,7 +481,9 @@ export function mountStudio(state: State): () => void {
 		const key = similarKeyOf();
 		$('sort-basis').textContent = t(
 			similarRanking()
-				? 'sort.near_timbre'
+				? map.space?.standardized(activeFeatures('own'))
+					? 'sort.near_timbre'
+					: 'sort.near_timbre_only'
 				: key && state.similarKey === key
 					? 'sort.near_pending'
 					: 'sort.near_acoustic'
