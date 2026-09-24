@@ -1,6 +1,6 @@
 import { DensityCloud } from './cloud';
-import { t } from './i18n';
 import { finite, quantile, clamp } from './math';
+import { m } from './paraglide/messages';
 import { AcousticSpace, type Features } from './space';
 
 /* Measured sample positions and time-resolved trajectories share one transform. */
@@ -451,17 +451,17 @@ export class VoiceMap {
 		g.globalAlpha = 1;
 		this.trajectory(this.target, this.targetRange, this.colors.target, time.target, false);
 		this.trajectory(this.own, this.ownRange, this.colors.own, time.own, true);
-		for (const [m, color, own] of [
+		for (const [features, color, own] of [
 			[this.selected?.features, this.colors.target, false],
 			[this.ownFeatures || this.own?.features, this.colors.own, true]
 		] as [Features | undefined, string, boolean][]) {
-			const p = this.project(this.vector(m));
+			const p = this.project(this.vector(features));
 			if (p) {
 				const active = finite(own ? time.own : time.target);
 				this.ctx.globalAlpha = active ? 0.25 : 1;
 				this.marker(p, color, own ? 8 : 7, own);
 				this.ctx.globalAlpha = 1;
-				if (!active) this.label(p, own ? t('common.self') : t('common.reference'), color);
+				if (!active) this.label(p, own ? m.common_self() : m.common_reference(), color);
 			}
 		}
 		g.restore();
@@ -579,7 +579,7 @@ export class VoiceMap {
 	}
 	fitShapes() {
 		if (!this.autoFit || !this.fitDirty || this.drag) return;
-		let points = Object.values(this.shapeCache || {}).flatMap((m) => m?.points || []);
+		let points = Object.values(this.shapeCache || {}).flatMap((shape) => shape?.points || []);
 		for (const f of [this.ownFeatures, this.selected?.features]) {
 			const p = this.vector(f);
 			if (p) points.push(p);
@@ -699,7 +699,7 @@ export class VoiceMap {
 			g.fill();
 			g.globalAlpha = 1;
 			this.marker(cursor, color, 9, own);
-			this.label(cursor, own ? t('common.self') : t('common.reference'), color);
+			this.label(cursor, own ? m.common_self() : m.common_reference(), color);
 			if (own) this.lastCursor = cursor;
 		} else if (own) this.lastCursor = null;
 	}
@@ -782,7 +782,7 @@ export class VoiceMap {
 		g.globalAlpha = alpha;
 		this.marker(p, color, 9, true);
 		g.globalAlpha = 1;
-		if (fade > 0.5) this.label(p, t('common.self'), color);
+		if (fade > 0.5) this.label(p, m.common_self(), color);
 		this.lastCursor = p;
 	}
 	axes() {

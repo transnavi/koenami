@@ -1,0 +1,32 @@
+[
+ [
+  "/r?l=en",
+  "en",
+  false
+ ],
+ [
+  "/r?l=xx",
+  "ja",
+  false
+ ],
+ [
+  "/r",
+  "ja",
+  false
+ ],
+ [
+  "/en/r",
+  "en",
+  false
+ ],
+ [
+  "/ko/r?l=en",
+  "en",
+  false
+ ],
+ [
+  "/en/",
+  "en",
+  false
+ ]
+]

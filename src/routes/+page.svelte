@@ -9,4 +9,4 @@
 	{@html data.head}
 </svelte:head>
 
-<Studio body={data.body} lang={data.lang} />
+<Studio main={data.main} body={data.body} />

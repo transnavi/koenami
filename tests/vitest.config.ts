@@ -10,6 +10,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'@app': `${root}src/lib`,
+			$lib: `${root}src/lib`,
 			'$service-worker': `${root}tests/unit/service-worker-stub.ts`
 		}
 	},

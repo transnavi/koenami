@@ -11,6 +11,7 @@ export const prerendered = [
 	'/references.html',
 	'/review.html',
 	'/r',
+	'/site.webmanifest',
 	'/tutorial.html',
 	'/',
 	'/en/r',

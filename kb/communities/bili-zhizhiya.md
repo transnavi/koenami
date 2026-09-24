@@ -23,7 +23,7 @@ Two accounts, the same creator: 吱吱吖- (mid 1507394638) for teaching and com
 - BV1Nh4y1h77X (2023-09-27, 2.70M plays, 2 min 2 s) 【拒绝不科学伪声】为什么你发不出女声 — already noted at [[bili-zhizhiya2023]].
 - BV1hc411Q762 (2023-11-30, 1.12M plays, 1 min 43 s) 你们要的女伪男教学来喽！
 - BV12u4y137Pn (2023-12-08, 62.3K plays, 3 min 53 s) 跨性别人群必看，关于你的声音到底怎么解决！ — the only item on the channel tagged 跨性别.
-- BV1uL9uBkEgW (2026-04-06, 478.2K plays, 20 min 8 s) 一口气带你彻底入门伪音，逼自己30天练完
+- BV1uL9uBkEgW (2026-04-06, 478.2K plays, 20 min 8 s) 一口气带你彻底入门伪音，逼自己30天练完 — transcribed at [[bili-zhizhiya2026]]; also on YouTube from 宁韵声音培训.
 - BV1HUYQ6TEpD (2026-09-12, 1.4K plays, 37 min 32 s) 【零基础伪音教程】挑战30分钟学会多种声线，让你的嗓子吊打变声器
 
 Alt account 吱吱吖小号:
@@ -38,6 +38,6 @@ Alt account 吱吱吖小号:
 - The 2025 alt-account series teaches the deliberately exaggerated 夹子音 register in three minutes or less; the 2026 main-account videos shift to 30-minute multi-声线 courses.
 
 ## Limits
-- Metadata-only verification: title, description, upload date, plays, duration and tags from the Bilibili search API (wbi); the view API is blocked from this machine (412) and no audio was transcribed. Most descriptions on the main account are empty strings.
+- Metadata-only verification: title, description, upload date, plays, duration and tags from the Bilibili search API (wbi); the view API is blocked from this machine (412). Only BV1uL9uBkEgW has been transcribed ([[bili-zhizhiya2026]]). Most descriptions on the main account are empty strings.
 - No credentials are stated anywhere in the records; the 科学 framing is the channel's own adjective.
 - Plays are as reported at the 2026-09-17 fetch.
