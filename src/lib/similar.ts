@@ -8,10 +8,11 @@ import type { AcousticSpace, Features } from './space';
 export const TIMBRE_WEIGHT = 0.75;
 
 /* Distance from `own` to each speaker's centre in the standardised five-measure space: the mean
-   of the speaker's measurable clips. Speakers with no measurable clip are left out. */
+   of the speaker's plotted clips, the ones that passed the library's screening and that the timbre
+   index also holds. Speakers with no such clip are left out. */
 export function fiveMeasureDistances(
 	space: AcousticSpace,
-	clips: Iterable<{ speaker: string; features: Features }>,
+	clips: Iterable<{ speaker: string; features: Features; plotted?: boolean }>,
 	own: Features | null | undefined
 ): Map<string, number> {
 	const out = new Map<string, number>();
@@ -19,6 +20,7 @@ export function fiveMeasureDistances(
 	if (!q) return out;
 	const sums = new Map<string, { sum: number[]; n: number }>();
 	for (const c of clips) {
+		if (!c.plotted) continue;
 		const v = space.standardized(c.features);
 		if (!v) continue;
 		const s = sums.get(c.speaker) ?? { sum: v.map(() => 0), n: 0 };
@@ -40,8 +42,9 @@ function zScores(d: Map<string, number>): Map<string, number> {
 }
 
 /* One score per speaker the descriptor ranked, lower is closer: both distances z-scored across
-   the speakers, then mixed. A speaker without a five-measure distance, or a take whose five
-   measures are missing, keeps the descriptor's score alone. */
+   the speakers, then mixed. A take whose five measures are missing is ordered by the descriptor
+   alone. A speaker without a five-measure distance keeps its descriptor z-score unweighted, which
+   spreads wider than a blend; in the shipped libraries every indexed speaker has one. */
 export function blendedScores(
 	timbre: Map<string, number>,
 	five: Map<string, number>,

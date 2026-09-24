@@ -5,8 +5,17 @@ import library from '../fixtures/library-ja.json';
 const { AcousticSpace } = await import('@app/space');
 const { blendedScores, fiveMeasureDistances, TIMBRE_WEIGHT } = await import('@app/similar');
 
-type Clip = { id: string; speaker: string; group: string; features: Record<string, number> };
-const clips = (library.clips as Clip[]).filter((c) => c.features?.f0);
+type Clip = {
+	id: string;
+	speaker: string;
+	group: string;
+	plotted?: boolean;
+	features: Record<string, number>;
+};
+// The fixture library carries no screening flag; every clip in it stands for a plotted one.
+const clips = (library.clips as Clip[])
+	.filter((c) => c.features?.f0)
+	.map((c) => ({ ...c, plotted: true }));
 const space = new AcousticSpace(clips);
 
 describe('fiveMeasureDistances', () => {
@@ -84,5 +93,38 @@ describe('blendedScores', () => {
 		);
 		expect(s.has('d')).toBe(true);
 		expect(Number.isFinite(s.get('d'))).toBe(true);
+	});
+});
+
+describe('inputs to the blend', () => {
+	it('leaves unplotted clips out of a speaker’s centre', () => {
+		const plotted = clips[0];
+		const moved = {
+			...plotted,
+			id: 'x',
+			plotted: false,
+			features: { ...plotted.features, f0: 400 }
+		};
+		const own = plotted.features;
+		const without = fiveMeasureDistances(space, clips, own).get(plotted.speaker);
+		const withUnplotted = fiveMeasureDistances(space, [...clips, moved], own).get(plotted.speaker);
+		expect(withUnplotted).toBe(without);
+	});
+	it('gives a speaker without a five-measure distance its descriptor z-score', () => {
+		const timbre = new Map([
+			['a', 0.1],
+			['b', 0.2],
+			['c', 0.3],
+			['d', 0.4]
+		]);
+		const s = blendedScores(
+			timbre,
+			new Map([
+				['a', 1],
+				['b', 2],
+				['c', 3]
+			])
+		);
+		expect(s.get('d')).toBeCloseTo((0.4 - 0.25) / Math.sqrt(0.0125), 9);
 	});
 });
