@@ -2,10 +2,9 @@ import captureUrl from '$lib/capture?worker&url';
 import { loadImported, importedAudio, importJVS, type ImportClip } from '$lib/corpus-import';
 /* The studio: one controller over the page's elements, ported from web/app.js with types.
    Its DOM writes, request order and timing are what the browser goldens pin. */
-import { message, messages } from '$lib/i18n';
 import { type KoeSelectElement } from '$lib/koe-select';
 import { VoiceMap, type MapSample } from '$lib/map';
-import { finite, quantile, clamp, AXES } from '$lib/math';
+import { finite, quantile, clamp } from '$lib/math';
 import * as engine from '$lib/measure/engine';
 import { m } from '$lib/paraglide/messages';
 import { getLocale } from '$lib/paraglide/runtime';
@@ -18,7 +17,6 @@ import {
 	representatives,
 	ageText,
 	SCALE_LIMIT,
-	type MetricKey,
 	type ScoreResult
 } from '$lib/score';
 import { shareBundle, cardImage, systemShare, labelled } from '$lib/share';
@@ -26,6 +24,8 @@ import { SignalView, type Side, type SignalMode } from '$lib/signals';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
+import { openHelp } from './help';
+import { fmt, METRICS, VERDICT_HELP } from './profile';
 import { snapshot as snap, type LanguageOption, type State, type Theme } from './studio.svelte';
 import type { Clip, Detail, PCM, Snapshot, Take, TakeSort, View, Words } from './types';
 
@@ -35,57 +35,10 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getEleme
 			/[&<>"']/g,
 			(c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!
 		);
-const fmt = (v: unknown, n = 0) => (finite(v) ? v.toFixed(n) : '—');
 const clock = (t: number | undefined | null) =>
 	`${Math.floor((t || 0) / 60)}:${String(Math.floor((t || 0) % 60)).padStart(2, '0')}`;
 const icon = (el: Element, name: string) =>
 	el.querySelector('use')?.setAttribute('href', '#i-' + name);
-type Metric = {
-	key: MetricKey;
-	label: string;
-	unit: string;
-	n: number;
-	description: string;
-	factors: string[];
-	caveats: string[];
-};
-// The texts resolve when read, in the page's locale.
-const METRICS: Metric[] = (['f0', 'delta_f', 'hnr', 'balance', 'pitch_span'] as MetricKey[]).map(
-	(key, i) => ({
-		key,
-		n: [0, 0, 1, 1, 1][i],
-		get label() {
-			return message(`metric_${key}_label`)();
-		},
-		get unit() {
-			return message(`metric_${key}_unit`)();
-		},
-		get description() {
-			return message(`metric_${key}_description`)();
-		},
-		get factors() {
-			return messages(`metric_${key}_factors`);
-		},
-		get caveats() {
-			return messages(`metric_${key}_caveats`);
-		}
-	})
-);
-const VERDICT_HELP = {
-	get label() {
-		return m.verdict_help_label();
-	},
-	get description() {
-		return m.verdict_help_description();
-	},
-	get factors() {
-		return messages('verdict_help_factors');
-	},
-	get caveats() {
-		return messages('verdict_help_caveats');
-	}
-};
-
 // The reactive studio state (src/lib/studio/studio.svelte.ts) is created per mount by the
 // <Studio> shell and passed in, so a remount (HMR, or client-side navigation back to the page)
 // gets a fresh, isolated instance and this mount's in-flight callbacks never write a later one.
@@ -183,14 +136,8 @@ export function mountStudio(state: State) {
 		if (c.group === 'research') return `${c.dataset} · ${c.speaker}`;
 		return `${c.group === 'female' ? 'F' : 'M'} ${String(c.index || 0).padStart(3, '0')}`;
 	}
-	function referenceGroup() {
-		return state.selected?.group === 'male' ? 'male' : 'female';
-	}
 	function referenceGroupLabel() {
-		return (referenceGroup() === 'male' ? m.group_male : m.group_female)();
-	}
-	function referenceStats() {
-		return state.representatives.filter((c) => c.group === referenceGroup());
+		return (state.referenceGroup === 'male' ? m.group_male : m.group_female)();
 	}
 	let fitModel: {
 		model: AcousticSpace;
@@ -199,7 +146,7 @@ export function mountStudio(state: State) {
 		count: number;
 	} | null = null;
 	function buildFit() {
-		const refs = referenceStats().filter((c) => AcousticSpace.raw(c.features).every(finite));
+		const refs = state.referenceStats.filter((c) => AcousticSpace.raw(c.features).every(finite));
 		if (refs.length < 20) {
 			fitModel = null;
 			return;
@@ -229,73 +176,16 @@ export function mountStudio(state: State) {
 	function activeFeatures(side: Side): Features {
 		return (side === 'own' ? state.own : state.ref)?.features || {};
 	}
-	/* One dialog for every ?: definition, the numbers, what moves the value, and what it cannot tell. */
-	function openHelp(
-		entry: { label: string; description: string; factors: string[]; caveats: string[] },
-		rows: [string, string | number][] = []
-	) {
-		$('metric-title').textContent = entry.label;
-		$('metric-description').textContent = entry.description;
-		$('metric-details').innerHTML = rows
-			.map(
-				([a, b]) => `<div class="metric-detail-row"><span>${a}</span><strong>${b}</strong></div>`
-			)
-			.join('');
-		$('metric-factors').innerHTML = entry.factors.map((x) => `<li>${x}</li>`).join('');
-		$('metric-caveats').innerHTML = entry.caveats.map((x) => `<li>${x}</li>`).join('');
-		$<HTMLDialogElement>('metric-dialog').showModal();
-	}
-	function updateIndicators() {
-		const focused = (document.activeElement as HTMLElement | null)?.dataset?.metric;
-		const f = activeFeatures('own'),
-			target = activeFeatures('ref'),
-			refs = referenceStats();
-		$('indicators').replaceChildren();
-		for (const metric of METRICS) {
-			const values = refs.map((s) => s.features[metric.key]).filter(finite);
-			let lo = quantile(values, 0.01),
-				hi = quantile(values, 0.99);
-			if (!finite(lo) || hi <= lo) {
-				lo = AXES[metric.key].min;
-				hi = AXES[metric.key].max;
-			}
-			lo = Math.min(lo, f[metric.key] ?? lo, target[metric.key] ?? lo);
-			hi = Math.max(hi, f[metric.key] ?? hi, target[metric.key] ?? hi);
-			const pos = (v: number) => clamp(((v - lo) / (hi - lo || 1)) * 100, 0, 100),
-				q1 = quantile(values, 0.1),
-				q9 = quantile(values, 0.9);
-			const b = document.createElement('button');
-			b.className = 'indicator';
-			b.dataset.metric = metric.key;
-			b.title = m.indicator_title({
-				label: metric.label,
-				own: fmt(f[metric.key], metric.n),
-				ref: fmt(target[metric.key], metric.n),
-				unit: metric.unit
-			});
-			b.setAttribute('aria-label', b.title);
-			b.innerHTML = `<span class="indicator-heading">${metric.label}<svg aria-hidden="true"><use href="#i-info"></use></svg></span><span class="indicator-values"><strong>${fmt(f[metric.key], metric.n)}</strong><small>${metric.unit}</small><em>${fmt(target[metric.key], metric.n)}</em></span><span class="indicator-track">${finite(q1) ? `<span class="indicator-band" style="left:${pos(q1)}%;width:${pos(q9) - pos(q1)}%"></span>` : ''}${finite(f[metric.key]) ? `<span class="indicator-marker" style="left:${pos(f[metric.key]!)}%"></span>` : ''}${finite(target[metric.key]) ? `<span class="indicator-target" style="left:${pos(target[metric.key]!)}%"></span>` : ''}</span>`;
-			b.onclick = () =>
-				openHelp(metric, [
-					[m.help_own(), `${fmt(f[metric.key], metric.n)} ${metric.unit}`],
-					[m.help_reference(), `${fmt(target[metric.key], metric.n)} ${metric.unit}`],
-					[
-						m.help_band({ group: referenceGroupLabel() }),
-						`${fmt(q1, metric.n)}–${fmt(q9, metric.n)} ${metric.unit}`
-					],
-					[m.help_speakers(), values.length]
-				]);
-			$('indicators').append(b);
-		}
-		if (focused)
-			$('indicators')
-				.querySelector<HTMLElement>(`[data-metric="${focused}"]`)
-				?.focus({ preventScroll: true });
-		drawProfile(f, target);
-		updateVerdict();
-		const comparison = map.space?.comparison(f, target, map.dimension, map.projection);
-		$('fit-value').textContent = comparison ? fmt(comparison.distance, 2) : '—';
-		$('report-button').title = (comparison ? m.profile_fit_title_ready : m.profile_fit_title)();
+	/* The two voices' distance in the map's space, shown as the fit readout; the profile panel
+	   renders everything else about the measurements from the store. */
+	function updateDistance() {
+		const comparison = map.space?.comparison(
+			activeFeatures('own'),
+			activeFeatures('ref'),
+			map.dimension,
+			map.projection
+		);
+		state.distance = comparison ? comparison.distance : null;
 	}
 	function updateMap() {
 		let points: MapSample[] = state.clips.filter(
@@ -334,7 +224,7 @@ export function mountStudio(state: State) {
 		map.targetRange = state.ranges.ref;
 		map.showRange = true;
 		map.live = state.captureMode === 'live' && state.recording;
-		const pitchRefs = referenceStats().map((c) => c.features.f0 as number);
+		const pitchRefs = state.referenceStats.map((c) => c.features.f0 as number);
 		signal.pitchBand = [quantile(pitchRefs, 0.1), quantile(pitchRefs, 0.9)];
 	}
 	function teacherMatch(c: Clip) {
@@ -570,7 +460,7 @@ export function mountStudio(state: State) {
 			$<HTMLSelectElement>('sort').value = lang === 'lab' ? 'name' : 'high';
 			state.loadingLanguage = false;
 			renderLibrary(true);
-			updateIndicators();
+			updateDistance();
 			const chosen = null;
 			await selectSample(
 				chosen ||
@@ -604,7 +494,7 @@ export function mountStudio(state: State) {
 		if (!clip || state.recording || state.loadingLanguage) return;
 		cancelAB();
 		reference.pause();
-		const previousGroup = referenceGroup();
+		const previousGroup = state.referenceGroup;
 		state.selected = clip;
 		document.documentElement.style.setProperty(
 			'--reference',
@@ -616,7 +506,7 @@ export function mountStudio(state: State) {
 		);
 		signal.images = new WeakMap();
 		signal.dirty = true;
-		if (previousGroup !== referenceGroup()) buildFit();
+		if (previousGroup !== state.referenceGroup) buildFit();
 		openSpeakers.add(speakerKey(clip));
 		const token = ++state.detailToken;
 		state.rangeToken.ref++;
@@ -653,7 +543,7 @@ export function mountStudio(state: State) {
 		if (clip.source) $<HTMLAnchorElement>('source-link').href = clip.source;
 		$<HTMLButtonElement>('play-reference').disabled = false;
 		renderLibrary();
-		updateIndicators();
+		updateDistance();
 		renderWords();
 		if (play) playSide('ref').catch((e) => notify(e.message, true));
 		try {
@@ -667,7 +557,7 @@ export function mountStudio(state: State) {
 			signal.set('ref', detail);
 			if (!state.ownFull) setSignalSource('ref');
 			updateMap();
-			updateIndicators();
+			updateDistance();
 			if (signal.source === 'ref') updateRangeLabel();
 		} catch (e) {
 			if (token === state.detailToken)
@@ -1025,7 +915,7 @@ export function mountStudio(state: State) {
 			if (side === 'own') state.own = full;
 			else state.ref = full;
 			updateMap();
-			updateIndicators();
+			updateDistance();
 			if (sessionReady) {
 				void persistTakes();
 				saveView();
@@ -1054,7 +944,7 @@ export function mountStudio(state: State) {
 			else state.ref = detail;
 			signal.setRange(side, range, detail);
 			updateMap();
-			updateIndicators();
+			updateDistance();
 		} catch (e) {
 			if (token === state.rangeToken[side]) notify((e as Error).message, true);
 		}
@@ -1221,7 +1111,7 @@ export function mountStudio(state: State) {
 			player.src = blobURL;
 		} else player.src = url!;
 		$('timer').textContent = clock(detail.duration);
-		updateIndicators();
+		updateDistance();
 		updateMap();
 		renderWords();
 		updateRangeLabel();
@@ -1343,7 +1233,7 @@ export function mountStudio(state: State) {
 			map.invalidate();
 			$('quality-state').textContent = measured.active ? '' : m.quality_waiting();
 			$('quality-state').hidden = !!measured.active;
-			updateIndicators();
+			updateDistance();
 		} catch (e) {
 			if (generation === liveGeneration && (e as Error).name !== 'AbortError')
 				notify((e as Error).message, true);
@@ -1498,7 +1388,7 @@ export function mountStudio(state: State) {
 		state.liveClock = null;
 		map.live = false;
 		updateMap();
-		updateIndicators();
+		updateDistance();
 		renderWords();
 		updateRangeLabel();
 		controls();
@@ -1686,7 +1576,7 @@ export function mountStudio(state: State) {
 				if (!state.ranges.own) state.own = detail;
 				signal.set('own', detail);
 				signal.setRange('own', state.ranges.own, state.ranges.own ? state.own : null);
-				updateIndicators();
+				updateDistance();
 				updateRangeLabel();
 				const warning = qualityMessage(detail.reason) || '';
 				$('quality-state').textContent = warning;
@@ -1724,7 +1614,7 @@ export function mountStudio(state: State) {
 			r = activeFeatures('ref'),
 			comparison = map.space?.comparison(f, r, map.dimension, map.projection),
 			fit = fitValue(f),
-			refs = referenceStats();
+			refs = state.referenceStats;
 		const rows = METRICS.map((metric) => {
 			const vals = refs.map((c) => c.features[metric.key]).filter(finite);
 			return `<tr><td>${metric.label} · ${metric.unit}</td><td>${fmt(f[metric.key], metric.n)}</td><td>${fmt(r[metric.key], metric.n)}</td><td>${m.help_band_range({ low: fmt(quantile(vals, 0.1), metric.n), high: fmt(quantile(vals, 0.9), metric.n) })}</td></tr>`;
@@ -1799,10 +1689,6 @@ export function mountStudio(state: State) {
 		if (map.dimension === 3 && map.autoRotate && !map.drag) {
 			map.yaw += delta * 0.065;
 			map.invalidate();
-		}
-		if (profileTheme !== document.documentElement.dataset.theme) {
-			profileTheme = document.documentElement.dataset.theme!;
-			drawProfile(activeFeatures('own'), activeFeatures('ref'));
 		}
 		for (const [side, el] of [
 			['own', player],
@@ -1929,91 +1815,6 @@ export function mountStudio(state: State) {
 		};
 	}
 
-	let profileTheme = '';
-	function drawProfile(own: Features, ref: Features) {
-		const canvas = $<HTMLCanvasElement>('profile-canvas');
-		if (!canvas) return;
-		const w = canvas.clientWidth,
-			h = canvas.clientHeight;
-		if (!w || !h) return;
-		const dpr = Math.min(devicePixelRatio || 1, 2);
-		canvas.width = w * dpr;
-		canvas.height = h * dpr;
-		const c = canvas.getContext('2d')!;
-		c.scale(dpr, dpr);
-		const css = getComputedStyle(document.documentElement),
-			color = (k: string) => css.getPropertyValue(k).trim();
-		const cx = w / 2,
-			cy = h / 2 + 3,
-			r = Math.min(w / 2 - 28, h / 2 - 23);
-		const refs = state.representatives,
-			limits = METRICS.map((metric) => {
-				const values = refs.map((p) => p.features[metric.key]).filter(finite);
-				return [quantile(values, 0.01), quantile(values, 0.99)];
-			});
-		const point = (i: number, ratio: number): [number, number] => [
-			cx + Math.sin((i * Math.PI * 2) / 5) * r * ratio,
-			cy - Math.cos((i * Math.PI * 2) / 5) * r * ratio
-		];
-		c.strokeStyle = color('--line');
-		c.lineWidth = 1;
-		for (const scale of [0.33, 0.66, 1]) {
-			c.beginPath();
-			for (let i = 0; i < 5; i++) {
-				const p = point(i, scale);
-				if (i) c.lineTo(...p);
-				else c.moveTo(...p);
-			}
-			c.closePath();
-			c.stroke();
-		}
-		c.font = '10px system-ui';
-		c.textAlign = 'center';
-		c.fillStyle = color('--muted');
-		for (let i = 0; i < 5; i++) {
-			const p = point(i, 1),
-				label = point(i, 1.27);
-			c.beginPath();
-			c.moveTo(cx, cy);
-			c.lineTo(...p);
-			c.stroke();
-			c.fillText(METRICS[i].label, label[0], label[1] + 3);
-		}
-		for (const [f, key, dash] of [
-			[ref, '--reference', []],
-			[own, '--self', [4, 3]]
-		] as [Features, string, number[]][]) {
-			if (!METRICS.every((metric) => finite(f[metric.key]))) continue;
-			const pts = METRICS.map((metric, i) =>
-				point(
-					i,
-					0.12 +
-						0.88 * clamp((f[metric.key]! - limits[i][0]) / (limits[i][1] - limits[i][0] || 1), 0, 1)
-				)
-			);
-			c.beginPath();
-			pts.forEach((p, i) => (i ? c.lineTo(...p) : c.moveTo(...p)));
-			c.closePath();
-			c.strokeStyle = color(key);
-			c.lineWidth = 2;
-			c.setLineDash(dash);
-			c.stroke();
-			c.setLineDash([]);
-			c.fillStyle = color(key);
-			c.globalAlpha = 0.06;
-			c.fill();
-			c.globalAlpha = 1;
-			for (const p of pts) {
-				c.beginPath();
-				c.arc(...p, 2.5, 0, Math.PI * 2);
-				c.fill();
-			}
-		}
-	}
-	new ResizeObserver(() => drawProfile(activeFeatures('own'), activeFeatures('ref'))).observe(
-		$('profile-canvas')
-	);
-
 	function updateFavorite() {
 		const yes = favorites.has(state.selected?.id as string);
 		$('favorite-selected').textContent = yes ? '★' : '☆';
@@ -2071,7 +1872,7 @@ export function mountStudio(state: State) {
 		$('timer').textContent = '0:00';
 		$('quality-state').hidden = true;
 		updateMap();
-		updateIndicators();
+		updateDistance();
 		renderWords();
 		controls();
 	}
@@ -2571,46 +2372,6 @@ export function mountStudio(state: State) {
 		map.fitDirty = true;
 		map.invalidate();
 		$('auto-rotate').setAttribute('aria-pressed', String(map.autoRotate));
-	}
-	/* The share dialog scores whatever the indicators show: the whole recording, or the selected range. */
-	function activeMeasurement() {
-		return state.own || state.ownFull;
-	}
-	const scalePos = (s: number) => `${clamp((s + 120) / 240, 0, 1) * 100}%`;
-	function updateVerdict() {
-		const result = state.shareResult,
-			scorer = state.scorer;
-		const readout = $<HTMLButtonElement>('verdict-readout');
-		readout.disabled = !result;
-		$('verdict-main').dataset.verdict = result?.verdict || '';
-		const measurement = activeMeasurement(),
-			gate =
-				measurement && !measurement.analysisPending && scorer?.available
-					? gateFailure(measurement)
-					: null;
-		$('verdict-word').textContent = result
-			? verdictLabel(result.verdict)
-			: (!scorer?.available
-					? m.verdict_unavailable
-					: !measurement
-						? m.verdict_record
-						: measurement.analysisPending
-							? m.verdict_analyzing
-							: m.verdict_not_yet)();
-		$('verdict-number').textContent = result ? formatScore(result.display) : '';
-		$('verdict-gate').hidden = !gate || !!result;
-		if (gate && !result)
-			$('verdict-gate').textContent = gate.value ? m.verdict_gate(gate) : gate.label;
-		for (const g of ['male', 'female'] as const) {
-			const band = scorer?.available ? scorer.bands[g] : null,
-				el = $('verdict-band-' + g);
-			el.hidden = !band;
-			if (band) {
-				el.style.left = scalePos(band[0]);
-				el.style.width = `calc(${scalePos(band[1])} - ${scalePos(band[0])})`;
-			}
-		}
-		if (result) $('verdict-dot').style.left = scalePos(result.score);
 	}
 	/* Every stored take of the current language that has a verdict, oldest first; the chart and list share the rows. */
 	function historyRows() {

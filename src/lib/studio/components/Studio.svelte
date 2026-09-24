@@ -1,8 +1,8 @@
 <!-- The studio shell. It owns the app grid — toolbar row, studio, transport — and mounts the
-	 controller over the body that still serves the not-yet-migrated regions. Each region that
-	 moves out of the `{@html}` body becomes a sibling component here. The body's remaining
-	 chrome (icon sprite, audio, dialogs) rides inside the grid but out of flow — hidden audio
-	 and closed dialogs are not grid items, and the sprite is absolutely positioned. -->
+	 controller over the template markup that still serves the regions not yet components: `main`
+	 inside the studio after the profile panel, `body` for the transport, audio and dialogs. The
+	 body's chrome (icon sprite, audio, dialogs) rides inside the grid but out of flow — hidden
+	 audio and closed dialogs are not grid items, and the sprite is absolutely positioned. -->
 <script lang="ts">
 	import '$lib/studio/studio.css';
 	import { mountStudio } from '$lib/studio/app';
@@ -11,9 +11,10 @@
 	import { initTour } from '$lib/studio/tour';
 	import { onMount } from 'svelte';
 
+	import ProfilePanel from './ProfilePanel.svelte';
 	import Toolbar from './Toolbar.svelte';
 
-	let { body }: { body: string } = $props();
+	let { main, body }: { main: string; body: string } = $props();
 
 	// This mount's isolated state, shared with child components through context.
 	const studio = provideStudio();
@@ -31,7 +32,12 @@
 
 <div class="app">
 	<Toolbar />
-	<!-- eslint-disable-next-line svelte/no-at-html-tags -- the studio body is our own prerendered markup -->
+	<main class="studio">
+		<ProfilePanel />
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -- our own prerendered markup -->
+		{@html main}
+	</main>
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -- our own prerendered markup -->
 	{@html body}
 </div>
 

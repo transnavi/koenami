@@ -1,6 +1,7 @@
 import { home, renderPage } from '$lib/i18n';
 import body from '$lib/studio/body.html?raw';
 import head from '$lib/studio/head.html?raw';
+import main from '$lib/studio/main.html?raw';
 
 import type { PageLoad } from './$types';
 
@@ -11,5 +12,6 @@ export const prerender = true;
 export const trailingSlash = 'always';
 export const load: PageLoad = () => ({
 	head: renderPage(head, home()),
+	main: renderPage(main, home()),
 	body: renderPage(body, home())
 });
