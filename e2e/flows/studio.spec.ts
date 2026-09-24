@@ -172,7 +172,7 @@ test('the closest-to-you order ranks speakers by the analyzer’s similarity mod
 	await studio.until(app.analysed);
 	await studio.choose('library-group', 'all');
 	await studio.choose('sort', 'near');
-	await expect(page.locator('#sort-basis')).toHaveText(/声質をとらえたベクトル/);
+	await expect(page.locator('#sort-basis')).toHaveText(/地図の5つの測定値も加えて/);
 	const top = await page.evaluate(() => {
 		const s = (
 			window as unknown as {
@@ -188,6 +188,30 @@ test('the closest-to-you order ranks speakers by the analyzer’s similarity mod
 	const lead = folder.locator('.sample-row').first();
 	await expect(lead).toHaveAttribute('data-id', top.clip);
 	await expect(lead.locator('.nearest-badge')).toHaveText('最も近い');
+	// The folders follow the blended score, which differs from the descriptor's own order here.
+	const { listed, byScore, byTimbre } = await page.evaluate(() => {
+		const app = (
+			window as unknown as {
+				voiceApp: {
+					nearScores: () => Record<string, number>;
+					state: { similar: { speakers: Map<string, { distance: number }> } };
+				};
+			}
+		).voiceApp;
+		const scores = app.nearScores();
+		const listed = [...document.querySelectorAll('#sample-list details')]
+			.map((d) => d.getAttribute('data-speaker')!.split(':').at(-1)!)
+			.filter((s) => s in scores);
+		const by = (score: (s: string) => number) => [...listed].sort((a, b) => score(a) - score(b));
+		return {
+			listed,
+			byScore: by((s) => scores[s]),
+			byTimbre: by((s) => app.state.similar.speakers.get(s)!.distance)
+		};
+	});
+	expect(listed.length).toBeGreaterThan(5);
+	expect(listed).toEqual(byScore);
+	expect(listed).not.toEqual(byTimbre);
 	// A second take under the same order is ranked anew, without touching the sort.
 	const firstKey = await page.evaluate(
 		() =>
@@ -197,7 +221,7 @@ test('the closest-to-you order ranks speakers by the analyzer’s similarity mod
 	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
 	await studio.until(app.analysed);
 	await studio.until(`window.voiceApp.state.similar?.key !== ${JSON.stringify(firstKey)}`);
-	await expect(page.locator('#sort-basis')).toHaveText(/声質をとらえたベクトル/);
+	await expect(page.locator('#sort-basis')).toHaveText(/地図の5つの測定値も加えて/);
 	await expect(folder.locator('.sample-row').first().locator('.nearest-badge')).toHaveText(
 		'最も近い'
 	);

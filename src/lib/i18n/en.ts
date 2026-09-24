@@ -88,7 +88,7 @@ export default {
 	'sort.low': 'Lowest pitch first',
 	'sort.high': 'Highest pitch first',
 	'sort.near_timbre':
-		'Ordered per speaker by how close a speech model places your voice quality to theirs; each speaker’s closest recording comes first.',
+		'Ordered per speaker mainly by how close a speech model places your voice quality to theirs, with the map’s five measurements mixed in; each speaker’s closest recording comes first.',
 	'sort.near_acoustic': 'Ordered by distance in the map’s five measurements.',
 	'sort.near_pending': 'Measuring how close each voice is…',
 	'sort.near_failed': 'The similarity ranking failed: {message}',
