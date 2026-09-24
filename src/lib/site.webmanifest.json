@@ -1,0 +1,49 @@
+{
+	"id": "/",
+	"name": "Koenami · 女声・男声のボイトレツール",
+	"short_name": "Koenami",
+	"description": "見本の声を真似して録音し、近づきたい声との距離を見るボイトレツール。",
+	"lang": "ja",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"display_override": ["window-controls-overlay", "standalone"],
+	"orientation": "any",
+	"background_color": "#f9fbff",
+	"theme_color": "#f9fbff",
+	"categories": ["education", "utilities"],
+	"icons": [
+		{
+			"src": "/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "/icon-maskable-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "/screenshot-wide.png",
+			"sizes": "1600x1000",
+			"type": "image/png",
+			"form_factor": "wide",
+			"label": "Koenamiのスタジオ：声の分布、5つの指標、見本の一覧、波形"
+		},
+		{
+			"src": "/screenshot-narrow.png",
+			"sizes": "780x1328",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "スマートフォンでのスタジオ"
+		}
+	]
+}

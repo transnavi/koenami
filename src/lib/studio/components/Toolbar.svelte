@@ -2,27 +2,22 @@
      The first region out of the template body; its ids and `icon-button` classes are contract,
      and the shared button and koe-select primitives stay in the global stylesheet. -->
 <script lang="ts">
-	import { home, translator, tutorialHref, tutorialLang, type Language } from '$lib/i18n';
+	import { home, tutorialHref, tutorialLang } from '$lib/i18n';
+	import { m } from '$lib/paraglide/messages';
 
 	import { useStudio } from '../studio.svelte';
 	import { restartTour } from '../tour';
 
-	let { lang }: { lang: Language } = $props();
+	const studio = useStudio();
 
-	const state = useStudio();
-	// The page's own translator: $lib/i18n's module-level `t` only resolves in the browser,
-	// and prerender needs every language's strings and links at build time. One page is one
-	// language, so this follows `lang` rather than re-reading a document that may not exist.
-	let tr = $derived(translator(lang));
-
-	let busy = $derived(state.busy || state.recording || state.loadingLanguage);
-	let share = $derived(state.shareResult);
+	let busy = $derived(studio.busy || studio.recording || studio.loadingLanguage);
+	let share = $derived(studio.shareResult);
 	let corpus = $derived(
-		state.scorer
-			? tr('corpus.count', {
-					clips: tr('corpus.clips', { n: state.clips.filter((c) => !c.synthetic).length }),
-					speakers: tr('corpus.speakers', {
-						n: new Set(state.clips.filter((c) => !c.synthetic).map((c) => c.speaker)).size
+		studio.scorer
+			? m.corpus_count({
+					clips: m.corpus_clips({ n: studio.clips.filter((c) => !c.synthetic).length }),
+					speakers: m.corpus_speakers({
+						n: new Set(studio.clips.filter((c) => !c.synthetic).map((c) => c.speaker)).size
 					})
 				})
 			: ''
@@ -30,15 +25,15 @@
 </script>
 
 <header class="toolbar">
-	<a class="brand" href={home(lang)} aria-label="Koenami">
+	<a class="brand" href={home()} aria-label="Koenami">
 		<svg aria-hidden="true"><use href="#i-wave"></use></svg>
 		<h1>Koenami</h1>
 	</a>
 	<!-- Each language is its own page; the controller's change handler saves the session and
 	     navigates, and still owns the select's value while the session view is its concern. -->
-	<span class="language-control" title={tr('toolbar.language')}>
-		<koe-select id="language" icon="i-globe" aria-label={tr('toolbar.language')} disabled={busy}>
-			{#each state.languages as l (l.id)}
+	<span class="language-control" title={m.toolbar_language()}>
+		<koe-select id="language" icon="i-globe" aria-label={m.toolbar_language()} disabled={busy}>
+			{#each studio.languages as l (l.id)}
 				<option value={l.id}>{l.label}</option>
 			{/each}
 		</koe-select>
@@ -47,19 +42,19 @@
 	<div class="toolbar-end">
 		<a
 			class="icon-button"
-			href={tutorialHref(lang)}
-			hreflang={tutorialLang(lang)}
+			href={tutorialHref()}
+			hreflang={tutorialLang()}
 			target="_blank"
-			title={tr('toolbar.tutorial')}
-			aria-label={tr('toolbar.tutorial')}
+			title={m.toolbar_tutorial()}
+			aria-label={m.toolbar_tutorial()}
 		>
 			<svg aria-hidden="true"><use href="#i-book"></use></svg>
 		</a>
 		<button
 			id="tour-restart"
 			class="icon-button"
-			title={tr('toolbar.guide')}
-			aria-label={tr('toolbar.guide')}
+			title={m.toolbar_guide()}
+			aria-label={m.toolbar_guide()}
 			onclick={restartTour}
 		>
 			<svg aria-hidden="true"><use href="#i-help"></use></svg>
@@ -71,8 +66,8 @@
 		<button
 			id="share-button"
 			class="icon-button"
-			title={tr(state.scorer && !state.scorer.available ? 'share.unavailable' : 'toolbar.share')}
-			aria-label={tr('toolbar.share')}
+			title={studio.scorer && !studio.scorer.available ? m.share_unavailable() : m.toolbar_share()}
+			aria-label={m.toolbar_share()}
 			disabled={busy || !share}
 		>
 			<svg aria-hidden="true"><use href="#i-share"></use></svg>
@@ -80,29 +75,29 @@
 		<button
 			id="settings-button"
 			class="icon-button"
-			title={tr('toolbar.settings')}
-			aria-label={tr('toolbar.settings')}
-			onclick={() => state.openDialog('settings-dialog')}
+			title={m.toolbar_settings()}
+			aria-label={m.toolbar_settings()}
+			onclick={() => studio.openDialog('settings-dialog')}
 		>
 			<svg aria-hidden="true"><use href="#i-gear"></use></svg>
 		</button>
 		<button
 			id="info-button"
 			class="icon-button"
-			title={tr('toolbar.info')}
-			aria-label={tr('toolbar.info')}
-			onclick={() => state.openDialog('info-dialog')}
+			title={m.toolbar_info()}
+			aria-label={m.toolbar_info()}
+			onclick={() => studio.openDialog('info-dialog')}
 		>
 			<svg aria-hidden="true"><use href="#i-info"></use></svg>
 		</button>
 		<button
 			id="theme-button"
 			class="icon-button"
-			title={tr('toolbar.theme')}
-			aria-label={tr('toolbar.theme')}
-			onclick={() => state.toggleTheme()}
+			title={m.toolbar_theme()}
+			aria-label={m.toolbar_theme()}
+			onclick={() => studio.toggleTheme()}
 		>
-			<svg aria-hidden="true"><use href={state.dark ? '#i-sun' : '#i-moon'}></use></svg>
+			<svg aria-hidden="true"><use href={studio.dark ? '#i-sun' : '#i-moon'}></use></svg>
 		</button>
 	</div>
 </header>

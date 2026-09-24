@@ -246,6 +246,7 @@ The Voice Resource Project wiki's own working vocabulary, as its pages define it
 - **咽音** (zh) — the usual Chinese rendering of twang, per the handbook [[aogi2021]]; in 伪声 videos also a loose name for a pharyngeal exercise. → [[voice-therapy-techniques]]
 - **小嗓** (zh) — the opera-derived name for the high register that 伪声 targets [[bili-liujiu2023]]. → [[vocal-registers]]
 - **夹子音** (zh) — a pinched, cutesy extreme voice, named partly in parody [[bili-zhizhiya2023]]. → [[vocal-registers]]
+- **虚实结合 · 实音** (zh community) — mixing breathy and firm phonation; a voice of 实音 alone is said to sound like a robot, and the fix is to add a sigh while holding the female position [[bili-zhizhiya2026]]. → [[voice-quality]]
 - **中性音** (zh) — the neutral intermediate voice trained before a cross-gender one [[moegirl-weisheng]]. → [[chinese-community]]
 - **男声女调** (zh clinical) — the persistently high-pitched male voice, mutational falsetto, in mainland voice medicine [[yao2025]] [[wang2009]] [[liang2017]]; it sits inside 音调异常, the abnormal-pitch category whose stated mechanisms — 声带张力、质量的变化以及喉神经肌肉功能的异常 — contain no gender at all [[zhuang2025]]. → [[voice-health]]
 - **嗓音女性化 / 嗓音男性化** (zh) — voice feminization, the term of the community wiki and clinics [[mtfwiki-vocal-therapy]] [[voicedoctor-tw]], and voice masculinization as a translated video titles it [[bili-fledence2025]]. → [[voice-feminization-therapy]] · [[voice-masculinization]]

@@ -1,35 +1,43 @@
 import { readFileSync } from 'node:fs';
 
 import {
-	LANGUAGES,
-	CATALOGUES,
-	OG_LOCALES,
 	FONTS,
+	baseLocale,
+	OG_LOCALES,
 	fontCut,
-	known,
 	home,
+	locales,
 	matchLanguage,
-	languageOf,
-	translator,
+	message,
+	messages,
+	renderManifest,
 	renderPage,
-	renderManifest
+	tutorialHref,
+	tutorialLang
 } from '@app/i18n/index';
+import { m } from '@app/paraglide/messages';
+import {
+	extractLocaleFromRequestAsync,
+	extractLocaleFromUrl,
+	shouldRedirect
+} from '@app/paraglide/runtime';
 import { describe, it, expect } from 'vitest';
 
+import { reroute } from '../../src/hooks';
 import { golden } from './golden';
 
-// The interface catalogues and the page renderer, pinned as the studio's pages see
-// them: one document per language, the Worker matching Accept-Language, and the
-// translator's placeholder, number and plural handling.
+// The languages as the site serves them: one document per language, the route a localized
+// address resolves to, the Worker matching Accept-Language, the messages' placeholder, number
+// and plural handling, and the page templates rendered per language.
 describe('i18n', () => {
-	it('served languages, their homes, locales and font cuts', () => {
+	it('served languages, their homes, guides, locales and font cuts', () => {
 		golden('i18n.languages', {
-			languages: LANGUAGES,
-			homes: Object.fromEntries(LANGUAGES.map((l) => [l, home(l)])),
+			languages: locales,
+			homes: Object.fromEntries(locales.map((l) => [l, home(l)])),
+			guides: Object.fromEntries(locales.map((l) => [l, [tutorialHref(l), tutorialLang(l)]])),
 			locales: OG_LOCALES,
 			fonts: FONTS,
-			cuts: Object.fromEntries([...LANGUAGES, 'xx'].map((l) => [l, fontCut(l)])),
-			known: ['ja', 'en', 'zh-CN', 'ko', 'xx', '', null, undefined].map((l) => known(l as string))
+			cuts: Object.fromEntries(locales.map((l) => [l, fontCut(l)]))
 		});
 	});
 	it('matchLanguage: quality order, primary subtags, unknown tags, empty and malformed headers', () => {
@@ -50,59 +58,78 @@ describe('i18n', () => {
 			].map((header) => [header, matchLanguage(header as string)])
 		);
 	});
-	it('languageOf: page paths and the result page query', () => {
+	// A localized address names a language and a route: the prefix picks the locale, the rest
+	// of the path the page (the research library at /lab/ is the Japanese studio).
+	it('localized addresses: the locale each path is in and the route it resolves to', () => {
 		golden(
-			'i18n.language-of',
+			'i18n.addresses',
 			[
 				'/',
 				'/ja/',
 				'/en/',
 				'/zh-CN/',
-				'/ko',
+				'/ko/',
+				'/lab/',
 				'/xx/',
-				'/r?l=en',
-				'/r?l=xx',
 				'/r',
-				'/en/r?l=ko',
-				'/guide.html'
-			].map((u) => [u, languageOf(u)])
+				'/en/r',
+				'/en/tutorial.html',
+				'/ko/tutorial.html',
+				'/ko/site.webmanifest',
+				'/guide.html',
+				'/en/guide.html'
+			].map((path) => {
+				const url = new URL(path, 'https://koe.transnavi.jp');
+				return [path, extractLocaleFromUrl(url), reroute({ url, fetch })];
+			})
 		);
 	});
-	it('translator: plain keys, placeholders, numbers, plurals, lists and a missing key', () => {
-		const out: Record<string, unknown> = {};
-		for (const lang of LANGUAGES) {
-			const t = translator(lang);
-			out[lang] = {
-				plain: t('nav.guide'),
-				placeholder: t('target.analysis_error', { message: 'x <y>' }),
-				number: t('jvs.added', { n: 1234 }),
-				pluralOne: t('jvs.added', { n: 1 }),
-				pluralZero: t('jvs.added', { n: 0 }),
-				pluralUnset: t('jvs.added'),
-				unknownPlaceholder: t('signal.word_title', { start: '0:01' }),
-				list: t('metric.delta_f.factors'),
-				listIsCopy: t('metric.delta_f.factors') !== t('metric.delta_f.factors')
-			};
+	// The Worker serves /r?l=en from the English result page; a Kit server (vite dev) decides the
+	// same from the request through the result page's own strategy, without a redirect.
+	it('the result page takes its language from ?l=, then from its path', async () => {
+		await import('../../src/hooks.server');
+		const out = [];
+		for (const path of ['/r?l=en', '/r?l=xx', '/r', '/en/r', '/ko/r?l=en', '/en/']) {
+			const request = new Request(new URL(path, 'https://koe.transnavi.jp'), {
+				headers: { 'Sec-Fetch-Dest': 'document' }
+			});
+			const decision = await shouldRedirect({ request });
+			out.push([path, await extractLocaleFromRequestAsync(request), decision.shouldRedirect]);
 		}
-		out.fallback = translator('xx')('nav.guide');
-		golden('i18n.translator', out);
-		// A key outside the catalogue is a programming error the type forbids; forced here.
-		expect(() => translator('ja')('no.such.key' as never)).toThrow(
-			'i18n: no message for no.such.key'
-		);
+		golden('i18n.result-locale', out);
+	});
+	it('messages: plain, placeholders, numbers, plurals, lists, a locale option and a missing id', () => {
+		const out: Record<string, unknown> = {};
+		for (const locale of locales)
+			out[locale] = {
+				plain: m.nav_guide({}, { locale }),
+				placeholder: m.target_analysis_error({ message: 'x <y>' }, { locale }),
+				number: m.jvs_added({ n: 1234 }, { locale }),
+				pluralOne: m.jvs_added({ n: 1 }, { locale }),
+				pluralZero: m.jvs_added({ n: 0 }, { locale }),
+				byId: message('nav_guide')({}, { locale }),
+				list: messages('metric_delta_f_factors', locale)
+			};
+		// Without a locale the message uses the page's; tests/unit/setup.ts puts the tests at the
+		// site root, the Japanese studio.
+		out.default = m.nav_guide();
+		golden('i18n.messages', out);
+		expect(() => message('no_such_message' as never)).toThrow('i18n: no message no_such_message');
+		expect(() => messages('no_such_list' as never)).toThrow('i18n: no message list no_such_list');
 	});
 	it('renderPage: every token kind, the head links per language, the result page, unknown fields', () => {
 		const template = [
 			'<html lang="{{lang}}"><head>{{links}}<meta property="og:locale" content="{{og_locale}}"><meta property="og:url" content="{{url}}">',
-			'<script type="application/ld+json">{"name":"{{j:page.publisher}}","d":"{{j:page.description}}"}</script></head>',
-			'<body><a href="{{home}}">{{t:nav.guide}}</a><p>{{h:share.note}}</p><p title="{{t:share.note}}"></p><span title="{{t:common.close}}">{{t:common.close}}</span></body></html>'
+			'<script type="application/ld+json">{"name":"{{j:page_publisher}}","d":"{{j:page_description}}"}</script></head>',
+			'<body><a href="{{home}}">{{t:nav_guide}}</a><a href="{{tutorial}}" hreflang="{{tutorial_lang}}"></a><p>{{h:share_note}}</p><p title="{{t:share_note}}"></p><span title="{{t:common_close}}">{{t:common_close}}</span></body></html>'
 		].join('');
 		golden('i18n.render-page', {
-			pages: Object.fromEntries(LANGUAGES.map((l) => [l, renderPage(template, l, home(l))])),
-			result: renderPage(template, 'en', '/r'),
-			unknownLanguage: renderPage('{{lang}}', 'xx', '/')
+			pages: Object.fromEntries(locales.map((l) => [l, renderPage(template, home(l), l)])),
+			result: renderPage(template, '/r', 'en'),
+			default: renderPage('{{lang}} {{home}}', '/')
 		});
-		expect(() => renderPage('{{nope}}', 'ja', '/')).toThrow('i18n: unknown page field nope');
+		expect(() => renderPage('{{nope}}', '/')).toThrow('i18n: unknown page field nope');
+		expect(() => renderPage('{{t:nope}}', '/')).toThrow('i18n: no message nope');
 	});
 	// The studio's and the result page's real head, rendered per language: the canonical,
 	// hreflang, manifest and sitemap links and the Open Graph address, which the browser
@@ -114,19 +141,14 @@ describe('i18n', () => {
 			title: html.match(/<title>([^<]*)<\/title>/)?.[1],
 			url: html.match(/<meta property="og:url" content="([^"]*)"/)?.[1],
 			links: [...html.matchAll(/<link rel="(canonical|alternate|manifest|sitemap)"[^>]*>/g)].map(
-				(m) => m[0]
+				(match) => match[0]
 			)
 		});
 		golden('i18n.head-links', {
 			studio: Object.fromEntries(
-				[...LANGUAGES, 'lab'].map((l) => [
-					l,
-					links(renderPage(heads.studio, known(l), home(known(l))))
-				])
+				locales.map((l) => [l, links(renderPage(heads.studio, home(l), l))])
 			),
-			result: Object.fromEntries(
-				LANGUAGES.map((l) => [l, links(renderPage(heads.result, l, '/r'))])
-			)
+			result: Object.fromEntries(locales.map((l) => [l, links(renderPage(heads.result, '/r', l))]))
 		});
 	});
 	it('renderManifest: the Japanese manifest re-labelled per language', () => {
@@ -143,45 +165,62 @@ describe('i18n', () => {
 			]
 		});
 		golden('i18n.render-manifest', {
-			...Object.fromEntries(LANGUAGES.map((l) => [l, renderManifest(base, l)])),
+			...Object.fromEntries(locales.map((l) => [l, renderManifest(base, l)])),
 			withoutScreenshots: renderManifest('{"name":"x"}', 'ko')
 		});
 	});
-	// Every key exists in every language with the same kind of value (a text, a {one, other}
-	// pair with an `other` form, or a list of the same length) and the same placeholders.
-	it('catalogues share their keys, shapes and placeholders', () => {
-		const ja = CATALOGUES.ja as Record<string, unknown>;
-		const placeholders = (s: unknown) =>
-			[...String(s).matchAll(/\{(\w+)\}/g)]
-				.map((m) => m[1])
-				.sort()
-				.join(',');
-		const shape = (v: unknown) => (Array.isArray(v) ? `list:${v.length}` : 'text');
-		const forms = (v: unknown) => (typeof v === 'string' ? [v] : Object.values(v as object));
-		const itemText = (x: unknown) =>
-			typeof x === 'string'
-				? x
-				: (x as { title: string; text: string }).title + (x as { text: string }).text;
-		for (const lang of LANGUAGES) {
-			const messages = (CATALOGUES as Record<string, Record<string, unknown>>)[lang];
-			expect(Object.keys(messages).sort(), `${lang}: key set`).toEqual(Object.keys(ja).sort());
-			for (const [key, value] of Object.entries(ja)) {
-				const other = messages[key];
-				expect(shape(other), `${lang}: ${key} shape`).toBe(shape(value));
-				if (Array.isArray(value))
-					value.forEach((item, i) =>
-						expect(placeholders(itemText((other as unknown[])[i])), `${lang}: ${key}[${i}]`).toBe(
-							placeholders(itemText(item))
+	// Every message exists in every language, with the same inputs: a text's placeholders, or a
+	// complex message's declared inputs and every variant's placeholders.
+	it('messages share their ids and inputs across languages', () => {
+		type Variant = { declarations: string[]; match: Record<string, string> };
+		const load = (locale: string) =>
+			JSON.parse(readFileSync(`messages/${locale}.json`, 'utf8')) as Record<
+				string,
+				string | Variant[]
+			>;
+		const inputs = (value: string | Variant[]) => {
+			const names = new Set<string>();
+			const texts =
+				typeof value === 'string'
+					? [value]
+					: value.flatMap((v) => {
+							for (const d of v.declarations)
+								if (d.startsWith('input ')) names.add(d.slice(6).trim());
+							return Object.values(v.match);
+						});
+			const locals = new Set(
+				typeof value === 'string'
+					? []
+					: value.flatMap((v) =>
+							v.declarations.filter((d) => d.startsWith('local ')).map((d) => d.split(' ')[1])
 						)
-					);
-				else {
-					if (typeof other === 'object') expect(other, `${lang}: ${key}`).toHaveProperty('other');
-					for (const form of forms(other))
-						expect(placeholders(form), `${lang}: ${key} placeholders`).toBe(
-							placeholders(forms(value).join(' '))
-						);
-				}
+			);
+			for (const text of texts)
+				for (const [, name] of text.matchAll(/\{(\w+)\}/g)) if (!locals.has(name)) names.add(name);
+			return [...names].sort().join(',');
+		};
+		const base = load('ja');
+		// A numbered list has no gaps: every _<n> past _0 follows _<n - 1>.
+		for (const id of Object.keys(base)) {
+			const item = id.match(/^(.*)_(\d+)$/);
+			if (item && Number(item[2]) > 0)
+				expect(base, `${id} follows its predecessor`).toHaveProperty(
+					`${item[1]}_${Number(item[2]) - 1}`
+				);
+		}
+		for (const locale of locales) {
+			const other = load(locale);
+			expect(Object.keys(other).sort(), `${locale}: ids`).toEqual(Object.keys(base).sort());
+			for (const [id, value] of Object.entries(base)) {
+				if (id === '$schema') continue;
+				expect(inputs(other[id]), `${locale}: ${id} inputs`).toBe(inputs(value));
 			}
 		}
+	});
+	// The pre-paint redirect is a classic script with its own copy of the prefixed languages.
+	it('the pre-paint language redirect names every prefixed language', () => {
+		const [, list] = readFileSync('static/language.js', 'utf8').match(/\[([^\]]*)\]\.indexOf/)!;
+		const listed = list.split(',').map((item) => item.trim().replaceAll("'", ''));
+		expect(listed).toEqual(locales.filter((l) => l !== baseLocale));
 	});
 });

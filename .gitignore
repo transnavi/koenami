@@ -26,3 +26,4 @@ src/lib/measure/pkg/
 /data
 /.venv
 /.models
+src/lib/paraglide

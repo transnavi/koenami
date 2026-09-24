@@ -2,11 +2,12 @@ import captureUrl from '$lib/capture?worker&url';
 import { loadImported, importedAudio, importJVS, type ImportClip } from '$lib/corpus-import';
 /* The studio: one controller over the page's elements, ported from web/app.js with types.
    Its DOM writes, request order and timing are what the browser goldens pin. */
-import { t, lang as uiLang } from '$lib/i18n';
 import { type KoeSelectElement } from '$lib/koe-select';
 import { VoiceMap, type MapSample } from '$lib/map';
-import { finite, quantile, clamp, AXES } from '$lib/math';
+import { finite, quantile, clamp } from '$lib/math';
 import * as engine from '$lib/measure/engine';
+import { m } from '$lib/paraglide/messages';
+import { getLocale } from '$lib/paraglide/runtime';
 import {
 	Scorer,
 	verdictLabel,
@@ -16,7 +17,6 @@ import {
 	representatives,
 	ageText,
 	SCALE_LIMIT,
-	type MetricKey,
 	type ScoreResult
 } from '$lib/score';
 import { shareBundle, cardImage, systemShare, labelled } from '$lib/share';
@@ -25,6 +25,8 @@ import { blendedScores, fiveMeasureDistances } from '$lib/similar';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
+import { openHelp } from './help';
+import { fmt, METRICS, VERDICT_HELP } from './profile';
 import { snapshot as snap, type LanguageOption, type State, type Theme } from './studio.svelte';
 import type {
 	Clip,
@@ -44,38 +46,10 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getEleme
 			/[&<>"']/g,
 			(c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!
 		);
-const fmt = (v: unknown, n = 0) => (finite(v) ? v.toFixed(n) : '—');
 const clock = (t: number | undefined | null) =>
 	`${Math.floor((t || 0) / 60)}:${String(Math.floor((t || 0) % 60)).padStart(2, '0')}`;
 const icon = (el: Element, name: string) =>
 	el.querySelector('use')?.setAttribute('href', '#i-' + name);
-type Metric = {
-	key: MetricKey;
-	label: string;
-	unit: string;
-	n: number;
-	description: string;
-	factors: string[];
-	caveats: string[];
-};
-const METRICS: Metric[] = (['f0', 'delta_f', 'hnr', 'balance', 'pitch_span'] as MetricKey[]).map(
-	(key, i) => ({
-		key,
-		label: t(`metric.${key}.label`),
-		unit: t(`metric.${key}.unit`),
-		n: [0, 0, 1, 1, 1][i],
-		description: t(`metric.${key}.description`),
-		factors: t.list(`metric.${key}.factors`) as string[],
-		caveats: t.list(`metric.${key}.caveats`) as string[]
-	})
-);
-const VERDICT_HELP = {
-	label: t('verdict.help.label'),
-	description: t('verdict.help.description'),
-	factors: t.list('verdict.help.factors') as string[],
-	caveats: t.list('verdict.help.caveats') as string[]
-};
-
 // The reactive studio state (src/lib/studio/studio.svelte.ts) is created per mount by the
 // <Studio> shell and passed in, so a remount (HMR, or client-side navigation back to the page)
 // gets a fresh, isolated instance and this mount's in-flight callbacks never write a later one.
@@ -148,7 +122,7 @@ export function mountStudio(state: State): () => void {
 	): Promise<T> {
 		const r = await fetch(url, {
 			...options,
-			headers: { ...options.headers, 'Accept-Language': uiLang }
+			headers: { ...options.headers, 'Accept-Language': getLocale() }
 		});
 		if (!r.ok) throw new Error((await r.text()).slice(0, 200) || `Request failed (${r.status})`);
 		return r.json();
@@ -176,14 +150,8 @@ export function mountStudio(state: State): () => void {
 		if (c.group === 'research') return `${c.dataset} · ${c.speaker}`;
 		return `${c.group === 'female' ? 'F' : 'M'} ${String(c.index || 0).padStart(3, '0')}`;
 	}
-	function referenceGroup() {
-		return state.selected?.group === 'male' ? 'male' : 'female';
-	}
 	function referenceGroupLabel() {
-		return t(referenceGroup() === 'male' ? 'group.male' : 'group.female');
-	}
-	function referenceStats() {
-		return state.representatives.filter((c) => c.group === referenceGroup());
+		return (state.referenceGroup === 'male' ? m.group_male : m.group_female)();
 	}
 	let fitModel: {
 		model: AcousticSpace;
@@ -192,7 +160,7 @@ export function mountStudio(state: State): () => void {
 		count: number;
 	} | null = null;
 	function buildFit() {
-		const refs = referenceStats().filter((c) => AcousticSpace.raw(c.features).every(finite));
+		const refs = state.referenceStats.filter((c) => AcousticSpace.raw(c.features).every(finite));
 		if (refs.length < 20) {
 			fitModel = null;
 			return;
@@ -222,73 +190,16 @@ export function mountStudio(state: State): () => void {
 	function activeFeatures(side: Side): Features {
 		return (side === 'own' ? state.own : state.ref)?.features || {};
 	}
-	/* One dialog for every ?: definition, the numbers, what moves the value, and what it cannot tell. */
-	function openHelp(
-		entry: { label: string; description: string; factors: string[]; caveats: string[] },
-		rows: [string, string | number][] = []
-	) {
-		$('metric-title').textContent = entry.label;
-		$('metric-description').textContent = entry.description;
-		$('metric-details').innerHTML = rows
-			.map(
-				([a, b]) => `<div class="metric-detail-row"><span>${a}</span><strong>${b}</strong></div>`
-			)
-			.join('');
-		$('metric-factors').innerHTML = entry.factors.map((x) => `<li>${x}</li>`).join('');
-		$('metric-caveats').innerHTML = entry.caveats.map((x) => `<li>${x}</li>`).join('');
-		$<HTMLDialogElement>('metric-dialog').showModal();
-	}
-	function updateIndicators() {
-		const focused = (document.activeElement as HTMLElement | null)?.dataset?.metric;
-		const f = activeFeatures('own'),
-			target = activeFeatures('ref'),
-			refs = referenceStats();
-		$('indicators').replaceChildren();
-		for (const m of METRICS) {
-			const values = refs.map((s) => s.features[m.key]).filter(finite);
-			let lo = quantile(values, 0.01),
-				hi = quantile(values, 0.99);
-			if (!finite(lo) || hi <= lo) {
-				lo = AXES[m.key].min;
-				hi = AXES[m.key].max;
-			}
-			lo = Math.min(lo, f[m.key] ?? lo, target[m.key] ?? lo);
-			hi = Math.max(hi, f[m.key] ?? hi, target[m.key] ?? hi);
-			const pos = (v: number) => clamp(((v - lo) / (hi - lo || 1)) * 100, 0, 100),
-				q1 = quantile(values, 0.1),
-				q9 = quantile(values, 0.9);
-			const b = document.createElement('button');
-			b.className = 'indicator';
-			b.dataset.metric = m.key;
-			b.title = t('indicator.title', {
-				label: m.label,
-				own: fmt(f[m.key], m.n),
-				ref: fmt(target[m.key], m.n),
-				unit: m.unit
-			});
-			b.setAttribute('aria-label', b.title);
-			b.innerHTML = `<span class="indicator-heading">${m.label}<svg aria-hidden="true"><use href="#i-info"></use></svg></span><span class="indicator-values"><strong>${fmt(f[m.key], m.n)}</strong><small>${m.unit}</small><em>${fmt(target[m.key], m.n)}</em></span><span class="indicator-track">${finite(q1) ? `<span class="indicator-band" style="left:${pos(q1)}%;width:${pos(q9) - pos(q1)}%"></span>` : ''}${finite(f[m.key]) ? `<span class="indicator-marker" style="left:${pos(f[m.key]!)}%"></span>` : ''}${finite(target[m.key]) ? `<span class="indicator-target" style="left:${pos(target[m.key]!)}%"></span>` : ''}</span>`;
-			b.onclick = () =>
-				openHelp(m, [
-					[t('help.own'), `${fmt(f[m.key], m.n)} ${m.unit}`],
-					[t('help.reference'), `${fmt(target[m.key], m.n)} ${m.unit}`],
-					[
-						t('help.band', { group: referenceGroupLabel() }),
-						`${fmt(q1, m.n)}–${fmt(q9, m.n)} ${m.unit}`
-					],
-					[t('help.speakers'), values.length]
-				]);
-			$('indicators').append(b);
-		}
-		if (focused)
-			$('indicators')
-				.querySelector<HTMLElement>(`[data-metric="${focused}"]`)
-				?.focus({ preventScroll: true });
-		drawProfile(f, target);
-		updateVerdict();
-		const comparison = map.space?.comparison(f, target, map.dimension, map.projection);
-		$('fit-value').textContent = comparison ? fmt(comparison.distance, 2) : '—';
-		$('report-button').title = t(comparison ? 'profile.fit_title_ready' : 'profile.fit_title');
+	/* The two voices' distance in the map's space, shown as the fit readout; the profile panel
+	   renders everything else about the measurements from the store. */
+	function updateDistance() {
+		const comparison = map.space?.comparison(
+			activeFeatures('own'),
+			activeFeatures('ref'),
+			map.dimension,
+			map.projection
+		);
+		state.distance = comparison ? comparison.distance : null;
 	}
 	function updateMap() {
 		let points: MapSample[] = state.clips.filter(
@@ -327,7 +238,7 @@ export function mountStudio(state: State): () => void {
 		map.targetRange = state.ranges.ref;
 		map.showRange = true;
 		map.live = state.captureMode === 'live' && state.recording;
-		const pitchRefs = referenceStats().map((c) => c.features.f0 as number);
+		const pitchRefs = state.referenceStats.map((c) => c.features.f0 as number);
 		signal.pitchBand = [quantile(pitchRefs, 0.1), quantile(pitchRefs, 0.9)];
 	}
 	function teacherMatch(c: Clip) {
@@ -460,7 +371,7 @@ export function mountStudio(state: State): () => void {
 		} catch (e) {
 			if (alive && state.similarKey === key) {
 				state.similarFailed = key;
-				notify(t('sort.near_failed', { message: (e as Error).message }), true);
+				notify(m.sort_near_failed({ message: (e as Error).message }), true);
 			}
 		} finally {
 			if (alive && state.similarKey === key) {
@@ -479,15 +390,13 @@ export function mountStudio(state: State): () => void {
 		$('sort-basis').hidden = !near;
 		if (!near) return;
 		const key = similarKeyOf();
-		$('sort-basis').textContent = t(
-			similarRanking()
-				? map.space?.standardized(activeFeatures('own'))
-					? 'sort.near_timbre'
-					: 'sort.near_timbre_only'
-				: key && state.similarKey === key
-					? 'sort.near_pending'
-					: 'sort.near_acoustic'
-		);
+		$('sort-basis').textContent = similarRanking()
+			? map.space?.standardized(activeFeatures('own'))
+				? m.sort_near_timbre()
+				: m.sort_near_timbre_only()
+			: key && state.similarKey === key
+				? m.sort_near_pending()
+				: m.sort_near_acoustic();
 	}
 
 	const openSpeakers = new Set<string>(),
@@ -507,7 +416,7 @@ export function mountStudio(state: State): () => void {
 		const nearest =
 			$<HTMLSelectElement>('sort').value === 'near' &&
 			similarRanking()?.get(clip.speaker)?.clip === clip.id;
-		b.innerHTML = `<span class="sample-symbol"><svg aria-hidden="true"><use href="#i-play"></use></svg></span><div><span class="sample-title"><b>${esc(clip.text || nameOf(clip))}</b></span><span class="sample-phrase">${fmt(clip.features.f0)} Hz · ${clock(clip.duration)}${clip.synthetic ? ' · AI' : ''}${nearest ? ` · <small class="nearest-badge">${t('sort.nearest_clip')}</small>` : ''}</span></div>`;
+		b.innerHTML = `<span class="sample-symbol"><svg aria-hidden="true"><use href="#i-play"></use></svg></span><div><span class="sample-title"><b>${esc(clip.text || nameOf(clip))}</b></span><span class="sample-phrase">${fmt(clip.features.f0)} Hz · ${clock(clip.duration)}${clip.synthetic ? ' · AI' : ''}${nearest ? ` · <small class="nearest-badge">${m.sort_nearest_clip()}</small>` : ''}</span></div>`;
 		b.title = clip.text!;
 		b.onclick = () => selectSample(clip, true);
 		b.disabled = state.recording || state.loadingLanguage;
@@ -519,7 +428,7 @@ export function mountStudio(state: State): () => void {
 		star.setAttribute('aria-pressed', String(favorites.has(clip.id)));
 		star.setAttribute(
 			'aria-label',
-			t(favorites.has(clip.id) ? 'favorite.remove_clip' : 'favorite.add_clip', {
+			(favorites.has(clip.id) ? m.favorite_remove_clip : m.favorite_add_clip)({
 				name: clip.text || nameOf(clip)
 			})
 		);
@@ -555,7 +464,7 @@ export function mountStudio(state: State): () => void {
 			folder.open = openSpeakers.has(key);
 			const heading = document.createElement('summary'),
 				favs = items.filter((c) => favorites.has(c.id)).length;
-			heading.innerHTML = `<svg class="folder-chevron" aria-hidden="true"><use href="#i-chevron"></use></svg><strong>${esc(speakerName(items[0]))}</strong>${items[0].synthetic ? '<small class="ai-badge">AI</small>' : ''}<span class="speaker-count">${items.length}</span>${favs ? `<span class="speaker-star" aria-label="${t('favorite.marked')}">★</span>` : ''}`;
+			heading.innerHTML = `<svg class="folder-chevron" aria-hidden="true"><use href="#i-chevron"></use></svg><strong>${esc(speakerName(items[0]))}</strong>${items[0].synthetic ? '<small class="ai-badge">AI</small>' : ''}<span class="speaker-count">${items.length}</span>${favs ? `<span class="speaker-star" aria-label="${m.favorite_marked()}">★</span>` : ''}`;
 			const list = document.createElement('div');
 			list.className = 'speaker-clips';
 			const populate = () => {
@@ -565,7 +474,7 @@ export function mountStudio(state: State): () => void {
 				if (items.length > limit) {
 					const more = document.createElement('button');
 					more.className = 'speaker-more';
-					more.textContent = t('samples.more');
+					more.textContent = m.samples_more();
 					more.onclick = () => {
 						speakerLimits.set(key, limit + 30);
 						populate();
@@ -670,7 +579,7 @@ export function mountStudio(state: State): () => void {
 			$<HTMLSelectElement>('sort').value = lang === 'lab' ? 'name' : 'high';
 			state.loadingLanguage = false;
 			renderLibrary(true);
-			updateIndicators();
+			updateDistance();
 			const chosen = null;
 			await selectSample(
 				chosen ||
@@ -704,7 +613,7 @@ export function mountStudio(state: State): () => void {
 		if (!clip || state.recording || state.loadingLanguage) return;
 		cancelAB();
 		reference.pause();
-		const previousGroup = referenceGroup();
+		const previousGroup = state.referenceGroup;
 		state.selected = clip;
 		document.documentElement.style.setProperty(
 			'--reference',
@@ -716,7 +625,7 @@ export function mountStudio(state: State): () => void {
 		);
 		signal.images = new WeakMap();
 		signal.dirty = true;
-		if (previousGroup !== referenceGroup()) buildFit();
+		if (previousGroup !== state.referenceGroup) buildFit();
 		openSpeakers.add(speakerKey(clip));
 		const token = ++state.detailToken;
 		state.rangeToken.ref++;
@@ -746,14 +655,14 @@ export function mountStudio(state: State): () => void {
 		$('selected-name').textContent = nameOf(clip);
 		updateFavorite();
 		$('selected-meta').textContent =
-			`${fmt(clip.features.f0)} Hz · ${fmt(clip.features.delta_f)} ΔF${clip.synthetic ? ' · ' + t('target.meta_synthetic') : ''}`;
+			`${fmt(clip.features.f0)} Hz · ${fmt(clip.features.delta_f)} ΔF${clip.synthetic ? ' · ' + m.target_meta_synthetic() : ''}`;
 		$('selected-text').textContent = clip.text!;
 		$('selected-text').lang = state.lang;
 		$('source-link').hidden = !clip.source;
 		if (clip.source) $<HTMLAnchorElement>('source-link').href = clip.source;
 		$<HTMLButtonElement>('play-reference').disabled = false;
 		renderLibrary();
-		updateIndicators();
+		updateDistance();
 		renderWords();
 		if (play) playSide('ref').catch((e) => notify(e.message, true));
 		try {
@@ -767,11 +676,11 @@ export function mountStudio(state: State): () => void {
 			signal.set('ref', detail);
 			if (!state.ownFull) setSignalSource('ref');
 			updateMap();
-			updateIndicators();
+			updateDistance();
 			if (signal.source === 'ref') updateRangeLabel();
 		} catch (e) {
 			if (token === state.detailToken)
-				notify(t('target.analysis_error', { message: (e as Error).message }), true);
+				notify(m.target_analysis_error({ message: (e as Error).message }), true);
 		}
 	}
 	function controls() {
@@ -801,11 +710,11 @@ export function mountStudio(state: State): () => void {
 			'aria-pressed',
 			String(state.recording && state.captureMode === 'record')
 		);
-		$('record').setAttribute('aria-label', t(state.recording ? 'record.stop' : 'record.aria'));
+		$('record').setAttribute('aria-label', (state.recording ? m.record_stop : m.record_aria)());
 		icon($('record'), state.recording && state.captureMode === 'record' ? 'stop' : 'mic');
-		$('record').title = t(
-			state.recording && state.captureMode === 'record' ? 'record.stop_title' : 'record.title'
-		);
+		$('record').title = (
+			state.recording && state.captureMode === 'record' ? m.record_stop_title : m.record_title
+		)();
 		$<HTMLButtonElement>('live-mode').disabled =
 			state.busy || state.loadingLanguage || (state.recording && state.captureMode !== 'live');
 		$('live-mode').setAttribute(
@@ -813,18 +722,18 @@ export function mountStudio(state: State): () => void {
 			String(state.recording && state.captureMode === 'live')
 		);
 		const isLive = state.recording && state.captureMode === 'live';
-		$('live-mode').setAttribute('aria-label', t(isLive ? 'live.stop' : 'live.start'));
-		$('live-mode').title = t(isLive ? 'live.stop_title' : 'live.title');
-		$('live-mode-label').textContent = t(isLive ? 'live.measuring' : 'live.label');
+		$('live-mode').setAttribute('aria-label', (isLive ? m.live_stop : m.live_start)());
+		$('live-mode').title = (isLive ? m.live_stop_title : m.live_title)();
+		$('live-mode-label').textContent = (isLive ? m.live_measuring : m.live_label)();
 		$('live-time').hidden = !isLive;
 		$<HTMLButtonElement>('loopback').disabled = !state.recording || state.busy;
 		renderTakeMenu();
 		$('state').textContent = state.recording
-			? t(state.captureMode === 'live' ? 'live.measuring' : 'state.recording')
+			? (state.captureMode === 'live' ? m.live_measuring : m.state_recording)()
 			: state.busy
-				? t('state.preparing')
+				? m.state_preparing()
 				: state.analyzing.has(state.ownTakeId!)
-					? t('state.analyzing')
+					? m.state_analyzing()
 					: '';
 		$('state').hidden = !$('state').textContent;
 		// The map only moves once the take is analysed; say so over it while the server works.
@@ -849,9 +758,9 @@ export function mountStudio(state: State): () => void {
 		}
 		await audioContext.resume();
 		for (const side of ['own', 'ref'] as Side[]) {
-			const m = side === 'own' ? state.ownFull : state.refFull || state.selected;
-			const level = m?.level_dbfs,
-				peak = m?.peak;
+			const detail = side === 'own' ? state.ownFull : state.refFull || state.selected;
+			const level = detail?.level_dbfs,
+				peak = detail?.peak;
 			playbackNodes![side].gain.value =
 				$<HTMLInputElement>('normalize').checked && finite(level) && finite(peak)
 					? Math.min(4, Math.pow(10, (-24 - level) / 20), 0.85 / (peak || 1))
@@ -902,17 +811,17 @@ export function mountStudio(state: State): () => void {
 	] as [Side, HTMLAudioElement, string][]) {
 		el.addEventListener('play', () => {
 			icon($(id), 'pause');
-			$(id).setAttribute('aria-label', t(side === 'own' ? 'play.own_pause' : 'target.pause'));
+			$(id).setAttribute('aria-label', (side === 'own' ? m.play_own_pause : m.target_pause)());
 			map.invalidate();
 		});
 		el.addEventListener('pause', () => {
 			icon($(id), 'play');
-			$(id).setAttribute('aria-label', t(side === 'own' ? 'play.own' : 'target.play'));
+			$(id).setAttribute('aria-label', (side === 'own' ? m.play_own : m.target_play)());
 			map.invalidate();
 			signal.dirty = true;
 		});
 		el.addEventListener('error', () => {
-			if (el.src) notify(t('error.playback'), true);
+			if (el.src) notify(m.error_playback(), true);
 		});
 		el.addEventListener('timeupdate', () => {
 			const d = el.duration;
@@ -955,7 +864,7 @@ export function mountStudio(state: State): () => void {
 				(state.ranges.ref?.[1] || state.refFull?.duration || state.selected.duration!) - refStart,
 				(state.ranges.own?.[1] || state.ownFull.duration) - ownStart
 			);
-			if (!finite(seconds) || seconds <= 0) throw new Error(t('error.ab_wait'));
+			if (!finite(seconds) || seconds <= 0) throw new Error(m.error_ab_wait());
 			$('compare-ab').setAttribute('aria-pressed', 'true');
 			// If a pause() cut the reference short (the user stopped it during start-up), do not
 			// start the timer — otherwise the comparison would carry on into the own phase.
@@ -1026,9 +935,9 @@ export function mountStudio(state: State): () => void {
 			!available.contrast;
 		for (const el of document.querySelectorAll<HTMLElement>('[data-projection]'))
 			el.setAttribute('aria-pressed', String(el.dataset.projection === map.projection));
-		$('space-label').title = t(
-			map.projection === 'contrast' ? 'graph.space_title_contrast' : 'graph.space_title'
-		);
+		$('space-label').title = (
+			map.projection === 'contrast' ? m.graph_space_title_contrast : m.graph_space_title
+		)();
 	}
 	$('zoom-in').onclick = () => map.zoomBy(1.2);
 	$('zoom-out').onclick = () => map.zoomBy(1 / 1.2);
@@ -1078,7 +987,7 @@ export function mountStudio(state: State): () => void {
 			'aria-pressed',
 			String(!signal.overlay && signal.source === 'ref')
 		);
-		$('signal-both').title = t(signal.overlay ? 'signal.both_title_on' : 'signal.both_title');
+		$('signal-both').title = (signal.overlay ? m.signal_both_title_on : m.signal_both_title)();
 	}
 	function setSignalSource(side: Side) {
 		signal.source = side;
@@ -1128,7 +1037,7 @@ export function mountStudio(state: State): () => void {
 			if (side === 'own') state.own = full;
 			else state.ref = full;
 			updateMap();
-			updateIndicators();
+			updateDistance();
 			if (side === 'own') refreshNearOrder();
 			if (sessionReady) {
 				void persistTakes();
@@ -1158,7 +1067,7 @@ export function mountStudio(state: State): () => void {
 			else state.ref = detail;
 			signal.setRange(side, range, detail);
 			updateMap();
-			updateIndicators();
+			updateDistance();
 			if (side === 'own') refreshNearOrder();
 		} catch (e) {
 			if (token === state.rangeToken[side]) notify((e as Error).message, true);
@@ -1168,10 +1077,10 @@ export function mountStudio(state: State): () => void {
 	function setLiveShapeWindow(value: unknown) {
 		map.liveShapeSeconds = clamp(Math.round(Number(value) || 5), 1, 30);
 		$<HTMLInputElement>('live-shape-window').value = String(map.liveShapeSeconds);
-		$('live-shape-duration').textContent = t('settings.seconds', { n: map.liveShapeSeconds });
+		$('live-shape-duration').textContent = m.settings_seconds({ n: map.liveShapeSeconds });
 		$('live-shape-window').setAttribute(
 			'aria-valuetext',
-			t('settings.seconds', { n: map.liveShapeSeconds })
+			m.settings_seconds({ n: map.liveShapeSeconds })
 		);
 		map.invalidate();
 	}
@@ -1187,7 +1096,7 @@ export function mountStudio(state: State): () => void {
 		for (const w of entries) {
 			const b = document.createElement('button');
 			b.textContent = w.text;
-			b.title = t('signal.word_title', { start: w.start.toFixed(2), end: w.end.toFixed(2) });
+			b.title = m.signal_word_title({ start: w.start.toFixed(2), end: w.end.toFixed(2) });
 			b.className = range && w.start >= range[0] - 0.01 && w.end <= range[1] + 0.01 ? 'active' : '';
 			b.onclick = () => {
 				const duration = (side === 'own' ? state.ownFull : state.refFull)?.duration || 0;
@@ -1215,7 +1124,7 @@ export function mountStudio(state: State): () => void {
 				result = await api<Words>(`/api/words/${encodeURIComponent(id)}?lang=${lang}`);
 			else {
 				const pcm = side === 'own' ? state.ownPCM : state.refPCM;
-				if (!pcm) throw new Error(t('error.words_first'));
+				if (!pcm) throw new Error(m.error_words_first());
 				result = await api<Words>('/api/words?lang=' + lang, { method: 'POST', body: pcm });
 			}
 			if (token === state.wordToken[side]) {
@@ -1226,15 +1135,15 @@ export function mountStudio(state: State): () => void {
 			notify((e as Error).message, true);
 		} finally {
 			$<HTMLButtonElement>('words-button').disabled = false;
-			$('words-button').textContent = t('signal.words');
+			$('words-button').textContent = m.signal_words();
 		}
 	};
 	async function decode(blob: Blob): Promise<PCM> {
-		if (blob.size > 150 * 1024 * 1024) throw new Error(t('error.file_size'));
+		if (blob.size > 150 * 1024 * 1024) throw new Error(m.error_file_size());
 		const ctx = new AudioContext();
 		try {
 			const decoded = await ctx.decodeAudioData(await blob.arrayBuffer());
-			if (decoded.duration > 900 || decoded.duration < 0.25) throw new Error(t('error.duration'));
+			if (decoded.duration > 900 || decoded.duration < 0.25) throw new Error(m.error_duration());
 			const off = new OfflineAudioContext(1, Math.ceil(decoded.duration * 16000), 16000),
 				source = off.createBufferSource();
 			source.buffer = decoded;
@@ -1281,9 +1190,9 @@ export function mountStudio(state: State): () => void {
 			(
 				{
 					'No reliable voiced speech. Check the microphone and speak normally.':
-						t('quality.no_voice'),
-					'Speak for a little longer.': t('quality.longer'),
-					'Unstable resonance estimate.': t('quality.resonance')
+						m.quality_no_voice(),
+					'Speak for a little longer.': m.quality_longer(),
+					'Unstable resonance estimate.': m.quality_resonance()
 				} as Record<string, string>
 			)[reason!] ||
 			reason ||
@@ -1326,7 +1235,7 @@ export function mountStudio(state: State): () => void {
 			player.src = blobURL;
 		} else player.src = url!;
 		$('timer').textContent = clock(detail.duration);
-		updateIndicators();
+		updateDistance();
 		updateMap();
 		renderWords();
 		updateRangeLabel();
@@ -1350,7 +1259,7 @@ export function mountStudio(state: State): () => void {
 		try {
 			const pcm = await decode(file);
 			if (pcm.length / 16000 > (state.capabilities?.maxSeconds || 900))
-				throw new Error(t('error.too_long', { n: (state.capabilities?.maxSeconds || 900) / 60 }));
+				throw new Error(m.error_too_long({ n: (state.capabilities?.maxSeconds || 900) / 60 }));
 			const detail = await engine.analyze(pcm);
 			if (side === 'own') {
 				setOwn(detail, file.name, null, pcm);
@@ -1375,7 +1284,7 @@ export function mountStudio(state: State): () => void {
 				$<HTMLSelectElement>('library-group').value = 'custom';
 				await selectSample(c, false);
 			}
-			notify(t('notice.imported'));
+			notify(m.notice_imported());
 		} catch (e) {
 			notify((e as Error).message, true);
 		} finally {
@@ -1425,33 +1334,33 @@ export function mountStudio(state: State): () => void {
 			offset = end - raw.length / rate;
 		try {
 			const pcm = await resample(raw, rate),
-				m = await engine.live(pcm, (liveController = new AbortController()).signal);
+				measured = await engine.live(pcm, (liveController = new AbortController()).signal);
 			if (generation !== liveGeneration || !state.recording) return;
-			const rows = m.track!.map((p) => ({ ...p, t: p.t + offset }));
+			const rows = measured.track!.map((p) => ({ ...p, t: p.t + offset }));
 			const replaceAt = Math.max(offset + 0.12, end - window + 0.12);
 			state.liveTrack = state.liveTrack
 				.filter((p) => p.t < replaceAt && (state.captureMode !== 'live' || p.t > end - 90))
 				.concat(rows.filter((p) => p.t >= replaceAt));
-			state.ownFull = { ...m, track: state.liveTrack, duration: end };
-			state.own = m;
+			state.ownFull = { ...measured, track: state.liveTrack, duration: end };
+			state.own = measured;
 			state.ranges.own = null;
 			state.liveClock = {
 				end: rows.at(-1)?.t || end,
 				at: performance.now(),
 				start: Math.max(0, end - 0.65)
 			};
-			signal.data.own = m;
-			signal.ranges.own = [0, m.duration];
+			signal.data.own = measured;
+			signal.ranges.own = [0, measured.duration];
 			signal.focus.own = null;
 			signal.live = true;
 			signal.dirty = true;
 			map.own = state.ownFull;
-			map.ownFeatures = m.features;
+			map.ownFeatures = measured.features;
 			map.ownRange = null;
 			map.invalidate();
-			$('quality-state').textContent = m.active ? '' : t('quality.waiting');
-			$('quality-state').hidden = !!m.active;
-			updateIndicators();
+			$('quality-state').textContent = measured.active ? '' : m.quality_waiting();
+			$('quality-state').hidden = !!measured.active;
+			updateDistance();
 		} catch (e) {
 			if (generation === liveGeneration && (e as Error).name !== 'AbortError')
 				notify((e as Error).message, true);
@@ -1547,7 +1456,7 @@ export function mountStudio(state: State): () => void {
 			state.captureMode = null;
 			controls();
 			notify(
-				(e as Error).name === 'NotAllowedError' ? t('error.mic_denied') : (e as Error).message,
+				(e as Error).name === 'NotAllowedError' ? m.error_mic_denied() : (e as Error).message,
 				true
 			);
 		}
@@ -1558,7 +1467,7 @@ export function mountStudio(state: State): () => void {
 			monitorGain = null;
 		}
 		$('loopback').setAttribute('aria-pressed', 'false');
-		$('loopback').setAttribute('aria-label', t('loopback.aria'));
+		$('loopback').setAttribute('aria-label', m.loopback_aria());
 		if (worklet) {
 			worklet.port.onmessage = null;
 			worklet.port.close();
@@ -1606,7 +1515,7 @@ export function mountStudio(state: State): () => void {
 		state.liveClock = null;
 		map.live = false;
 		updateMap();
-		updateIndicators();
+		updateDistance();
 		renderWords();
 		updateRangeLabel();
 		controls();
@@ -1616,7 +1525,7 @@ export function mountStudio(state: State): () => void {
 		const current = state.recording ? recordSnapshot : snapshotOwn();
 		if (!current) return Promise.resolve();
 		return TakeStore.write(snap({ current, previous: state.previousTake || null })).catch(() =>
-			notify(t('error.take_save'), true)
+			notify(m.error_take_save(), true)
 		);
 	}
 	function restoreRecording() {
@@ -1683,13 +1592,8 @@ export function mountStudio(state: State): () => void {
 				raw = mergeChunks().subarray(0, Math.floor(rate * maxSeconds));
 			await releaseMic();
 			const pcm = (await resample(raw, rate)).slice(0, 16000 * maxSeconds);
-			if (pcm.length < 4000) throw new Error(t('error.too_short'));
-			setOwn(
-				pendingAnalysis(pcm),
-				t('takes.default_name', { n: state.takes.length + 1 }),
-				null,
-				pcm
-			);
+			if (pcm.length < 4000) throw new Error(m.error_too_short());
+			setOwn(pendingAnalysis(pcm), m.takes_default_name({ n: state.takes.length + 1 }), null, pcm);
 			accepted = true;
 			await saveTake();
 			recordSnapshot = null;
@@ -1718,7 +1622,7 @@ export function mountStudio(state: State): () => void {
 		const enabled = $('loopback').getAttribute('aria-pressed') !== 'true';
 		monitorGain.gain.setTargetAtTime(enabled ? 0.7 : 0, recordContext.currentTime, 0.015);
 		$('loopback').setAttribute('aria-pressed', String(enabled));
-		$('loopback').setAttribute('aria-label', t(enabled ? 'loopback.stop' : 'loopback.aria'));
+		$('loopback').setAttribute('aria-label', (enabled ? m.loopback_stop : m.loopback_aria)());
 	};
 	$('live-mode').onclick = () => (state.recording ? stopRecording() : startRecording('live'));
 	window.addEventListener('keydown', (e) => {
@@ -1800,7 +1704,7 @@ export function mountStudio(state: State): () => void {
 				if (!state.ranges.own) state.own = detail;
 				signal.set('own', detail);
 				signal.setRange('own', state.ranges.own, state.ranges.own ? state.own : null);
-				updateIndicators();
+				updateDistance();
 				updateRangeLabel();
 				refreshNearOrder();
 				const warning = qualityMessage(detail.reason) || '';
@@ -1810,7 +1714,7 @@ export function mountStudio(state: State): () => void {
 			updateMap();
 			await persistTakes();
 		} catch {
-			if (state.takes.some((t) => t.id === id)) notify(t('error.take_kept'), true);
+			if (state.takes.some((t) => t.id === id)) notify(m.error_take_kept(), true);
 		} finally {
 			state.analyzing.delete(id);
 			controls();
@@ -1824,7 +1728,7 @@ export function mountStudio(state: State): () => void {
 			try {
 				await saveTake(state.ownTakeId || crypto.randomUUID());
 			} catch {
-				notify(t('error.take_save_retry'), true);
+				notify(m.error_take_save_retry(), true);
 				return;
 			} finally {
 				state.busy = false;
@@ -1839,16 +1743,16 @@ export function mountStudio(state: State): () => void {
 			r = activeFeatures('ref'),
 			comparison = map.space?.comparison(f, r, map.dimension, map.projection),
 			fit = fitValue(f),
-			refs = referenceStats();
-		const rows = METRICS.map((m) => {
-			const vals = refs.map((c) => c.features[m.key]).filter(finite);
-			return `<tr><td>${m.label} · ${m.unit}</td><td>${fmt(f[m.key], m.n)}</td><td>${fmt(r[m.key], m.n)}</td><td>${t('help.band_range', { low: fmt(quantile(vals, 0.1), m.n), high: fmt(quantile(vals, 0.9), m.n) })}</td></tr>`;
+			refs = state.referenceStats;
+		const rows = METRICS.map((metric) => {
+			const vals = refs.map((c) => c.features[metric.key]).filter(finite);
+			return `<tr><td>${metric.label} · ${metric.unit}</td><td>${fmt(f[metric.key], metric.n)}</td><td>${fmt(r[metric.key], metric.n)}</td><td>${m.help_band_range({ low: fmt(quantile(vals, 0.1), metric.n), high: fmt(quantile(vals, 0.9), metric.n) })}</td></tr>`;
 		});
 		for (const [key, label] of [
-			['pitch_sd_hz', t('report.pitch_sd_hz')],
-			['pitch_sd_st', t('report.pitch_sd_st')],
-			['quiet_pct', t('report.quiet_pct')],
-			['quiet_mean', t('report.quiet_mean')],
+			['pitch_sd_hz', m.report_pitch_sd_hz()],
+			['pitch_sd_st', m.report_pitch_sd_st()],
+			['quiet_pct', m.report_quiet_pct()],
+			['quiet_mean', m.report_quiet_mean()],
 			['f1', 'F1 · Hz'],
 			['f2', 'F2 · Hz'],
 			['f3', 'F3 · Hz'],
@@ -1859,29 +1763,29 @@ export function mountStudio(state: State): () => void {
 			);
 		if (state.words.own?.pace)
 			rows.push(
-				`<tr><td>${esc(t('report.pace', { unit: state.words.own.pace_unit }))}</td><td>${fmt(state.words.own.pace, 1)}</td><td>${state.words.ref?.pace_unit === state.words.own.pace_unit ? fmt(state.words.ref!.pace, 1) : '—'}</td><td>—</td></tr>`
+				`<tr><td>${esc(m.report_pace({ unit: state.words.own.pace_unit ?? '' }))}</td><td>${fmt(state.words.own.pace, 1)}</td><td>${state.words.ref?.pace_unit === state.words.own.pace_unit ? fmt(state.words.ref!.pace, 1) : '—'}</td><td>—</td></tr>`
 			);
 		const notes: string[] = [];
 		if (finite(f.f0) && finite(r.f0)) {
 			const diff = 12 * Math.log2(r.f0 / f.f0);
 			notes.push(
-				t('report.note_pitch', {
+				m.report_note_pitch({
 					diff: fmt(Math.abs(diff), 1),
-					direction: t(diff >= 0 ? 'report.higher' : 'report.lower')
+					direction: (diff >= 0 ? m.report_higher : m.report_lower)()
 				})
 			);
 		}
 		if (finite(f.delta_f) && finite(r.delta_f))
-			notes.push(t('report.note_resonance', { own: fmt(f.delta_f), ref: fmt(r.delta_f) }));
-		notes.push(t('report.note_intonation'));
-		return `<div class="report-score">${comparison ? fmt(comparison.distance, 2) : '—'}</div><p>${t('report.distance_caption')}</p><p class="small">${t('report.distance_note')}</p>${comparison ? `<p>${t('report.share', { shown: Math.round(comparison.displayedShare * 100), omitted: Math.round((1 - comparison.displayedShare) * 100) })}</p><p class="small">${t('report.share_note')}</p>` : ''}<table class="report-table"><thead><tr><th>${t('report.col_metric')}</th><th>${t('report.col_own')}</th><th>${t('report.col_ref')}</th><th>${t('report.col_band')}</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(t('report.footer', { name: state.ownName, duration: clock(state.ownFull?.duration), reference: nameOf((state.selected || {}) as Clip) }))}<br>${esc(t('report.languages', { own: state.ownLanguage, ref: state.lang }))}${fit === null ? '' : '<br>' + esc(t('report.density', { group: referenceGroupLabel(), percentile: Math.round(fit) }))}<br>${esc(t('report.projection', { dimension: map.dimension, variance: Math.round((map.space?.explained(map.dimension, map.projection) || 0) * 100) }))}</p>`;
+			notes.push(m.report_note_resonance({ own: fmt(f.delta_f), ref: fmt(r.delta_f) }));
+		notes.push(m.report_note_intonation());
+		return `<div class="report-score">${comparison ? fmt(comparison.distance, 2) : '—'}</div><p>${m.report_distance_caption()}</p><p class="small">${m.report_distance_note()}</p>${comparison ? `<p>${m.report_share({ shown: Math.round(comparison.displayedShare * 100), omitted: Math.round((1 - comparison.displayedShare) * 100) })}</p><p class="small">${m.report_share_note()}</p>` : ''}<table class="report-table"><thead><tr><th>${m.report_col_metric()}</th><th>${m.report_col_own()}</th><th>${m.report_col_ref()}</th><th>${m.report_col_band()}</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(m.report_footer({ name: state.ownName, duration: clock(state.ownFull?.duration), reference: nameOf((state.selected || {}) as Clip) }))}<br>${esc(m.report_languages({ own: state.ownLanguage, ref: state.lang }))}${fit === null ? '' : '<br>' + esc(m.report_density({ group: referenceGroupLabel(), percentile: Math.round(fit) }))}<br>${esc(m.report_projection({ dimension: map.dimension, variance: Math.round((map.space?.explained(map.dimension, map.projection) || 0) * 100) }))}</p>`;
 	}
 	$('report-button').onclick = () => {
 		$('report-content').innerHTML = reportHTML();
 		$<HTMLDialogElement>('report-dialog').showModal();
 	};
 	$('report-save').onclick = () => {
-		const html = `<!doctype html><html lang="${uiLang}"><meta charset="utf-8"><title>${esc(t('report.file_title'))}</title><style>body{font:15px system-ui;max-width:850px;margin:40px auto;padding:0 20px;color:#30364c}.report-score{font-size:40px;color:#b44e80}table{width:100%;border-collapse:collapse}td,th{padding:10px;text-align:right;border-bottom:1px solid #ddd}td:first-child,th:first-child{text-align:left}.small{font-size:12px;color:#555;line-height:1.7}li{margin:14px 0;line-height:1.7}</style>${reportHTML()}<p><a href="https://www.isca-archive.org/interspeech_2025/netzorg25_interspeech.html">${esc(t('report.method_link'))}</a> · ${new Date().toLocaleDateString(uiLang)}</p>`;
+		const html = `<!doctype html><html lang="${getLocale()}"><meta charset="utf-8"><title>${esc(m.report_file_title())}</title><style>body{font:15px system-ui;max-width:850px;margin:40px auto;padding:0 20px;color:#30364c}.report-score{font-size:40px;color:#b44e80}table{width:100%;border-collapse:collapse}td,th{padding:10px;text-align:right;border-bottom:1px solid #ddd}td:first-child,th:first-child{text-align:left}.small{font-size:12px;color:#555;line-height:1.7}li{margin:14px 0;line-height:1.7}</style>${reportHTML()}<p><a href="https://www.isca-archive.org/interspeech_2025/netzorg25_interspeech.html">${esc(m.report_method_link())}</a> · ${new Date().toLocaleDateString(getLocale())}</p>`;
 		download(new Blob([html], { type: 'text/html' }), 'voice-comparison.html');
 	};
 	$('export').onclick = () =>
@@ -1914,10 +1818,6 @@ export function mountStudio(state: State): () => void {
 		if (map.dimension === 3 && map.autoRotate && !map.drag) {
 			map.yaw += delta * 0.065;
 			map.invalidate();
-		}
-		if (profileTheme !== document.documentElement.dataset.theme) {
-			profileTheme = document.documentElement.dataset.theme!;
-			drawProfile(activeFeatures('own'), activeFeatures('ref'));
 		}
 		for (const [side, el] of [
 			['own', player],
@@ -2048,95 +1948,11 @@ export function mountStudio(state: State): () => void {
 		};
 	}
 
-	let profileTheme = '';
-	function drawProfile(own: Features, ref: Features) {
-		const canvas = $<HTMLCanvasElement>('profile-canvas');
-		if (!canvas) return;
-		const w = canvas.clientWidth,
-			h = canvas.clientHeight;
-		if (!w || !h) return;
-		const dpr = Math.min(devicePixelRatio || 1, 2);
-		canvas.width = w * dpr;
-		canvas.height = h * dpr;
-		const c = canvas.getContext('2d')!;
-		c.scale(dpr, dpr);
-		const css = getComputedStyle(document.documentElement),
-			color = (k: string) => css.getPropertyValue(k).trim();
-		const cx = w / 2,
-			cy = h / 2 + 3,
-			r = Math.min(w / 2 - 28, h / 2 - 23);
-		const refs = state.representatives,
-			limits = METRICS.map((m) => {
-				const values = refs.map((p) => p.features[m.key]).filter(finite);
-				return [quantile(values, 0.01), quantile(values, 0.99)];
-			});
-		const point = (i: number, ratio: number): [number, number] => [
-			cx + Math.sin((i * Math.PI * 2) / 5) * r * ratio,
-			cy - Math.cos((i * Math.PI * 2) / 5) * r * ratio
-		];
-		c.strokeStyle = color('--line');
-		c.lineWidth = 1;
-		for (const scale of [0.33, 0.66, 1]) {
-			c.beginPath();
-			for (let i = 0; i < 5; i++) {
-				const p = point(i, scale);
-				if (i) c.lineTo(...p);
-				else c.moveTo(...p);
-			}
-			c.closePath();
-			c.stroke();
-		}
-		c.font = '10px system-ui';
-		c.textAlign = 'center';
-		c.fillStyle = color('--muted');
-		for (let i = 0; i < 5; i++) {
-			const p = point(i, 1),
-				label = point(i, 1.27);
-			c.beginPath();
-			c.moveTo(cx, cy);
-			c.lineTo(...p);
-			c.stroke();
-			c.fillText(METRICS[i].label, label[0], label[1] + 3);
-		}
-		for (const [f, key, dash] of [
-			[ref, '--reference', []],
-			[own, '--self', [4, 3]]
-		] as [Features, string, number[]][]) {
-			if (!METRICS.every((m) => finite(f[m.key]))) continue;
-			const pts = METRICS.map((m, i) =>
-				point(
-					i,
-					0.12 + 0.88 * clamp((f[m.key]! - limits[i][0]) / (limits[i][1] - limits[i][0] || 1), 0, 1)
-				)
-			);
-			c.beginPath();
-			pts.forEach((p, i) => (i ? c.lineTo(...p) : c.moveTo(...p)));
-			c.closePath();
-			c.strokeStyle = color(key);
-			c.lineWidth = 2;
-			c.setLineDash(dash);
-			c.stroke();
-			c.setLineDash([]);
-			c.fillStyle = color(key);
-			c.globalAlpha = 0.06;
-			c.fill();
-			c.globalAlpha = 1;
-			for (const p of pts) {
-				c.beginPath();
-				c.arc(...p, 2.5, 0, Math.PI * 2);
-				c.fill();
-			}
-		}
-	}
-	new ResizeObserver(() => drawProfile(activeFeatures('own'), activeFeatures('ref'))).observe(
-		$('profile-canvas')
-	);
-
 	function updateFavorite() {
 		const yes = favorites.has(state.selected?.id as string);
 		$('favorite-selected').textContent = yes ? '★' : '☆';
 		$('favorite-selected').setAttribute('aria-pressed', String(yes));
-		$('favorite-selected').setAttribute('aria-label', t(yes ? 'favorite.remove' : 'favorite.add'));
+		$('favorite-selected').setAttribute('aria-label', (yes ? m.favorite_remove : m.favorite_add)());
 	}
 	function toggleFavorite(id: string | undefined) {
 		if (!id) return;
@@ -2145,13 +1961,13 @@ export function mountStudio(state: State): () => void {
 		try {
 			localStorage.setItem('voice-favorites', JSON.stringify([...favorites]));
 		} catch {
-			notify(t('error.favorite_save'), true);
+			notify(m.error_favorite_save(), true);
 		}
 		TakeStore.write(
 			// `custom` is $state.raw, so these clips are plain and need no snapshot.
 			state.custom.filter((c) => favorites.has(c.id)).map(({ audio: _audio, ...c }) => c),
 			'references'
-		).catch(() => notify(t('error.reference_save'), true));
+		).catch(() => notify(m.error_reference_save(), true));
 		updateFavorite();
 		renderLibrary();
 	}
@@ -2189,7 +2005,7 @@ export function mountStudio(state: State): () => void {
 		$('timer').textContent = '0:00';
 		$('quality-state').hidden = true;
 		updateMap();
-		updateIndicators();
+		updateDistance();
 		renderWords();
 		controls();
 		refreshNearOrder();
@@ -2212,7 +2028,7 @@ export function mountStudio(state: State): () => void {
 		const by: Record<TakeSort, (a: Snapshot | Take, b: Snapshot | Take) => number> = {
 			newest: (a, b) => date(b).localeCompare(date(a)),
 			oldest: (a, b) => date(a).localeCompare(date(b)),
-			name: (a, b) => a.name.localeCompare(b.name, uiLang, { numeric: true }),
+			name: (a, b) => a.name.localeCompare(b.name, getLocale(), { numeric: true }),
 			longest: (a, b) => length(b) - length(a)
 		};
 		return choices.slice().sort((a, b) => by[takeSort](a, b) || by.newest(a, b));
@@ -2239,12 +2055,12 @@ export function mountStudio(state: State): () => void {
 		const peaks: number[] = Array.from({ length: buckets }),
 			size = Math.max(1, Math.floor(pcm.length / buckets));
 		for (let i = 0; i < buckets; i++) {
-			let m = 0;
+			let peak = 0;
 			for (let j = i * size, e = Math.min((i + 1) * size, pcm.length); j < e; j += 8) {
 				const v = Math.abs(pcm[j]);
-				if (v > m) m = v;
+				if (v > peak) peak = v;
 			}
-			peaks[i] = m;
+			peaks[i] = peak;
 		}
 		const top = Math.max(...peaks) || 1;
 		return peaks.map((v) => Math.round((v / top) * 100) / 100);
@@ -2303,18 +2119,18 @@ export function mountStudio(state: State): () => void {
 			select.add(option);
 		});
 		if (current?.detail?.analysisPending && !state.analyzing.has(current.takeId!))
-			select.add(new Option(t('takes.retry'), 'retry'));
+			select.add(new Option(m.takes_retry(), 'retry'));
 		select.disabled = state.busy || !takeChoices.length;
 		takeCurrentIndex = current?.pcm ? takeChoices.indexOf(current) : -1;
 		select.value = takeCurrentIndex < 0 ? '' : String(takeCurrentIndex);
-		select.setAttribute('data-display-label', current?.name || t('takes.menu'));
+		select.setAttribute('data-display-label', current?.name || m.takes_menu());
 		void backfillPeaks();
 	}
 	async function restoreTake(chosen: Snapshot | Take | { storedId: string }) {
 		if (state.busy) return;
 		if ((chosen as Take).storedId)
 			chosen = (await TakeStore.read<Snapshot>('recording:' + (chosen as Take).storedId))!;
-		if (!(chosen as Snapshot)?.pcm) throw new Error(t('error.take_load'));
+		if (!(chosen as Snapshot)?.pcm) throw new Error(m.error_take_load());
 		const current = state.recording ? recordSnapshot : snapshotOwn();
 		if (state.recording) await cancelCapture();
 		cancelAB();
@@ -2353,9 +2169,9 @@ export function mountStudio(state: State): () => void {
 			await TakeStore.write(snap({ current: snapshotOwn(), previous: state.previousTake || null }));
 			updateMap();
 			saveView();
-			notify(t('notice.take_deleted'));
+			notify(m.notice_take_deleted());
 		} catch {
-			notify(t('error.take_delete'), true);
+			notify(m.error_take_delete(), true);
 		} finally {
 			state.busy = false;
 			controls();
@@ -2400,7 +2216,7 @@ export function mountStudio(state: State): () => void {
 				const source = chosen.pcm
 					? chosen
 					: await TakeStore.read<Snapshot>('recording:' + chosen.storedId);
-				if (!source?.pcm) throw new Error(t('error.take_load'));
+				if (!source?.pcm) throw new Error(m.error_take_load());
 				replayTake(source as Snapshot, replayKeyOf(chosen));
 			} catch (error) {
 				notify((error as Error).message, true);
@@ -2410,7 +2226,7 @@ export function mountStudio(state: State): () => void {
 			try {
 				if (chosen.storedId)
 					chosen = (await TakeStore.read<Snapshot>('recording:' + chosen.storedId))!;
-				if (!chosen?.pcm) throw new Error(t('error.take_load'));
+				if (!chosen?.pcm) throw new Error(m.error_take_load());
 				download(wav(chosen.pcm), chosen.name.replace(/\.[^.]+$/, '') + '.wav');
 			} catch (error) {
 				notify((error as Error).message, true);
@@ -2468,7 +2284,7 @@ export function mountStudio(state: State): () => void {
 			if ((e as DOMException).name === 'AbortError' || replayAudio !== audio) return;
 			stopReplay();
 			URL.revokeObjectURL(url);
-			notify(t('error.replay'), true);
+			notify(m.error_replay(), true);
 		});
 	}
 	// The recording menu renames a take in place: koe-select emits `optionrename` with the
@@ -2489,7 +2305,7 @@ export function mountStudio(state: State): () => void {
 			if (takeChoices.indexOf(take) === takeCurrentIndex) {
 				state.ownName = detail.name;
 				await persistTakes();
-			} else notify(t('rename.failed'), true);
+			} else notify(m.rename_failed(), true);
 			renderTakeMenu();
 			return;
 		}
@@ -2509,7 +2325,7 @@ export function mountStudio(state: State): () => void {
 			if (state.ownTakeId === id || state.previousTake?.takeId === id) await persistTakes();
 			renderTakeMenu();
 		} catch {
-			notify(t('rename.failed'), true);
+			notify(m.rename_failed(), true);
 			renderTakeMenu();
 		}
 	});
@@ -2530,7 +2346,7 @@ export function mountStudio(state: State): () => void {
 		controls();
 		try {
 			const takes = await storedTakes();
-			if (!takes.length) throw new Error(t('error.no_takes'));
+			if (!takes.length) throw new Error(m.error_no_takes());
 			const { ZipWriter, BlobWriter, BlobReader, TextReader } =
 				await import('@zip.js/zip.js/index-native.js');
 			const zip = new ZipWriter(new BlobWriter('application/zip')),
@@ -2552,7 +2368,7 @@ export function mountStudio(state: State): () => void {
 			}
 			await zip.add('takes.json', new TextReader(JSON.stringify(manifest, null, 1)));
 			download(await zip.close(), 'koenami-recordings.zip');
-			notify(t('notice.zipped', { n: takes.length }));
+			notify(m.notice_zipped({ n: takes.length }));
 		} catch (error) {
 			notify((error as Error).message, true);
 		} finally {
@@ -2564,18 +2380,18 @@ export function mountStudio(state: State): () => void {
 		if (state.busy || state.recording) return;
 		const stored = state.takes.filter((t) => t.stored);
 		if (!stored.length) {
-			notify(t('error.no_takes'));
+			notify(m.error_no_takes());
 			return;
 		}
-		if (!confirm(t('confirm.delete_all', { n: stored.length }))) return;
+		if (!confirm(m.confirm_delete_all({ n: stored.length }))) return;
 		for (const t of stored) await deleteTake({ storedId: t.id });
-		notify(t('notice.deleted_all', { n: stored.length }));
+		notify(m.notice_deleted_all({ n: stored.length }));
 	};
 
 	let importController: AbortController | null = null;
 	$('add-reference').onclick = () => {
 		$('jvs-status').textContent = state.imported.length
-			? t('jvs.added', { n: state.imported.length })
+			? m.jvs_added({ n: state.imported.length })
 			: '';
 		$<HTMLDialogElement>('import-dialog').showModal();
 	};
@@ -2607,14 +2423,14 @@ export function mountStudio(state: State): () => void {
 					$('jvs-progress').setAttribute('aria-valuenow', String(Math.round(pct)));
 					($('jvs-progress').firstElementChild as HTMLElement).style.width = pct + '%';
 					$('jvs-status').textContent =
-						`${done.toLocaleString(uiLang)} / ${total.toLocaleString(uiLang)}`;
+						`${done.toLocaleString(getLocale())} / ${total.toLocaleString(getLocale())}`;
 				},
 				controller.signal
 			);
-			$('jvs-status').textContent = t('jvs.added', { n: result.total });
+			$('jvs-status').textContent = m.jvs_added({ n: result.total });
 		} catch (e) {
 			$('jvs-status').textContent =
-				(e as Error).name === 'AbortError' ? t('jvs.cancelled') : (e as Error).message;
+				(e as Error).name === 'AbortError' ? m.jvs_cancelled() : (e as Error).message;
 		} finally {
 			importController = null;
 			state.busy = false;
@@ -2691,45 +2507,6 @@ export function mountStudio(state: State): () => void {
 		map.invalidate();
 		$('auto-rotate').setAttribute('aria-pressed', String(map.autoRotate));
 	}
-	/* The share dialog scores whatever the indicators show: the whole recording, or the selected range. */
-	function activeMeasurement() {
-		return state.own || state.ownFull;
-	}
-	const scalePos = (s: number) => `${clamp((s + 120) / 240, 0, 1) * 100}%`;
-	function updateVerdict() {
-		const result = state.shareResult,
-			scorer = state.scorer;
-		const readout = $<HTMLButtonElement>('verdict-readout');
-		readout.disabled = !result;
-		$('verdict-main').dataset.verdict = result?.verdict || '';
-		const m = activeMeasurement(),
-			gate = m && !m.analysisPending && scorer?.available ? gateFailure(m, uiLang) : null;
-		$('verdict-word').textContent = result
-			? verdictLabel(result.verdict, uiLang)
-			: t(
-					!scorer?.available
-						? 'verdict.unavailable'
-						: !m
-							? 'verdict.record'
-							: m.analysisPending
-								? 'verdict.analyzing'
-								: 'verdict.not_yet'
-				);
-		$('verdict-number').textContent = result ? formatScore(result.display) : '';
-		$('verdict-gate').hidden = !gate || !!result;
-		if (gate && !result)
-			$('verdict-gate').textContent = gate.value ? t('verdict.gate', gate) : gate.label;
-		for (const g of ['male', 'female'] as const) {
-			const band = scorer?.available ? scorer.bands[g] : null,
-				el = $('verdict-band-' + g);
-			el.hidden = !band;
-			if (band) {
-				el.style.left = scalePos(band[0]);
-				el.style.width = `calc(${scalePos(band[1])} - ${scalePos(band[0])})`;
-			}
-		}
-		if (result) $('verdict-dot').style.left = scalePos(result.score);
-	}
 	/* Every stored take of the current language that has a verdict, oldest first; the chart and list share the rows. */
 	function historyRows() {
 		const scorer = state.scorer,
@@ -2738,10 +2515,7 @@ export function mountStudio(state: State): () => void {
 		return state.takes
 			.filter(
 				(t) =>
-					t.stored &&
-					t.language === lang &&
-					t.features &&
-					!(t.quality && gateFailure(t.quality, uiLang))
+					t.stored && t.language === lang && t.features && !(t.quality && gateFailure(t.quality))
 			)
 			.map((t) => ({ take: t, result: scorer.score(t.features!), unchecked: !t.quality }))
 			.filter((r): r is { take: Take; result: ScoreResult; unchecked: boolean } => !!r.result)
@@ -2767,7 +2541,7 @@ export function mountStudio(state: State): () => void {
 			`<rect x="${L}" y="${y(bands[g][1])}" width="${W - L - R}" height="${Math.max(1, y(bands[g][0]) - y(bands[g][1]))}" fill="${color}" opacity=".18"/>`;
 		const points = rows.map((r, i) => [x(i), y(r.result.score)]);
 		const day = (d: string) =>
-			new Date(d).toLocaleDateString(uiLang, { month: 'numeric', day: 'numeric' });
+			new Date(d).toLocaleDateString(getLocale(), { month: 'numeric', day: 'numeric' });
 		$('history-chart').innerHTML =
 			`${band('male', 'var(--sky)')}${band('female', 'var(--pink)')}<line x1="${L}" y1="${y(0)}" x2="${W - R}" y2="${y(0)}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>${[100, 50, 0, -50, -100].map((v) => `<text x="${L - 6}" y="${y(v) + 3}" font-size="8" text-anchor="end" fill="var(--muted)">${formatScore(v)}</text>`).join('')}<polyline points="${points.map((p) => p.join(',')).join(' ')}" fill="none" stroke="var(--self)" stroke-width="1.5"/>${points.map(([px, py], i) => `<circle cx="${px}" cy="${py}" r="${rows[i].take.id === state.ownTakeId ? 4 : 2.5}" fill="var(--self)" stroke="var(--surface)" stroke-width="1"/>`).join('')}<text x="${L}" y="${H - 4}" font-size="8" fill="var(--muted)">${day(rows[0].take.date)}</text><text x="${W - R}" y="${H - 4}" font-size="8" text-anchor="end" fill="var(--muted)">${day(rows.at(-1)!.take.date)}</text>`;
 		$('history-list').replaceChildren(
@@ -2775,14 +2549,14 @@ export function mountStudio(state: State): () => void {
 				const li = document.createElement('li');
 				li.setAttribute('aria-current', String(r.take.id === state.ownTakeId));
 				const when = new Date(r.take.date);
-				li.innerHTML = `<span class="history-name">${esc(r.take.name)}</span><time datetime="${esc(r.take.date)}">${when.toLocaleDateString(uiLang, { month: 'numeric', day: 'numeric' })} ${when.toLocaleTimeString(uiLang, { hour: '2-digit', minute: '2-digit' })}</time><span class="history-verdict" data-verdict="${r.result.verdict}">${verdictLabel(r.result.verdict, uiLang)}</span><b>${formatScore(r.result.display)}</b>`;
+				li.innerHTML = `<span class="history-name">${esc(r.take.name)}</span><time datetime="${esc(r.take.date)}">${when.toLocaleDateString(getLocale(), { month: 'numeric', day: 'numeric' })} ${when.toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' })}</time><span class="history-verdict" data-verdict="${r.result.verdict}">${verdictLabel(r.result.verdict)}</span><b>${formatScore(r.result.display)}</b>`;
 				const b = document.createElement('button');
 				if (r.take.id === state.ownTakeId) {
-					b.textContent = t('history.current');
+					b.textContent = m.history_current();
 					b.disabled = true;
 				} else {
-					b.textContent = t('history.open');
-					b.title = t('history.open_title');
+					b.textContent = m.history_open();
+					b.title = m.history_open_title();
 					b.onclick = () => {
 						$<HTMLDialogElement>('share-dialog').close();
 						restoreTake({ storedId: r.take.id }).catch((e) => notify(e.message, true));
@@ -2804,20 +2578,20 @@ export function mountStudio(state: State): () => void {
 			s?.available
 				? [
 						[
-							t('help.male_band'),
-							t('help.band_range', {
+							m.help_male_band(),
+							m.help_band_range({
 								low: formatScore(Math.round(s.bands.male[0])),
 								high: formatScore(Math.round(s.bands.male[1]))
 							})
 						],
 						[
-							t('help.female_band'),
-							t('help.band_range', {
+							m.help_female_band(),
+							m.help_band_range({
 								low: formatScore(Math.round(s.bands.female[0])),
 								high: formatScore(Math.round(s.bands.female[1]))
 							})
 						],
-						[t('help.speakers'), s.speakers.length]
+						[m.help_speakers(), s.speakers.length]
 					]
 				: []
 		);
@@ -2836,11 +2610,11 @@ export function mountStudio(state: State): () => void {
 						? cachedAge.estimate
 						: undefined
 			},
-			bundle = shareBundle(result, scorer, lang, uiLang);
-		$('share-verdict').textContent = verdictLabel(result.verdict, uiLang);
+			bundle = shareBundle(result, scorer, lang);
+		$('share-verdict').textContent = verdictLabel(result.verdict);
 		$('share-verdict').dataset.verdict = result.verdict;
 		$('share-score').querySelector('strong')!.textContent = formatScore(result.display);
-		$('share-score').querySelector('span')!.textContent = leaningLabel(result.verdict, uiLang);
+		$('share-score').querySelector('span')!.textContent = leaningLabel(result.verdict);
 		const applyBundle = () => {
 			$('share-intents').replaceChildren(
 				...bundle.intents.map((i) => {
@@ -2849,39 +2623,39 @@ export function mountStudio(state: State): () => void {
 					a.target = '_blank';
 					a.rel = 'noopener noreferrer';
 					a.innerHTML = labelled(i.icon, i.label);
-					a.title = t('share.post_to', { name: i.label });
+					a.title = m.share_post_to({ name: i.label });
 					return a;
 				})
 			);
 			$<HTMLAnchorElement>('share-open').href = bundle.url;
 		};
 		applyBundle();
-		$('share-open').innerHTML = labelled('external', t('share.open'));
-		$('share-system').innerHTML = labelled('share', t('share.system'));
-		$('share-copy').innerHTML = labelled('link', t('share.copy'));
-		$('share-save').innerHTML = labelled('image', t('share.save'));
+		$('share-open').innerHTML = labelled('external', m.share_open());
+		$('share-system').innerHTML = labelled('share', m.share_system());
+		$('share-copy').innerHTML = labelled('link', m.share_copy());
+		$('share-save').innerHTML = labelled('image', m.share_save());
 		$('share-status').textContent = '';
 		$('share-image').hidden = true;
 		$('share-copy').onclick = async () => {
 			try {
 				await navigator.clipboard.writeText(bundle.url);
-				$('share-status').textContent = t('share.copied');
+				$('share-status').textContent = m.share_copied();
 			} catch {
 				$('share-status').textContent = bundle.url;
 			}
 		};
 		$('share-system').hidden = !navigator.share;
 		$('share-system').onclick = () =>
-			systemShare(result, scorer, lang, uiLang).catch((e) => {
+			systemShare(result, scorer, lang).catch((e) => {
 				if (e.name !== 'AbortError') $('share-status').textContent = e.message;
 			});
 		shareImage = null;
-		const render = async () => shareImage || (shareImage = await cardImage(result, scorer, uiLang));
+		const render = async () => shareImage || (shareImage = await cardImage(result, scorer));
 		const showAge = () => {
 			const a = ageEstimates.get(ageKey);
 			$('share-age-value').textContent = a
-				? t('share.age_value', {
-						age: ageText(a.estimate, uiLang),
+				? m.share_age_value({
+						age: ageText(a.estimate),
 						low: Math.round(a.windowRange[0]),
 						high: Math.round(a.windowRange[1])
 					})
@@ -2896,7 +2670,7 @@ export function mountStudio(state: State): () => void {
 				...scored,
 				age: a && $<HTMLInputElement>('share-age-include').checked ? a.estimate : undefined
 			};
-			bundle = shareBundle(result, scorer, lang, uiLang);
+			bundle = shareBundle(result, scorer, lang);
 			applyBundle();
 			shareImage = null;
 			try {
@@ -2917,7 +2691,7 @@ export function mountStudio(state: State): () => void {
 					? state.ownPCM.slice(Math.round(r[0] * 16000), Math.round(r[1] * 16000))
 					: state.ownPCM;
 			$<HTMLButtonElement>('share-age-run').disabled = true;
-			$('share-age-run').textContent = t('share.age_running');
+			$('share-age-run').textContent = m.share_age_running();
 			try {
 				const a = await api<{ estimate: number; windowRange: [number, number] }>('/api/age', {
 					method: 'POST',
@@ -2930,7 +2704,7 @@ export function mountStudio(state: State): () => void {
 				$('share-status').textContent = (e as Error).message;
 			} finally {
 				$<HTMLButtonElement>('share-age-run').disabled = false;
-				$('share-age-run').textContent = t('share.age_run');
+				$('share-age-run').textContent = m.share_age_run();
 			}
 		};
 		$('share-save').onclick = async () => {
@@ -2948,13 +2722,13 @@ export function mountStudio(state: State): () => void {
 			const img = $<HTMLImageElement>('share-image');
 			if (img.src) URL.revokeObjectURL(img.src);
 			img.src = URL.createObjectURL(file);
-			img.alt = t('share.image_alt', { text: bundle.text });
+			img.alt = m.share_image_alt({ text: bundle.text });
 			img.hidden = false;
 		} catch (e) {
 			$('share-status').textContent = (e as Error).message;
 		}
 	};
-	init().catch((e) => notify(t('error.load', { message: e.message }), true));
+	init().catch((e) => notify(m.error_load({ message: e.message }), true));
 	return () => {
 		alive = false;
 	};
