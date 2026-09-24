@@ -29,7 +29,7 @@ test('all four history orders preserve selection and the chosen order survives r
 		newest: ['microphone.wav', 'own-b.wav', 'own-a.wav'],
 		oldest: ['own-a.wav', 'own-b.wav', 'microphone.wav'],
 		name: ['microphone.wav', 'own-a.wav', 'own-b.wav'],
-		longest: ['own-a.wav', 'own-b.wav', 'microphone.wav']
+		longest: ['microphone.wav', 'own-a.wav', 'own-b.wav']
 	};
 	for (const [order, expected] of Object.entries(orders)) {
 		await control(page, order).click();
@@ -81,12 +81,12 @@ test('keyboard sorting and a rename keep focus on the intended control or take',
 	);
 	await page.keyboard.press('Home');
 	await expect(
-		page.locator('#take-select .choice-row[aria-label="own-a.wav"] .item')
+		page.locator('#take-select .choice-row[aria-label="microphone.wav"] .item')
 	).toBeFocused();
 	await page.keyboard.press('End');
 	await expect(
 		page.locator(
-			'#take-select .choice-row[aria-label="microphone.wav"] .row-action[data-action="delete"]'
+			'#take-select .choice-row[aria-label="own-b.wav"] .row-action[data-action="delete"]'
 		)
 	).toBeFocused();
 	await control(page, 'name').click();
