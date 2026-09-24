@@ -4,7 +4,7 @@
 /// <reference lib="webworker" />
 import { build, prerendered, version } from '$service-worker';
 
-import { LANGUAGES } from './lib/languages';
+import { baseLocale, locales } from './lib/paraglide/runtime';
 
 // Service worker: makes Koenami installable and keeps the shell fast. The build's hashed
 // files are cached at install (their names change on every deploy, and the cache is named
@@ -15,16 +15,15 @@ import { LANGUAGES } from './lib/languages';
 const sw = self as unknown as ServiceWorkerGlobalScope;
 const CACHE = `koenami-${version}`;
 // The other languages' pages sit under /<lang>/; the Japanese page is the root.
-const others = LANGUAGES.filter((lang) => lang !== 'ja').join('|');
+const others = locales.filter((locale) => locale !== baseLocale).join('|');
 const shellPage = new RegExp(
 	`^/((${others})/)?$|^/(guide|tutorial|method|references|en/tutorial)\\.html$|site\\.webmanifest$`
 );
-// The public pages and the other languages' manifests among the prerendered paths (the
-// result page, the research library and the curation pages are not shell), the Japanese
-// manifest from the static files, and the root files the installed app opens with.
+// The public pages and every language's manifest among the prerendered paths (the result
+// page, the research library and the curation pages are not shell), and the root files the
+// installed app opens with.
 const SHELL = [
 	...prerendered.filter((path) => shellPage.test(path)),
-	'/site.webmanifest',
 	'/language.js',
 	'/theme.js',
 	'/favicon.svg',

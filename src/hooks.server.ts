@@ -1,16 +1,18 @@
-import { languageOf } from '$lib/i18n';
+import { paraglideMiddleware } from '$lib/paraglide/server';
 import type { Handle } from '@sveltejs/kit';
 
-// The non-CSP headers prepare_public.py writes for the static site today (the CSP is
-// kit.csp in svelte.config.js). %lang% is the language the path addresses; the prerendered
-// pages have no query, and the result page's `l` is the Worker's concern when it serves /r.
-export const handle: Handle = async ({ event, resolve }) => {
-	const lang = languageOf(event.url.pathname);
-	const response = await resolve(event, {
-		transformPageChunk: ({ html }) => html.replace('%lang%', lang)
+// Each request runs in its locale, read from the path (/en/… is English, / and /lab/ are
+// Japanese), so messages resolve without a language being passed around. The other headers
+// are the non-CSP ones prepare_public.py writes for the static site (the CSP is kit.csp in
+// svelte.config.js).
+export const handle: Handle = ({ event, resolve }) =>
+	paraglideMiddleware(event.request, async ({ request, locale }) => {
+		event.request = request;
+		const response = await resolve(event, {
+			transformPageChunk: ({ html }) => html.replace('%lang%', locale)
+		});
+		response.headers.set('X-Content-Type-Options', 'nosniff');
+		response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+		response.headers.set('Permissions-Policy', 'microphone=(self), camera=(), geolocation=()');
+		return response;
 	});
-	response.headers.set('X-Content-Type-Options', 'nosniff');
-	response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-	response.headers.set('Permissions-Policy', 'microphone=(self), camera=(), geolocation=()');
-	return response;
-};

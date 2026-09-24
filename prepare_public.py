@@ -123,7 +123,7 @@ def main():
     # Sitemap with last-modified dates taken from git, so a page's date only
     # moves when its source does.
     studio = ['src/lib/studio/head.html', 'src/lib/studio/body.html', 'src/lib/studio/app.ts', 'src/lib/i18n/index.ts']
-    pages = {'/': [*studio, 'src/lib/i18n/ja.ts'], **{f'/{lang}/': [*studio, f'src/lib/i18n/{lang}.ts'] for lang in LANGUAGES if lang != 'ja'},
+    pages = {'/': [*studio, 'messages/ja.json'], **{f'/{lang}/': [*studio, f'messages/{lang}.json'] for lang in LANGUAGES if lang != 'ja'},
              **{f'/{name}.html': [f'src/lib/studio/{name}-head.html', f'src/lib/studio/{name}-body.html'] for name in ('guide', 'tutorial', 'method', 'references')}}
     pages['/en/tutorial.html'] = ['src/lib/studio/tutorial-en-head.html', 'src/lib/studio/tutorial-en-body.html']
     entries = []

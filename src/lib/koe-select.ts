@@ -2,7 +2,7 @@
    <option> children and the trigger and list in its shadow root. A light-DOM
    <template data-menu-header> child (the recording menu's sort control) is cloned above the
    items in the list and exposed as `header`; its parts are styled from the page. */
-import { t } from './i18n';
+import { m } from './paraglide/messages';
 let menuId = 0;
 /* The take rows' waveform preview: `peaks` are 0…1 bucket maxima, drawn as centred bars
    across the row's width. Bars up to `progress` (0…1) are the accent colour, the rest muted,
@@ -35,7 +35,7 @@ const applyRowPlaying = (wave: HTMLElement, playing: boolean, progress = 0) => {
 	wave.classList.toggle('playing', playing);
 	const path = wave.querySelector('.glyph path');
 	if (path) path.setAttribute('d', playing ? 'M5 5h10v10H5z' : 'M7 4l9 6-9 6z');
-	wave.title = playing ? t('action.stop') : t('action.play');
+	wave.title = playing ? m.action_stop() : m.action_play();
 	wave.setAttribute(
 		'aria-label',
 		playing ? wave.dataset.stopLabel || '' : wave.dataset.playLabel || ''
@@ -252,7 +252,7 @@ export function defineKoeSelect() {
 						);
 						button.setAttribute(
 							'aria-label',
-							t('action.label', { name: o.textContent, action: label })
+							m.action_label({ name: o.textContent, action: label })
 						);
 						button.title = label;
 						button.innerHTML =
@@ -264,7 +264,7 @@ export function defineKoeSelect() {
 					if (wanted.includes('rename')) {
 						const rename = actionButton(
 							'rename',
-							t('action.rename'),
+							m.action_rename(),
 							'M4 16h3l8.5-8.5-3-3L4 13v3zM12.5 4.5l3 3'
 						);
 						rename.onclick = () => this.editName(o, b);
@@ -280,19 +280,19 @@ export function defineKoeSelect() {
 						wave.dataset.value = o.value;
 						wave.dataset.rowKey = o.dataset.key || o.value;
 						wave.dataset.peaks = o.dataset.peaks;
-						wave.dataset.playLabel = t('action.label', {
+						wave.dataset.playLabel = m.action_label({
 							name: o.textContent,
-							action: t('action.play')
+							action: m.action_play()
 						});
-						wave.dataset.stopLabel = t('action.label', {
+						wave.dataset.stopLabel = m.action_label({
 							name: o.textContent,
-							action: t('action.stop')
+							action: m.action_stop()
 						});
 						wave.disabled = Boolean(
 							o.disabled || o.dataset.disabledActions?.split(',').includes('play')
 						);
 						wave.setAttribute('aria-label', wave.dataset.playLabel);
-						wave.title = t('action.play');
+						wave.title = m.action_play();
 						wave.innerHTML =
 							'<svg class="glyph" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4l9 6-9 6z"/></svg><canvas></canvas>';
 						wave.onclick = () =>
@@ -310,9 +310,9 @@ export function defineKoeSelect() {
 						if (playing) applyRowPlaying(wave, playing.playing, playing.progress);
 					}
 					const actions: Record<string, { label: string; path: string }> = {
-						download: { label: t('action.download'), path: 'M10 3v10m-4-4 4 4 4-4M4 13v4h12v-4' },
+						download: { label: m.action_download(), path: 'M10 3v10m-4-4 4 4 4-4M4 13v4h12v-4' },
 						delete: {
-							label: t('action.delete'),
+							label: m.action_delete(),
 							path: 'M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8 8v6m4-6v6'
 						}
 					};
@@ -379,7 +379,7 @@ export function defineKoeSelect() {
 			input.type = 'text';
 			input.maxLength = 60;
 			input.value = o.textContent!;
-			input.setAttribute('aria-label', t('action.rename'));
+			input.setAttribute('aria-label', m.action_rename());
 			let done = false;
 			const finish = (commit: boolean) => {
 				if (done) return;

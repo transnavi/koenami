@@ -1,5 +1,7 @@
 import { cardSVG, CARD_WIDTH, CARD_HEIGHT, type CardScorer } from './card';
-import { translator, known, fontCut } from './i18n';
+import { fontCut, type Locale } from './i18n';
+import { m } from './paraglide/messages';
+import { getLocale } from './paraglide/runtime';
 import { resultParams, shareText, type ScoreResult, type MetricKey } from './score';
 /* Everything a result needs to leave the app: its URL, the post text, the card
    as SVG and PNG, and the intent links. The result URL carries only the five
@@ -26,8 +28,8 @@ export const icon = (name: string) =>
 export const labelled = (name: string, text: string) => `${icon(name)}<span>${text}</span>`;
 
 const fonts = new Map<string, Record<string, string>>();
-async function loadFonts(lang: string) {
-	const cut = fontCut(lang);
+async function loadFonts(locale: Locale) {
+	const cut = fontCut(locale);
 	if (fonts.has(cut)) return fonts.get(cut)!;
 	const load = async (weight: number) => {
 		const bytes = new Uint8Array(
@@ -73,22 +75,20 @@ export function intents(url: string, text: string): Intent[] {
 		}
 	];
 }
-/* lang: the language the card is written in. */
+/* locale: the language the card is written in. */
 export async function cardImage(
 	result: ScoreResult,
 	scorer: CardScorer,
-	lang: string = 'ja'
+	locale: Locale = getLocale()
 ): Promise<File> {
-	lang = known(lang);
-	const t = translator(lang);
-	const svg = cardSVG(result, scorer, { fonts: await loadFonts(lang), lang });
+	const svg = cardSVG(result, scorer, { fonts: await loadFonts(locale), locale });
 	const image = new Image();
 	image.decoding = 'async';
 	const source = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
 	try {
 		await new Promise<void>((ok, fail) => {
 			image.onload = () => ok();
-			image.onerror = () => fail(new Error(t('share.image_failed')));
+			image.onerror = () => fail(new Error(m.share_image_failed({}, { locale })));
 			image.src = source;
 		});
 	} finally {
@@ -99,23 +99,23 @@ export async function cardImage(
 	canvas.height = CARD_HEIGHT;
 	canvas.getContext('2d')!.drawImage(image, 0, 0);
 	const blob = await new Promise<Blob | null>((ok) => canvas.toBlob(ok, 'image/png'));
-	if (!blob) throw new Error(t('share.image_failed'));
+	if (!blob) throw new Error(m.share_image_failed({}, { locale }));
 	return new File([blob], `koenami-${result.display}.png`, { type: 'image/png' });
 }
-/* lang: the reference language the link recomputes against; ui: the language the text and card are written in. */
-export function shareBundle(result: ScoreResult, scorer: CardScorer, lang: string, ui = lang) {
+/* lang: the reference language the link recomputes against; the text and card are in the page's
+   locale. */
+export function shareBundle(result: ScoreResult, scorer: CardScorer, lang: string) {
 	const url = resultURL(result.features, lang, location.origin, { age: result.age }),
-		text = shareText(result, ui);
-	return { url, text, svg: cardSVG(result, scorer, { lang: ui }), intents: intents(url, text) };
+		text = shareText(result);
+	return { url, text, svg: cardSVG(result, scorer), intents: intents(url, text) };
 }
 export async function systemShare(
 	result: ScoreResult,
 	scorer: CardScorer,
-	lang: string,
-	ui = lang
+	lang: string
 ): Promise<boolean> {
-	const { url, text } = shareBundle(result, scorer, lang, ui);
-	const file = await cardImage(result, scorer, ui);
+	const { url, text } = shareBundle(result, scorer, lang);
+	const file = await cardImage(result, scorer);
 	const withFile = { title: 'Koenami', text: `${text} #${HASHTAG}`, url, files: [file] };
 	if (navigator.canShare?.(withFile)) {
 		await navigator.share(withFile);

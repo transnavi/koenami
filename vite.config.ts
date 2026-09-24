@@ -1,3 +1,4 @@
+import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
@@ -8,7 +9,17 @@ import { defineConfig } from 'vite';
 const coverage = Boolean(process.env.KOENAMI_COVERAGE);
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
+	plugins: [
+		tailwindcss(),
+		sveltekit(),
+		// Messages live in messages/<locale>.json. The locale is the page's path: / is Japanese,
+		// /<locale>/ the others; /lab/ has no prefix of its own and reads as Japanese.
+		paraglideVitePlugin({
+			project: './project.inlang',
+			outdir: './src/lib/paraglide',
+			strategy: ['custom-document', 'url', 'baseLocale']
+		})
+	],
 	build: coverage ? { sourcemap: 'inline', minify: false } : {},
 	server: {
 		host: '127.0.0.1',

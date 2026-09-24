@@ -1,4 +1,10 @@
+import { readFileSync } from 'node:fs';
+
 import adapter from '@sveltejs/adapter-cloudflare';
+
+// The languages other than Japanese, each served under /<lang>/ (project.inlang lists them).
+const { baseLocale, locales } = JSON.parse(readFileSync('project.inlang/settings.json', 'utf8'));
+const prefixed = locales.filter((/** @type {string} */ l) => l !== baseLocale);
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -11,12 +17,25 @@ const config = {
 			config: 'wrangler.adapter.jsonc',
 			platformProxy: { configPath: 'wrangler.adapter.jsonc' }
 		}),
-		// The studio lives at / and /<lang>/ (it pushes the trailing slash itself); the other
-		// pages keep their file-like paths.
-		// Every route with a prerender flag, plus the language pages the studio route lists
-		// itself; crawling is off because it would also follow the sitemap link, which
-		// prepare_public.py writes at deploy time.
-		prerender: { entries: ['*'], crawl: false },
+		// Every route with a prerender flag, plus each language's copy of the pages that have one:
+		// the studio at /<lang>/ (and /ja/, the root's duplicate, and /lab/, the research
+		// library), the result page, the manifest, and the English practice guide. Crawling is
+		// off because it would also follow the sitemap link, which prepare_public.py writes at
+		// deploy time.
+		prerender: {
+			entries: [
+				'*',
+				`/${baseLocale}/`,
+				'/lab/',
+				...prefixed.flatMap((/** @type {string} */ l) => [
+					`/${l}/`,
+					`/${l}/r`,
+					`/${l}/site.webmanifest`
+				]),
+				'/en/tutorial.html'
+			],
+			crawl: false
+		},
 		// Absolute asset paths: the Worker serves the root document at /ja/ as well, where a
 		// relative ./_app/… would resolve under /ja/.
 		paths: { relative: false },
