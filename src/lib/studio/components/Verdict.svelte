@@ -18,16 +18,19 @@
 	let gate = $derived(
 		measurement && !measurement.analysisPending && available ? gateFailure(measurement) : null
 	);
+	// Until the language's scorer has loaded there is nothing to say either way.
 	let word = $derived(
 		result
 			? verdictLabel(result.verdict)
-			: !available
-				? m.verdict_unavailable()
-				: !measurement
-					? m.verdict_record()
-					: measurement.analysisPending
-						? m.verdict_analyzing()
-						: m.verdict_not_yet()
+			: !studio.scorer
+				? '—'
+				: !available
+					? m.verdict_unavailable()
+					: !measurement
+						? m.verdict_record()
+						: measurement.analysisPending
+							? m.verdict_analyzing()
+							: m.verdict_not_yet()
 	);
 	let bands = $derived(available ? studio.scorer!.bands : null);
 </script>
@@ -50,7 +53,7 @@
 			<i
 				id="verdict-band-{group}"
 				class="verdict-band {group}"
-				hidden={!band}
+				hidden={!!studio.scorer && !band}
 				style:left={band ? scale(band[0]) : undefined}
 				style:width={band ? `calc(${scale(band[1])} - ${scale(band[0])})` : undefined}
 			></i>
