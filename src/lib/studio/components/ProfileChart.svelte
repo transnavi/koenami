@@ -6,7 +6,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Features } from '$lib/space';
 
-	import { METRICS, type Measured } from '../profile';
+	import { METRICS, type Measured } from '../metrics';
 	import { useStudio } from '../studio.svelte';
 
 	const studio = useStudio();

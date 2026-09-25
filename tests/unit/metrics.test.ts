@@ -1,5 +1,5 @@
 import { AXES } from '@app/math';
-import { indicator, METRICS, spread } from '@app/studio/profile';
+import { indicator, METRICS, spread } from '@app/studio/metrics';
 import { describe, it, expect } from 'vitest';
 
 const f0 = METRICS.find((metric) => metric.key === 'f0')!;

@@ -1,8 +1,7 @@
-/* The profile panel's measurements: the five metrics and where a voice sits on each against the
-   reference speakers. No DOM here; the components in components/ProfilePanel.svelte render it. */
+/* The five measurements the studio reports, and where a voice sits on each against reference
+   speakers. Pure: the profile panel's components render it. */
 import { message, messages } from '$lib/i18n';
 import { AXES, clamp, finite, quantile } from '$lib/math';
-import { m } from '$lib/paraglide/messages';
 import type { MetricKey } from '$lib/score';
 import type { Features } from '$lib/space';
 
@@ -12,9 +11,9 @@ export type HelpEntry = {
 	factors: string[];
 	caveats: string[];
 };
+export type Metric = HelpEntry & { key: MetricKey; unit: string; n: number };
 /* Anything with measured features: a reference clip, a speaker's representative. */
 export type Measured = { features: Features };
-export type Metric = HelpEntry & { key: MetricKey; unit: string; n: number };
 
 export const fmt = (v: unknown, n = 0) => (finite(v) ? v.toFixed(n) : '—');
 
@@ -40,21 +39,6 @@ export const METRICS: Metric[] = (
 		return messages(`metric_${key}_caveats`);
 	}
 }));
-
-export const VERDICT_HELP: HelpEntry = {
-	get label() {
-		return m.verdict_help_label();
-	},
-	get description() {
-		return m.verdict_help_description();
-	},
-	get factors() {
-		return messages('verdict_help_factors');
-	},
-	get caveats() {
-		return messages('verdict_help_caveats');
-	}
-};
 
 /* A metric's spread among reference speakers: the span an indicator's track covers (their
    1st–99th percentile, or the metric's axis where they give none) and their middle 80%. */
