@@ -52,6 +52,22 @@ teacher's (5th percentile 0.913, minimum 0.825, over 2,000 clips).
 On an 8 s input with two CPU threads the student takes 13 ms and 38 MB above the runtime, the
 layer-3 graph 181 ms and 227 MB.
 
+## With the studio's blend
+
+The studio orders speakers by the timbre distance blended 3 : 1 with the five-measure distance
+(`src/lib/similar.ts`, `ranking.md`), a weight chosen on the layer-3 graph. `distill/blend_check.py`
+repeats the studio's computation with each descriptor, taking queries from the held-out JVS
+speakers only (37 of the 40 have non-parallel clips) and ranking every other speaker of the same
+group:
+
+| weight on timbre | 0 | 0.5 | 0.75 | 1 |
+|---|---|---|---|---|
+| layer-3 graph | 0.247 | 0.316 | 0.331 | 0.303 |
+| student | 0.247 | 0.322 | 0.342 | 0.321 |
+
+With the student, 0.75 against timbre alone: +0.020 [+0.003, +0.038]; the weight carries over.
+The ranked speakers include ones whose audio the student trained on.
+
 ## Limits
 
 - One training seed and 40 held-out JVS speakers. The agreement gain is the least certain figure
