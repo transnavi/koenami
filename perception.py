@@ -5,13 +5,15 @@ import numpy as np
 
 RATE = 16000
 VERSION = 'wavlm-sv-int8-v2'
-# The frames of WavLM encoder layer 3, pooled by timbre() over speech frames of one centre crop.
-# They come from timbre.int8.onnx, the prepared WavLM graph cut at that layer, which returns the
-# same frames as the full graph's second output. Cosine distance between two of these ranks reference
-# speakers closest to JVS listener similarity ratings (docs/research/jvs-similarity.md); the x-vector remains the
-# identity descriptor. The version covers the pooling rule as well as the graph: a different
-# crop length, layer or energy threshold changes every vector and must change this string.
-TIMBRE_VERSION = 'wavlm-l3-int8-v2'
+# Timbre frames pooled by timbre() over speech frames of one centre crop. They come from
+# timbre-student.int8.onnx, a 3.6 M-parameter model trained (distill/) to reproduce the frames of WavLM
+# encoder layer 3, which timbre.int8.onnx (the prepared WavLM graph cut at that layer) returns and
+# which cosine distance ranks close to JVS listener similarity ratings (docs/research/jvs-similarity.md,
+# docs/research/timbre-student.md); the x-vector remains the identity descriptor. The version covers
+# the model and the pooling rule: a new student, crop length or energy threshold changes every vector
+# and must change this string.
+TIMBRE_VERSION = 'student-l3-v1'
+TIMBRE_MODEL = 'timbre-student'
 MODEL_DIR = Path(os.environ.get('KOENAMI_MODELS', Path(__file__).parent / '.models/perception'))
 _sessions = {}
 
@@ -21,8 +23,8 @@ def available(names=('wavlm', 'age')):
 
 
 def timbre_ready():
-    """The prepared timbre graph is present and carries the timbre output; opening the session warms it."""
-    return available(['timbre']) and 'timbre_frames' in [o.name for o in session('timbre').get_outputs()]
+    """The timbre model is present and carries the timbre output; opening the session warms it."""
+    return available([TIMBRE_MODEL]) and 'timbre_frames' in [o.name for o in session(TIMBRE_MODEL).get_outputs()]
 
 
 def session(name):
@@ -90,7 +92,7 @@ def age_input(part):
 
 
 def timbre(x):
-    """Layer-3 timbre vector: one pass over the eight seconds holding the most audible frames (ties
+    """Timbre vector: one pass over the eight seconds holding the most audible frames (ties
     toward the centre of the audible span), pooled over speech frames only: within 40 dB of the
     crop's loudest 20 ms frame and above the level floor.
 
@@ -104,8 +106,8 @@ def timbre(x):
         best = np.flatnonzero(counts == counts.max()); centre = ((start + end) // 2 - 4 * RATE) // step
         c = min(int(best[np.abs(best - centre).argmin()]) * step, len(x) - 8 * RATE)
         x = x[c:c + 8 * RATE]; rms = frame_rms(x)
-    if not timbre_ready(): raise ValueError('The timbre graph (timbre.int8.onnx) is missing; run prepare_voice_models.py.')
-    frames = session('timbre').run(['timbre_frames'], {'values': x.astype(np.float32)[None, :]})[0][0]
+    if not timbre_ready(): raise ValueError(f'The timbre model ({TIMBRE_MODEL}.int8.onnx) is missing; run distill/export.py.')
+    frames = session(TIMBRE_MODEL).run(['timbre_frames'], {'values': x.astype(np.float32)[None, :]})[0][0]
     energy = 20 * np.log10(rms[:len(frames)] + 1e-12)
     speech = (energy > energy.max() - 40) & (rms[:len(frames)] > FLOOR)
     if speech.sum() < 75: raise ValueError('too_little_speech')  # 1.5 s of speech frames

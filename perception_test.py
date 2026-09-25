@@ -104,6 +104,23 @@ class TimbreTests(unittest.TestCase):
             cut=perception.session('timbre').run(['timbre_frames'],{'values':x})[0]
             self.assertTrue(np.array_equal(full,cut))
 
+    @unittest.skipUnless(perception.available(['timbre',perception.TIMBRE_MODEL]),'prepared models are absent')
+    def test_timbre_model_returns_one_frame_per_teacher_frame(self):
+        self.assertEqual([o.name for o in perception.session(perception.TIMBRE_MODEL).get_outputs()],['timbre_frames'])
+        rng=np.random.default_rng(0)
+        for n in (32000,32319,80000,128000,128321):
+            x=(.1*rng.standard_normal(n)).astype(np.float32)[None,:]
+            teacher=perception.session('timbre').run(['timbre_frames'],{'values':x})[0]
+            student=perception.session(perception.TIMBRE_MODEL).run(['timbre_frames'],{'values':x})[0]
+            self.assertEqual(student.shape,teacher.shape)
+
+    @unittest.skipUnless(perception.available([perception.TIMBRE_MODEL]),'prepared models are absent')
+    def test_timbre_model_stays_finite_through_digital_silence(self):
+        x=np.zeros(16000*4,np.float32);x[16000:48000]=(.3*np.sin(np.arange(32000)*2*np.pi*180/16000)).astype(np.float32)
+        frames=perception.session(perception.TIMBRE_MODEL).run(['timbre_frames'],{'values':x[None,:]})[0]
+        self.assertTrue(np.isfinite(frames).all())
+        self.assertTrue(np.isfinite(perception.timbre(x)).all())
+
 
 if __name__ == '__main__':
     unittest.main()
