@@ -2188,6 +2188,18 @@ input[type='checkbox']:checked:after {
 	border: 1px solid var(--line);
 	border-radius: 3px;
 }
+.sort-basis {
+	margin: -4px 0 0;
+	padding: 0 16px 10px;
+	font-size: 10px;
+	line-height: 1.5;
+	color: var(--muted);
+}
+.nearest-badge {
+	font-size: 10px;
+	font-weight: 600;
+	color: var(--accent);
+}
 .sample-filters #sort {
 	flex: 1.15;
 }

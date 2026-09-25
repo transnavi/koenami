@@ -30,7 +30,7 @@ import type { Features } from '$lib/space';
 import { getContext, setContext } from 'svelte';
 import { SvelteSet } from 'svelte/reactivity';
 
-import type { Clip, Detail, PCM, Snapshot, Take, Words } from './types';
+import type { Clip, Detail, PCM, SimilarSpeaker, Snapshot, Take, Words } from './types';
 
 export type Theme = 'light' | 'dark' | 'system';
 /* An entry in the toolbar's language menu, as /api/catalog returns it. */
@@ -79,7 +79,16 @@ export class StudioState {
 	liveTrack = $state.raw<{ t: number; [key: string]: unknown }[]>([]);
 	liveClock = $state<{ end: number; at: number; start: number } | null>(null);
 	readonly analyzing = new SvelteSet<string>();
-	capabilities = $state<{ maxSeconds?: number; words?: boolean } | undefined>(undefined);
+	capabilities = $state<{ maxSeconds?: number; words?: boolean; similar?: string[] } | undefined>(
+		undefined
+	);
+	/* Reference speakers ranked by the analyzer's timbre descriptor for one own take; `key`
+	   names the take and its selection. Reassigned whole, so the map is not proxied. */
+	similar = $state.raw<{ key: string; speakers: Map<string, SimilarSpeaker> } | null>(null);
+	/* The ranking request in flight. */
+	similarKey = $state<string | null>(null);
+	/* The key whose ranking failed; it is not retried until the sort is chosen again. */
+	similarFailed = $state<string | null>(null);
 	scorer = $state.raw<Scorer | undefined>(undefined);
 	captureMode = $state<'record' | 'live' | null>(null);
 	previousTake = $state.raw<Snapshot | null>(null);

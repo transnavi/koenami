@@ -161,3 +161,177 @@ test('phone reference browser opens, selects and closes without horizontal overf
 	}));
 	expect(size.content).toBeLessThanOrEqual(size.viewport);
 });
+
+test('the closest-to-you order ranks speakers by the analyzer’s similarity model', async ({
+	page,
+	studio
+}) => {
+	await studio.open('/ja/');
+	await studio.until(app.ready);
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await studio.choose('library-group', 'all');
+	await studio.choose('sort', 'near');
+	await expect(page.locator('#sort-basis')).toHaveText(/声質をとらえたベクトル/);
+	const top = await page.evaluate(() => {
+		const s = (
+			window as unknown as {
+				voiceApp: { state: { similar: { speakers: Map<string, { clip: string }> } } };
+			}
+		).voiceApp.state;
+		const [speaker, entry] = [...s.similar.speakers.entries()][0];
+		return { speaker, clip: entry.clip };
+	});
+	const folder = page.locator('#sample-list details').first();
+	await expect(folder).toHaveAttribute('data-speaker', new RegExp(`:${top.speaker}$`));
+	await folder.locator('summary').click();
+	const lead = folder.locator('.sample-row').first();
+	await expect(lead).toHaveAttribute('data-id', top.clip);
+	await expect(lead.locator('.nearest-badge')).toHaveText('最も近い');
+	// A second take under the same order is ranked anew, without touching the sort.
+	const firstKey = await page.evaluate(
+		() =>
+			(window as unknown as { voiceApp: { state: { similar: { key: string } } } }).voiceApp.state
+				.similar.key
+	);
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await studio.until(`window.voiceApp.state.similar?.key !== ${JSON.stringify(firstKey)}`);
+	await expect(page.locator('#sort-basis')).toHaveText(/声質をとらえたベクトル/);
+	await expect(folder.locator('.sample-row').first().locator('.nearest-badge')).toHaveText(
+		'最も近い'
+	);
+});
+
+test('a failed similarity ranking is not retried until the order is chosen again', async ({
+	page,
+	studio
+}) => {
+	let requests = 0;
+	await page.route('**/api/similar**', (route) => {
+		requests++;
+		void route.fulfill({ status: 503, contentType: 'text/plain', body: 'busy' });
+	});
+	await studio.open('/ja/');
+	await studio.until(app.ready);
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await studio.choose('sort', 'near');
+	await expect(page.locator('#notice')).toContainText('busy');
+	await expect(page.locator('#sort-basis')).toHaveText(/5つの測定値/);
+	await page.locator('#search').fill('F');
+	await page.locator('#search').fill('');
+	expect(requests).toBe(1);
+	await studio.choose('sort', 'name');
+	await studio.choose('sort', 'near');
+	await expect.poll(() => requests).toBe(2);
+});
+
+/* Selecting a section of the take is the signal view's gesture target, and the seam that
+   drives it (`selectRange`) is the same code path. */
+function selectSection(page: import('@playwright/test').Page, start = 0.5, end = 2.5) {
+	return page.evaluate(
+		([a, b]) =>
+			(
+				window as unknown as {
+					voiceApp: { selectRange: (side: string, range: [number, number]) => void };
+				}
+			).voiceApp.selectRange('own', [a, b]),
+		[start, end] as [number, number]
+	);
+}
+
+/* The speaker a measurement sorts first. Folders hold their clips only while open, so the
+   folder itself is the stable read of the order. */
+function listedLead(page: import('@playwright/test').Page) {
+	return page.evaluate(
+		() => document.querySelector('#sample-list details')?.getAttribute('data-speaker') ?? null
+	);
+}
+
+/* The speaker the acoustic order should lead with for the measurement installed right now:
+   the one holding the clip nearest to it (ties by clip id, as the library sorts). */
+function expectedLead(page: import('@playwright/test').Page) {
+	return page.evaluate(() => {
+		type C = { id: string; speaker: string; dataset?: string; group: string; features: unknown };
+		const w = window as unknown as {
+			voiceApp: {
+				state: { lang: string; clips: C[]; own: { features: unknown } | null };
+				map: { space: { distance: (a: unknown, b: unknown) => number } };
+			};
+		};
+		const { state, map } = w.voiceApp;
+		let best: C | null = null,
+			bestD = Infinity;
+		for (const c of state.clips) {
+			const d = map.space.distance(c.features, state.own?.features);
+			if (d < bestD || (d === bestD && best && c.id < best.id)) [best, bestD] = [c, d];
+		}
+		return best && Number.isFinite(bestD)
+			? `${state.lang}:${best.dataset || best.group}:${best.speaker}`
+			: null;
+	});
+}
+
+test('the list follows the measurement a take or a section installs', async ({ page, studio }) => {
+	// The acoustic order is the one that goes stale here, so the ranking is kept unavailable.
+	await page.route('**/api/similar**', (route) =>
+		route.fulfill({ status: 503, contentType: 'text/plain', body: 'busy' })
+	);
+	await studio.open('/ja/');
+	await studio.until(app.ready);
+	await studio.choose('library-group', 'all');
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await studio.choose('sort', 'near');
+	const inStep = async () => {
+		const want = await expectedLead(page);
+		expect(want, 'the installed measurement ranks some speaker first').not.toBeNull();
+		await expect.poll(() => listedLead(page)).toBe(want);
+	};
+
+	// A recorded take is listed while its analysis is pending and re-sorted once it lands.
+	await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+	await page.keyboard.press('r');
+	await studio.until(app.recording);
+	await studio.until(app.buffered(2.5));
+	await page.keyboard.press('r');
+	await studio.until(app.stopped + ' && ' + app.idle);
+	await studio.until(app.analysed + ' && !(' + app.analysisPending + ')');
+	await inStep();
+
+	// A section installs its own measurement, and clearing it restores the take's.
+	await selectSection(page, 0.8, 2.0);
+	await studio.until(app.rangeApplied('own'));
+	await inStep();
+	await page.locator('#range-reset').click();
+	await studio.until(app.noRange('own'));
+	await inStep();
+});
+
+test('restoring a take with a section asks for one ranking', async ({ page, studio }) => {
+	const asked: string[] = [];
+	await page.route('**/api/similar**', (route) => {
+		asked.push(route.request().url());
+		return route.fallback();
+	});
+	await studio.open('/ja/');
+	await studio.until(app.ready);
+	await page.locator('#upload').setInputFiles(studio.audio('own-a.wav'));
+	await studio.until(app.analysed);
+	await studio.choose('library-group', 'all');
+	await studio.choose('sort', 'near');
+	await studio.until('!!window.voiceApp.state.similar');
+	await selectSection(page);
+	await studio.until(app.range('own'));
+	await studio.settled();
+	// Starting and cancelling a recording restores the take exactly as it was, section included.
+	const before = asked.length;
+	await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+	await page.keyboard.press('r');
+	await studio.until(app.recording);
+	await page.keyboard.press('Escape');
+	await studio.until(app.stopped + ' && ' + app.idle);
+	await studio.until('!!window.voiceApp.state.similar || !!window.voiceApp.state.similarKey');
+	expect(asked.length - before).toBe(1);
+});

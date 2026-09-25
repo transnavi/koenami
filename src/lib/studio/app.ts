@@ -27,7 +27,17 @@ import { TakeStore } from '$lib/storage';
 import { openHelp } from './help';
 import { fmt, METRICS, VERDICT_HELP } from './profile';
 import { snapshot as snap, type LanguageOption, type State, type Theme } from './studio.svelte';
-import type { Clip, Detail, PCM, Snapshot, Take, TakeSort, View, Words } from './types';
+import type {
+	Clip,
+	Detail,
+	PCM,
+	SimilarSpeaker,
+	Snapshot,
+	Take,
+	TakeSort,
+	View,
+	Words
+} from './types';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T,
 	esc = (s: string | number | null | undefined) =>
@@ -43,7 +53,10 @@ const icon = (el: Element, name: string) =>
 // <Studio> shell and passed in, so a remount (HMR, or client-side navigation back to the page)
 // gets a fresh, isolated instance and this mount's in-flight callbacks never write a later one.
 // The controller reads and writes it as it did the old local object; components read it reactively.
-export function mountStudio(state: State) {
+export function mountStudio(state: State): () => void {
+	// Cleared when the shell unmounts. A request that settles afterwards belongs to a page that is
+	// gone, and the element ids it would write now name the next mount's elements.
+	let alive = true;
 	// The service worker of the production build (src/service-worker.ts); the registration
 	// is the studio's, as Kit's own would report a missing file as a page error.
 	if (import.meta.env.PROD && 'serviceWorker' in navigator)
@@ -272,22 +285,100 @@ export function mountStudio(state: State) {
 			clips = clips.filter((c) => matched.has(speakerKey(c)) || compact(c.text).includes(query));
 		}
 		const sort = $<HTMLSelectElement>('sort').value,
-			f = activeFeatures('own');
+			f = activeFeatures('own'),
+			ranking = sort === 'near' ? similarRanking() : null;
+		// Closest first: by the listener-validated timbre ranking when the analyzer returned one
+		// for this take (speakers it does not index, such as imported ones, go last, and each
+		// speaker's nearest clip leads its folder), by the map's five measures otherwise.
 		const key = (c: Clip) =>
-			sort === 'near'
-				? map.space!.distance(c.features, f)
-				: sort === 'low'
-					? (c.features.f0 ?? Infinity)
-					: sort === 'high'
-						? -(c.features.f0 ?? -Infinity)
-						: 0;
+			ranking
+				? (ranking.get(c.speaker)?.distance ?? Infinity)
+				: sort === 'near'
+					? map.space!.distance(c.features, f)
+					: sort === 'low'
+						? (c.features.f0 ?? Infinity)
+						: sort === 'high'
+							? -(c.features.f0 ?? -Infinity)
+							: 0;
+		const lead = (c: Clip) => (ranking?.get(c.speaker)?.clip === c.id ? 0 : 1);
 		return clips.sort((a, b) =>
 			sort === 'name'
 				? speakerName(a).localeCompare(speakerName(b), state.lang === 'lab' ? 'en' : state.lang, {
 						numeric: true
 					}) || a.id.localeCompare(b.id)
-				: key(a) - key(b) || a.id.localeCompare(b.id)
+				: (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0) ||
+					lead(a) - lead(b) ||
+					a.id.localeCompare(b.id)
 		);
+	}
+	function similarCapable() {
+		return !!state.capabilities?.similar?.includes(state.lang);
+	}
+	/* The own audio the ranking describes: the selected section when there is one. */
+	function ownSlice(): PCM | null {
+		const r = state.ranges.own;
+		return !state.ownPCM
+			? null
+			: r
+				? state.ownPCM.slice(Math.round(r[0] * 16000), Math.round(r[1] * 16000))
+				: state.ownPCM;
+	}
+	function similarKeyOf() {
+		if (!state.ownPCM) return null;
+		const r = state.ranges.own;
+		return `${state.lang}:${state.ownToken}:${state.ownPCM.length}:${r ? r.join('-') : ''}`;
+	}
+	function similarRanking() {
+		const key = similarKeyOf();
+		return key && state.similar?.key === key ? state.similar.speakers : null;
+	}
+	/* One ranking request per take and selection; the library re-renders when it lands. */
+	async function ensureSimilar() {
+		const key = similarKeyOf();
+		if (!key || !similarCapable() || state.recording) return;
+		if (state.similar?.key === key || state.similarKey === key || state.similarFailed === key)
+			return;
+		// The descriptor needs two seconds of audio; a shorter selection keeps the five-measure order.
+		const pcm = ownSlice()!;
+		if (pcm.length < 2 * 16000) return;
+		state.similarKey = key;
+		try {
+			const r = await api<{ speakers: Omit<SimilarSpeaker, 'rank'>[] }>(
+				`/api/similar?lang=${encodeURIComponent(state.lang)}&limit=5000`,
+				{ method: 'POST', body: pcm }
+			);
+			if (!alive || state.similarKey !== key) return;
+			state.similar = {
+				key,
+				speakers: new Map(r.speakers.map((s, rank) => [s.speaker, { ...s, rank }]))
+			};
+		} catch (e) {
+			if (alive && state.similarKey === key) {
+				state.similarFailed = key;
+				notify(m.sort_near_failed({ message: (e as Error).message }), true);
+			}
+		} finally {
+			if (alive && state.similarKey === key) {
+				state.similarKey = null;
+				if ($<HTMLSelectElement>('sort').value === 'near') renderLibrary();
+			}
+		}
+	}
+	/* Re-sorts the library when the own audio or its selection changed under the near order. */
+	let renderedNear = false;
+	function refreshNearOrder() {
+		if (renderedNear || $<HTMLSelectElement>('sort').value === 'near') renderLibrary();
+	}
+	function renderSortBasis() {
+		const near = $<HTMLSelectElement>('sort').value === 'near' && state.lang !== 'lab';
+		$('sort-basis').hidden = !near;
+		if (!near) return;
+		const key = similarKeyOf();
+		$('sort-basis').textContent = similarRanking()
+			? m.sort_near_timbre()
+			: key && state.similarKey === key
+				? m.sort_near_pending()
+				: m.sort_near_acoustic();
 	}
 
 	const openSpeakers = new Set<string>(),
@@ -304,7 +395,10 @@ export function mountStudio(state: State) {
 		b.dataset.id = clip.id;
 		b.dataset.group = clip.group;
 		b.setAttribute('aria-pressed', String(clip.id === state.selected?.id));
-		b.innerHTML = `<span class="sample-symbol"><svg aria-hidden="true"><use href="#i-play"></use></svg></span><div><span class="sample-title"><b>${esc(clip.text || nameOf(clip))}</b></span><span class="sample-phrase">${fmt(clip.features.f0)} Hz · ${clock(clip.duration)}${clip.synthetic ? ' · AI' : ''}</span></div>`;
+		const nearest =
+			$<HTMLSelectElement>('sort').value === 'near' &&
+			similarRanking()?.get(clip.speaker)?.clip === clip.id;
+		b.innerHTML = `<span class="sample-symbol"><svg aria-hidden="true"><use href="#i-play"></use></svg></span><div><span class="sample-title"><b>${esc(clip.text || nameOf(clip))}</b></span><span class="sample-phrase">${fmt(clip.features.f0)} Hz · ${clock(clip.duration)}${clip.synthetic ? ' · AI' : ''}${nearest ? ` · <small class="nearest-badge">${m.sort_nearest_clip()}</small>` : ''}</span></div>`;
 		b.title = clip.text!;
 		b.onclick = () => selectSample(clip, true);
 		b.disabled = state.recording || state.loadingLanguage;
@@ -331,6 +425,9 @@ export function mountStudio(state: State) {
 			state.limit = 30;
 			$('sample-scroll').scrollTop = 0;
 		}
+		renderedNear = $<HTMLSelectElement>('sort').value === 'near';
+		if (renderedNear) void ensureSimilar();
+		renderSortBasis();
 		const clips = filtered(),
 			groups = new Map<string, Clip[]>();
 		for (const clip of clips) {
@@ -390,8 +487,12 @@ export function mountStudio(state: State) {
 		state.limit += 60;
 		renderLibrary();
 	};
-	for (const id of ['sort', 'teacher', 'teacher-pitch', 'teacher-resonance', 'teacher-weight'])
+	for (const id of ['teacher', 'teacher-pitch', 'teacher-resonance', 'teacher-weight'])
 		$(id).onchange = () => renderLibrary(true);
+	$('sort').onchange = () => {
+		state.similarFailed = null;
+		renderLibrary(true);
+	};
 	$('library-group').onchange = () => {
 		$<HTMLSelectElement>('sort').value =
 			$<HTMLSelectElement>('library-group').value === 'female'
@@ -566,7 +667,9 @@ export function mountStudio(state: State) {
 	}
 	function controls() {
 		const near = $('sort').querySelector<HTMLOptionElement>('option[value=near]')!;
-		near.disabled = !AcousticSpace.raw(activeFeatures('own')).every(finite);
+		near.disabled =
+			!AcousticSpace.raw(activeFeatures('own')).every(finite) &&
+			!(similarCapable() && state.ownPCM);
 		if (near.disabled && $<HTMLSelectElement>('sort').value === 'near')
 			$<HTMLSelectElement>('sort').value = 'name';
 		const busy = state.busy || state.recording || state.loadingLanguage;
@@ -911,11 +1014,13 @@ export function mountStudio(state: State) {
 		signal.setRange(side, range);
 		updateRangeLabel();
 		renderWords();
+		if (side === 'own') refreshNearOrder();
 		if (!range) {
 			if (side === 'own') state.own = full;
 			else state.ref = full;
 			updateMap();
 			updateDistance();
+			if (side === 'own') refreshNearOrder();
 			if (sessionReady) {
 				void persistTakes();
 				saveView();
@@ -945,6 +1050,7 @@ export function mountStudio(state: State) {
 			signal.setRange(side, range, detail);
 			updateMap();
 			updateDistance();
+			if (side === 'own') refreshNearOrder();
 		} catch (e) {
 			if (token === state.rangeToken[side]) notify((e as Error).message, true);
 		}
@@ -1119,6 +1225,9 @@ export function mountStudio(state: State) {
 		$('quality-state').textContent = bad;
 		$('quality-state').hidden = !bad;
 		controls();
+		// A restore passes remember = false and refreshes itself once its selection is back in
+		// place; refreshing here as well would rank the unselected take first.
+		if (remember) refreshNearOrder();
 		if (remember && !recordSnapshot) void persistTakes();
 	}
 	async function importAudio(file: File | undefined, side: Side) {
@@ -1392,6 +1501,7 @@ export function mountStudio(state: State) {
 		renderWords();
 		updateRangeLabel();
 		controls();
+		refreshNearOrder();
 	}
 	function persistTakes() {
 		const current = state.recording ? recordSnapshot : snapshotOwn();
@@ -1578,6 +1688,7 @@ export function mountStudio(state: State) {
 				signal.setRange('own', state.ranges.own, state.ranges.own ? state.own : null);
 				updateDistance();
 				updateRangeLabel();
+				refreshNearOrder();
 				const warning = qualityMessage(detail.reason) || '';
 				$('quality-state').textContent = warning;
 				$('quality-state').hidden = !warning;
@@ -1875,6 +1986,7 @@ export function mountStudio(state: State) {
 		updateDistance();
 		renderWords();
 		controls();
+		refreshNearOrder();
 	}
 
 	let takeChoices: (Snapshot | Take)[] = [],
@@ -2595,4 +2707,7 @@ export function mountStudio(state: State) {
 		}
 	};
 	init().catch((e) => notify(m.error_load({ message: e.message }), true));
+	return () => {
+		alive = false;
+	};
 }

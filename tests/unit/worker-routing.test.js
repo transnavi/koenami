@@ -34,3 +34,36 @@ describe('public tutorial routing', () => {
 		}
 	}
 });
+
+describe('analysis routing', () => {
+	const env = () => ({
+		ASSETS: { fetch: vi.fn(async () => new Response('asset')) },
+		ANALYSIS_LIMIT: { limit: vi.fn(async () => ({ success: true })) },
+		ANALYZER: {}
+	});
+	const pcm = new Uint8Array(16000 * 4);
+
+	it('POST /api/similar reaches the container with its query string', async () => {
+		const { getContainer } = await import('@cloudflare/containers');
+		const fetch = vi.fn(async () => new Response('{}'));
+		getContainer.mockReturnValue({ fetch });
+		const response = await worker.fetch(
+			new Request('https://koe.test/api/similar?lang=en&limit=1000', {
+				method: 'POST',
+				body: pcm,
+				headers: { 'Accept-Language': 'en' }
+			}),
+			env(),
+			{}
+		);
+		expect(response.status).toBe(200);
+		const request = fetch.mock.calls[0]?.[0];
+		expect(request?.url).toBe('http://localhost:8080/api/similar?lang=en&limit=1000');
+		expect(request?.headers.get('Accept-Language')).toBe('en');
+	});
+
+	it('GET /api/similar is not a route', async () => {
+		const response = await worker.fetch(new Request('https://koe.test/api/similar'), env(), {});
+		expect(response.status).toBe(404);
+	});
+});

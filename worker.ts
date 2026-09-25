@@ -217,7 +217,9 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
 		return env.ASSETS.fetch(new Request(url, request));
 	}
 
-	const analysis = ['/api/analyze', '/api/age'].includes(url.pathname) && request.method === 'POST';
+	const analysis =
+		['/api/analyze', '/api/age', '/api/similar'].includes(url.pathname) &&
+		request.method === 'POST';
 	const detail = /^\/api\/detail\/[a-zA-Z0-9_-]+$/.test(url.pathname) && get;
 	if (!analysis && !detail && !(get && url.pathname === '/api/health'))
 		return text('Not found', 404);
