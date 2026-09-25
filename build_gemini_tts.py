@@ -133,7 +133,7 @@ def cost(usage):
   for m in usage.get(field) or []:total+=m.get('tokens',0)*PRICE['audio' if m.get('modality')=='audio' else 'text']/1e6
  return total
 
-async def generate(jobs,workers):
+async def generate(jobs,workers,max_usd):
  missing=[j for j in jobs if not j['path'].exists()]
  if not missing:return
  key=os.environ.get('GEMINI_API_KEY')
@@ -147,6 +147,7 @@ async def generate(jobs,workers):
    except Exception as e:print('FAILED',j['id'],j['voice']['id'],str(e)[:300],flush=True);return
    if usage is None:return
    spent.append(cost(usage))
+   if sum(spent)>=max_usd and not stop.is_set():stop.set();print(f'STOPPED: spent ${sum(spent):.2f}, the --max-usd cap',flush=True)
    with log.open('a') as f:f.write(json.dumps({'id':j['id'],'usage':usage})+'\n')
    if len(spent)%25==0:print(f'{len(spent)}/{len(missing)} ${sum(spent):.3f}',flush=True)
   await asyncio.gather(*map(one,missing))
@@ -157,6 +158,7 @@ async def main():
  ap.add_argument('--per-voice',type=int,default=6,help='lines each voice speaks')
  ap.add_argument('--voices',type=int,default=1000,help='at most this many voices')
  ap.add_argument('--workers',type=int,default=8)
+ ap.add_argument('--max-usd',type=float,default=15,help='stop generating once this run has spent this much')
  a=ap.parse_args()
  async with httpx.AsyncClient(headers={'x-goog-api-key':os.environ.get('GEMINI_API_KEY','')},timeout=60) as client:voices=await list_voices(client)
  labels=json.loads(CURATION.read_text())['labels']
@@ -164,7 +166,7 @@ async def main():
   if v['id'] in labels:v['group']=labels[v['id']]['group'];v['label_source']=labels[v['id']]['source']
  jobs=plan(voices,a.per_voice,a.voices)
  print(len(jobs),'clips from',len({j['voice']['id'] for j in jobs}),'voices',flush=True)
- await generate(jobs,a.workers)
+ await generate(jobs,a.workers,a.max_usd)
  jobs=[j for j in jobs if j['path'].exists()]
  measured=measure_files(str(j['path']) for j in jobs);clips=[]
  for j in jobs:
