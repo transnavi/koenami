@@ -229,7 +229,7 @@ def create_app():
             except ValueError as error: raise web.HTTPUnprocessableEntity(text=message(request, str(error)) if str(error) in MESSAGES else str(error))
 
     async def similar(request):
-        """Reference speakers whose voices sit closest to the recording, by the layer-3 timbre descriptor."""
+        """Reference speakers whose voices sit closest to the recording, by the timbre descriptor."""
         lang = request.query.get('lang', 'ja')
         if not timbre_index or lang not in timbre_index: raise web.HTTPNotFound(text=message(request, 'no_timbre_index'))
         # The studio orders its whole library by this ranking; the cap only bounds the response size.
