@@ -110,10 +110,10 @@ def main():
         # retrieval among held-out speakers
         cand = [s for s, c in by.items() if len(c) >= 4]; hits = []
         for s in cand:
-            for q in rng.permutation(by[s])[:8]:
+            for q in np.random.default_rng(int.from_bytes(s.encode()[:8].ljust(8, b'0'), 'little')).permutation(sorted(by[s]))[:8]:
                 d = {t: 1 - unit(np.mean([V[c] for c in by[t] if c != q], 0)) @ unit(V[q]) for t in cand}
                 hits.append(min(d, key=d.get) == s)
-        r['retrieval'] = float(np.mean(hits)); r['retrieval_n'] = len(hits); r['retrieval_speakers'] = len(cand)
+        r['retrieval'] = float(np.mean(hits)); r['retrieval_n'] = len(hits); r['retrieval_speakers'] = len(cand); r['retrieval_hits'] = [bool(h) for h in hits]
         # voice changes, held-out JVS speakers
         key = {tuple(k.split('-')[:3]): k for k in vc if k in V}
         wins = n = 0
@@ -141,6 +141,9 @@ def main():
     diff = np.array(result['student']['agreement_by_speaker']) - np.array(result['teacher']['agreement_by_speaker'])
     draws = [diff[rng.integers(0, len(diff), len(diff))].mean() for _ in range(2000)]
     result['agreement_diff'] = {'mean': float(diff.mean()), 'ci95': [float(v) for v in np.percentile(draws, [2.5, 97.5])]}
+    th, sh = result['teacher'].pop('retrieval_hits'), result['student'].pop('retrieval_hits')
+    result['retrieval_paired'] = {'queries': len(th), 'teacher_only': sum(a and not b for a, b in zip(th, sh)),
+                                  'student_only': sum(b and not a for a, b in zip(th, sh))}
     for k in ('teacher', 'student'): result[k].pop('agreement_by_speaker')
     json.dump(result, open(OUT / f'eval-{path.stem}.json', 'w'), indent=1)
     print(json.dumps(result, indent=1))
