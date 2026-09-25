@@ -21,6 +21,7 @@ import {
 } from '$lib/score';
 import { shareBundle, cardImage, systemShare, labelled } from '$lib/share';
 import { SignalView, type Side, type SignalMode } from '$lib/signals';
+import { blendedScores, fiveMeasureDistances } from '$lib/similar';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
@@ -286,13 +287,14 @@ export function mountStudio(state: State): () => void {
 		}
 		const sort = $<HTMLSelectElement>('sort').value,
 			f = activeFeatures('own'),
-			ranking = sort === 'near' ? similarRanking() : null;
-		// Closest first: by the listener-validated timbre ranking when the analyzer returned one
-		// for this take (speakers it does not index, such as imported ones, go last, and each
-		// speaker's nearest clip leads its folder), by the map's five measures otherwise.
+			ranking = sort === 'near' ? similarRanking() : null,
+			blended = ranking ? blendedOrder(ranking) : null;
+		// Closest first: by the timbre ranking blended with the five measures when the analyzer
+		// returned one for this take (speakers it does not index, such as imported ones, go last,
+		// and each speaker's nearest clip leads its folder), by the five measures alone otherwise.
 		const key = (c: Clip) =>
-			ranking
-				? (ranking.get(c.speaker)?.distance ?? Infinity)
+			blended
+				? (blended.get(c.speaker) ?? Infinity)
 				: sort === 'near'
 					? map.space!.distance(c.features, f)
 					: sort === 'low'
@@ -310,6 +312,20 @@ export function mountStudio(state: State): () => void {
 					lead(a) - lead(b) ||
 					a.id.localeCompare(b.id)
 		);
+	}
+	/* The near order's score per speaker, recomputed only when the ranking or the measurement
+	   it is blended with changes. */
+	let blendMemo: {
+		ranking: Map<string, SimilarSpeaker>;
+		own: Detail | Clip | null;
+		scores: Map<string, number>;
+	} | null = null;
+	function blendedOrder(ranking: Map<string, SimilarSpeaker>) {
+		if (blendMemo?.ranking === ranking && blendMemo.own === state.own) return blendMemo.scores;
+		const timbre = new Map([...ranking].map(([k, v]) => [k, v.distance]));
+		const five = fiveMeasureDistances(map.space!, state.clips, activeFeatures('own'));
+		blendMemo = { ranking, own: state.own, scores: blendedScores(timbre, five) };
+		return blendMemo.scores;
 	}
 	function similarCapable() {
 		return !!state.capabilities?.similar?.includes(state.lang);
@@ -375,7 +391,9 @@ export function mountStudio(state: State): () => void {
 		if (!near) return;
 		const key = similarKeyOf();
 		$('sort-basis').textContent = similarRanking()
-			? m.sort_near_timbre()
+			? map.space?.standardized(activeFeatures('own'))
+				? m.sort_near_timbre()
+				: m.sort_near_timbre_only()
 			: key && state.similarKey === key
 				? m.sort_near_pending()
 				: m.sort_near_acoustic();
@@ -1914,6 +1932,10 @@ export function mountStudio(state: State): () => void {
 			fitValue,
 			selectRange,
 			selectSample,
+			nearScores: () => {
+				const ranking = similarRanking();
+				return ranking ? Object.fromEntries(blendedOrder(ranking)) : null;
+			},
 			loadLanguage,
 			controls,
 			TakeStore,
