@@ -81,7 +81,7 @@ def app_population(z5):
     clips (as the server builds it) and the centre of the five-measure vectors of all its plotted
     clips (src/lib/similar.ts fiveMeasureDistances; None without any)."""
     clips = {c['id']: c for c in json.load(open(DATA / 'native-ja.json'))['clips']}
-    for name in ('voicevox.json', 'synthetic.json'):
+    for name in ('voicevox.json', 'synthetic.json', 'gemini-tts.json'):
         if (DATA / name).exists(): clips.update({c['id']: c for c in json.load(open(DATA / name))['clips'] if c.get('language') == 'ja'})
     index = np.load(DATA / f'timbre-index-{TIMBRE_VERSION}.npz'); keep = index['language'] == 'ja'
     vecs, fives = {}, {}

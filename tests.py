@@ -184,7 +184,7 @@ class CollectionTests(unittest.TestCase):
         """A library measured by an older engine has to be rebuilt."""
         import engine
         if not engine.BINARY.exists():self.skipTest('build measure/ first (cargo build --release)')
-        for name in ['native-ja','common-voice-ja','synthetic','voicevox','research-demos','libraries/en','libraries/ko','libraries/zh-CN']:
+        for name in ['native-ja','common-voice-ja','synthetic','voicevox','gemini-tts','research-demos','libraries/en','libraries/ko','libraries/zh-CN']:
             path=ROOT/f'data/{name}.json'
             if not path.exists():continue
             with self.subTest(library=name):
