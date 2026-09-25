@@ -9,8 +9,8 @@ GEMINI_API_KEY.
 
 API: https://ai.google.dev/gemini-api/docs/speech-generation (interactions),
 https://ai.google.dev/api/voices (voice library; gender is the library's own
-"perceived voice gender presentation" field),
-https://ai.google.dev/gemini-api/docs/voice-design (designed voices).
+"perceived voice gender presentation" field, overridden where a listening check
+disagreed), https://ai.google.dev/gemini-api/docs/voice-design (designed voices).
 """
 import argparse,asyncio,base64,datetime,hashlib,io,json,math,os,random
 from pathlib import Path
@@ -159,6 +159,9 @@ async def main():
  ap.add_argument('--workers',type=int,default=8)
  a=ap.parse_args()
  async with httpx.AsyncClient(headers={'x-goog-api-key':os.environ.get('GEMINI_API_KEY','')},timeout=60) as client:voices=await list_voices(client)
+ labels=json.loads(CURATION.read_text())['labels']
+ for v in voices:
+  if v['id'] in labels:v['gender']=labels[v['id']]['group'];v['label_source']=labels[v['id']]['source']
  jobs=plan(voices,a.per_voice,a.voices)
  print(len(jobs),'clips from',len({j['voice']['id'] for j in jobs}),'voices',flush=True)
  await generate(jobs,a.workers)
@@ -168,7 +171,7 @@ async def main():
   m=measured[str(j['path'])];f=m['features'];v=j['voice']
   ok=m.get('formant_seconds',0)>=.3 and math.isfinite(f.get('delta_f') or float('nan')) and m.get('resonance_sensitivity_pct',m.get('tracking_sensitivity',0))<=12
   clips.append({'id':j['id'],'speaker':f'gemini-{v["id"]}','name':f'Gemini:{v.get("display_name") or v["id"]}','group':'androgynous' if v.get('gender')=='neutral' else v.get('gender'),'voice_label':v.get('gender'),
-   'group_source':('Gender given when the voice was designed' if v.get('type')=='prompted' else 'Gemini voice library gender field (neutral as androgynous); not a listener rating'),'synthetic':True,'language':'ja','text':j['line']['text'],'style':STYLE,'scene':j['line']['scene'],
+   'group_source':v.get('label_source') or ('Gender given when the voice was designed' if v.get('type')=='prompted' else 'Gemini voice library gender field (neutral as androgynous); not a listener rating'),'synthetic':True,'language':'ja','text':j['line']['text'],'style':STYLE,'scene':j['line']['scene'],
    'text_source':'curation/gemini-conversation-ja.json (lines written for this corpus)',
    'voice':{k:v.get(k) for k in ('id','type','display_name','accent','pitch','persona','context','description')},
    'audio':'/samples/'+j['path'].name,'duration':m['duration'],'features':f,'level_dbfs':m.get('level_dbfs'),'peak':m.get('peak'),
