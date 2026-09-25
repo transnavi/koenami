@@ -1,0 +1,41 @@
+{
+ "teacher": {
+  "agreement": 0.34770218817607973,
+  "retrieval": 0.9555555555555556,
+  "retrieval_n": 315,
+  "retrieval_speakers": 48,
+  "voice_over_sentence": 0.9967588591184097,
+  "voice_n": 4628,
+  "vvd": {
+   "pitch": 0.3916232604763944,
+   "resonance": 0.40513494443534503,
+   "weight": 0.2597358006682938
+  }
+ },
+ "student": {
+  "agreement": 0.38568902279412437,
+  "retrieval": 0.9015873015873016,
+  "retrieval_n": 315,
+  "retrieval_speakers": 48,
+  "voice_over_sentence": 0.9954624027657736,
+  "voice_n": 4628,
+  "vvd": {
+   "pitch": 0.4372709445700247,
+   "resonance": 0.42217670948962244,
+   "weight": 0.1891593314921434
+  }
+ },
+ "student_vs_teacher_cosine": {
+  "median": 0.9632017016410828,
+  "p5": 0.9132304787635803,
+  "min": 0.8251940011978149,
+  "n": 2000
+ },
+ "agreement_diff": {
+  "mean": 0.0379868346180446,
+  "ci95": [
+   0.017042777485876317,
+   0.0572842848398907
+  ]
+ }
+}
