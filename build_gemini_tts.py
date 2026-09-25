@@ -12,7 +12,7 @@ https://ai.google.dev/api/voices (voice library; gender is the library's own
 "perceived voice gender presentation" field),
 https://ai.google.dev/gemini-api/docs/voice-design (designed voices).
 """
-import argparse,asyncio,base64,hashlib,io,json,math,os,random
+import argparse,asyncio,base64,datetime,hashlib,io,json,math,os,random
 from pathlib import Path
 import httpx,soundfile as sf
 from engine import measure_files,version
@@ -34,19 +34,50 @@ async def list_voices(client):
  return await prebuilt(client)+await designed(client)
 
 async def designed(client):
- """Create each described voice once; Google keeps it a year, and its id is cached here."""
- have=json.loads(DESIGNED.read_text()) if DESIGNED.exists() else {}
- for d in json.loads(CURATION.read_text())['designed']:
-  if d['name'] in have:continue
-  # The safety check runs on a prompt the service rewrites, so the same description can pass on a retry.
-  for attempt in range(3):
-   r=await client.post(f'{API}/voices',json={'store':True,'voice':{'model':MODEL,'type':'prompted','display_name':d['name'],'gender':d['gender'],'language_code':'ja-JP','prompted':{'input':d['prompt']}}})
-   if not (r.status_code==400 and 'safety' in r.text):break
-  if r.status_code==400 and 'safety' in r.text:print('SKIPPED',d['name'],'blocked by safety policies',flush=True);continue
+ """The described voices: reuse a stored voice with the same name, gender and description, create the rest.
+
+ Matching against what Google stores keeps a voice's id, and so its clip ids, when the local cache is lost,
+ and never creates a duplicate. Without a key the cache alone is used, so the manifest rebuilds offline."""
+ wanted=json.loads(CURATION.read_text())['designed'];have=json.loads(DESIGNED.read_text()) if DESIGNED.exists() else {}
+ same=lambda v,d:(v.get('display_name'),v.get('gender'),v.get('description'))==(d['name'],d['gender'],d['prompt'])
+ if client.headers.get('x-goog-api-key'):
+  stored=[];token=None
+  while True:
+   r=await client.get(f'{API}/voices',params={'type':'prompted','page_size':1000,**({'page_token':token} if token else {})});r.raise_for_status();body=r.json()
+   stored+=[dict(id=v['id'],type='prompted',display_name=v.get('display_name'),gender=v.get('gender'),language_code=v.get('language_code'),description=(v.get('prompted') or {}).get('input'),expire_time=v.get('expire_time')) for v in body.get('voices',[])];token=body.get('next_page_token')
+   if not token:break
+  for d in wanted:
+   match=[v for v in stored if same(v,d)]
+   if match:have[d['name']]=next((v for v in match if v['id']==have.get(d['name'],{}).get('id')),match[0]);continue
+   v=await create_voice(client,d)
+   if v:have[d['name']]=v;stored.append(v)
+  used={have[d['name']]['id'] for d in wanted if d['name'] in have}
+  for v in stored:
+   if v['id'] not in used:print('UNUSED designed voice',v['id'],v['display_name'],flush=True)
+  tmp=DESIGNED.with_suffix('.tmp');tmp.write_text(json.dumps(have,ensure_ascii=False,indent=1));tmp.replace(DESIGNED)
+ # A stored voice expires a year after creation; clips made before then stay valid.
+ now=datetime.datetime.now(datetime.timezone.utc).isoformat()
+ ready=[have[d['name']] for d in wanted if d['name'] in have and same(have[d['name']],d) and (have[d['name']].get('expire_time') or '9')>now]
+ if len(ready)<len(wanted):print(f'{len(wanted)-len(ready)} designed voices not available',flush=True)
+ return ready
+
+async def create_voice(client,d):
+ """Create one voice, retrying rate limits, server and network errors. The safety check runs on a prompt
+ the service rewrites, so a description it flags can pass on another try; after three flags it is skipped."""
+ flagged=0
+ for attempt in range(8):
+  try:r=await client.post(f'{API}/voices',json={'store':True,'voice':{'model':MODEL,'type':'prompted','display_name':d['name'],'gender':d['gender'],'language_code':'ja-JP','prompted':{'input':d['prompt']}}})
+  except httpx.TransportError:await asyncio.sleep(2**attempt);continue
+  if r.status_code==400 and 'safety' in r.text:
+   flagged+=1
+   if flagged==3:print('SKIPPED',d['name'],'blocked by safety policies',flush=True);return None
+   continue
+  if r.status_code in (429,500,502,503,504):await asyncio.sleep(min(60,float(r.headers.get('retry-after') or 2**attempt)));continue
   if r.is_error:raise RuntimeError(f'designing {d["name"]}: {r.status_code} {r.text[:300]}')
-  v=r.json();have[d['name']]={'id':v['id'],'type':'prompted','display_name':d['name'],'gender':d['gender'],'language_code':'ja-JP','description':d['prompt'],'expire_time':v.get('expire_time')}
-  DESIGNED.write_text(json.dumps(have,ensure_ascii=False,indent=1))
- return [have[d['name']] for d in json.loads(CURATION.read_text())['designed'] if d['name'] in have]
+  v=r.json()
+  with (ROOT/'data/gemini-tts-usage.jsonl').open('a') as f:f.write(json.dumps({'voice':d['name'],'usage':v.get('usage',{})})+'\n')
+  return dict(id=v['id'],type='prompted',display_name=d['name'],gender=d['gender'],language_code='ja-JP',description=d['prompt'],expire_time=v.get('expire_time'))
+ raise RuntimeError(f'designing {d["name"]}: no success after retries')
 
 async def prebuilt(client):
  if VOICES.exists():return json.loads(VOICES.read_text())
@@ -106,7 +137,7 @@ async def generate(jobs,workers):
  missing=[j for j in jobs if not j['path'].exists()]
  if not missing:return
  key=os.environ.get('GEMINI_API_KEY')
- if not key:raise SystemExit(f'{len(missing)} clips missing; set GEMINI_API_KEY')
+ if not key:print(f'{len(missing)} clips missing; set GEMINI_API_KEY to generate them',flush=True);return
  gate=asyncio.Semaphore(workers);spent=[];log=ROOT/'data/gemini-tts-usage.jsonl'
  async with httpx.AsyncClient(headers={'x-goog-api-key':key},timeout=180) as client:
   stop=asyncio.Event()
