@@ -99,6 +99,8 @@ class Student(nn.Module):
     def forward(self, wave, frames=None, pad=None):
         """wave [B, N] -> [B, T, 768] with T = (N - 400) // 320 + 1, the teacher's frame count."""
         n = wave.shape[1]; t = (n - WIN) // 320 + 1
+        # A constant offset from the microphone path would shift every mel band; WavLM ignores it.
+        wave = wave - wave.mean(dim=1, keepdim=True)
         wave = F.pad(wave, (0, 320))  # one extra mel pair so the strided conv reaches frame t
         m = self.mel_norm(self.mel(wave).transpose(1, 2)).transpose(1, 2)
         x = F.gelu(self.sub(m)).transpose(1, 2)[:, :t]
