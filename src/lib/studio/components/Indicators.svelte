@@ -31,6 +31,7 @@
 </script>
 
 <div id="indicators" class="indicators" role="group" aria-label={m.profile_indicators_aria()}>
+	<!-- Keyed by metric, so a button stays the same element across updates and keeps focus. -->
 	{#each rows as row (row.spread.metric.key)}
 		{@const { metric } = row.spread}
 		{@const title = m.indicator_title({
