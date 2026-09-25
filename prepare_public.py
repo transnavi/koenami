@@ -93,6 +93,9 @@ def main():
     voices = read('voicevox.json')
     write(OUT / 'data' / 'voicevox.json', voices)
     libraries['ja']['clips'].extend(voices['clips'])
+    gemini = read('gemini-tts.json')
+    write(OUT / 'data' / 'gemini-tts.json', gemini)
+    libraries['ja']['clips'].extend(gemini['clips'])
     manifest = []
     for lang, library in libraries.items():
         write(OUT / 'assets' / 'public-api' / f'{lang}.json', library)
