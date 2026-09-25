@@ -5,8 +5,9 @@ import numpy as np
 
 RATE = 16000
 VERSION = 'wavlm-sv-int8-v2'
-# Second output of the same ONNX graph: the frames of WavLM encoder layer 3, pooled by timbre()
-# over speech frames of one centre crop. Cosine distance between two of these ranks reference
+# The frames of WavLM encoder layer 3, pooled by timbre() over speech frames of one centre crop.
+# They come from timbre.int8.onnx, the prepared WavLM graph cut at that layer, which returns the
+# same frames as the full graph's second output. Cosine distance between two of these ranks reference
 # speakers closest to JVS listener similarity ratings (docs/research/jvs-similarity.md); the x-vector remains the
 # identity descriptor. The version covers the pooling rule as well as the graph: a different
 # crop length, layer or energy threshold changes every vector and must change this string.
@@ -20,8 +21,8 @@ def available(names=('wavlm', 'age')):
 
 
 def timbre_ready():
-    """The prepared WavLM graph is present and carries the timbre output; opening the session warms it."""
-    return available(['wavlm']) and 'timbre_frames' in [o.name for o in session('wavlm').get_outputs()]
+    """The prepared timbre graph is present and carries the timbre output; opening the session warms it."""
+    return available(['timbre']) and 'timbre_frames' in [o.name for o in session('timbre').get_outputs()]
 
 
 def session(name):
@@ -104,7 +105,7 @@ def timbre(x):
         c = min(int(best[np.abs(best - centre).argmin()]) * step, len(x) - 8 * RATE)
         x = x[c:c + 8 * RATE]; rms = frame_rms(x)
     if not timbre_ready(): raise ValueError('The prepared WavLM model predates the timbre output; run prepare_voice_models.py.')
-    frames = session('wavlm').run(['timbre_frames'], {'values': x.astype(np.float32)[None, :]})[0][0]
+    frames = session('timbre').run(['timbre_frames'], {'values': x.astype(np.float32)[None, :]})[0][0]
     energy = 20 * np.log10(rms[:len(frames)] + 1e-12)
     speech = (energy > energy.max() - 40) & (rms[:len(frames)] > FLOOR)
     if speech.sum() < 75: raise ValueError('too_little_speech')  # 1.5 s of speech frames
