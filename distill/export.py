@@ -68,6 +68,8 @@ card = {
     'training_clips': sum(len(s) for s in shards), 'training_speakers': len({c['speaker'] for s in shards for c in s}),
     'held_out_speakers': {'jvs': len(split['held_jvs']), 'common_voice': len(split['held_cv'])},
     'training_audio': 'JVS (research/jvs_ver1.zip, every style of the non-held speakers) and the served Common Voice libraries; no listener ratings',
+    'terms': 'Trained on JVS audio, which its terms allow for academic research, non-commercial research and personal use only, with redistribution restricted; '
+             'the weights carry those limits and are not MIT-licensed. The WavLM teacher (microsoft/wavlm-base-plus-sv) is MIT; Common Voice is CC0.',
 }
 (MODELS / 'timbre-student-card.json').write_text(json.dumps(card, indent=1) + '\n')
 print('installed', target, round(target.stat().st_size / 1e6, 2), 'MB')
