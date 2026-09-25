@@ -136,9 +136,6 @@ export function mountStudio(state: State) {
 		if (c.group === 'research') return `${c.dataset} · ${c.speaker}`;
 		return `${c.group === 'female' ? 'F' : 'M'} ${String(c.index || 0).padStart(3, '0')}`;
 	}
-	function referenceGroupLabel() {
-		return (state.referenceGroup === 'male' ? m.group_male : m.group_female)();
-	}
 	let fitModel: {
 		model: AcousticSpace;
 		loo: number[];
@@ -1649,7 +1646,7 @@ export function mountStudio(state: State) {
 		if (finite(f.delta_f) && finite(r.delta_f))
 			notes.push(m.report_note_resonance({ own: fmt(f.delta_f), ref: fmt(r.delta_f) }));
 		notes.push(m.report_note_intonation());
-		return `<div class="report-score">${comparison ? fmt(comparison.distance, 2) : '—'}</div><p>${m.report_distance_caption()}</p><p class="small">${m.report_distance_note()}</p>${comparison ? `<p>${m.report_share({ shown: Math.round(comparison.displayedShare * 100), omitted: Math.round((1 - comparison.displayedShare) * 100) })}</p><p class="small">${m.report_share_note()}</p>` : ''}<table class="report-table"><thead><tr><th>${m.report_col_metric()}</th><th>${m.report_col_own()}</th><th>${m.report_col_ref()}</th><th>${m.report_col_band()}</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(m.report_footer({ name: state.ownName, duration: clock(state.ownFull?.duration), reference: nameOf((state.selected || {}) as Clip) }))}<br>${esc(m.report_languages({ own: state.ownLanguage, ref: state.lang }))}${fit === null ? '' : '<br>' + esc(m.report_density({ group: referenceGroupLabel(), percentile: Math.round(fit) }))}<br>${esc(m.report_projection({ dimension: map.dimension, variance: Math.round((map.space?.explained(map.dimension, map.projection) || 0) * 100) }))}</p>`;
+		return `<div class="report-score">${comparison ? fmt(comparison.distance, 2) : '—'}</div><p>${m.report_distance_caption()}</p><p class="small">${m.report_distance_note()}</p>${comparison ? `<p>${m.report_share({ shown: Math.round(comparison.displayedShare * 100), omitted: Math.round((1 - comparison.displayedShare) * 100) })}</p><p class="small">${m.report_share_note()}</p>` : ''}<table class="report-table"><thead><tr><th>${m.report_col_metric()}</th><th>${m.report_col_own()}</th><th>${m.report_col_ref()}</th><th>${m.report_col_band()}</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(m.report_footer({ name: state.ownName, duration: clock(state.ownFull?.duration), reference: nameOf((state.selected || {}) as Clip) }))}<br>${esc(m.report_languages({ own: state.ownLanguage, ref: state.lang }))}${fit === null ? '' : '<br>' + esc(m.report_density({ group: state.referenceGroupLabel, percentile: Math.round(fit) }))}<br>${esc(m.report_projection({ dimension: map.dimension, variance: Math.round((map.space?.explained(map.dimension, map.projection) || 0) * 100) }))}</p>`;
 	}
 	$('report-button').onclick = () => {
 		$('report-content').innerHTML = reportHTML();

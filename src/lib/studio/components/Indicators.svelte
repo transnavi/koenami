@@ -22,9 +22,7 @@
 			[m.help_own(), `${fmt(row.own, metric.n)} ${metric.unit}`],
 			[m.help_reference(), `${fmt(row.ref, metric.n)} ${metric.unit}`],
 			[
-				m.help_band({
-					group: (studio.referenceGroup === 'male' ? m.group_male : m.group_female)()
-				}),
+				m.help_band({ group: studio.referenceGroupLabel }),
 				`${fmt(q10, metric.n)}–${fmt(q90, metric.n)} ${metric.unit}`
 			],
 			[m.help_speakers(), speakers]
