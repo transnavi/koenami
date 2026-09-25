@@ -25,8 +25,8 @@ import { blendedScores, fiveMeasureDistances } from '$lib/similar';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
-import { openHelp } from './help';
-import { fmt, METRICS, VERDICT_HELP } from './profile';
+import { openHelp, VERDICT_HELP } from './help';
+import { fmt, METRICS } from './metrics';
 import { snapshot as snap, type LanguageOption, type State, type Theme } from './studio.svelte';
 import type {
 	Clip,

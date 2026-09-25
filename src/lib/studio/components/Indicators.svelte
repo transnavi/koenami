@@ -4,7 +4,7 @@
 	import { m } from '$lib/paraglide/messages';
 
 	import { openHelp } from '../help';
-	import { fmt, indicator, METRICS, spread, type Indicator, type Spread } from '../profile';
+	import { fmt, indicator, METRICS, spread, type Indicator, type Spread } from '../metrics';
 	import { useStudio } from '../studio.svelte';
 
 	const studio = useStudio();
