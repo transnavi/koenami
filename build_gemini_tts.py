@@ -1,6 +1,7 @@
 """Generate Japanese conversational references with Gemini 3.8 Flash TTS and measure every clip.
 
-Each Japanese voice in the Gemini voice library speaks lines of everyday
+Each Japanese voice in the Gemini voice library, plus the voices designed from
+the descriptions in curation/gemini-voices-ja.json, speaks lines of everyday
 conversation from curation/gemini-conversation-ja.json, directed in Japanese to
 talk as in everyday conversation rather than read aloud. Audio already under data/samples is measured without
 calling the API, so the manifest rebuilds offline; only missing clips need
@@ -8,7 +9,8 @@ GEMINI_API_KEY.
 
 API: https://ai.google.dev/gemini-api/docs/speech-generation (interactions),
 https://ai.google.dev/api/voices (voice library; gender is the library's own
-"perceived voice gender presentation" field).
+"perceived voice gender presentation" field),
+https://ai.google.dev/gemini-api/docs/voice-design (designed voices).
 """
 import argparse,asyncio,base64,hashlib,io,json,math,os,random
 from pathlib import Path
@@ -19,6 +21,8 @@ API='https://generativelanguage.googleapis.com/v1beta'
 MODEL='gemini-3.8-flash-tts'
 LINES=ROOT/'curation/gemini-conversation-ja.json'
 VOICES=ROOT/'data/gemini-voices-ja.json'
+DESIGNED=ROOT/'data/gemini-designed-voices-ja.json'
+CURATION=ROOT/'curation/gemini-voices-ja.json'
 DEST=ROOT/'data/gemini-tts.json'
 # USD per 1M tokens, Gemini API standard rates through 2026-12-31.
 PRICE={'text':.5,'audio':9}
@@ -26,7 +30,21 @@ PRICE={'text':.5,'audio':9}
 STYLE='普段の会話で、その場で思いついたことを話しているように。力を抜いて自然に、読み上げ口調にしない。'
 
 async def list_voices(client):
- """The prebuilt Japanese catalogue, cached so reruns see the same voices."""
+ """The prebuilt Japanese catalogue and the designed voices, cached so reruns see the same voices."""
+ return await prebuilt(client)+await designed(client)
+
+async def designed(client):
+ """Create each described voice once; Google keeps it a year, and its id is cached here."""
+ have=json.loads(DESIGNED.read_text()) if DESIGNED.exists() else {}
+ for d in json.loads(CURATION.read_text())['designed']:
+  if d['name'] in have:continue
+  r=await client.post(f'{API}/voices',json={'store':True,'voice':{'model':MODEL,'type':'prompted','display_name':d['name'],'gender':d['gender'],'language_code':'ja-JP','prompted':{'input':d['prompt']}}})
+  if r.is_error:raise RuntimeError(f'designing {d["name"]}: {r.status_code} {r.text[:300]}')
+  v=r.json();have[d['name']]={'id':v['id'],'type':'prompted','display_name':d['name'],'gender':d['gender'],'language_code':'ja-JP','description':d['prompt'],'expire_time':v.get('expire_time')}
+  DESIGNED.write_text(json.dumps(have,ensure_ascii=False,indent=1))
+ return [have[d['name']] for d in json.loads(CURATION.read_text())['designed']]
+
+async def prebuilt(client):
  if VOICES.exists():return json.loads(VOICES.read_text())
  voices=[];token=None
  while True:
@@ -115,9 +133,9 @@ async def main():
   m=measured[str(j['path'])];f=m['features'];v=j['voice']
   ok=m.get('formant_seconds',0)>=.3 and math.isfinite(f.get('delta_f') or float('nan')) and m.get('resonance_sensitivity_pct',m.get('tracking_sensitivity',0))<=12
   clips.append({'id':j['id'],'speaker':f'gemini-{v["id"]}','name':f'Gemini:{v.get("display_name") or v["id"]}','group':'androgynous' if v.get('gender')=='neutral' else v.get('gender'),'voice_label':v.get('gender'),
-   'group_source':'Gemini voice library gender field (neutral as androgynous); not a listener rating','synthetic':True,'language':'ja','text':j['line']['text'],'style':STYLE,'scene':j['line']['scene'],
+   'group_source':('Gender given when the voice was designed' if v.get('type')=='prompted' else 'Gemini voice library gender field (neutral as androgynous); not a listener rating'),'synthetic':True,'language':'ja','text':j['line']['text'],'style':STYLE,'scene':j['line']['scene'],
    'text_source':'curation/gemini-conversation-ja.json (lines written for this corpus)',
-   'voice':{k:v.get(k) for k in ('id','display_name','accent','pitch','persona','context','description')},
+   'voice':{k:v.get(k) for k in ('id','type','display_name','accent','pitch','persona','context','description')},
    'audio':'/samples/'+j['path'].name,'duration':m['duration'],'features':f,'level_dbfs':m.get('level_dbfs'),'peak':m.get('peak'),
    'voiced_seconds':m['voiced_seconds'],'formant_seconds':m.get('formant_seconds',0),'plotted':bool(ok),'reason':None if ok else 'Unstable resonance estimate.',
    'source':'https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash-tts','engine':f'Google Gemini API / {MODEL}','sha256':hashlib.sha256(j['path'].read_bytes()).hexdigest()})
