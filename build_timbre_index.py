@@ -36,7 +36,7 @@ def reference_clips():
     for lang in LANGUAGES:
         path = DATA / ('native-ja.json' if lang == 'ja' else f'libraries/{lang}.json')
         if path.exists(): clips += [dict(c, language=lang) for c in json.loads(path.read_text())['clips']]
-    for filename in ['synthetic.json', 'voicevox.json']:
+    for filename in ['synthetic.json', 'voicevox.json', 'gemini-tts.json']:
         if (DATA / filename).exists(): clips += json.loads((DATA / filename).read_text())['clips']
     return [c for c in clips if indexable(c) and c['language'] in LANGUAGES]
 

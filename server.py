@@ -116,7 +116,7 @@ def create_app():
         path = DATA / ('native-ja.json' if lang == 'ja' else f'libraries/{lang}.json')
         if path.exists(): libraries[lang] = json.loads(path.read_text())
     if not PUBLIC and (DATA / 'research-demos.json').exists(): libraries['lab'] = json.loads((DATA / 'research-demos.json').read_text())
-    for filename in ['synthetic.json', 'voicevox.json']:
+    for filename in ['synthetic.json', 'voicevox.json', 'gemini-tts.json']:
         synthetic = DATA / filename
         if synthetic.exists():
             for clip in json.loads(synthetic.read_text())['clips']:
