@@ -110,6 +110,11 @@ def rank_similar(index, vector, limit):
     return out
 
 
+def engine_name(clip):
+    """What a synthetic clip is shown as in reviews: its engine, never its character."""
+    return clip['name'].split(':')[0] if ':' in clip.get('name', '') else 'TTS'
+
+
 def create_app():
     libraries = {}
     for lang in LANGUAGES:
@@ -334,7 +339,7 @@ def create_app():
         for sid, clips in by_speaker.items():
             if pool_of[sid] == 'jvs': best = next((c for c in clips if c.get('utterance') == JVS_PARALLEL[0]), clips[0])
             else: best = max(clips, key=lambda c: (bool(c.get('plotted')), c.get('duration', 0)))
-            queue.append({'speaker': sid, 'pool': pool_of[sid], 'clips': [dict(id=c['id'], display='VOICEVOX' if c.get('synthetic') else '自分' if c.get('private') else (c.get('display_label') or c.get('name') or sid), text=c.get('text') or ('（自分の録音）' if c.get('private') else ''),
+            queue.append({'speaker': sid, 'pool': pool_of[sid], 'clips': [dict(id=c['id'], display=engine_name(c) if c.get('synthetic') else '自分' if c.get('private') else (c.get('display_label') or c.get('name') or sid), text=c.get('text') or ('（自分の録音）' if c.get('private') else ''),
                           audio=c['audio'], duration=c.get('duration'), plotted=bool(c.get('plotted'))) for c in sorted(clips, key=lambda c: c['id'])], 'first': best['id']})
         rng = random.Random(session or 'koenami')
         rng.shuffle(queue)
@@ -496,7 +501,7 @@ def create_app():
     def label(cid):
         c = clips.get(cid)
         if not c: return cid
-        return '自分' if c.get('private') else 'VOICEVOX' if c.get('synthetic') else (c.get('display_label') or c.get('name') or cid)
+        return '自分' if c.get('private') else engine_name(c) if c.get('synthetic') else (c.get('display_label') or c.get('name') or cid)
 
     async def pairs_get(request):
         if PUBLIC: raise web.HTTPNotFound()
