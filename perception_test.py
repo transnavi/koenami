@@ -94,6 +94,16 @@ class TimbreTests(unittest.TestCase):
         v=perception.timbre(x);self.assertEqual(v.shape,(768,));self.assertTrue(np.isfinite(v).all())
         self.assertAlmostEqual(float(np.linalg.norm(perception.describe(x)['embedding'])),1.0,places=4)
 
+    @unittest.skipUnless(perception.available(['wavlm','timbre']),'prepared models are absent')
+    def test_timbre_graph_returns_the_full_graphs_layer_3_frames(self):
+        self.assertEqual([o.name for o in perception.session('timbre').get_outputs()],['timbre_frames'])
+        rng=np.random.default_rng(0)
+        for seconds in (2,5,8):
+            x=(.1*rng.standard_normal(16000*seconds)).astype(np.float32)[None,:]
+            full=perception.session('wavlm').run(['timbre_frames'],{'values':x})[0]
+            cut=perception.session('timbre').run(['timbre_frames'],{'values':x})[0]
+            self.assertTrue(np.array_equal(full,cut))
+
 
 if __name__ == '__main__':
     unittest.main()

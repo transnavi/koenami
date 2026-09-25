@@ -1,6 +1,6 @@
 """Timbre vectors for every plotted reference clip, for ranking references by similarity to a recording.
 
-Runs `perception.timbre` (the prepared WavLM graph's layer-3 frames, pooled over
+Runs `perception.timbre` (layer-3 frames from the prepared timbre graph, pooled over
 speech) on each plotted clip of the served libraries — JVS, the Common Voice
 collections, VOICEVOX and the synthetic set — and writes
 `data/timbre-index-<TIMBRE_VERSION>.npz` with the clip ids, their language,
@@ -57,7 +57,7 @@ def save(rows, vectors, out=OUT):
 
 def main(clips=None, out=OUT, checkpoint=500):
     clips = reference_clips() if clips is None else clips; done = {}
-    if not perception.timbre_ready(): raise SystemExit('the prepared WavLM graph predates the timbre output; run prepare_voice_models.py')
+    if not perception.timbre_ready(): raise SystemExit('the timbre graph (timbre.int8.onnx) is missing; run prepare_voice_models.py')
     if out.is_file():
         old = np.load(out, allow_pickle=False)
         if str(old['version']) == perception.TIMBRE_VERSION: done = dict(zip(old['ids'].tolist(), old['vectors']))

@@ -11,6 +11,7 @@ import torch
 from torch import nn
 from transformers import WavLMForXVector, Wav2Vec2Model, Wav2Vec2PreTrainedModel
 from huggingface_hub import snapshot_download
+from onnx.utils import extract_model
 from onnxruntime.quantization import quantize_dynamic, QuantType
 
 ROOT = Path(__file__).parent
@@ -94,13 +95,26 @@ def main():
             if (source / filename).exists():
                 (OUT / (name + '-' + filename)).write_bytes((source / filename).read_bytes())
         print(name, 'prepared', round(target.stat().st_size / 1e6), 'MB', flush=True)
+    # The timbre descriptor reads layer 3 alone. Its graph is the prepared WavLM graph cut at that
+    # output: the convolutional frontend and the first three encoder layers, the same weights and
+    # operators, so it returns the same frames without layers 4-12 and the x-vector head.
+    timbre, wavlm = OUT / 'timbre.int8.onnx', OUT / 'wavlm.int8.onnx'
+    if not timbre.exists() or timbre.stat().st_mtime < wavlm.stat().st_mtime:
+        # Written beside the target and moved into place, so an interrupted run leaves no truncated
+        # graph that looks newer than its source.
+        partial = timbre.with_suffix('.partial')
+        extract_model(str(wavlm), str(partial), input_names=['values'], output_names=['timbre_frames'], check_model=True)
+        partial.replace(timbre)
+    print('timbre prepared', round(timbre.stat().st_size / 1e6), 'MB', flush=True)
     license_path = OUT / 'wavlm-LICENSE'
     if not license_path.exists():
         with urllib.request.urlopen('https://raw.githubusercontent.com/microsoft/unilm/0e31c7c09737df491e7ff74ded19614b884c52b4/LICENSE', timeout=30) as response:
             license_path.write_bytes(response.read())
     (OUT / 'manifest.json').write_text(json.dumps([
         dict(name=n, source='https://huggingface.co/' + r, revision=v, license=l, **SPECS[n])
-        for n, r, v, l in items], indent=2))
+        for n, r, v, l in items] + [
+        dict(name='timbre', source='https://huggingface.co/microsoft/wavlm-base-plus-sv', revision=WAVLM_REV, license='MIT',
+             outputs=['timbre_frames'], timbre_layer=TIMBRE_LAYER, extracted_from='wavlm.int8.onnx')], indent=2))
 
 
 if __name__ == '__main__':
