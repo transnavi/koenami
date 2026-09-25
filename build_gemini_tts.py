@@ -185,10 +185,10 @@ async def main():
  for j in jobs:
   m=measured[str(j['path'])];f=m['features'];v=j['voice']
   ok=m.get('formant_seconds',0)>=.3 and math.isfinite(f.get('delta_f') or float('nan')) and m.get('resonance_sensitivity_pct',m.get('tracking_sensitivity',0))<=12
-  clips.append({'id':j['id'],'speaker':f'gemini-{v["id"]}','name':f'Gemini:{(v.get("display_name") or v["id"]).removeprefix("koenami-")}','dataset':'Gemini TTS','credit':f'Gemini 3.8 Flash TTS ({MODEL})','license':'Gemini API Additional Terms of Service; AI-generated','group':v.get('group') or ('androgynous' if v.get('gender')=='neutral' else v.get('gender')),'voice_label':v.get('gender'),
+  clips.append({'id':j['id'],'speaker':f'gemini-{v["id"]}','name':f'Gemini:{(v.get("display_name") or v["id"]).removeprefix("koenami-")}','dataset':'Gemini TTS','credit':f'Gemini 3.8 Flash TTS ({MODEL})','license':'Gemini API Additional Terms of Service; AI-generated','group':v.get('group') or ('androgynous' if v.get('gender')=='neutral' else v.get('gender')),'voice_label':v.get('group') or ('androgynous' if v.get('gender')=='neutral' else v.get('gender')),
    'group_source':v.get('label_source') or ('Gender given when the voice was designed' if v.get('type')=='prompted' else 'Gemini voice library gender field (neutral as androgynous); not a listener rating'),'synthetic':True,'language':'ja','text':j['line']['text'],'style':STYLE,'scene':j['line']['scene'],
    'text_source':'curation/gemini-conversation-ja.json (lines written for this corpus)',
-   'voice':{k:v.get(k) for k in ('id','type','display_name','accent','pitch','persona','context','description')},
+   'voice':{k:v.get(k) for k in ('id','type','display_name','gender','accent','pitch','persona','context','description')},
    'audio':'/samples/'+j['path'].name,'duration':m['duration'],'features':f,'level_dbfs':m.get('level_dbfs'),'peak':m.get('peak'),
    'voiced_seconds':m['voiced_seconds'],'formant_seconds':m.get('formant_seconds',0),'plotted':bool(ok),'reason':None if ok else 'Unstable resonance estimate.',
    'source':'https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash-tts','engine':f'Google Gemini API / {MODEL}','sha256':hashlib.sha256(j['path'].read_bytes()).hexdigest()})
