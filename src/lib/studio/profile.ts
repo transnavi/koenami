@@ -15,6 +15,8 @@ export type HelpEntry = {
 	factors: string[];
 	caveats: string[];
 };
+/* Anything with measured features: a reference clip, a speaker's representative. */
+export type Measured = { features: Features };
 export type Metric = HelpEntry & { key: MetricKey; unit: string; n: number };
 
 export const fmt = (v: unknown, n = 0) => (finite(v) ? v.toFixed(n) : '—');
@@ -57,44 +59,57 @@ export const VERDICT_HELP: HelpEntry = {
 	}
 };
 
-/* One indicator: the voice's and the reference's values, the middle 80% of the reference
-   speakers (q10–q90), and positions on a track spanning their 1st–99th percentile, widened to
-   take in both values. Positions are percentages; null where there is nothing to place. */
-export type Indicator = {
+/* A metric's spread among reference speakers: the span an indicator's track covers (their
+   1st–99th percentile, or the metric's axis where they give none) and their middle 80%. */
+export type Spread = {
 	metric: Metric;
-	own: number | null | undefined;
-	ref: number | null | undefined;
 	speakers: number;
-	band: [number, number] | null;
-	marker: number | null;
-	target: number | null;
+	lo: number;
+	hi: number;
 	q10: number;
 	q90: number;
 };
-export function indicator(metric: Metric, own: Features, ref: Features, refs: Clip[]): Indicator {
-	const key = metric.key,
-		values = refs.map((s) => s.features[key]).filter(finite);
+export function spread(metric: Metric, speakers: readonly Measured[]): Spread {
+	const values = speakers.map((s) => s.features[metric.key]).filter(finite);
 	let lo = quantile(values, 0.01),
 		hi = quantile(values, 0.99);
 	if (!finite(lo) || hi <= lo) {
-		lo = AXES[key].min;
-		hi = AXES[key].max;
+		lo = AXES[metric.key].min;
+		hi = AXES[metric.key].max;
 	}
-	lo = Math.min(lo, own[key] ?? lo, ref[key] ?? lo);
-	hi = Math.max(hi, own[key] ?? hi, ref[key] ?? hi);
-	const pos = (v: number) => clamp(((v - lo) / (hi - lo || 1)) * 100, 0, 100),
-		q10 = quantile(values, 0.1),
-		q90 = quantile(values, 0.9);
 	return {
 		metric,
+		speakers: values.length,
+		lo,
+		hi,
+		q10: quantile(values, 0.1),
+		q90: quantile(values, 0.9)
+	};
+}
+
+/* One indicator: the voice's and the reference's values, and where they and the speakers'
+   middle 80% fall on the track, as percentages of its width. The track widens to take in both
+   values; a position is null where there is nothing to place. */
+export type Indicator = {
+	own: number | null | undefined;
+	ref: number | null | undefined;
+	ownAt: number | null;
+	refAt: number | null;
+	band: { left: number; width: number } | null;
+};
+export function indicator(spread: Spread, own: Features, ref: Features): Indicator {
+	const key = spread.metric.key,
+		lo = Math.min(spread.lo, own[key] ?? spread.lo, ref[key] ?? spread.lo),
+		hi = Math.max(spread.hi, own[key] ?? spread.hi, ref[key] ?? spread.hi),
+		at = (v: number) => clamp(((v - lo) / (hi - lo || 1)) * 100, 0, 100);
+	return {
 		own: own[key],
 		ref: ref[key],
-		speakers: values.length,
-		band: finite(q10) ? [pos(q10), pos(q90) - pos(q10)] : null,
-		marker: finite(own[key]) ? pos(own[key]) : null,
-		target: finite(ref[key]) ? pos(ref[key]) : null,
-		q10,
-		q90
+		ownAt: finite(own[key]) ? at(own[key]) : null,
+		refAt: finite(ref[key]) ? at(ref[key]) : null,
+		band: finite(spread.q10)
+			? { left: at(spread.q10), width: at(spread.q90) - at(spread.q10) }
+			: null
 	};
 }
 
