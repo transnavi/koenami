@@ -1,3 +1,4 @@
+import { m } from '$lib/paraglide/messages';
 import { gateFailure, type ScoreResult, type Scorer } from '$lib/score';
 import type { Side } from '$lib/signals';
 import type { Features } from '$lib/space';
@@ -131,6 +132,9 @@ export class StudioState {
 	readonly refFeatures = $derived<Features>(this.ref?.features || {});
 	readonly referenceGroup = $derived<'male' | 'female'>(
 		this.selected?.group === 'male' ? 'male' : 'female'
+	);
+	readonly referenceGroupLabel = $derived(
+		this.referenceGroup === 'male' ? m.group_male() : m.group_female()
 	);
 	readonly referenceSpeakers = $derived(
 		this.representatives.filter((c) => c.group === this.referenceGroup)
