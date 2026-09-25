@@ -25,7 +25,7 @@ DESIGNED=ROOT/'data/gemini-designed-voices-ja.json'
 CURATION=ROOT/'curation/gemini-voices-ja.json'
 DEST=ROOT/'data/gemini-tts.json'
 # USD per 1M tokens, Gemini API standard rates through 2026-12-31.
-PRICE={'text':.5,'audio':9}
+PRICE={'text':.5,'audio':9,'invocation':1}
 
 STYLE='普段の会話で、その場で思いついたことを話しているように。力を抜いて自然に、読み上げ口調にしない。'
 
@@ -127,18 +127,31 @@ async def speak(client,gate,stop,job):
   raise RuntimeError('no success after retries')
 
 def cost(usage):
- """USD for one response's usage block."""
+ """USD for one response's usage block, erring high.
+
+ Each response also reports about 1,200-1,400 prompt tokens of the model's own invocation (most of them audio)
+ that the itemised input leaves out. Whether they are billed is not documented, so they are counted at
+ $1 per 1M, which keeps the spending cap on the safe side."""
  total=0
- for field,kind in (('input_tokens_by_modality','text'),('output_tokens_by_modality','audio')):
-  for m in usage.get(field) or []:total+=m.get('tokens',0)*PRICE['audio' if m.get('modality')=='audio' else 'text']/1e6
+ for field in ('input_tokens_by_modality','output_tokens_by_modality'):
+  for m in usage.get(field) or []:total+=m.get('tokens',0)*PRICE['audio' if field.startswith('output') and m.get('modality')=='audio' else 'text']/1e6
+ for inv in usage.get('model_invocation_token_counts') or []:
+  total+=sum(m.get('tokens',0) for m in inv.get('prompt_tokens_details') or [])*PRICE['invocation']/1e6
  return total
 
+def logged_spend():
+ """What every run so far has spent, clips and designed voices alike, from the usage log."""
+ log=ROOT/'data/gemini-tts-usage.jsonl'
+ return sum(cost(json.loads(l)['usage']) for l in log.open()) if log.exists() else 0
+
 async def generate(jobs,workers,max_usd):
+ """Make the missing clips until the total logged spend reaches max_usd."""
  missing=[j for j in jobs if not j['path'].exists()]
  if not missing:return
  key=os.environ.get('GEMINI_API_KEY')
  if not key:print(f'{len(missing)} clips missing; set GEMINI_API_KEY to generate them',flush=True);return
- gate=asyncio.Semaphore(workers);spent=[];log=ROOT/'data/gemini-tts-usage.jsonl'
+ gate=asyncio.Semaphore(workers);spent=[];log=ROOT/'data/gemini-tts-usage.jsonl';before=logged_spend()
+ if before>=max_usd:print(f'STOPPED: ${before:.2f} already spent, the --max-usd cap',flush=True);return
  async with httpx.AsyncClient(headers={'x-goog-api-key':key},timeout=180) as client:
   stop=asyncio.Event()
   async def one(j):
@@ -147,18 +160,18 @@ async def generate(jobs,workers,max_usd):
    except Exception as e:print('FAILED',j['id'],j['voice']['id'],str(e)[:300],flush=True);return
    if usage is None:return
    spent.append(cost(usage))
-   if sum(spent)>=max_usd and not stop.is_set():stop.set();print(f'STOPPED: spent ${sum(spent):.2f}, the --max-usd cap',flush=True)
+   if before+sum(spent)>=max_usd and not stop.is_set():stop.set();print(f'STOPPED: ${before+sum(spent):.2f} spent in total, the --max-usd cap',flush=True)
    with log.open('a') as f:f.write(json.dumps({'id':j['id'],'usage':usage})+'\n')
    if len(spent)%25==0:print(f'{len(spent)}/{len(missing)} ${sum(spent):.3f}',flush=True)
   await asyncio.gather(*map(one,missing))
- if spent:print(f'generated {len(spent)} clips for ${sum(spent):.4f} (${sum(spent)/len(spent):.5f} each)',flush=True)
+ if spent:print(f'generated {len(spent)} clips for ${sum(spent):.4f} (${sum(spent)/len(spent):.5f} each); ${before+sum(spent):.2f} spent in total',flush=True)
 
 async def main():
  ap=argparse.ArgumentParser(description=__doc__.splitlines()[0])
  ap.add_argument('--per-voice',type=int,default=6,help='lines each voice speaks')
  ap.add_argument('--voices',type=int,default=1000,help='at most this many voices')
  ap.add_argument('--workers',type=int,default=8)
- ap.add_argument('--max-usd',type=float,default=15,help='stop generating once this run has spent this much')
+ ap.add_argument('--max-usd',type=float,default=15,help='stop generating once the total logged spend, over every run, reaches this')
  a=ap.parse_args()
  async with httpx.AsyncClient(headers={'x-goog-api-key':os.environ.get('GEMINI_API_KEY','')},timeout=60) as client:voices=await list_voices(client)
  labels=json.loads(CURATION.read_text())['labels']
