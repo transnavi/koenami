@@ -62,7 +62,7 @@ Three research scripts read the review logs and write their findings under `rese
 
 `build_pronunciation_model.py` evaluates the small listening-reviewed Japanese classifier with one speaker held out at a time. Set `KOENAMI_CUDA=1` in an environment with CUDA ONNX Runtime for model inference. Tentative pronunciation judgements are omitted from training. The prototype has insufficient validation for automatic filtering.
 
-Optional word timing uses Whisper large-v3-turbo with CUDA and Sudachi. Install `requirements-asr.txt` and run `download_asr.py`. Optional VOICEVOX preparation uses `build_voicevox.py` with the separately installed VOICEVOX core, models, and dictionaries. These services are not required for the public demo.
+Optional word timing uses Whisper large-v3-turbo with CUDA and Sudachi. Install `requirements-asr.txt` and run `download_asr.py`. Optional VOICEVOX preparation uses `build_voicevox.py` with the separately installed VOICEVOX core, models, and dictionaries. Optional Gemini references use `build_gemini_tts.py` with `GEMINI_API_KEY`: every Japanese voice in the Gemini 3.8 Flash TTS library speaks lines of everyday conversation from `curation/gemini-conversation-ja.json`; the clips join the local reference set as synthetic voices. These services are not required for the public demo.
 
 ## Public deployment
 
