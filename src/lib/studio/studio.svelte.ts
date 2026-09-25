@@ -123,7 +123,7 @@ export class StudioState {
 	readonly referenceGroup = $derived<'male' | 'female'>(
 		this.selected?.group === 'male' ? 'male' : 'female'
 	);
-	readonly referenceStats = $derived(
+	readonly referenceSpeakers = $derived(
 		this.representatives.filter((c) => c.group === this.referenceGroup)
 	);
 	/* The first quality check the measurement fails, once it is analysed and the language has a
