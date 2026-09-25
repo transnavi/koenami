@@ -1,5 +1,9 @@
 {
  "about": "Voice descriptions are Japanese sentences about how the voice sounds, following the prompt style of Takuya, 'Gemini 3.8 Flash TTSを日本語で58本作って検証', Qiita, 2026-09-24 (https://qiita.com/Takuya__/items/45a3c0b0da5c17f0b3bc) and 河合継, 'Google Gemini TTSカスタム音声 日本語作り方', Crystal Method blog, 2026-09-23 (https://crystal-method.com/blog/google-gemini-flash-tts-custom-voice-japanese/). Both are single-author blog posts; neither measured which wording works best.",
+ "labels": {
+  "ja-jp-training-11": {"group": "female", "source": "Project listening check, 2026-09-25; the voice library lists it as neutral"},
+  "ja-jp-concierge-9": {"group": "male", "source": "Project listening check, 2026-09-25; the voice library lists it as neutral"}
+ },
  "designed": [
   {"name": "koenami-f-light", "gender": "female", "prompt": "高めで明るく、軽い女性の声。張りがあって響きは前に出る感じで、話すテンポは速め。標準語。"},
   {"name": "koenami-f-breathy", "gender": "female", "prompt": "高くやわらかい女性の声。息まじりで細く、語尾がふわっと消える。ゆっくりめに話す。標準語。"},
