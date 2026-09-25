@@ -100,7 +100,11 @@ def main():
     # operators, so it returns the same frames without layers 4-12 and the x-vector head.
     timbre, wavlm = OUT / 'timbre.int8.onnx', OUT / 'wavlm.int8.onnx'
     if not timbre.exists() or timbre.stat().st_mtime < wavlm.stat().st_mtime:
-        extract_model(str(wavlm), str(timbre), input_names=['values'], output_names=['timbre_frames'], check_model=True)
+        # Written beside the target and moved into place, so an interrupted run leaves no truncated
+        # graph that looks newer than its source.
+        partial = timbre.with_suffix('.partial')
+        extract_model(str(wavlm), str(partial), input_names=['values'], output_names=['timbre_frames'], check_model=True)
+        partial.replace(timbre)
     print('timbre prepared', round(timbre.stat().st_size / 1e6), 'MB', flush=True)
     license_path = OUT / 'wavlm-LICENSE'
     if not license_path.exists():
