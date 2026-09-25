@@ -128,11 +128,11 @@ def create_app():
     clips.update({c['id']: c for c in own_clips})
     gate, asr_gate = asyncio.Semaphore(1), asyncio.Semaphore(1)
     neural_gate = asyncio.Semaphore(1)
-    # Reference ranking needs an index built for this descriptor version and the prepared timbre graph;
+    # Reference ranking needs an index built for this descriptor version and the timbre model;
     # the graph is opened here so the first request does not pay for it.
     timbre_index = load_timbre_index(DATA, perception.TIMBRE_VERSION, known={i for i, c in clips.items() if indexable(c)}) if perception else None
     if timbre_index and not perception.timbre_ready():
-        print('Reference ranking is off: the timbre graph (timbre.int8.onnx) is missing; run prepare_voice_models.py', flush=True); timbre_index = None
+        print(f'Reference ranking is off: the timbre model ({perception.TIMBRE_MODEL}.int8.onnx) is missing; run distill/export.py', flush=True); timbre_index = None
     cache = OrderedDict()
     pcm_cache = OrderedDict()
 

@@ -10,7 +10,7 @@ import numpy as np
 import onnxruntime as ort
 
 from curation import Verdicts
-from perception import TIMBRE_VERSION
+from perception import TIMBRE_MODEL, TIMBRE_VERSION
 from server import indexable
 
 ROOT = Path(__file__).parent
@@ -129,17 +129,17 @@ def main():
          'synthetic': sum(bool(c.get('synthetic')) for c in libraries[lang]['clips'])}
         for lang, label in LANGUAGES.items()]}
     write(OUT / 'assets' / 'public-api' / 'catalog.json', catalog)
-    # The age graph and the timbre graph (the WavLM graph cut at layer 3; the x-vector is not used
-    # by the public server) ride in the container with their licence notices (WavLM is MIT, the
-    # age model CC BY-NC-SA 4.0); weights are never served as static assets.
+    # The age graph and the timbre student (distill/, trained to reproduce WavLM layer 3; the public
+    # server uses no WavLM graph) ride in the container with their licence notices and the student's
+    # card (WavLM is MIT, the age model CC BY-NC-SA 4.0); weights are never served as static assets.
     models = ROOT / '.models' / 'perception'
     for name in ('age.int8.onnx', 'age-LICENSE', 'age-README.md', 'age-preprocessor_config.json',
-                 'timbre.int8.onnx', 'wavlm-LICENSE', 'wavlm-README.md', 'wavlm-preprocessor_config.json', 'manifest.json'):
-        assert (models / name).is_file(), f'{name} missing: run prepare_voice_models.py'
+                 f'{TIMBRE_MODEL}.int8.onnx', f'{TIMBRE_MODEL}-card.json', 'wavlm-LICENSE', 'wavlm-README.md', 'manifest.json'):
+        assert (models / name).is_file(), f'{name} missing: run prepare_voice_models.py and distill/export.py'
         (OUT / 'models').mkdir(exist_ok=True)
         shutil.copy2(models / name, OUT / 'models' / name)
-    assert [o.name for o in ort.InferenceSession(str(models / 'timbre.int8.onnx'), providers=['CPUExecutionProvider']).get_outputs()] == ['timbre_frames'], \
-        'the timbre graph is missing or stale; run prepare_voice_models.py'
+    assert [o.name for o in ort.InferenceSession(str(models / f'{TIMBRE_MODEL}.int8.onnx'), providers=['CPUExecutionProvider']).get_outputs()] == ['timbre_frames'], \
+        'the timbre model does not return timbre_frames; run distill/export.py'
     # The index rides along in full; the server drops rows whose clip it does not serve.
     shutil.copy2(ROOT / 'data' / f'timbre-index-{TIMBRE_VERSION}.npz', OUT / 'data' / f'timbre-index-{TIMBRE_VERSION}.npz')
     write(OUT / 'manifest.json', manifest)
