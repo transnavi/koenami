@@ -37,15 +37,14 @@ async def list_voices(client):
  VOICES.write_text(json.dumps(voices,ensure_ascii=False,indent=1));return voices
 
 def plan(voices,per_voice,limit):
- """Pair each voice with lines, never repeating a line while any is unused; voices alternate by gender."""
- rng=random.Random(0);lines=json.loads(LINES.read_text())['lines'];rng.shuffle(lines)
+ """Pair each voice with its own hash-ordered lines, so a clip keeps its line when the counts or the line list grow; voices alternate by gender."""
+ rng=random.Random(0);lines=json.loads(LINES.read_text())['lines']
  by={};[by.setdefault(v.get('gender'),[]).append(v) for v in sorted(voices,key=lambda v:v['id'])]
  for group in by.values():rng.shuffle(group)
  order=[v for row in zip(*[g+[None]*(max(map(len,by.values()))-len(g)) for g in by.values()]) for v in row if v][:limit]
- jobs=[];k=0
+ jobs=[]
  for v in order:
-  for _ in range(per_voice):
-   line=lines[k%len(lines)];k+=1
+  for line in sorted(lines,key=lambda l:hashlib.sha256(f'{v["id"]}:{l["text"]}'.encode()).digest())[:per_voice]:
    id='gemini-'+hashlib.sha256(f'{MODEL}:{v["id"]}:{style(line["scene"])}:{line["text"]}'.encode()).hexdigest()[:16]
    jobs.append(dict(voice=v,line=line,id=id,path=ROOT/'data/samples'/f'{id}.flac'))
  return jobs
@@ -53,15 +52,19 @@ def plan(voices,per_voice,limit):
 class QuotaExhausted(Exception):
  """The project's daily request quota is spent; nothing more can be generated today."""
 
-async def speak(client,gate,job):
- """Synthesise one clip, retrying on rate limits and server errors; the file appears only when complete."""
+async def speak(client,gate,stop,job):
+ """Synthesise one clip, retrying on rate limits, server and network errors; the file appears only when complete."""
  body={'model':MODEL,'input':[{'type':'user_input','content':[{'type':'text','text':job['line']['text'],'annotations':[{'type':'speech_metadata','style':style(job['line']['scene'])}]}]}],
        'response_format':{'type':'audio'},'generation_config':{'speech_config':[{'voice':job['voice']['id']}]}}
  async with gate:
   for attempt in range(6):
-   r=await client.post(f'{API}/interactions',json=body)
-   if r.status_code==429 and 'per day' in r.text:raise QuotaExhausted(r.json().get('error',{}).get('message',r.text[:300]))
-   if r.status_code in (429,500,502,503,504):await asyncio.sleep(min(60,2**attempt+random.random()));continue
+   if stop.is_set():return None
+   try:r=await client.post(f'{API}/interactions',json=body)
+   except httpx.TransportError:await asyncio.sleep(2**attempt+random.random());continue
+   if r.status_code==429 and 'per day' in r.text:
+    if stop.is_set():return None
+    stop.set();raise QuotaExhausted(r.json().get('error',{}).get('message',r.text[:300]))
+   if r.status_code in (429,500,502,503,504):await asyncio.sleep(min(60,float(r.headers.get('retry-after') or 2**attempt)+random.random()));continue
    if r.is_error:raise RuntimeError(f'{r.status_code} {r.text[:300]}')
    out=r.json()
    audio=[c for s in out.get('steps',[]) for c in s.get('content') or [] if c.get('type')=='audio' and c.get('data')]
@@ -69,7 +72,7 @@ async def speak(client,gate,job):
    x,rate=sf.read(io.BytesIO(base64.b64decode(audio[0]['data'])),dtype='int16')
    tmp=job['path'].with_suffix('.tmp.flac');sf.write(tmp,x,rate,format='FLAC');tmp.replace(job['path'])
    return out.get('usage',{})
-  raise RuntimeError(f'{r.status_code} after retries')
+  raise RuntimeError('no success after retries')
 
 def cost(usage):
  """USD for one response's usage block."""
@@ -85,14 +88,12 @@ async def generate(jobs,workers):
  if not key:raise SystemExit(f'{len(missing)} clips missing; set GEMINI_API_KEY')
  gate=asyncio.Semaphore(workers);spent=[];log=ROOT/'data/gemini-tts-usage.jsonl'
  async with httpx.AsyncClient(headers={'x-goog-api-key':key},timeout=180) as client:
-  quota=[]
+  stop=asyncio.Event()
   async def one(j):
-   if quota:return
-   try:usage=await speak(client,gate,j)
-   except QuotaExhausted as e:
-    if not quota:print('STOPPED:',e,flush=True)
-    quota.append(e);return
+   try:usage=await speak(client,gate,stop,j)
+   except QuotaExhausted as e:print('STOPPED:',e,flush=True);return
    except Exception as e:print('FAILED',j['id'],j['voice']['id'],str(e)[:300],flush=True);return
+   if usage is None:return
    spent.append(cost(usage))
    with log.open('a') as f:f.write(json.dumps({'id':j['id'],'usage':usage})+'\n')
    if len(spent)%25==0:print(f'{len(spent)}/{len(missing)} ${sum(spent):.3f}',flush=True)
@@ -114,8 +115,8 @@ async def main():
  for j in jobs:
   m=measured[str(j['path'])];f=m['features'];v=j['voice']
   ok=m.get('formant_seconds',0)>=.3 and math.isfinite(f.get('delta_f') or float('nan')) and m.get('resonance_sensitivity_pct',m.get('tracking_sensitivity',0))<=12
-  clips.append({'id':j['id'],'speaker':f'gemini-{v["id"]}','name':f'Gemini:{v["id"]}','group':v.get('gender'),'voice_label':v.get('gender'),
-   'group_source':'Gemini voice library gender field; not a listener rating','synthetic':True,'language':'ja','text':j['line']['text'],'style':style(j['line']['scene']),
+  clips.append({'id':j['id'],'speaker':f'gemini-{v["id"]}','name':f'Gemini:{v.get("display_name") or v["id"]}','group':'androgynous' if v.get('gender')=='neutral' else v.get('gender'),'voice_label':v.get('gender'),
+   'group_source':'Gemini voice library gender field (neutral as androgynous); not a listener rating','synthetic':True,'language':'ja','text':j['line']['text'],'style':style(j['line']['scene']),
    'text_source':'curation/gemini-conversation-ja.json (lines written for this corpus)',
    'voice':{k:v.get(k) for k in ('id','display_name','accent','pitch','persona','context','description')},
    'audio':'/samples/'+j['path'].name,'duration':m['duration'],'features':f,'level_dbfs':m.get('level_dbfs'),'peak':m.get('peak'),
