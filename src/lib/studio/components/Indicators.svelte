@@ -4,19 +4,20 @@
 	import { m } from '$lib/paraglide/messages';
 
 	import { openHelp } from '../help';
-	import { fmt, indicator, METRICS, type Indicator } from '../profile';
+	import { fmt, indicator, METRICS, spread, type Indicator, type Spread } from '../profile';
 	import { useStudio } from '../studio.svelte';
 
 	const studio = useStudio();
 
+	// The speakers' spread only changes with the reference group; the voices change with every
+	// live measurement.
+	let spreads = $derived(METRICS.map((metric) => spread(metric, studio.referenceStats)));
 	let rows = $derived(
-		METRICS.map((metric) =>
-			indicator(metric, studio.ownFeatures, studio.refFeatures, studio.referenceStats)
-		)
+		spreads.map((s) => ({ spread: s, ...indicator(s, studio.ownFeatures, studio.refFeatures) }))
 	);
 
-	function explain(row: Indicator) {
-		const { metric } = row;
+	function explain(row: Indicator & { spread: Spread }) {
+		const { metric, q10, q90, speakers } = row.spread;
 		openHelp(metric, [
 			[m.help_own(), `${fmt(row.own, metric.n)} ${metric.unit}`],
 			[m.help_reference(), `${fmt(row.ref, metric.n)} ${metric.unit}`],
@@ -24,16 +25,16 @@
 				m.help_band({
 					group: (studio.referenceGroup === 'male' ? m.group_male : m.group_female)()
 				}),
-				`${fmt(row.q10, metric.n)}–${fmt(row.q90, metric.n)} ${metric.unit}`
+				`${fmt(q10, metric.n)}–${fmt(q90, metric.n)} ${metric.unit}`
 			],
-			[m.help_speakers(), row.speakers]
+			[m.help_speakers(), speakers]
 		]);
 	}
 </script>
 
 <div id="indicators" class="indicators" role="group" aria-label={m.profile_indicators_aria()}>
-	{#each rows as row (row.metric.key)}
-		{@const { metric } = row}
+	{#each rows as row (row.spread.metric.key)}
+		{@const { metric } = row.spread}
 		{@const title = m.indicator_title({
 			label: metric.label,
 			own: fmt(row.own, metric.n),
@@ -58,14 +59,14 @@
 			<span class="indicator-track"
 				>{#if row.band}<span
 						class="indicator-band"
-						style:left="{row.band[0]}%"
-						style:width="{row.band[1]}%"
-					></span>{/if}{#if row.marker !== null}<span
+						style:left="{row.band.left}%"
+						style:width="{row.band.width}%"
+					></span>{/if}{#if row.ownAt !== null}<span
 						class="indicator-marker"
-						style:left="{row.marker}%"
-					></span>{/if}{#if row.target !== null}<span
+						style:left="{row.ownAt}%"
+					></span>{/if}{#if row.refAt !== null}<span
 						class="indicator-target"
-						style:left="{row.target}%"
+						style:left="{row.refAt}%"
 					></span>{/if}</span
 			>
 		</button>
