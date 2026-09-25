@@ -125,7 +125,7 @@ export class StudioState {
 
 	/* What the profile panel shows: the listener's measurement (the selected range, else the
 	   whole take), both voices' features, and the reference speakers of the selected reference's
-	   group, against which the indicators and the chart are scaled. */
+	   group, against which the indicators are scaled. */
 	readonly measurement = $derived(this.own || this.ownFull);
 	readonly ownFeatures = $derived<Features>(this.own?.features || {});
 	readonly refFeatures = $derived<Features>(this.ref?.features || {});
