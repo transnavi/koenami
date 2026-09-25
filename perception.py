@@ -104,7 +104,7 @@ def timbre(x):
         best = np.flatnonzero(counts == counts.max()); centre = ((start + end) // 2 - 4 * RATE) // step
         c = min(int(best[np.abs(best - centre).argmin()]) * step, len(x) - 8 * RATE)
         x = x[c:c + 8 * RATE]; rms = frame_rms(x)
-    if not timbre_ready(): raise ValueError('The prepared WavLM model predates the timbre output; run prepare_voice_models.py.')
+    if not timbre_ready(): raise ValueError('The timbre graph (timbre.int8.onnx) is missing; run prepare_voice_models.py.')
     frames = session('timbre').run(['timbre_frames'], {'values': x.astype(np.float32)[None, :]})[0][0]
     energy = 20 * np.log10(rms[:len(frames)] + 1e-12)
     speech = (energy > energy.max() - 40) & (rms[:len(frames)] > FLOOR)
