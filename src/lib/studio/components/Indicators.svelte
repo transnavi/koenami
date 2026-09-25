@@ -11,7 +11,7 @@
 
 	// The speakers' spread only changes with the reference group; the voices change with every
 	// live measurement.
-	let spreads = $derived(METRICS.map((metric) => spread(metric, studio.referenceStats)));
+	let spreads = $derived(METRICS.map((metric) => spread(metric, studio.referenceSpeakers)));
 	let rows = $derived(
 		spreads.map((s) => ({ spread: s, ...indicator(s, studio.ownFeatures, studio.refFeatures) }))
 	);

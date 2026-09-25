@@ -160,7 +160,7 @@ export function mountStudio(state: State): () => void {
 		count: number;
 	} | null = null;
 	function buildFit() {
-		const refs = state.referenceStats.filter((c) => AcousticSpace.raw(c.features).every(finite));
+		const refs = state.referenceSpeakers.filter((c) => AcousticSpace.raw(c.features).every(finite));
 		if (refs.length < 20) {
 			fitModel = null;
 			return;
@@ -238,7 +238,7 @@ export function mountStudio(state: State): () => void {
 		map.targetRange = state.ranges.ref;
 		map.showRange = true;
 		map.live = state.captureMode === 'live' && state.recording;
-		const pitchRefs = state.referenceStats.map((c) => c.features.f0 as number);
+		const pitchRefs = state.referenceSpeakers.map((c) => c.features.f0 as number);
 		signal.pitchBand = [quantile(pitchRefs, 0.1), quantile(pitchRefs, 0.9)];
 	}
 	function teacherMatch(c: Clip) {
@@ -1743,7 +1743,7 @@ export function mountStudio(state: State): () => void {
 			r = activeFeatures('ref'),
 			comparison = map.space?.comparison(f, r, map.dimension, map.projection),
 			fit = fitValue(f),
-			refs = state.referenceStats;
+			refs = state.referenceSpeakers;
 		const rows = METRICS.map((metric) => {
 			const vals = refs.map((c) => c.features[metric.key]).filter(finite);
 			return `<tr><td>${metric.label} · ${metric.unit}</td><td>${fmt(f[metric.key], metric.n)}</td><td>${fmt(r[metric.key], metric.n)}</td><td>${m.help_band_range({ low: fmt(quantile(vals, 0.1), metric.n), high: fmt(quantile(vals, 0.9), metric.n) })}</td></tr>`;
