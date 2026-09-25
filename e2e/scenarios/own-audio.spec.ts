@@ -59,7 +59,7 @@ test.describe('own audio', () => {
 			await studio.golden(`metric-${metric}`);
 			await page.locator('#metric-dialog [data-close]').click();
 		}
-		// A focused indicator keeps focus when the panel is rebuilt.
+		// A focused indicator keeps focus when the measurement changes.
 		await page.locator('#indicators [data-metric="hnr"]').focus();
 		await page.locator('#upload').setInputFiles(studio.audio('own-b.wav'));
 		await studio.until(app.ownName('own-b.wav') + ' && ' + app.analysed);

@@ -4,7 +4,7 @@
 <script lang="ts">
 	import { clamp } from '$lib/math';
 	import { m } from '$lib/paraglide/messages';
-	import { formatScore, gateFailure, verdictLabel } from '$lib/score';
+	import { formatScore, verdictLabel } from '$lib/score';
 
 	import { useStudio } from '../studio.svelte';
 
@@ -15,19 +15,19 @@
 	let result = $derived(studio.shareResult);
 	let available = $derived(!!studio.scorer?.available);
 	let measurement = $derived(studio.measurement);
-	let gate = $derived(
-		measurement && !measurement.analysisPending && available ? gateFailure(measurement) : null
-	);
+	// Until the language's scorer has loaded there is nothing to say either way.
 	let word = $derived(
 		result
 			? verdictLabel(result.verdict)
-			: !available
-				? m.verdict_unavailable()
-				: !measurement
-					? m.verdict_record()
-					: measurement.analysisPending
-						? m.verdict_analyzing()
-						: m.verdict_not_yet()
+			: !studio.scorer
+				? '—'
+				: !available
+					? m.verdict_unavailable()
+					: !measurement
+						? m.verdict_record()
+						: measurement.analysisPending
+							? m.verdict_analyzing()
+							: m.verdict_not_yet()
 	);
 	let bands = $derived(available ? studio.scorer!.bands : null);
 </script>
@@ -41,8 +41,12 @@
 		<strong id="verdict-word">{word}</strong>
 		<b id="verdict-number">{result ? formatScore(result.display) : ''}</b>
 	</span>
-	<span id="verdict-gate" class="verdict-gate" hidden={!gate || !!result}>
-		{gate && !result ? (gate.value ? m.verdict_gate(gate) : gate.label) : ''}
+	<span id="verdict-gate" class="verdict-gate" hidden={!studio.gate || !!result}>
+		{studio.gate && !result
+			? studio.gate.value
+				? m.verdict_gate(studio.gate)
+				: studio.gate.label
+			: ''}
 	</span>
 	<span class="verdict-scale" aria-hidden="true">
 		{#each ['male', 'female'] as const as group (group)}
@@ -50,7 +54,7 @@
 			<i
 				id="verdict-band-{group}"
 				class="verdict-band {group}"
-				hidden={!band}
+				hidden={!!studio.scorer && !band}
 				style:left={band ? scale(band[0]) : undefined}
 				style:width={band ? `calc(${scale(band[1])} - ${scale(band[0])})` : undefined}
 			></i>

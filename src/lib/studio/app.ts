@@ -21,11 +21,12 @@ import {
 } from '$lib/score';
 import { shareBundle, cardImage, systemShare, labelled } from '$lib/share';
 import { SignalView, type Side, type SignalMode } from '$lib/signals';
+import { blendedScores, fiveMeasureDistances } from '$lib/similar';
 import { AcousticSpace, type Features } from '$lib/space';
 import { TakeStore } from '$lib/storage';
 
-import { openHelp } from './help';
-import { fmt, METRICS, VERDICT_HELP } from './profile';
+import { openHelp, VERDICT_HELP } from './help';
+import { fmt, METRICS } from './metrics';
 import { snapshot as snap, type LanguageOption, type State, type Theme } from './studio.svelte';
 import type {
 	Clip,
@@ -149,9 +150,6 @@ export function mountStudio(state: State): () => void {
 		if (c.group === 'research') return `${c.dataset} · ${c.speaker}`;
 		return `${c.group === 'female' ? 'F' : 'M'} ${String(c.index || 0).padStart(3, '0')}`;
 	}
-	function referenceGroupLabel() {
-		return (state.referenceGroup === 'male' ? m.group_male : m.group_female)();
-	}
 	let fitModel: {
 		model: AcousticSpace;
 		loo: number[];
@@ -159,7 +157,7 @@ export function mountStudio(state: State): () => void {
 		count: number;
 	} | null = null;
 	function buildFit() {
-		const refs = state.referenceStats.filter((c) => AcousticSpace.raw(c.features).every(finite));
+		const refs = state.referenceSpeakers.filter((c) => AcousticSpace.raw(c.features).every(finite));
 		if (refs.length < 20) {
 			fitModel = null;
 			return;
@@ -237,7 +235,7 @@ export function mountStudio(state: State): () => void {
 		map.targetRange = state.ranges.ref;
 		map.showRange = true;
 		map.live = state.captureMode === 'live' && state.recording;
-		const pitchRefs = state.referenceStats.map((c) => c.features.f0 as number);
+		const pitchRefs = state.referenceSpeakers.map((c) => c.features.f0 as number);
 		signal.pitchBand = [quantile(pitchRefs, 0.1), quantile(pitchRefs, 0.9)];
 	}
 	function teacherMatch(c: Clip) {
@@ -286,13 +284,14 @@ export function mountStudio(state: State): () => void {
 		}
 		const sort = $<HTMLSelectElement>('sort').value,
 			f = activeFeatures('own'),
-			ranking = sort === 'near' ? similarRanking() : null;
-		// Closest first: by the listener-validated timbre ranking when the analyzer returned one
-		// for this take (speakers it does not index, such as imported ones, go last, and each
-		// speaker's nearest clip leads its folder), by the map's five measures otherwise.
+			ranking = sort === 'near' ? similarRanking() : null,
+			blended = ranking ? blendedOrder(ranking) : null;
+		// Closest first: by the timbre ranking blended with the five measures when the analyzer
+		// returned one for this take (speakers it does not index, such as imported ones, go last,
+		// and each speaker's nearest clip leads its folder), by the five measures alone otherwise.
 		const key = (c: Clip) =>
-			ranking
-				? (ranking.get(c.speaker)?.distance ?? Infinity)
+			blended
+				? (blended.get(c.speaker) ?? Infinity)
 				: sort === 'near'
 					? map.space!.distance(c.features, f)
 					: sort === 'low'
@@ -310,6 +309,20 @@ export function mountStudio(state: State): () => void {
 					lead(a) - lead(b) ||
 					a.id.localeCompare(b.id)
 		);
+	}
+	/* The near order's score per speaker, recomputed only when the ranking or the measurement
+	   it is blended with changes. */
+	let blendMemo: {
+		ranking: Map<string, SimilarSpeaker>;
+		own: Detail | Clip | null;
+		scores: Map<string, number>;
+	} | null = null;
+	function blendedOrder(ranking: Map<string, SimilarSpeaker>) {
+		if (blendMemo?.ranking === ranking && blendMemo.own === state.own) return blendMemo.scores;
+		const timbre = new Map([...ranking].map(([k, v]) => [k, v.distance]));
+		const five = fiveMeasureDistances(map.space!, state.clips, activeFeatures('own'));
+		blendMemo = { ranking, own: state.own, scores: blendedScores(timbre, five) };
+		return blendMemo.scores;
 	}
 	function similarCapable() {
 		return !!state.capabilities?.similar?.includes(state.lang);
@@ -375,7 +388,9 @@ export function mountStudio(state: State): () => void {
 		if (!near) return;
 		const key = similarKeyOf();
 		$('sort-basis').textContent = similarRanking()
-			? m.sort_near_timbre()
+			? map.space?.standardized(activeFeatures('own'))
+				? m.sort_near_timbre()
+				: m.sort_near_timbre_only()
 			: key && state.similarKey === key
 				? m.sort_near_pending()
 				: m.sort_near_acoustic();
@@ -1725,7 +1740,7 @@ export function mountStudio(state: State): () => void {
 			r = activeFeatures('ref'),
 			comparison = map.space?.comparison(f, r, map.dimension, map.projection),
 			fit = fitValue(f),
-			refs = state.referenceStats;
+			refs = state.referenceSpeakers;
 		const rows = METRICS.map((metric) => {
 			const vals = refs.map((c) => c.features[metric.key]).filter(finite);
 			return `<tr><td>${metric.label} · ${metric.unit}</td><td>${fmt(f[metric.key], metric.n)}</td><td>${fmt(r[metric.key], metric.n)}</td><td>${m.help_band_range({ low: fmt(quantile(vals, 0.1), metric.n), high: fmt(quantile(vals, 0.9), metric.n) })}</td></tr>`;
@@ -1760,7 +1775,7 @@ export function mountStudio(state: State): () => void {
 		if (finite(f.delta_f) && finite(r.delta_f))
 			notes.push(m.report_note_resonance({ own: fmt(f.delta_f), ref: fmt(r.delta_f) }));
 		notes.push(m.report_note_intonation());
-		return `<div class="report-score">${comparison ? fmt(comparison.distance, 2) : '—'}</div><p>${m.report_distance_caption()}</p><p class="small">${m.report_distance_note()}</p>${comparison ? `<p>${m.report_share({ shown: Math.round(comparison.displayedShare * 100), omitted: Math.round((1 - comparison.displayedShare) * 100) })}</p><p class="small">${m.report_share_note()}</p>` : ''}<table class="report-table"><thead><tr><th>${m.report_col_metric()}</th><th>${m.report_col_own()}</th><th>${m.report_col_ref()}</th><th>${m.report_col_band()}</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(m.report_footer({ name: state.ownName, duration: clock(state.ownFull?.duration), reference: nameOf((state.selected || {}) as Clip) }))}<br>${esc(m.report_languages({ own: state.ownLanguage, ref: state.lang }))}${fit === null ? '' : '<br>' + esc(m.report_density({ group: referenceGroupLabel(), percentile: Math.round(fit) }))}<br>${esc(m.report_projection({ dimension: map.dimension, variance: Math.round((map.space?.explained(map.dimension, map.projection) || 0) * 100) }))}</p>`;
+		return `<div class="report-score">${comparison ? fmt(comparison.distance, 2) : '—'}</div><p>${m.report_distance_caption()}</p><p class="small">${m.report_distance_note()}</p>${comparison ? `<p>${m.report_share({ shown: Math.round(comparison.displayedShare * 100), omitted: Math.round((1 - comparison.displayedShare) * 100) })}</p><p class="small">${m.report_share_note()}</p>` : ''}<table class="report-table"><thead><tr><th>${m.report_col_metric()}</th><th>${m.report_col_own()}</th><th>${m.report_col_ref()}</th><th>${m.report_col_band()}</th></tr></thead><tbody>${rows.join('')}</tbody></table><ul class="report-notes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul><p class="small">${esc(m.report_footer({ name: state.ownName, duration: clock(state.ownFull?.duration), reference: nameOf((state.selected || {}) as Clip) }))}<br>${esc(m.report_languages({ own: state.ownLanguage, ref: state.lang }))}${fit === null ? '' : '<br>' + esc(m.report_density({ group: state.referenceGroupLabel, percentile: Math.round(fit) }))}<br>${esc(m.report_projection({ dimension: map.dimension, variance: Math.round((map.space?.explained(map.dimension, map.projection) || 0) * 100) }))}</p>`;
 	}
 	$('report-button').onclick = () => {
 		$('report-content').innerHTML = reportHTML();
@@ -1914,6 +1929,10 @@ export function mountStudio(state: State): () => void {
 			fitValue,
 			selectRange,
 			selectSample,
+			nearScores: () => {
+				const ranking = similarRanking();
+				return ranking ? Object.fromEntries(blendedOrder(ranking)) : null;
+			},
 			loadLanguage,
 			controls,
 			TakeStore,

@@ -1,0 +1,197 @@
+"""Generate Japanese conversational references with Gemini 3.8 Flash TTS and measure every clip.
+
+Each Japanese voice in the Gemini voice library, plus the voices designed from
+the descriptions in curation/gemini-voices-ja.json, speaks lines of everyday
+conversation from curation/gemini-conversation-ja.json, directed in Japanese to
+talk as in everyday conversation rather than read aloud. Audio already under data/samples is measured without
+calling the API, so the manifest rebuilds offline; only missing clips need
+GEMINI_API_KEY.
+
+API: https://ai.google.dev/gemini-api/docs/speech-generation (interactions),
+https://ai.google.dev/api/voices (voice library; gender is the library's own
+"perceived voice gender presentation" field, overridden where a listening check
+disagreed), https://ai.google.dev/gemini-api/docs/voice-design (designed voices).
+"""
+import argparse,asyncio,base64,datetime,hashlib,io,json,math,os,random
+from pathlib import Path
+import httpx,soundfile as sf
+from engine import measure_files,version
+ROOT=Path(__file__).parent
+API='https://generativelanguage.googleapis.com/v1beta'
+MODEL='gemini-3.8-flash-tts'
+LINES=ROOT/'curation/gemini-conversation-ja.json'
+VOICES=ROOT/'data/gemini-voices-ja.json'
+DESIGNED=ROOT/'data/gemini-designed-voices-ja.json'
+CURATION=ROOT/'curation/gemini-voices-ja.json'
+DEST=ROOT/'data/gemini-tts.json'
+# USD per 1M tokens, Gemini API standard rates through 2026-12-31.
+PRICE={'text':.5,'audio':9,'invocation':1}
+
+STYLE='普段の会話で、その場で思いついたことを話しているように。力を抜いて自然に、読み上げ口調にしない。'
+
+async def list_voices(client):
+ """The prebuilt Japanese catalogue and the designed voices, cached so reruns see the same voices."""
+ return await prebuilt(client)+await designed(client)
+
+async def designed(client):
+ """The described voices: reuse a stored voice with the same name, gender and description, create the rest.
+
+ Matching against what Google stores keeps a voice's id, and so its clip ids, when the local cache is lost,
+ and never creates a duplicate. Without a key the cache alone is used, so the manifest rebuilds offline."""
+ wanted=json.loads(CURATION.read_text())['designed'];have=json.loads(DESIGNED.read_text()) if DESIGNED.exists() else {}
+ same=lambda v,d:(v.get('display_name'),v.get('gender'),v.get('description'))==(d['name'],d['gender'],d['prompt'])
+ if client.headers.get('x-goog-api-key'):
+  stored=[];token=None
+  while True:
+   r=await client.get(f'{API}/voices',params={'type':'prompted','page_size':1000,**({'page_token':token} if token else {})});r.raise_for_status();body=r.json()
+   stored+=[dict(id=v['id'],type='prompted',display_name=v.get('display_name'),gender=v.get('gender'),language_code=v.get('language_code'),description=(v.get('prompted') or {}).get('input'),expire_time=v.get('expire_time')) for v in body.get('voices',[])];token=body.get('next_page_token')
+   if not token:break
+  for d in wanted:
+   match=[v for v in stored if same(v,d)]
+   if match:have[d['name']]=next((v for v in match if v['id']==have.get(d['name'],{}).get('id')),match[0]);continue
+   v=await create_voice(client,d)
+   if v:have[d['name']]=v;stored.append(v)
+  used={have[d['name']]['id'] for d in wanted if d['name'] in have}
+  for v in stored:
+   if v['id'] not in used:print('UNUSED designed voice',v['id'],v['display_name'],flush=True)
+  tmp=DESIGNED.with_suffix('.tmp');tmp.write_text(json.dumps(have,ensure_ascii=False,indent=1));tmp.replace(DESIGNED)
+ # A stored voice expires a year after creation; clips made before then stay valid.
+ now=datetime.datetime.now(datetime.timezone.utc).isoformat()
+ ready=[have[d['name']] for d in wanted if d['name'] in have and same(have[d['name']],d) and (have[d['name']].get('expire_time') or '9')>now]
+ if len(ready)<len(wanted):print(f'{len(wanted)-len(ready)} designed voices not available',flush=True)
+ return ready
+
+async def create_voice(client,d):
+ """Create one voice, retrying rate limits, server and network errors. The safety check runs on a prompt
+ the service rewrites, so a description it flags can pass on another try; after three flags it is skipped."""
+ flagged=0
+ for attempt in range(8):
+  try:r=await client.post(f'{API}/voices',json={'store':True,'voice':{'model':MODEL,'type':'prompted','display_name':d['name'],'gender':d['gender'],'language_code':'ja-JP','prompted':{'input':d['prompt']}}})
+  except httpx.TransportError:await asyncio.sleep(2**attempt);continue
+  if r.status_code==400 and 'safety' in r.text:
+   flagged+=1
+   if flagged==3:print('SKIPPED',d['name'],'blocked by safety policies',flush=True);return None
+   continue
+  if r.status_code in (429,500,502,503,504):await asyncio.sleep(min(60,float(r.headers.get('retry-after') or 2**attempt)));continue
+  if r.is_error:raise RuntimeError(f'designing {d["name"]}: {r.status_code} {r.text[:300]}')
+  v=r.json()
+  with (ROOT/'data/gemini-tts-usage.jsonl').open('a') as f:f.write(json.dumps({'voice':d['name'],'usage':v.get('usage',{})})+'\n')
+  return dict(id=v['id'],type='prompted',display_name=d['name'],gender=d['gender'],language_code='ja-JP',description=d['prompt'],expire_time=v.get('expire_time'))
+ raise RuntimeError(f'designing {d["name"]}: no success after retries')
+
+async def prebuilt(client):
+ if VOICES.exists():return json.loads(VOICES.read_text())
+ voices=[];token=None
+ while True:
+  r=await client.get(f'{API}/voices',params={'type':'prebuilt','language_code':'ja-JP','page_size':1000,**({'page_token':token} if token else {})});r.raise_for_status();body=r.json()
+  voices+=body.get('voices',[]);token=body.get('next_page_token')
+  if not token:break
+ VOICES.write_text(json.dumps(voices,ensure_ascii=False,indent=1));return voices
+
+def plan(voices,per_voice,limit):
+ """Pair each voice with its own hash-ordered lines, so a clip keeps its line when the counts or the line list grow; voices alternate by gender."""
+ rng=random.Random(0);lines=json.loads(LINES.read_text())['lines']
+ by={};[by.setdefault(v.get('gender'),[]).append(v) for v in sorted(voices,key=lambda v:v['id'])]
+ for group in by.values():rng.shuffle(group)
+ order=[v for row in zip(*[g+[None]*(max(map(len,by.values()))-len(g)) for g in by.values()]) for v in row if v][:limit]
+ jobs=[]
+ for v in order:
+  for line in sorted(lines,key=lambda l:hashlib.sha256(f'{v["id"]}:{l["text"]}'.encode()).digest())[:per_voice]:
+   id='gemini-'+hashlib.sha256(f'{MODEL}:{v["id"]}:{STYLE}:{line["text"]}'.encode()).hexdigest()[:16]
+   jobs.append(dict(voice=v,line=line,id=id,path=ROOT/'data/samples'/f'{id}.flac'))
+ return jobs
+
+class QuotaExhausted(Exception):
+ """The project's daily request quota is spent; nothing more can be generated today."""
+
+async def speak(client,gate,stop,job):
+ """Synthesise one clip, retrying on rate limits, server and network errors; the file appears only when complete."""
+ body={'model':MODEL,'input':[{'type':'user_input','content':[{'type':'text','text':job['line']['text'],'annotations':[{'type':'speech_metadata','style':STYLE}]}]}],
+       'response_format':{'type':'audio'},'generation_config':{'speech_config':[{'voice':job['voice']['id']}]}}
+ async with gate:
+  for attempt in range(6):
+   if stop.is_set():return None
+   try:r=await client.post(f'{API}/interactions',json=body)
+   except httpx.TransportError:await asyncio.sleep(2**attempt+random.random());continue
+   if r.status_code==429 and 'per day' in r.text:
+    if stop.is_set():return None
+    stop.set();raise QuotaExhausted(r.json().get('error',{}).get('message',r.text[:300]))
+   if r.status_code in (429,500,502,503,504):await asyncio.sleep(min(60,float(r.headers.get('retry-after') or 2**attempt)+random.random()));continue
+   if r.is_error:raise RuntimeError(f'{r.status_code} {r.text[:300]}')
+   out=r.json()
+   audio=[c for s in out.get('steps',[]) for c in s.get('content') or [] if c.get('type')=='audio' and c.get('data')]
+   if not audio:raise RuntimeError(f'no audio in response: {json.dumps(out)[:300]}')
+   x,rate=sf.read(io.BytesIO(base64.b64decode(audio[0]['data'])),dtype='int16')
+   tmp=job['path'].with_suffix('.tmp.flac');sf.write(tmp,x,rate,format='FLAC');tmp.replace(job['path'])
+   return out.get('usage',{})
+  raise RuntimeError('no success after retries')
+
+def cost(usage):
+ """USD for one response's usage block, erring high.
+
+ Each response also reports about 1,200-1,400 prompt tokens of the model's own invocation (most of them audio)
+ that the itemised input leaves out. Whether they are billed is not documented, so they are counted at
+ $1 per 1M, which keeps the spending cap on the safe side."""
+ total=0
+ for field in ('input_tokens_by_modality','output_tokens_by_modality'):
+  for m in usage.get(field) or []:total+=m.get('tokens',0)*PRICE['audio' if field.startswith('output') and m.get('modality')=='audio' else 'text']/1e6
+ for inv in usage.get('model_invocation_token_counts') or []:
+  total+=sum(m.get('tokens',0) for m in inv.get('prompt_tokens_details') or [])*PRICE['invocation']/1e6
+ return total
+
+def logged_spend():
+ """What every run so far has spent, clips and designed voices alike, from the usage log."""
+ log=ROOT/'data/gemini-tts-usage.jsonl'
+ return sum(cost(json.loads(l)['usage']) for l in log.open()) if log.exists() else 0
+
+async def generate(jobs,workers,max_usd):
+ """Make the missing clips until the total logged spend reaches max_usd."""
+ missing=[j for j in jobs if not j['path'].exists()]
+ if not missing:return
+ key=os.environ.get('GEMINI_API_KEY')
+ if not key:print(f'{len(missing)} clips missing; set GEMINI_API_KEY to generate them',flush=True);return
+ gate=asyncio.Semaphore(workers);spent=[];log=ROOT/'data/gemini-tts-usage.jsonl';before=logged_spend()
+ if before>=max_usd:print(f'STOPPED: ${before:.2f} already spent, the --max-usd cap',flush=True);return
+ async with httpx.AsyncClient(headers={'x-goog-api-key':key},timeout=180) as client:
+  stop=asyncio.Event()
+  async def one(j):
+   try:usage=await speak(client,gate,stop,j)
+   except QuotaExhausted as e:print('STOPPED:',e,flush=True);return
+   except Exception as e:print('FAILED',j['id'],j['voice']['id'],str(e)[:300],flush=True);return
+   if usage is None:return
+   spent.append(cost(usage))
+   if before+sum(spent)>=max_usd and not stop.is_set():stop.set();print(f'STOPPED: ${before+sum(spent):.2f} spent in total, the --max-usd cap',flush=True)
+   with log.open('a') as f:f.write(json.dumps({'id':j['id'],'usage':usage})+'\n')
+   if len(spent)%25==0:print(f'{len(spent)}/{len(missing)} ${sum(spent):.3f}',flush=True)
+  await asyncio.gather(*map(one,missing))
+ if spent:print(f'generated {len(spent)} clips for ${sum(spent):.4f} (${sum(spent)/len(spent):.5f} each); ${before+sum(spent):.2f} spent in total',flush=True)
+
+async def main():
+ ap=argparse.ArgumentParser(description=__doc__.splitlines()[0])
+ ap.add_argument('--per-voice',type=int,default=6,help='lines each voice speaks')
+ ap.add_argument('--voices',type=int,default=1000,help='at most this many voices')
+ ap.add_argument('--workers',type=int,default=8)
+ ap.add_argument('--max-usd',type=float,default=15,help='stop generating once the total logged spend, over every run, reaches this')
+ a=ap.parse_args()
+ async with httpx.AsyncClient(headers={'x-goog-api-key':os.environ.get('GEMINI_API_KEY','')},timeout=60) as client:voices=await list_voices(client)
+ labels=json.loads(CURATION.read_text())['labels']
+ for v in voices:
+  if v['id'] in labels:v['group']=labels[v['id']]['group'];v['label_source']=labels[v['id']]['source']
+ jobs=plan(voices,a.per_voice,a.voices)
+ print(len(jobs),'clips from',len({j['voice']['id'] for j in jobs}),'voices',flush=True)
+ await generate(jobs,a.workers,a.max_usd)
+ jobs=[j for j in jobs if j['path'].exists()]
+ measured=measure_files(str(j['path']) for j in jobs);clips=[]
+ for j in jobs:
+  m=measured[str(j['path'])];f=m['features'];v=j['voice']
+  ok=m.get('formant_seconds',0)>=.3 and math.isfinite(f.get('delta_f') or float('nan')) and m.get('resonance_sensitivity_pct',m.get('tracking_sensitivity',0))<=12
+  clips.append({'id':j['id'],'speaker':f'gemini-{v["id"]}','name':f'Gemini:{(v.get("display_name") or v["id"]).removeprefix("koenami-")}','dataset':'Gemini TTS','credit':f'Gemini 3.8 Flash TTS ({MODEL})','license':'Gemini API Additional Terms of Service; AI-generated','group':v.get('group') or ('androgynous' if v.get('gender')=='neutral' else v.get('gender')),'voice_label':v.get('group') or ('androgynous' if v.get('gender')=='neutral' else v.get('gender')),
+   'group_source':v.get('label_source') or ('Gender given when the voice was designed' if v.get('type')=='prompted' else 'Gemini voice library gender field (neutral as androgynous); not a listener rating'),'synthetic':True,'language':'ja','text':j['line']['text'],'style':STYLE,'scene':j['line']['scene'],
+   'text_source':'curation/gemini-conversation-ja.json (lines written for this corpus)',
+   'voice':{k:v.get(k) for k in ('id','type','display_name','gender','accent','pitch','persona','context','description')},
+   'audio':'/samples/'+j['path'].name,'duration':m['duration'],'features':f,'level_dbfs':m.get('level_dbfs'),'peak':m.get('peak'),
+   'voiced_seconds':m['voiced_seconds'],'formant_seconds':m.get('formant_seconds',0),'plotted':bool(ok),'reason':None if ok else 'Unstable resonance estimate.',
+   'source':'https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash-tts','engine':f'Google Gemini API / {MODEL}','sha256':hashlib.sha256(j['path'].read_bytes()).hexdigest()})
+ tmp=DEST.with_suffix('.tmp');tmp.write_text(json.dumps({'version':version(),'engine':MODEL,'clips':clips},ensure_ascii=False,allow_nan=False));tmp.replace(DEST)
+ print('DONE',len(clips),'clips;',sum(c['plotted'] for c in clips),'mapped',flush=True)
+if __name__=='__main__':asyncio.run(main())

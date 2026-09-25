@@ -1,7 +1,26 @@
 /* One dialog for every ⓘ: the definition, the numbers, what moves the value, and what it cannot
    tell. The dialog is still markup in the studio's template body; it becomes a component with
    the other dialogs. */
-import type { HelpEntry } from './profile';
+import { messages } from '$lib/i18n';
+import { m } from '$lib/paraglide/messages';
+
+import type { HelpEntry } from './metrics';
+
+/* The verdict's entry, opened from the share dialog. */
+export const VERDICT_HELP: HelpEntry = {
+	get label() {
+		return m.verdict_help_label();
+	},
+	get description() {
+		return m.verdict_help_description();
+	},
+	get factors() {
+		return messages('verdict_help_factors');
+	},
+	get caveats() {
+		return messages('verdict_help_caveats');
+	}
+};
 
 const $ = (id: string) => document.getElementById(id)!;
 

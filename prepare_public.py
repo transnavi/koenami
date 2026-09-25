@@ -98,6 +98,12 @@ def main():
     voices = read('voicevox.json')
     write(OUT / 'data' / 'voicevox.json', voices)
     libraries['ja']['clips'].extend(voices['clips'])
+    # Gemini references are optional: a checkout that never ran build_gemini_tts.py builds without them.
+    if (ROOT / 'data' / 'gemini-tts.json').exists():
+        gemini = read('gemini-tts.json')
+        gemini['clips'] = [{k: v for k, v in c.items() if k in KEYS} for c in gemini['clips']]
+        write(OUT / 'data' / 'gemini-tts.json', gemini)
+        libraries['ja']['clips'].extend(gemini['clips'])
     manifest = []
     for lang, library in libraries.items():
         write(OUT / 'assets' / 'public-api' / f'{lang}.json', library)
