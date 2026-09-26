@@ -22,6 +22,21 @@ def available(names=('wavlm', 'age')):
     return all((MODEL_DIR / f'{name}.int8.onnx').is_file() for name in names)
 
 
+def timbre_model():
+    """sha256 of the timbre model file, '' without one. The version string names the descriptor's
+    design; this names the weights, so an index or cache built with other weights is recognised."""
+    path = MODEL_DIR / f'{TIMBRE_MODEL}.int8.onnx'
+    if not path.is_file(): return ''
+    key = (str(path), path.stat().st_mtime_ns, path.stat().st_size)
+    if _model_hash.get('key') != key:
+        import hashlib
+        _model_hash.update(key=key, sha=hashlib.sha256(path.read_bytes()).hexdigest())
+    return _model_hash['sha']
+
+
+_model_hash = {}
+
+
 def timbre_ready():
     """The timbre model is present and carries the timbre output; opening the session warms it."""
     return available([TIMBRE_MODEL]) and 'timbre_frames' in [o.name for o in session(TIMBRE_MODEL).get_outputs()]

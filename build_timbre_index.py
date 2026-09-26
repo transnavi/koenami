@@ -49,7 +49,7 @@ def pcm(clip):
 def save(rows, vectors, out=OUT):
     """Write the index atomically: the server may restart while a build is running."""
     tmp = out.with_suffix('.tmp.npz')
-    np.savez(tmp, version=perception.TIMBRE_VERSION, ids=np.array([c['id'] for c in rows]), language=np.array([c['language'] for c in rows]),
+    np.savez(tmp, version=perception.TIMBRE_VERSION, model=perception.timbre_model(), ids=np.array([c['id'] for c in rows]), language=np.array([c['language'] for c in rows]),
              speaker=np.array([c['speaker'] for c in rows]), group=np.array([c.get('group', '') for c in rows]),
              synthetic=np.array([bool(c.get('synthetic')) for c in rows]), vectors=np.array(vectors, 'float16'))
     os.replace(tmp, out)
@@ -60,7 +60,9 @@ def main(clips=None, out=OUT, checkpoint=500):
     if not perception.timbre_ready(): raise SystemExit(f'the timbre model ({perception.TIMBRE_MODEL}.int8.onnx) is missing; run distill/export.py')
     if out.is_file():
         old = np.load(out, allow_pickle=False)
-        if str(old['version']) == perception.TIMBRE_VERSION: done = dict(zip(old['ids'].tolist(), old['vectors']))
+        # Kept vectors must come from the same weights as the new ones, not just the same version.
+        if str(old['version']) == perception.TIMBRE_VERSION and str(old.get('model', '')) == perception.timbre_model():
+            done = dict(zip(old['ids'].tolist(), old['vectors']))
     rows, vectors, skipped, encoded, start = [], [], [], 0, time.monotonic()
     for i, c in enumerate(clips):
         if c['id'] in done: v = done[c['id']]
