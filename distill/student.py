@@ -43,9 +43,12 @@ class LogMel(nn.Module):
         self.register_buffer('fb', mel_filters()[:, :, None], persistent=False)
 
     def forward(self, wave):  # [B, N] -> [B, MELS, frames]
-        x = wave[:, None, :]
-        power = F.conv1d(x, self.real, stride=HOP) ** 2 + F.conv1d(x, self.imag, stride=HOP) ** 2
-        return torch.log(F.conv1d(power, self.fb) + 1e-6)
+        # Always fp32: under mixed-precision training a bfloat16 DFT shifts the log-mel energies of a
+        # steady tone by over 10 dB on average, which the exported fp32 model never sees.
+        with torch.autocast(device_type=wave.device.type, enabled=False):
+            x = wave.float()[:, None, :]
+            power = F.conv1d(x, self.real, stride=HOP) ** 2 + F.conv1d(x, self.imag, stride=HOP) ** 2
+            return torch.log(F.conv1d(power, self.fb) + 1e-6)
 
 
 class SelfAttention(nn.Module):
