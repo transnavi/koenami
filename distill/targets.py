@@ -5,7 +5,7 @@ way), the shipped layer-3 graph's frames on that crop (fp16), and the speech mas
 uses. Speakers held out for evaluation never enter the training set.
 
     python targets.py split              writes split.json
-    python targets.py run K N            shard K of N -> shard-K.{npy,json}
+    python targets.py run K N            shard K of N -> shard-K-of-N.{npy,json}
 """
 import json, os, sys, zipfile, io
 from pathlib import Path
@@ -33,6 +33,23 @@ def crop_and_mask(x):
         energy = 20 * np.log10(rms[:frames] + 1e-12)
         return (energy > energy.max() - 40) & (rms[:frames] > perception.FLOOR)
     return x, mask
+
+
+def shards(out=None):
+    """The target shards, as (json, npy) path pairs: exactly one complete set shard-0-of-N .. shard-(N-1)-of-N.
+    Files from a run with another N, or a set with a shard missing, stop training instead of
+    silently mixing in stale or duplicate clips."""
+    import re
+    out = OUT if out is None else Path(out)
+    found = {}
+    for f in out.glob('shard-*.json'):
+        m = re.fullmatch(r'shard-(\d+)-of-(\d+)\.json', f.name)
+        if not m: raise SystemExit(f'{f.name} does not name its shard count; regenerate the targets with targets.py run K N')
+        found.setdefault(int(m[2]), {})[int(m[1])] = f
+    if len(found) != 1: raise SystemExit(f'target shards from runs of {sorted(found)} shards are mixed in {out}; keep one set')
+    (n, parts), = found.items()
+    if sorted(parts) != list(range(n)): raise SystemExit(f'target shards {sorted(set(range(n)) - set(parts))} of {n} are missing')
+    return [(parts[k], parts[k].with_suffix('.npy')) for k in range(n)]
 
 
 def split():
@@ -78,7 +95,7 @@ def run(k, n):
         frames_out.append(f.astype(np.float16)); meta.append({'id': it['id'], 'speaker': it['speaker'], 'offset': total, 'frames': len(f), 'mask': np.packbits(m).tolist()})
         total += len(f)
         if i % 500 == 0: print(k, i, '/', len(items), flush=True)
-    np.save(OUT / f'shard-{k}.npy', np.concatenate(frames_out)); json.dump(meta, open(OUT / f'shard-{k}.json', 'w'))
+    np.save(OUT / f'shard-{k}-of-{n}.npy', np.concatenate(frames_out)); json.dump(meta, open(OUT / f'shard-{k}-of-{n}.json', 'w'))
     print(k, 'done', len(meta), 'clips', total, 'frames', flush=True)
 
 

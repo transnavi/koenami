@@ -7,12 +7,13 @@ ranking depends on). 2 % of clips are held back to watch the loss; real evaluati
 
     python train.py [--steps 30000] [--batch 32] [--tag base]
 """
-import argparse, glob, json, math, random, time
+import argparse, json, math, random, time
 from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
 from student import Student
+from targets import shards
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'research/distill'  # working files: targets, audio crops, checkpoints (gitignored)
@@ -25,9 +26,9 @@ args = p.parse_args()
 torch.manual_seed(args.seed); random.seed(args.seed); np.random.seed(args.seed)
 
 clips = []
-for f in sorted(glob.glob(str(OUT / 'shard-*.json'))):
-    frames = np.load(f.replace('.json', '.npy'), mmap_mode='r')
-    for m in json.load(open(f)):
+for meta_path, frames_path in shards(OUT):
+    frames = np.load(frames_path, mmap_mode='r')
+    for m in json.load(open(meta_path)):
         t = m['frames']
         # Targets and audio stay memory-mapped: read per batch from the page cache, never copied
         # into the process (all of them together are about 9 GB).

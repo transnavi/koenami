@@ -61,7 +61,8 @@ if '--no-install' in sys.argv: sys.exit(0)
 target = MODELS / 'timbre-student.int8.onnx'; partial = target.with_suffix('.partial')
 partial.write_bytes(out.read_bytes()); partial.replace(target)
 split = json.loads((OUT / 'split.json').read_text())
-shards = [json.loads(f.read_text()) for f in sorted(OUT.glob('shard-*.json'))]
+sys.path.insert(0, str(Path(__file__).parent)); from targets import shards as target_shards
+shards = [json.loads(meta.read_text()) for meta, _ in target_shards(OUT)]
 card = {
     'name': 'timbre-student', 'file': target.name, 'sha256': hashlib.sha256(target.read_bytes()).hexdigest(),
     'teacher': 'timbre.int8.onnx: microsoft/wavlm-base-plus-sv, encoder layer 3 frames (MIT)',
