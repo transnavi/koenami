@@ -64,6 +64,17 @@ class SelfAttention(nn.Module):
         return self.proj(y.transpose(1, 2).reshape(b, -1, d))
 
 
+class TimeNorm(nn.GroupNorm):
+    """GroupNorm(1, d) over [B, d, T] whose statistics skip padded frames, so a clip padded inside a
+    batch is normalised as it would be alone. Same parameters as nn.GroupNorm(1, d)."""
+    def forward(self, x, pad=None):
+        keep = torch.ones_like(x[:, :1]) if pad is None else (~pad)[:, None, :].to(x.dtype)
+        count = keep.sum((1, 2), keepdim=True) * x.shape[1]
+        mean = (x * keep).sum((1, 2), keepdim=True) / count
+        var = (((x - mean) * keep) ** 2).sum((1, 2), keepdim=True) / count
+        return (x - mean) * torch.rsqrt(var + self.eps) * self.weight[:, None] + self.bias[:, None]
+
+
 class ConformerBlock(nn.Module):
     def __init__(self, d, heads, ff, kernel, dropout):
         super().__init__()
@@ -71,7 +82,7 @@ class ConformerBlock(nn.Module):
         self.ln_att = LayerNorm(d); self.att = SelfAttention(d, heads, dropout); self.drop = nn.Dropout(dropout)
         self.ln_conv = LayerNorm(d)
         self.pw1 = nn.Conv1d(d, 2 * d, 1); self.dw = nn.Conv1d(d, d, kernel, padding=kernel // 2, groups=d)
-        self.norm = nn.GroupNorm(1, d); self.pw2 = nn.Conv1d(d, d, 1)
+        self.norm = TimeNorm(1, d); self.pw2 = nn.Conv1d(d, d, 1)
         self.ff2 = nn.Sequential(LayerNorm(d), nn.Linear(d, ff), nn.SiLU(), nn.Dropout(dropout), nn.Linear(ff, d), nn.Dropout(dropout))
         self.ln_out = LayerNorm(d)
 
@@ -81,7 +92,10 @@ class ConformerBlock(nn.Module):
         h = self.ln_conv(x)
         if pad is not None: h = h.masked_fill(pad[..., None], 0)
         h = F.glu(self.pw1(h.transpose(1, 2)), dim=1)
-        h = self.pw2(F.silu(self.norm(self.dw(h))))
+        # pw1's bias makes padded frames nonzero again; the depthwise conv would carry them into the
+        # valid frames at the clip's end.
+        if pad is not None: h = h.masked_fill(pad[:, None, :], 0)
+        h = self.pw2(F.silu(self.norm(self.dw(h), pad)))
         x = x + self.drop(h.transpose(1, 2))
         x = x + 0.5 * self.ff2(x)
         return self.ln_out(x)
@@ -96,11 +110,17 @@ class Student(nn.Module):
         self.blocks = nn.ModuleList(ConformerBlock(d, heads, ff, kernel, dropout) for _ in range(blocks))
         self.out = nn.Linear(d, out)
 
-    def forward(self, wave, frames=None, pad=None):
-        """wave [B, N] -> [B, T, 768] with T = (N - 400) // 320 + 1, the teacher's frame count."""
+    def forward(self, wave, frames=None, pad=None, lengths=None):
+        """wave [B, N] -> [B, T, 768] with T = (N - 400) // 320 + 1, the teacher's frame count. In a
+        padded batch, `lengths` holds each clip's sample count and `pad` marks its padded frames."""
         n = wave.shape[1]; t = (n - WIN) // 320 + 1
         # A constant offset from the microphone path would shift every mel band; WavLM ignores it.
-        wave = wave - wave.mean(dim=1, keepdim=True)
+        # The mean is taken over each clip's own samples, and its padding stays zero.
+        if lengths is None:
+            wave = wave - wave.mean(dim=1, keepdim=True)
+        else:
+            inside = (torch.arange(n, device=wave.device)[None, :] < lengths[:, None]).to(wave.dtype)
+            wave = (wave - (wave * inside).sum(1, keepdim=True) / lengths[:, None].to(wave.dtype)) * inside
         wave = F.pad(wave, (0, 320))  # one extra mel pair so the strided conv reaches frame t
         m = self.mel_norm(self.mel(wave).transpose(1, 2)).transpose(1, 2)
         x = F.gelu(self.sub(m)).transpose(1, 2)[:, :t]
