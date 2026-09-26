@@ -56,6 +56,18 @@ Student minus teacher on listener agreement, per held-out query speaker: +0.038,
 bootstrap [+0.018, +0.059]. The student's descriptors sit at a median cosine of 0.963 to the
 teacher's (5th percentile 0.913, minimum 0.825, over 2,000 clips).
 
+Two further runs, evaluated the same way (`--seed 1`, and `--w_rel 300` for three times the
+relational weight), and the shipped run:
+
+| run | agreement, student − teacher | retrieval top-1 | right under teacher only / student only |
+|---|---|---|---|
+| shipped (seed 0) | +0.039 [+0.018, +0.059] | 92.7 % | 13 / 2 |
+| seed 1 | +0.047 [+0.028, +0.067] | 92.1 % | 15 / 2 |
+| relational weight 300 | +0.036 [+0.013, +0.059] | 93.7 % | 10 / 2 |
+
+The agreement gain holds across seeds. The retrieval gap holds too, and the heavier relational
+weight narrows it by about as much as the seeds differ.
+
 On an 8 s input with two CPU threads the student takes 13 ms and 38 MB above the runtime, the
 layer-3 graph 181 ms and 227 MB.
 
@@ -77,8 +89,8 @@ The ranked speakers include ones whose audio the student trained on.
 
 ## Limits
 
-- One training seed and 40 held-out JVS speakers. The agreement gain is the least certain figure
-  here; the retrieval loss is the most certain.
+- Three training runs and 40 held-out JVS speakers. The agreement gain and the retrieval loss
+  both hold across the runs.
 - The JVS ratings pair speakers only within the female and within the male group.
 - The descriptor is new (`student-l3-v1`): every index and cached vector is rebuilt with it.
 - The student is trained on JVS audio as well as Common Voice. The JVS terms allow the audio for
