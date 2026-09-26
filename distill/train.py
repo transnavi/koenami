@@ -20,8 +20,9 @@ p = argparse.ArgumentParser()
 p.add_argument('--steps', type=int, default=30000); p.add_argument('--batch', type=int, default=32)
 p.add_argument('--lr', type=float, default=1e-3); p.add_argument('--tag', default='base')
 p.add_argument('--w_pool', type=float, default=10.0); p.add_argument('--w_rel', type=float, default=100.0)
+p.add_argument('--seed', type=int, default=0)
 args = p.parse_args()
-torch.manual_seed(0); random.seed(0); np.random.seed(0)
+torch.manual_seed(args.seed); random.seed(args.seed); np.random.seed(args.seed)
 
 clips = []
 for f in sorted(glob.glob(str(OUT / 'shard-*.json'))):
