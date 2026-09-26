@@ -58,13 +58,14 @@ out = OUT / f'{stem}.w8.onnx'; onnx.save(m, out)
 print(f'{full.name} {full.stat().st_size / 1e6:.2f} MB, {out.name} {out.stat().st_size / 1e6:.2f} MB, {len(axis_of)} weights in int8')
 
 if '--no-install' in sys.argv: sys.exit(0)
-target = MODELS / 'timbre-student.int8.onnx'; partial = target.with_suffix('.partial')
-partial.write_bytes(out.read_bytes()); partial.replace(target)
+# Everything the card needs is read before anything is installed, so a bad shard set stops the
+# export with the installed model and its card still matching each other.
 split = json.loads((OUT / 'split.json').read_text())
 sys.path.insert(0, str(Path(__file__).parent)); from targets import shards as target_shards
 shards = [json.loads(meta.read_text()) for meta, _ in target_shards(OUT)]
+target = MODELS / 'timbre-student.int8.onnx'; weights = out.read_bytes()
 card = {
-    'name': 'timbre-student', 'file': target.name, 'sha256': hashlib.sha256(target.read_bytes()).hexdigest(),
+    'name': 'timbre-student', 'file': target.name, 'sha256': hashlib.sha256(weights).hexdigest(),
     'teacher': 'timbre.int8.onnx: microsoft/wavlm-base-plus-sv, encoder layer 3 frames (MIT)',
     'architecture': 'log-mel (fixed DFT and mel convolutions), 4 Conformer blocks d=192, projection to 768; one frame per 20 ms',
     'parameters': sum(p.numel() for p in model.parameters()), 'weights': 'learned weights int8 per output channel, fp32 arithmetic',
@@ -74,5 +75,7 @@ card = {
     'terms': 'Trained on JVS audio, which its terms allow for academic research, non-commercial research and personal use only, with redistribution restricted; '
              'the weights carry those limits and are not MIT-licensed. The WavLM teacher (microsoft/wavlm-base-plus-sv) is MIT; Common Voice is CC0.',
 }
-(MODELS / 'timbre-student-card.json').write_text(json.dumps(card, indent=1) + '\n')
+card_path = MODELS / 'timbre-student-card.json'
+target.with_suffix('.partial').write_bytes(weights); card_path.with_suffix('.partial').write_text(json.dumps(card, indent=1) + '\n')
+target.with_suffix('.partial').replace(target); card_path.with_suffix('.partial').replace(card_path)
 print('installed', target, round(target.stat().st_size / 1e6, 2), 'MB')

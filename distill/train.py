@@ -35,6 +35,8 @@ for meta_path, frames_path in shards(OUT):
         clips.append({'id': m['id'], 'speaker': m['speaker'], 'target': frames[m['offset']:m['offset'] + t],
                       'mask': np.unpackbits(np.array(m['mask'], np.uint8))[:t].astype(bool),
                       'wave': np.load(OUT / 'audio' / f"{m['id']}.npy", mmap_mode='r')})
+dupes = len(clips) - len({c['id'] for c in clips})
+if dupes: raise SystemExit(f'{dupes} clips appear in more than one shard; regenerate the targets into an empty folder')
 print(len(clips), 'clips', sum(len(c['target']) for c in clips), 'frames', flush=True)
 random.shuffle(clips); n_val = max(64, len(clips) // 50)
 val, train = clips[:n_val], clips[n_val:]

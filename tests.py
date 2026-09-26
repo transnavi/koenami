@@ -449,4 +449,26 @@ class PairsTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(self.pairs_log.read_text().splitlines()),1)
 
 
+
+class TargetShardTests(unittest.TestCase):
+    """distill/targets.py shards(): one complete set shard-0-of-N .. shard-(N-1)-of-N, or a stop."""
+    def setUp(self):
+        import sys;sys.path.insert(0,str(ROOT/'distill'));import targets;self.shards=targets.shards
+        self.tmp=tempfile.TemporaryDirectory();self.dir=Path(self.tmp.name)
+
+    def tearDown(self):self.tmp.cleanup()
+
+    def make(self,*names):
+        for f in self.dir.iterdir():f.unlink()
+        for n in names:(self.dir/f'{n}.json').write_text('[]');(self.dir/f'{n}.npy').write_bytes(b'')
+
+    def test_a_complete_set_loads_in_order(self):
+        self.make('shard-1-of-2','shard-0-of-2')
+        self.assertEqual([m.name for m,_ in self.shards(self.dir)],['shard-0-of-2.json','shard-1-of-2.json'])
+
+    def test_mixed_missing_and_unnumbered_sets_stop(self):
+        for names in [('shard-0-of-2','shard-1-of-2','shard-2-of-4','shard-3-of-4'),('shard-0-of-3','shard-2-of-3'),('shard-0','shard-1')]:
+            self.make(*names)
+            with self.assertRaises(SystemExit):self.shards(self.dir)
+
 if __name__=='__main__':unittest.main(verbosity=2)
