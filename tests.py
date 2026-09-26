@@ -444,6 +444,13 @@ class PairsTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
         self.assertTrue(any(p['kind']=='near' and (p['a']['id'].startswith('own-')!=p['b']['id'].startswith('own-')) for p in q))
         cache=json.loads((own/f'timbre-{perception.TIMBRE_VERSION}.json').read_text());self.assertEqual(len(cache['vectors']),2)  # vectors cached on disk
         self.assertEqual(cache['model'],perception.timbre_model())
+        # Takes cached under other weights are encoded again, and the cache is rewritten for these.
+        cache_path=own/f'timbre-{perception.TIMBRE_VERSION}.json';cache_path.write_text(json.dumps({'model':'old-weights','vectors':{k:[0.0]*768 for k in cache['vectors']}}))
+        await self.client.close()
+        with patch.object(perception,'timbre',return_value=(self.base[0]*.9+self.base[1]*.1).astype('float32')) as timbre:
+            self.client=TestClient(TestServer(create_app()));await self.client.start_server();await self.queue()
+        self.assertEqual(timbre.call_count,2);fresh=json.loads(cache_path.read_text())
+        self.assertEqual(fresh['model'],perception.timbre_model());self.assertNotEqual(fresh['vectors'][next(iter(fresh['vectors']))][0],0.0)
         own_pair=next(p for p in q if p['kind']=='same-speaker' and p['a']['id'].startswith('own-'))
         r=await self.client.post('/api/pairs',json={'a':own_pair['a']['id'],'b':own_pair['b']['id'],'language':'ja','answers':{'naturalness':'a'},'kind':'same-speaker','distance':own_pair['distance'],'space':own_pair['space'],'session':'t'})
         self.assertEqual(r.status,200);self.assertFalse(self.pairs_log.exists());self.assertEqual(len((Path(self.tmp.name)/'private-pairs.jsonl').read_text().splitlines()),1)

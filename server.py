@@ -83,7 +83,8 @@ def load_timbre_index(data, version, known=None, model=None):
         raw = np.load(path, allow_pickle=False)
         if str(raw['version']) != version:
             print(f'{path.name} was built for {raw["version"]}, not {version}; rebuild it', flush=True); return None
-        if model is not None and str(raw['model'] if 'model' in raw else '') != model:
+        # Without a model file (model == '') the ranking is off anyway, and startup says why.
+        if model and str(raw['model'] if 'model' in raw else '') != model:
             print(f'{path.name} was built with other timbre weights than the installed model; run build_timbre_index.py', flush=True); return None
         ids, language, speaker, group, synthetic = (raw[k] for k in ['ids', 'language', 'speaker', 'group', 'synthetic'])
         keep = np.isin(ids, list(known)) if known is not None else np.ones(len(ids), bool)

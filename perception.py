@@ -22,19 +22,23 @@ def available(names=('wavlm', 'age')):
     return all((MODEL_DIR / f'{name}.int8.onnx').is_file() for name in names)
 
 
+def model_sha256(path):
+    import hashlib
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
 def timbre_model():
-    """sha256 of the timbre model file, '' without one. The version string names the descriptor's
-    design; this names the weights, so an index or cache built with other weights is recognised."""
+    """sha256 of the timbre weights, '' without a model file. The version string names the
+    descriptor's design; this names the weights, so an index or cache built with others is
+    recognised. Once the session is open it is the hash of the weights that session loaded, so
+    vectors and the hash stored beside them always come from the same weights, even if the file is
+    replaced while the process runs."""
+    if TIMBRE_MODEL in _hashes: return _hashes[TIMBRE_MODEL]
     path = MODEL_DIR / f'{TIMBRE_MODEL}.int8.onnx'
-    if not path.is_file(): return ''
-    key = (str(path), path.stat().st_mtime_ns, path.stat().st_size)
-    if _model_hash.get('key') != key:
-        import hashlib
-        _model_hash.update(key=key, sha=hashlib.sha256(path.read_bytes()).hexdigest())
-    return _model_hash['sha']
+    return model_sha256(path) if path.is_file() else ''
 
 
-_model_hash = {}
+_hashes = {}
 
 
 def timbre_ready():
@@ -53,8 +57,11 @@ def session(name):
         providers = ['CPUExecutionProvider']
         if os.environ.get('KOENAMI_CUDA') == '1' and 'CUDAExecutionProvider' in ort.get_available_providers():
             providers.insert(0, 'CUDAExecutionProvider')
-        _sessions[name] = ort.InferenceSession(str(MODEL_DIR / f'{name}.int8.onnx'),
-                                             sess_options=options, providers=providers)
+        path = MODEL_DIR / f'{name}.int8.onnx'
+        weights = path.read_bytes()  # hashed and loaded from the same bytes
+        import hashlib
+        _hashes[name] = hashlib.sha256(weights).hexdigest()
+        _sessions[name] = ort.InferenceSession(weights, sess_options=options, providers=providers)
     return _sessions[name]
 
 

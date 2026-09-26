@@ -10,7 +10,7 @@ import numpy as np
 import onnxruntime as ort
 
 from curation import Verdicts
-from perception import TIMBRE_MODEL, TIMBRE_VERSION, timbre_model
+from perception import TIMBRE_MODEL, TIMBRE_VERSION, model_sha256
 from server import indexable
 
 ROOT = Path(__file__).parent
@@ -122,7 +122,8 @@ def main():
     served = {c['id'] for lib in libraries.values() for c in lib['clips'] if indexable(c)}
     index = np.load(ROOT / 'data' / f'timbre-index-{TIMBRE_VERSION}.npz', allow_pickle=False)
     assert str(index['version']) == TIMBRE_VERSION, f'the timbre index is for {index["version"]}; run build_timbre_index.py'
-    assert 'model' in index and str(index['model']) == timbre_model(), 'the timbre index was built with other weights than the installed model; run build_timbre_index.py'
+    shipped = ROOT / '.models' / 'perception' / f'{TIMBRE_MODEL}.int8.onnx'  # the file copied into the container below
+    assert 'model' in index and str(index['model']) == model_sha256(shipped), 'the timbre index was built with other weights than the shipped model; run build_timbre_index.py'
     indexed = np.isin(index['ids'], list(served))
     similar = sorted(set(index['language'][indexed].tolist()) & set(LANGUAGES))
     assert similar == sorted(LANGUAGES), f'the timbre index covers {similar}; run build_timbre_index.py'
