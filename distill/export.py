@@ -5,6 +5,7 @@ fp32 (the fixed DFT and mel matrices stay fp32), and install it as the model per
     python distill/export.py student-base.pt
         writes research/distill/student-base.onnx and .w8.onnx, and
         .models/perception/timbre-student.int8.onnx with timbre-student-card.json beside it
+        (--no-install stops after the two research files)
 """
 import hashlib, json, sys
 from pathlib import Path
@@ -56,6 +57,7 @@ onnx.checker.check_model(m)
 out = OUT / f'{stem}.w8.onnx'; onnx.save(m, out)
 print(f'{full.name} {full.stat().st_size / 1e6:.2f} MB, {out.name} {out.stat().st_size / 1e6:.2f} MB, {len(axis_of)} weights in int8')
 
+if '--no-install' in sys.argv: sys.exit(0)
 target = MODELS / 'timbre-student.int8.onnx'; partial = target.with_suffix('.partial')
 partial.write_bytes(out.read_bytes()); partial.replace(target)
 split = json.loads((OUT / 'split.json').read_text())
