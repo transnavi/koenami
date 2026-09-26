@@ -52,14 +52,15 @@ def collate(group):
     n = max(len(c['wave']) for c in group); t = (n - 400) // 320 + 1
     wave = torch.zeros(len(group), n); target = torch.zeros(len(group), t, 768)
     valid = torch.zeros(len(group), t, dtype=torch.bool); speech = torch.zeros(len(group), t, dtype=torch.bool)
+    lengths = torch.tensor([len(c['wave']) for c in group])
     for i, c in enumerate(group):
         k = len(c['target']); wave[i, :len(c['wave'])] = torch.from_numpy(c['wave'].astype(np.float32))
         target[i, :k] = torch.from_numpy(c['target'].astype(np.float32)); valid[i, :k] = True; speech[i, :k] = torch.from_numpy(c['mask'])
-    return wave.cuda(), target.cuda(), valid.cuda(), speech.cuda()
+    return wave.cuda(), target.cuda(), valid.cuda(), speech.cuda(), lengths.cuda()
 
 
-def losses(model, wave, target, valid, speech):
-    out = model(wave, pad=~valid).float()
+def losses(model, wave, target, valid, speech, lengths):
+    out = model(wave, pad=~valid, lengths=lengths).float()
     v = valid[..., None]
     l1 = ((out - target).abs() / sd * v).sum() / (v.sum() * 768)
     fcos = 1 - (F.cosine_similarity(out, target, dim=-1) * valid).sum() / valid.sum()
