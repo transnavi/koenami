@@ -305,7 +305,7 @@ class SimilarTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
         for k,(speaker,group,language) in enumerate([('spkA','female','ja'),('spkB','female','ja'),('spkC','male','ja'),('spkD','female','en')]):
             for c in range(2):ids.append(f'{speaker}-clip{c}');lang.append(language);spk.append(speaker);grp.append(group);syn.append(False);vec.append((base[k]+rng.normal(scale=.05,size=768))*(10 if (speaker,c)==('spkC',1) else 1))  # spkC's clips differ tenfold in norm
         path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz'
-        np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(ids),language=np.array(lang),speaker=np.array(spk),group=np.array(grp),synthetic=np.array(syn),vectors=np.array(vec,'float16'))
+        np.savez(path,version=perception.TIMBRE_VERSION,model=perception.timbre_model(),ids=np.array(ids),language=np.array(lang),speaker=np.array(spk),group=np.array(grp),synthetic=np.array(syn),vectors=np.array(vec,'float16'))
         # The app only serves index rows whose clips its libraries know, so give it minimal libraries.
         (Path(self.tmp.name)/'libraries').mkdir()
         for language,name in [('ja','native-ja.json'),('en','libraries/en.json')]:
@@ -339,6 +339,14 @@ class SimilarTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
         np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(['x']),vectors=np.zeros((2,768),'float16'))  # misshapen: no crash, no index
         self.assertIsNone(load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION))
 
+    def test_index_loader_rejects_an_index_built_with_other_weights(self):
+        path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz';raw=dict(np.load(path))
+        np.savez(path,**{**raw,'model':'a'})
+        self.assertIsNotNone(load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION,model='a'))
+        self.assertIsNone(load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION,model='b'))
+        np.savez(path,**{k:v for k,v in raw.items() if k!='model'})  # an index from before the weights were recorded
+        self.assertIsNone(load_timbre_index(Path(self.tmp.name),perception.TIMBRE_VERSION,model='a'))
+
     async def test_similar_is_off_without_the_timbre_output_and_503_on_inference_failure(self):
         await self.client.close()
         with patch.object(perception,'timbre_ready',return_value=False):
@@ -368,6 +376,11 @@ class SimilarTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
             rows,_=build_timbre_index.main(out=out,checkpoint=1)
         self.assertEqual([r['id'] for r in rows],['a','b','e']);self.assertEqual(len(calls),3)  # a and b were kept, only e was encoded
         self.assertTrue(np.array_equal(np.load(out)['vectors'][:2],first));self.assertFalse(out.with_suffix('.tmp.npz').exists())
+        # New weights under the same version: nothing is kept, every clip is encoded again.
+        with patch.object(build_timbre_index,'DATA',data),patch.object(perception,'timbre',side_effect=fake_timbre),patch.object(perception,'timbre_ready',return_value=True),\
+             patch.object(perception,'timbre_model',return_value='other-weights'):
+            rows,_=build_timbre_index.main(out=out,checkpoint=1)
+        self.assertEqual(len(calls),6);self.assertEqual(str(np.load(out)['model']),'other-weights')
 
 
 class PairsTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
@@ -380,7 +393,7 @@ class PairsTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
         for k,(speaker,group,language) in enumerate(speakers):
             for c in range(3):ids.append(f'{speaker}-clip{c}');lang.append(language);spk.append(speaker);grp.append(group);syn.append(False);vec.append(base[k]+rng.normal(scale=.05,size=768))
         path=Path(self.tmp.name)/f'timbre-index-{perception.TIMBRE_VERSION}.npz'
-        np.savez(path,version=perception.TIMBRE_VERSION,ids=np.array(ids),language=np.array(lang),speaker=np.array(spk),group=np.array(grp),synthetic=np.array(syn),vectors=np.array(vec,'float16'))
+        np.savez(path,version=perception.TIMBRE_VERSION,model=perception.timbre_model(),ids=np.array(ids),language=np.array(lang),speaker=np.array(spk),group=np.array(grp),synthetic=np.array(syn),vectors=np.array(vec,'float16'))
         (Path(self.tmp.name)/'libraries').mkdir()
         for language,name in [('ja','native-ja.json'),('en','libraries/en.json')]:
             clips=[{'id':i,'audio':f'/samples/{i}.flac','speaker':s,'group':g,'plotted':True,'language':language,
@@ -429,7 +442,15 @@ class PairsTests(IndexFixture,unittest.IsolatedAsyncioTestCase):
         own_ids={p['a']['id'] for p in q if p['a']['id'].startswith('own-')}|{p['b']['id'] for p in q if p['b']['id'].startswith('own-')};self.assertEqual(len(own_ids),2)
         self.assertTrue(any(p['kind']=='same-speaker' and p['a']['id'].startswith('own-') and p['b']['id'].startswith('own-') for p in q))
         self.assertTrue(any(p['kind']=='near' and (p['a']['id'].startswith('own-')!=p['b']['id'].startswith('own-')) for p in q))
-        cache=json.loads((own/f'timbre-{perception.TIMBRE_VERSION}.json').read_text());self.assertEqual(len(cache),2)  # vectors cached on disk
+        cache=json.loads((own/f'timbre-{perception.TIMBRE_VERSION}.json').read_text());self.assertEqual(len(cache['vectors']),2)  # vectors cached on disk
+        self.assertEqual(cache['model'],perception.timbre_model())
+        # Takes cached under other weights are encoded again, and the cache is rewritten for these.
+        cache_path=own/f'timbre-{perception.TIMBRE_VERSION}.json';cache_path.write_text(json.dumps({'model':'old-weights','vectors':{k:[0.0]*768 for k in cache['vectors']}}))
+        await self.client.close()
+        with patch.object(perception,'timbre',return_value=(self.base[0]*.9+self.base[1]*.1).astype('float32')) as timbre:
+            self.client=TestClient(TestServer(create_app()));await self.client.start_server();await self.queue()
+        self.assertEqual(timbre.call_count,2);fresh=json.loads(cache_path.read_text())
+        self.assertEqual(fresh['model'],perception.timbre_model());self.assertNotEqual(fresh['vectors'][next(iter(fresh['vectors']))][0],0.0)
         own_pair=next(p for p in q if p['kind']=='same-speaker' and p['a']['id'].startswith('own-'))
         r=await self.client.post('/api/pairs',json={'a':own_pair['a']['id'],'b':own_pair['b']['id'],'language':'ja','answers':{'naturalness':'a'},'kind':'same-speaker','distance':own_pair['distance'],'space':own_pair['space'],'session':'t'})
         self.assertEqual(r.status,200);self.assertFalse(self.pairs_log.exists());self.assertEqual(len((Path(self.tmp.name)/'private-pairs.jsonl').read_text().splitlines()),1)

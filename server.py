@@ -71,17 +71,21 @@ def indexable(clip):
     return bool(clip.get('plotted')) and str(clip.get('audio', '')).startswith('/samples/')
 
 
-def load_timbre_index(data, version, known=None):
+def load_timbre_index(data, version, known=None, model=None):
     """The timbre vectors build_timbre_index.py wrote for this descriptor version, arranged per language:
     unit vectors per clip, one centroid per speaker (the mean of the raw vectors, as in the benchmark,
     normalised once), and the clip rows of each speaker. Rows whose clip the app no longer serves are
-    dropped. None when the file is absent, for another version, or empty."""
+    dropped. None when the file is absent, for another version or (given `model`, the model's sha256)
+    built with other weights, or empty."""
     path = data / f'timbre-index-{version}.npz'
     if not path.is_file(): return None
     try:
         raw = np.load(path, allow_pickle=False)
         if str(raw['version']) != version:
             print(f'{path.name} was built for {raw["version"]}, not {version}; rebuild it', flush=True); return None
+        # Without a model file (model == '') the ranking is off anyway, and startup says why.
+        if model and str(raw['model'] if 'model' in raw else '') != model:
+            print(f'{path.name} was built with other timbre weights than the installed model; run build_timbre_index.py', flush=True); return None
         ids, language, speaker, group, synthetic = (raw[k] for k in ['ids', 'language', 'speaker', 'group', 'synthetic'])
         keep = np.isin(ids, list(known)) if known is not None else np.ones(len(ids), bool)
         if raw['vectors'].ndim != 2 or len(raw['vectors']) != len(ids) or not keep.any(): raise ValueError('empty or misshapen index')
@@ -135,7 +139,8 @@ def create_app():
     neural_gate = asyncio.Semaphore(1)
     # Reference ranking needs an index built for this descriptor version and the timbre model;
     # the graph is opened here so the first request does not pay for it.
-    timbre_index = load_timbre_index(DATA, perception.TIMBRE_VERSION, known={i for i, c in clips.items() if indexable(c)}) if perception else None
+    timbre_index = load_timbre_index(DATA, perception.TIMBRE_VERSION, known={i for i, c in clips.items() if indexable(c)},
+                                     model=perception.timbre_model()) if perception else None
     if timbre_index and not perception.timbre_ready():
         print(f'Reference ranking is off: the timbre model ({perception.TIMBRE_MODEL}.int8.onnx) is missing; run distill/export.py', flush=True); timbre_index = None
     cache = OrderedDict()
@@ -403,7 +408,9 @@ def create_app():
         failed once is tried again next time."""
         if not timbre_index or not own_clips: return {}
         cache_path = DATA / 'own' / f'timbre-{perception.TIMBRE_VERSION}.json'
-        cache = json.loads(cache_path.read_text()) if cache_path.exists() else {}
+        stored = json.loads(cache_path.read_text()) if cache_path.exists() else {}
+        model = perception.timbre_model()
+        cache = stored.get('vectors', {}) if stored.get('model') == model else {}  # other weights: start over
         missing = [c for c in own_clips if c.get('plotted') and c['id'] not in cache]
         if missing:
             async with neural_gate:
@@ -413,7 +420,7 @@ def create_app():
                         vector = await asyncio.to_thread(perception.timbre, mono16(audio, rate).astype('float32'))
                         cache[c['id']] = [round(float(v), 5) for v in vector]
                     except Exception as error: print(f'Own take {c["id"]} not embedded: {type(error).__name__}', flush=True)
-            cache_path.write_text(json.dumps(cache))
+            cache_path.write_text(json.dumps({'model': model, 'vectors': cache}))
         return {k: np.array(v, 'float32') for k, v in cache.items()}
 
     def pair_queue(lang, session='', own_vectors=None):
