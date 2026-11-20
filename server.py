@@ -587,15 +587,15 @@ def create_app():
 
 
 async def run(port):
+    # The container starts this as process 1, and Linux drops a signal sent to process 1 unless a handler is
+    # installed, so the platform's request to stop an idle container ends the process only through these.
+    stop = asyncio.Event()
+    for number in (signal.SIGTERM, signal.SIGINT): asyncio.get_running_loop().add_signal_handler(number, stop.set)
     runner = web.AppRunner(create_app(), access_log=None)
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0' if PUBLIC else '127.0.0.1', port)
     await site.start()
     print(f'Koenami API: http://localhost:{port}', flush=True)
-    # The container starts this as process 1, and Linux drops a signal sent to process 1 unless a handler is
-    # installed, so the platform's request to stop an idle container ends the process only through these.
-    stop = asyncio.Event()
-    for number in (signal.SIGTERM, signal.SIGINT): asyncio.get_running_loop().add_signal_handler(number, stop.set)
     try: await stop.wait()
     finally: await runner.cleanup()
 
