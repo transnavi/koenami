@@ -67,7 +67,7 @@
   "x-content-type-options": "nosniff",
   "permissions-policy": "microphone=(self), camera=(), geolocation=()",
   "referrer-policy": "strict-origin-when-cross-origin",
-  "title": "Koenami · 女声・男声练习工具",
+  "title": "Koenami · 女声／男声训练工具",
   "lang": "zh-CN",
   "app": "kit"
  },
@@ -79,7 +79,7 @@
   "x-content-type-options": "nosniff",
   "permissions-policy": "microphone=(self), camera=(), geolocation=()",
   "referrer-policy": "strict-origin-when-cross-origin",
-  "title": "Koenami · 여성 목소리・남성 목소리 연습 도구",
+  "title": "Koenami · 여성·남성 목소리 연습 도구",
   "lang": "ko",
   "app": "kit"
  },
@@ -219,7 +219,7 @@
   "x-content-type-options": "nosniff",
   "permissions-policy": "microphone=(self), camera=(), geolocation=()",
   "referrer-policy": "strict-origin-when-cross-origin",
-  "title": "Koenami · Voice in between (in the middle +9)",
+  "title": "Koenami · In-between voice (in the middle +9)",
   "lang": "en",
   "app": "kit"
  },
