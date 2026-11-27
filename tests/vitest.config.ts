@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 // The characterization tests run against the studio's library under src/lib; the service
-// worker's `$service-worker` module is stood in for.
+// worker's `$service-worker` module and the Workers runtime's `cloudflare:workers` are stood in for.
 const root = fileURLToPath(new URL('..', import.meta.url));
 
 export default defineConfig({
@@ -11,11 +11,14 @@ export default defineConfig({
 		alias: {
 			'@app': `${root}src/lib`,
 			$lib: `${root}src/lib`,
-			'$service-worker': `${root}tests/unit/service-worker-stub.ts`
+			'$service-worker': `${root}tests/unit/service-worker-stub.ts`,
+			'cloudflare:workers': `${root}tests/unit/cloudflare-workers-stub.ts`
 		}
 	},
 	test: {
 		root,
+		// The container library imports `cloudflare:workers`, which only resolves through the alias.
+		server: { deps: { inline: ['@cloudflare/containers'] } },
 		include: ['tests/unit/**/*.test.{ts,js}'],
 		setupFiles: ['tests/unit/setup.ts'],
 		environment: 'node',
